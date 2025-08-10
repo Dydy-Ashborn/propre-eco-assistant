@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gestionnaire de Copropriétés</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <img id="img" src="Sans-titre-1.png" alt="" width="300">
+    <h2>Gestionnaire de Copropriétés</h2>
+    <p>Gérez vos bâtiments et optimisez vos tournées</p>
+  </div>
+
+  <!-- Section Recherche -->
+  <div class="section">
+    <h2>🔍 Rechercher une copropriété</h2>
+    <div class="search-container">
+      <input type="text" class="search-input" id="searchInput" placeholder="Tapez le nom d'une copropriété...">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div class="property-details" id="propertyDetails" style="display:none;">
+      <div class="property-info" id="propertyInfo"></div>
+      <button class="btn btn-success" id="addToItinerary">➕ Ajouter à mon itinéraire</button>
+    </div>
+
+    <div style="margin-top: 15px; text-align: right;">
+      <button class="btn btn-warning" id="syncCsv">🔄 Synchroniser les données</button>
+    </div>
+  </div>
+
+  <!-- Section Itinéraire -->
+  <div class="section">
+    <h2>🗺️ Mon itinéraire du jour</h2>
+    <div class="itinerary">
+      <div class="itinerary-list" id="itineraryList">
+        <div class="empty-state">Aucune copropriété dans votre itinéraire pour aujourd'hui</div>
+      </div>
+      <div style="text-align: center; margin-top: 12px;">
+        <button class="btn btn-warning" id="optimizeItinerary">🚀 Ouvrir l'itinéraire Google Maps</button>
+        <button class="btn btn-danger" id="clearItinerary">🗑️ Vider l'itinéraire</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Liste complète -->
+  <div class="section">
+    <h2>📋 Toutes mes copropriétés</h2>
+    <div class="properties-list" id="propertiesList">
+      <div class="empty-state">Chargement des copropriétés...</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
