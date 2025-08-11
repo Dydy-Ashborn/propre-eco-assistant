@@ -1,6 +1,6 @@
 // URL CSV (sans retour à la ligne)
 const csvUrl = `
-https://gist.githubusercontent.com/ashborn0207-code/67645db75ea2d7228078345dc31667b1/raw/c6db31af9551c25de44e8c18e65c814f9018f91d/coproprietes.csv
+https://gist.githubusercontent.com/ashborn0207-code/67645db75ea2d7228078345dc31667b1/raw/3e9d7aa0d3b044d0f322b3a5f8819303d1b3eb23/coproprietes.csv
 
 `;
 
