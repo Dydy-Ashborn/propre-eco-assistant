@@ -1,8 +1,6 @@
 // URL CSV (sans retour à la ligne)
 const csvUrl = `
-https://gist.githubusercontent.com/ashborn0207-code/67645db75ea2d7228078345dc31667b1/raw/3e9d7aa0d3b044d0f322b3a5f8819303d1b3eb23/coproprietes.csv
-
-`;
+https://gist.githubusercontent.com/ashborn0207-code/67645db75ea2d7228078345dc31667b1/raw/105cc981b59dd3bc582824af5745cd118893bd0e/coproprietes.csv`;
 
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
