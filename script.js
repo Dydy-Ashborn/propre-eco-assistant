@@ -1,7 +1,8 @@
-// URL CSV (sans retour à la ligne)
-const csvUrl = `
-https://gist.githubusercontent.com/ashborn0207-code/67645db75ea2d7228078345dc31667b1/raw/105cc981b59dd3bc582824af5745cd118893bd0e/coproprietes.csv`;
+// ID du Gist et CSV initial (sera mis à jour automatiquement)
+const gistId = "67645db75ea2d7228078345dc31667b1";
+let csvUrl = "";
 
+// Sélecteurs
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
 const propertyDetails = document.getElementById('propertyDetails');
@@ -17,7 +18,7 @@ let properties = [];
 let selectedProperty = null;
 let itinerary = [];
 
-// Parse CSV simple mais prenant en compte les guillemets pour les valeurs
+// Parse CSV simple mais prenant en compte les guillemets
 function parseCsv(text) {
   const lines = text.trim().split(/\r?\n/);
   const headers = parseCsvLine(lines.shift());
@@ -31,13 +32,13 @@ function parseCsv(text) {
   });
 }
 
-// Fonction parse une ligne CSV (gestion guillemets)
+// Parse une ligne CSV avec gestion des guillemets
 function parseCsvLine(line) {
   const result = [];
   let current = '';
   let insideQuotes = false;
 
-  for(let i = 0; i < line.length; i++) {
+  for (let i = 0; i < line.length; i++) {
     const char = line[i];
     if (char === '"' && (i === 0 || line[i - 1] !== '\\')) {
       insideQuotes = !insideQuotes;
@@ -52,8 +53,12 @@ function parseCsvLine(line) {
   return result;
 }
 
-// Chargement et parsing CSV
+// Charge le CSV depuis csvUrl
 async function loadCsv() {
+  if (!csvUrl) {
+    propertiesList.innerHTML = '<div class="empty-state" style="color:red;">Aucune URL CSV disponible</div>';
+    return;
+  }
   propertiesList.innerHTML = '<div class="empty-state">Chargement des copropriétés...</div>';
   try {
     const resp = await fetch(csvUrl, { cache: "no-store" });
@@ -94,7 +99,7 @@ function renderPropertiesList() {
   });
 }
 
-// Recherche en temps réel, avec gestion propre des événements sur résultats
+// Recherche en temps réel
 searchInput.addEventListener('input', () => {
   const val = searchInput.value.trim().toLowerCase();
   searchResults.innerHTML = "";
@@ -138,7 +143,7 @@ document.addEventListener('click', e => {
   }
 });
 
-// Affiche détails d'une copropriété
+// Affiche les détails d'une copropriété
 function showPropertyDetails(p) {
   propertyInfo.innerHTML = `
     <div><strong>Nom :</strong> ${p.nom || '-'}</div>
@@ -157,7 +162,6 @@ addToItineraryBtn.addEventListener('click', () => {
   }
   itinerary.push(selectedProperty);
   renderItinerary();
- 
 });
 
 // Affiche l'itinéraire
@@ -187,13 +191,17 @@ function renderItinerary() {
   });
 }
 
-// Ouvrir itinéraire Google Maps optimisé
 optimizeItineraryBtn.addEventListener('click', () => {
   if (!itinerary.length) return alert("Votre itinéraire est vide");
+
   const baseUrl = "https://www.google.com/maps/dir/";
   const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
-  window.open(baseUrl + waypoints, '_blank');
+
+  // "Current Location" force Google Maps à partir de la position GPS actuelle
+  const mapsUrl = `${baseUrl}Current+Location/${waypoints}`;
+  window.open(mapsUrl, '_blank');
 });
+
 
 // Vider l'itinéraire
 clearItineraryBtn.addEventListener('click', () => {
@@ -203,10 +211,51 @@ clearItineraryBtn.addEventListener('click', () => {
   }
 });
 
-// Synchroniser CSV
-syncCsvBtn.addEventListener('click', () => {
-  loadCsv();
+
+// Affiche une notification temporaire
+function showNotification(message, color = "#28a745") {
+  const notif = document.createElement("div");
+  notif.className = "sync-notification";
+  notif.textContent = message;
+  notif.style.background = color;
+  document.body.appendChild(notif);
+
+  // Apparition
+  setTimeout(() => notif.classList.add("show"), 50);
+
+  // Disparition
+  setTimeout(() => {
+    notif.classList.remove("show");
+    setTimeout(() => notif.remove(), 400);
+  }, 2500);
+}
+
+// Synchroniser CSV depuis API GitHub avec animation
+syncCsvBtn.addEventListener('click', async () => {
+  try {
+    // Animation bouton
+    syncCsvBtn.classList.add("btn-loading");
+
+    const resp = await fetch(`https://api.github.com/gists/${gistId}`);
+    if (!resp.ok) throw new Error("Impossible de récupérer le Gist");
+    const data = await resp.json();
+
+    const files = data.files;
+    const firstFile = Object.values(files)[0];
+    csvUrl = firstFile.raw_url;
+
+    await loadCsv();
+
+    // Notification de succès
+    showNotification("✅ Données mises à jour");
+  } catch (err) {
+    showNotification("❌ Erreur de mise à jour", "#dc3545");
+  } finally {
+    // Retire l'animation du bouton
+    syncCsvBtn.classList.remove("btn-loading");
+  }
 });
+
 
 // Sélection depuis la liste complète
 function selectProperty(idx) {
@@ -218,6 +267,19 @@ function selectProperty(idx) {
   showPropertyDetails(p);
 }
 
-// Initialisation au chargement
-loadCsv();
-renderItinerary();
+// Initialisation : récupère la dernière URL CSV avant chargement
+(async function init() {
+  try {
+    const resp = await fetch(`https://api.github.com/gists/${gistId}`);
+    if (resp.ok) {
+      const data = await resp.json();
+      const files = data.files;
+      const firstFile = Object.values(files)[0];
+      csvUrl = firstFile.raw_url;
+    }
+  } catch (err) {
+    console.error("Erreur lors de la récupération initiale du CSV :", err);
+  }
+  loadCsv();
+  renderItinerary();
+})();
