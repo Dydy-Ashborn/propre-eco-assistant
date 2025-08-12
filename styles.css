@@ -198,7 +198,7 @@ body {
 }
 
 .btn-warning {
-  background-color: #ff6600; /* orange */
+  background-color: #ee6f1b; /* orange */
   color: white;
   box-shadow: 0 4px 8px #ff660088;
 }
@@ -340,4 +340,133 @@ body {
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+  animation: slideDown 0.3s ease-in-out;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #888;
+}
+.close-btn:hover {
+  color: #000;
+}
+
+#procedureTitle {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #2c3e50;
+}
+
+#procedureText {
+  font-size: 15px;
+  line-height: 1.5;
+}
+#procedureText ul {
+  padding-left: 20px;
+}
+#procedureText li {
+  margin-bottom: 6px;
+}
+#procedureText li::before {
+  content: "✔ ";
+  color: #27ae60;
+}
+
+.procedure-footer {
+  margin-top: 20px;
+  font-style: italic;
+  font-weight: bold;
+  color: #2e7d32;
+  text-align: center;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.btn-action {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Ajouter à l'itinéraire : vert */
+.btn-itinerary {
+  background-color: #27ae60;
+  color: white;
+}
+.btn-itinerary:hover {
+  background-color: #219150;
+  transform: translateY(-1px);
+}
+
+/* Procédures : bleu */
+.btn-procedure {
+  background-color: #2980b9;
+   cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.2s ease;
+  user-select: none;
+  box-shadow: 0 3px 7px rgb(0 0 0 / 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.btn-procedure:hover {
+  background-color: #216694;
+  transform: translateY(-1px);
+}
+
+#specifique {
+  color: #e67e22; /* orange vif */
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+.app-footer {
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  padding: 15px 0;
+  border-top: 1px solid #ddd;
+  margin-top: 20px;
+  background-color: #f9f9f9;
+}
+
+.app-footer span {
+  font-size: 16px;
 }

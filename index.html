@@ -6,6 +6,17 @@
 <title>Gestionnaire de Copropriétés</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
+
+<!-- Modale pour afficher les procédures -->
+<div id="procedureModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2 id="procedureTitle"></h2>
+    <div id="procedureText"></div>
+    <div class="procedure-footer">Merci pour votre travail, n'oubliez pas que chaque geste compte ! 🌟</div>
+  </div>
+</div>
+
 <body>
 
 <div class="container">
@@ -15,6 +26,11 @@
     <h2>Gestionnaire de Copropriétés</h2>
     <p>Gérez vos bâtiments et optimisez vos tournées</p>
   </div>
+  <!-- <div>
+    <a href="specifique.html">
+      <h4 id="specifique">👷‍♂️ Spécifique</h4>
+    </a>
+  </div> -->
 
   <!-- Section Recherche -->
   <div class="section">
@@ -54,9 +70,18 @@
     <div class="properties-list" id="propertiesList">
       <div class="empty-state">Chargement des copropriétés...</div>
     </div>
+
+    <!-- Bouton Afficher plus -->
+    <div style="text-align:center; margin-top:14px;">
+      <button class="btn btn-warning" id="showMoreBtn"  style="display:none;">Afficher plus...</button>
+    </div>
   </div>
 
 </div>
+
+<footer class="app-footer">
+  Developed with <span style="color:red;">❤️</span> by Ashborn
+</footer>
 
 <script src="script.js"></script>
 </body>

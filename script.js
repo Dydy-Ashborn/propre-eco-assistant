@@ -13,15 +13,22 @@ const itineraryList = document.getElementById('itineraryList');
 const optimizeItineraryBtn = document.getElementById('optimizeItinerary');
 const clearItineraryBtn = document.getElementById('clearItinerary');
 const propertiesList = document.getElementById('propertiesList');
+const showMoreBtn = document.getElementById('showMoreBtn');
 
 let properties = [];
 let selectedProperty = null;
 let itinerary = [];
 
+// Pagination simple pour "Afficher plus"
+let visibleCount = 4; // affiche 4 éléments au départ
+const VISIBLE_STEP = 4;
+
 // Parse CSV simple mais prenant en compte les guillemets
 function parseCsv(text) {
-  const lines = text.trim().split(/\r?\n/);
-  const headers = parseCsvLine(lines.shift());
+  if (!text) return [];
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim() !== "");
+  if (!lines.length) return [];
+  const headers = parseCsvLine(lines.shift()).map(h => h.trim());
   return lines.map(line => {
     const cols = parseCsvLine(line);
     let obj = {};
@@ -55,8 +62,12 @@ function parseCsvLine(line) {
 
 // Charge le CSV depuis csvUrl
 async function loadCsv() {
+  // reset pagination
+  visibleCount = VISIBLE_STEP;
+
   if (!csvUrl) {
     propertiesList.innerHTML = '<div class="empty-state" style="color:red;">Aucune URL CSV disponible</div>';
+    showMoreBtn.style.display = "none";
     return;
   }
   propertiesList.innerHTML = '<div class="empty-state">Chargement des copropriétés...</div>';
@@ -69,17 +80,23 @@ async function loadCsv() {
   } catch (err) {
     propertiesList.innerHTML = `<div class="empty-state" style="color: red;">Erreur : ${err.message}</div>`;
     properties = [];
+    showMoreBtn.style.display = "none";
   }
 }
 
-// Affiche toutes les copropriétés
+// Affiche les copropriétés (avec pagination "Afficher plus")
 function renderPropertiesList() {
   if (!properties.length) {
     propertiesList.innerHTML = '<div class="empty-state">Aucune copropriété trouvée</div>';
+    showMoreBtn.style.display = "none";
     return;
   }
+
   propertiesList.innerHTML = "";
-  properties.forEach((p, idx) => {
+
+  const visibleSlice = properties.slice(0, visibleCount);
+  visibleSlice.forEach((p, idx) => {
+    const globalIdx = idx; // index relatif à la slice
     const div = document.createElement('div');
     div.className = "property-card";
     div.innerHTML = `
@@ -89,14 +106,26 @@ function renderPropertiesList() {
         <div class="property-field"><label>Code:</label> ${p.code || "-"}</div>
       </div>
       <div class="property-actions">
-        <button class="btn btn-small" data-idx="${idx}">Voir</button>
+        <button class="btn btn-small" data-idx="${globalIdx}">Voir</button>
       </div>
     `;
+    // bouton "Voir" doit référencer l'index réel dans "properties"
+    // calcul de l'index réel = index dans visibleSlice + offset (ici 0)
     propertiesList.appendChild(div);
     div.querySelector('button').addEventListener('click', () => {
-      selectProperty(idx);
+      // find the correct property by name (safer si index local)
+      const prop = p;
+      const idxReal = properties.indexOf(prop);
+      if (idxReal >= 0) selectProperty(idxReal);
     });
   });
+
+  // gestion du bouton "Afficher plus"
+  if (visibleCount >= properties.length) {
+    showMoreBtn.style.display = "none";
+  } else {
+    showMoreBtn.style.display = "inline-block";
+  }
 }
 
 // Recherche en temps réel
@@ -143,15 +172,58 @@ document.addEventListener('click', e => {
   }
 });
 
-// Affiche les détails d'une copropriété
 function showPropertyDetails(p) {
   propertyInfo.innerHTML = `
-    <div><strong>Nom :</strong> ${p.nom || '-'}</div>
-    <div><strong>Adresse :</strong> ${p.adresse || '-'}</div>
-    <div><strong>Code :</strong> ${p.code || '-'}</div>
-  `;
+  <div><strong>Nom :</strong> ${p.nom || '-'}</div>
+  <div><strong>Adresse :</strong> ${p.adresse || '-'}</div>
+  <div><strong>Code :</strong> ${p.code || '-'}</div>
+  <div style="margin-top:10px; display:flex; gap:10px;">
+    <button class="btn-action btn-procedure" id="showProcedureBtn">📄 Procédures</button>
+  </div>
+`;
+
   propertyDetails.style.display = 'block';
+  selectedProperty = p;
+
+  document.getElementById('showProcedureBtn').addEventListener('click', () => {
+    fetch('procedures.json')
+      .then(res => res.json())
+      .then(data => {
+        const procedureRaw = data[p.nom];
+        if (!procedureRaw) {
+          alert("Aucune procédure enregistrée pour cette copropriété.");
+          return;
+        }
+
+        // Séparer en lignes et transformer en liste HTML
+        const lines = procedureRaw.split("\n").map(l => l.trim()).filter(l => l);
+        let html = "";
+        lines.forEach(line => {
+          if (line.startsWith("->")) {
+            html += `<li>${line.replace("->", "").trim()}</li>`;
+          } else {
+            html += `<p><strong>${line}</strong></p>`;
+          }
+        });
+
+        document.getElementById('procedureTitle').textContent = p.nom;
+        document.getElementById('procedureText').innerHTML = `<ul>${html}</ul>`;
+        document.getElementById('procedureModal').style.display = 'block';
+      });
+  });
 }
+
+// Fermer la modale (croix et clic extérieur)
+document.querySelector('#procedureModal .close-btn').addEventListener('click', () => {
+  document.getElementById('procedureModal').style.display = 'none';
+});
+window.addEventListener('click', (e) => {
+  if (e.target.id === 'procedureModal') {
+    document.getElementById('procedureModal').style.display = 'none';
+  }
+});
+
+
 
 // Ajoute à l'itinéraire
 addToItineraryBtn.addEventListener('click', () => {
@@ -178,6 +250,7 @@ function renderItinerary() {
       <div class="property-card-info">
         <div><strong>${p.nom}</strong></div>
         <div>${p.adresse}</div>
+        <div><strong>Code : </strong>${p.code}</div>
       </div>
       <div class="property-actions">
         <button class="btn btn-danger btn-small" data-idx="${idx}">Supprimer</button>
@@ -191,6 +264,7 @@ function renderItinerary() {
   });
 }
 
+// Ouvrir itinéraire Google Maps optimisé avec départ à la position actuelle
 optimizeItineraryBtn.addEventListener('click', () => {
   if (!itinerary.length) return alert("Votre itinéraire est vide");
 
@@ -202,7 +276,6 @@ optimizeItineraryBtn.addEventListener('click', () => {
   window.open(mapsUrl, '_blank');
 });
 
-
 // Vider l'itinéraire
 clearItineraryBtn.addEventListener('click', () => {
   if (confirm("Voulez-vous vraiment vider votre itinéraire ?")) {
@@ -210,7 +283,6 @@ clearItineraryBtn.addEventListener('click', () => {
     renderItinerary();
   }
 });
-
 
 // Affiche une notification temporaire
 function showNotification(message, color = "#28a745") {
@@ -250,18 +322,25 @@ syncCsvBtn.addEventListener('click', async () => {
     showNotification("✅ Données mises à jour");
   } catch (err) {
     showNotification("❌ Erreur de mise à jour", "#dc3545");
+    console.error(err);
   } finally {
     // Retire l'animation du bouton
     syncCsvBtn.classList.remove("btn-loading");
   }
 });
 
+// Bouton "Afficher plus"
+showMoreBtn.addEventListener('click', () => {
+  visibleCount += VISIBLE_STEP;
+  renderPropertiesList();
+});
 
-// Sélection depuis la liste complète
+// Sélection depuis la liste complète (index réel)
 function selectProperty(idx) {
   const p = properties[idx];
+  if (!p) return;
   selectedProperty = p;
-  searchInput.value = p.nom;
+  searchInput.value = p.nom || "";
   searchResults.innerHTML = "";
   searchResults.classList.remove('show');
   showPropertyDetails(p);
@@ -273,13 +352,15 @@ function selectProperty(idx) {
     const resp = await fetch(`https://api.github.com/gists/${gistId}`);
     if (resp.ok) {
       const data = await resp.json();
-      const files = data.files;
+      const files = data.files || {};
       const firstFile = Object.values(files)[0];
-      csvUrl = firstFile.raw_url;
+      if (firstFile && firstFile.raw_url) {
+        csvUrl = firstFile.raw_url;
+      }
     }
   } catch (err) {
     console.error("Erreur lors de la récupération initiale du CSV :", err);
   }
-  loadCsv();
+  await loadCsv();
   renderItinerary();
 })();
