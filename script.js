@@ -364,3 +364,18 @@ function selectProperty(idx) {
   await loadCsv();
   renderItinerary();
 })();
+
+function openModal() {
+  document.getElementById('procedureModal').style.display = 'block';
+  document.body.style.overflow = 'hidden'; // ✅ bloque le scroll de la page
+}
+
+function closeModal() {
+  document.getElementById('procedureModal').style.display = 'none';
+  document.body.style.overflow = ''; // ✅ réactive le scroll de la page
+}
+
+document.querySelector('#procedureModal .close-btn').addEventListener('click', closeModal);
+window.addEventListener('click', (e) => {
+  if (e.target.id === 'procedureModal') closeModal();
+});
