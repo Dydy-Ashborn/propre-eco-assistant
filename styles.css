@@ -200,6 +200,7 @@ body {
 .btn-warning {
   background-color: #ee6f1b; /* orange */
   color: white;
+  margin-bottom: auto;
   box-shadow: 0 4px 8px #ff660088;
 }
 .btn-warning:hover {
