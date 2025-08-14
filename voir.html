@@ -5,6 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Voir les signalements</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    html, body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      margin: 1rem auto;
+      width: 95%;
+      max-width: 1200px;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto; /* Permet le scroll horizontal sur mobile */
+      margin-top: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      text-align: left;
+      white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 0.85rem;
+        padding: 0.4rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -19,8 +58,7 @@
   </nav>
 </header>
 
-<div class="container" style="    margin: auto;
-    margin-top: 1rem;">
+<div class="container">
 
   <div class="header">
     <h2>Voir les signalements</h2>
@@ -36,108 +74,99 @@
   </div>
 
   <div class="section" id="dashboard" style="display:none;">
-    <button id="refresh" class="btn ">🔄 Rafraîchir</button>
-    <table border="1" cellpadding="5" class="table">
-      <thead>
-        <tr>
-          <th>Copropriété</th>
-          <th>Description</th>
-          <th>Employé</th>
-          <th>Créé le</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
+    <button id="refresh" class="btn">🔄 Rafraîchir</button>
+
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Copropriété</th>
+            <th>Description</th>
+            <th>Employé</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
   </div>
 
 </div>
 
-
-<footer class="app-footer">
-  Developed with <span style="color:red;">❤️</span> by Ashborn
-</footer>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
-  authDomain: "copro-256d7.firebaseapp.com",
-  projectId: "copro-256d7",
-  storageBucket: "copro-256d7.firebasestorage.app",
-  messagingSenderId: "665588381388",
-  appId: "1:665588381388:web:a0567533ff1a62407db469",
-  measurementId: "G-Y7YNZDDCTD"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+    authDomain: "copro-256d7.firebaseapp.com",
+    projectId: "copro-256d7",
+    storageBucket: "copro-256d7.firebasestorage.app",
+    messagingSenderId: "665588381388",
+    appId: "1:665588381388:web:a0567533ff1a62407db469",
+    measurementId: "G-Y7YNZDDCTD"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const rows = document.getElementById('rows');
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const rows = document.getElementById('rows');
 
-async function load() {
-  rows.innerHTML = '<tr><td colspan="5">Chargement…</td></tr>';
-  try {
-    const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) {
-      rows.innerHTML = '<tr><td colspan="5">Aucun signalement.</td></tr>';
-      return;
-    }
-    rows.innerHTML = '';
-    snapshot.docs.forEach(docSnap => {
-      const data = docSnap.data();
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${data.copro}</td>
-        <td>${data.description}</td>
-        <td>${data.employee || ''}</td>
-        <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
-        <td><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></td>
-      `;
-      rows.appendChild(tr);
-    });
-
-    document.querySelectorAll('.del').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (confirm("Supprimer ce signalement ?")) {
-          await deleteDoc(doc(db, "signalements", btn.dataset.id));
-          load();
-        }
+  async function load() {
+    rows.innerHTML = '<tr><td colspan="5">Chargement…</td></tr>';
+    try {
+      const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) {
+        rows.innerHTML = '<tr><td colspan="5">Aucun signalement.</td></tr>';
+        return;
+      }
+      rows.innerHTML = '';
+      snapshot.docs.forEach(docSnap => {
+        const data = docSnap.data();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${data.copro}</td>
+          <td>${data.description}</td>
+          <td>${data.employee || ''}</td>
+          <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
+          <td><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></td>
+        `;
+        rows.appendChild(tr);
       });
-    });
-  } catch (err) {
-    console.error(err);
-    rows.innerHTML = '<tr><td colspan="5">Erreur de chargement</td></tr>';
-  }
-}
 
-document.getElementById('code-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const code = document.getElementById('code-input').value;
-  if (code === "0000") {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    load();
-  } else {
-    alert("Code incorrect ❌");
+      document.querySelectorAll('.del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm("Supprimer ce signalement ?")) {
+            await deleteDoc(doc(db, "signalements", btn.dataset.id));
+            load();
+          }
+        });
+      });
+    } catch (err) {
+      console.error(err);
+      rows.innerHTML = '<tr><td colspan="5">Erreur de chargement</td></tr>';
+    }
   }
-});
 
-document.getElementById('refresh').addEventListener('click', load);
-document.querySelector('.nav-toggle').addEventListener('click', () => {
-  document.querySelector('.nav-menu').classList.toggle('show');
-});
+  document.getElementById('code-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = document.getElementById('code-input').value;
+    if (code === "0000") {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      load();
+    } else {
+      alert("Code incorrect ❌");
+    }
+  });
+
+  document.getElementById('refresh').addEventListener('click', load);
+  document.querySelector('.nav-toggle').addEventListener('click', () => {
+    document.querySelector('.nav-menu').classList.toggle('show');
+  });
 </script>
-<style>
-    html, body {
-  height: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-</style>
 
 </body>
 </html>
