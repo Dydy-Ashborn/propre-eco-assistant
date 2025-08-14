@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voir les signalements</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <nav class="nav">
+    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="signaler.html">Signaler un problème</a></li>
+      <li><a href="voir.html" class="active">Voir les signalements</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h1>Voir les signalements</h1>
+
+  <div id="gate">
+    <p>Page réservée aux patrons. Entrez le code de sécurité :</p>
+    <form id="code-form">
+      <input id="code-input" type="password" placeholder="Code de sécurité" required>
+      <button class="btn btn-warning">Entrer</button>
+    </form>
+  </div>
+
+  <section id="dashboard" style="display:none;">
+    <button id="refresh" class="btn btn-info">Rafraîchir</button>
+    <table border="1" cellpadding="5">
+      <thead>
+        <tr>
+          <th>Copropriété</th>
+          <th>Employé</th>
+          <th>Description</th>
+          <th>Photos</th>
+          <th>Créé le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <p>Prototype utilisant Firebase Firestore et Storage côté client.</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+  authDomain: "copro-256d7.firebaseapp.com",
+  projectId: "copro-256d7",
+  storageBucket: "copro-256d7.firebasestorage.app",
+  messagingSenderId: "665588381388",
+  appId: "1:665588381388:web:a0567533ff1a62407db469",
+  measurementId: "G-Y7YNZDDCTD"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const rows = document.getElementById('rows');
+
+async function load() {
+  rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
+  try {
+    const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      rows.innerHTML = '<tr><td colspan="6">Aucun signalement.</td></tr>';
+      return;
+    }
+
+    rows.innerHTML = '';
+    snapshot.docs.forEach(docSnap => {
+      const data = docSnap.data();
+      const photosHTML = (data.photos || []).map(url => `<a href="${url}" target="_blank"><img src="${url}" alt="photo" style="max-width:80px; max-height:80px; margin:2px;"></a>`).join('');
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${data.copro}</td>
+        <td>${data.employee}</td>
+        <td>${data.description}</td>
+        <td>${photosHTML}</td>
+        <td>${data.createdAt?.toDate ? data.createdAt.toDate().toLocaleString('fr-FR') : '-'}</td>
+        <td><button class="del" data-id="${docSnap.id}">Supprimer</button></td>
+      `;
+      rows.appendChild(tr);
+    });
+
+    document.querySelectorAll('.del').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (confirm("Supprimer ce signalement ?")) {
+          await deleteDoc(doc(db, "signalements", btn.dataset.id));
+          load();
+        }
+      });
+    });
+
+  } catch (err) {
+    console.error(err);
+    rows.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
+  }
+}
+
+document.getElementById('code-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const code = document.getElementById('code-input').value;
+  if (code === "1234") {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    load();
+  } else {
+    alert("Code incorrect ❌");
+  }
+});
+
+document.getElementById('refresh').addEventListener('click', load);
+document.querySelector('.nav-toggle').addEventListener('click', () => {
+  document.querySelector('.nav-menu').classList.toggle('show');
+});
+</script>
+</body>
+</html>

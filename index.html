@@ -8,6 +8,17 @@
 <link rel="apple-touch-icon" href="iphone.png">
 <link rel="icon" type="image/png" href="d6d38760-30b5-4026-8f90-0f5236d62d28 (1).png">
 </head>
+<header class="site-header">
+  <nav class="nav">
+    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="signaler.html">Signaler un problème</a></li>
+      <li><a href="voir.html">Voir les signalements</a></li>
+    </ul>
+  </nav>
+</header>
+
 
 <!-- Modale pour afficher les procédures -->
 <div id="procedureModal" class="modal">
@@ -86,5 +97,11 @@
 </footer>
 
 <script src="script.js"></script>
+<script>
+document.querySelector('.nav-toggle').addEventListener('click', function() {
+  document.querySelector('.nav-menu').classList.toggle('show');
+});
+</script>
+
 </body>
 </html>

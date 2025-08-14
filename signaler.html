@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signaler un problème</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <nav class="nav">
+    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="signaler.html" class="active">Signaler un problème</a></li>
+      <li><a href="voir.html">Voir les signalements</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h1>Signaler un problème</h1>
+
+  <form id="report-form" class="form">
+    <label for="copro-input">Rechercher une copropriété</label>
+    <input type="text" id="copro-input" placeholder="Nom de la copropriété…" required>
+
+    <label for="employee-input">Votre nom</label>
+    <input type="text" id="employee-input" placeholder="Votre nom…" required>
+
+    <label for="desc-input">Description du problème</label>
+    <textarea id="desc-input" placeholder="Décrivez le problème…" required></textarea>
+
+    <label for="photos-input">Ajouter des photos</label>
+    <input type="file" id="photos-input" accept="image/*" multiple>
+
+    <button class="btn btn-warning" type="submit">Envoyer</button>
+    <span id="status" class="status"></span>
+  </form>
+</main>
+
+<footer>
+  <p>Prototype utilisant Firebase Firestore et Storage côté client.</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+  authDomain: "copro-256d7.firebaseapp.com",
+  projectId: "copro-256d7",
+  storageBucket: "copro-256d7.firebasestorage.app",
+  messagingSenderId: "665588381388",
+  appId: "1:665588381388:web:a0567533ff1a62407db469",
+  measurementId: "G-Y7YNZDDCTD"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const form = document.getElementById('report-form');
+const status = document.getElementById('status');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const copro = document.getElementById('copro-input').value.trim();
+  const employee = document.getElementById('employee-input').value.trim();
+  const description = document.getElementById('desc-input').value.trim();
+  const files = document.getElementById('photos-input').files;
+
+  if (!copro || !employee || !description) return;
+
+  status.textContent = "Envoi en cours…";
+
+  try {
+    // Upload images et récupérer URLs
+    const photoUrls = [];
+    for (let file of files) {
+      const storageRef = ref(storage, `signalements/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      photoUrls.push(url);
+    }
+
+    // Ajouter le signalement
+    await addDoc(collection(db, "signalements"), {
+      copro,
+      employee,
+      description,
+      photos: photoUrls,
+      createdAt: serverTimestamp()
+    });
+
+    status.textContent = "Signalement envoyé ✅";
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    status.textContent = "Erreur lors de l’envoi ❌";
+  }
+});
+
+document.querySelector('.nav-toggle').addEventListener('click', () => {
+  document.querySelector('.nav-menu').classList.toggle('show');
+});
+</script>
+</body>
+</html>
