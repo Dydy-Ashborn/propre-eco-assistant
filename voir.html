@@ -47,13 +47,18 @@
 </head>
 <body>
 
-<header class="site-header">
+
+   <header class="site-header">
   <nav class="nav">
-    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    <button class="nav-toggle" aria-label="Menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
     <ul class="nav-menu">
       <li><a href="index.html">Accueil</a></li>
       <li><a href="signaler.html">Signaler un problème</a></li>
-      <li><a href="voir.html" class="active">Voir les signalements</a></li>
+      <li><a href="voir.html">Voir les signalements</a></li>
     </ul>
   </nav>
 </header>
@@ -126,13 +131,14 @@
       snapshot.docs.forEach(docSnap => {
         const data = docSnap.data();
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${data.copro}</td>
-          <td>${data.description}</td>
-          <td>${data.employee || ''}</td>
-          <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
-          <td><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></td>
-        `;
+       tr.innerHTML = `
+  <td data-label="Copropriété"><span>${data.copro}</span></td>
+  <td data-label="Description"><span>${data.description}</span></td>
+  <td data-label="Employé"><span>${data.employee || ''}</span></td>
+  <td data-label="Créé le"><span>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</span></td>
+  <td data-label="Actions"><span><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></span></td>
+`;
+
         rows.appendChild(tr);
       });
 
@@ -165,6 +171,15 @@
   document.getElementById('refresh').addEventListener('click', load);
   document.querySelector('.nav-toggle').addEventListener('click', () => {
     document.querySelector('.nav-menu').classList.toggle('show');
+  });
+</script>
+<script>
+  const toggleButton = document.querySelector('.nav-toggle');
+  const menu = document.querySelector('.nav-menu');
+
+  toggleButton.addEventListener('click', () => {
+    toggleButton.classList.toggle('open');
+    menu.classList.toggle('open');
   });
 </script>
 
