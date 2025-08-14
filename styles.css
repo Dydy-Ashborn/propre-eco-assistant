@@ -55,7 +55,7 @@ body {
 .section {
   padding: 25px 30px 40px;
   border-top: 1px solid #eee;
-  animation: fadeInUp 0.5s ease forwards;
+  margin-top: 1rem;
 }
 .section:first-of-type {
   border-top: none;
@@ -475,14 +475,12 @@ body {
 }
 /* === Menu principal === */
 .site-header {
-  background-color: #2c3e50; /* Couleur principale */
+  background-color: #3d9852; /* Couleur principale */
   color: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .nav {
   max-width: 1100px;
-  margin: 0 auto;
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
@@ -512,7 +510,7 @@ body {
 }
 
 .nav-menu li a:hover {
-  color: #f1c40f; /* Couleur accent au survol */
+  color: #f3ae80; /* Couleur accent au survol */
 }
 
 /* === Bouton burger pour mobile === */
@@ -526,12 +524,11 @@ body {
 }
 
 /* === Responsive === */
-@media (max-width: 768px) {
   .nav-menu {
     position: absolute;
     top: 60px;
-    right: 0;
-    background-color: #2c3e50;
+    left: 0;
+    background-color: #3d9852;
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem;
@@ -546,11 +543,8 @@ body {
   .nav-toggle {
     display: block;
   }
-}
-header {
-  display: flex;
-  flex-direction: column;
-}
+
+
 /* === Reset de base === */
 * {
   margin: 0;
@@ -560,7 +554,7 @@ header {
 }
 
 body {
-  background-color: #f4f6f8;
+  background-color: #3d9852;
   color: #333;
   line-height: 1.6;
 }
@@ -810,4 +804,21 @@ footer {
   #dashboard table {
     font-size: 0.9rem;
   }
+}
+
+
+
+/* 2. Container principal prend l’espace restant */
+.container {
+  flex: 1;
+  padding: 20px;
+}
+
+/* 3. Footer fixe en bas */
+.app-footer {
+  background-color: #f8f8f8; /* ou la couleur que tu veux */
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 0.9em;
+  border-top: 1px solid #ddd;
 }

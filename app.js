@@ -1,6 +1,6 @@
 
 // --- Code patron ---
-const PATRON_CODE = "1234";
+const PATRON_CODE = "0000";
 
 // --- SDK Firebase ---
 document.write('<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"><\\/script>');

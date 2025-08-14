@@ -1,111 +1,118 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signaler un problème</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signaler un problème</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-<header class="site-header">
-  <nav class="nav">
-    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
-    <ul class="nav-menu">
-      <li><a href="index.html">Accueil</a></li>
-      <li><a href="signaler.html" class="active">Signaler un problème</a></li>
-      <li><a href="voir.html">Voir les signalements</a></li>
-    </ul>
-  </nav>
-</header>
 
-<main>
-  <h1>Signaler un problème</h1>
+    <header class="site-header">
+        <nav class="nav">
+            <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="signaler.html" class="active">Signaler un problème</a></li>
+                <li><a href="voir.html">Voir les signalements</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <form id="report-form" class="form">
-    <label for="copro-input">Rechercher une copropriété</label>
-    <input type="text" id="copro-input" placeholder="Nom de la copropriété…" required>
+    <div class="container" style="    margin: auto;
+    margin-top: 1rem;">
 
-    <label for="employee-input">Votre nom</label>
-    <input type="text" id="employee-input" placeholder="Votre nom…" required>
+        <div class="header">
+            <h2>Signaler un problème</h2>
+            <p>Soumettez un problème rencontré dans vos copropriétés.</p>
+        </div>
 
-    <label for="desc-input">Description du problème</label>
-    <textarea id="desc-input" placeholder="Décrivez le problème…" required></textarea>
+        <div class="section">
+            <form id="report-form" class="form">
+                <label for="copro-input">🔍 Rechercher une copropriété</label>
+                <input type="text" id="copro-input" class="search-input" placeholder="Nom de la copropriété…" required />
+                
+                <label for="desc-input">Description du problème</label>
+                <textarea class="search-input" id="desc-input" style="border: 2px solid #28a745;" placeholder="Décrivez le problème…"  required></textarea>
 
-    <label for="photos-input">Ajouter des photos</label>
-    <input type="file" id="photos-input" accept="image/*" multiple>
+                <label for="signature-input">Signature de l'employé</label>
+                <textarea id="signature-input" placeholder="Ton prénom"  class="search-input" style="border: 2px solid #28a745;" required style="    width: 119px;
+    height: 45px;"></textarea>
 
-    <button class="btn btn-warning" type="submit">Envoyer</button>
-    <span id="status" class="status"></span>
-  </form>
-</main>
+                <button class="btn btn-warning" type="submit">Envoyer</button>
+                <span id="status" class="status"></span>
+            </form>
+        </div>
 
-<footer>
-  <p>Prototype utilisant Firebase Firestore et Storage côté client.</p>
-</footer>
+    </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
-  authDomain: "copro-256d7.firebaseapp.com",
-  projectId: "copro-256d7",
-  storageBucket: "copro-256d7.firebasestorage.app",
-  messagingSenderId: "665588381388",
-  appId: "1:665588381388:web:a0567533ff1a62407db469",
-  measurementId: "G-Y7YNZDDCTD"
-};
+    <footer class="app-footer">
+        Developed with <span style="color:red;">❤️</span> by Ashborn
+    </footer>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-const form = document.getElementById('report-form');
-const status = document.getElementById('status');
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.firebasestorage.app",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469",
+            measurementId: "G-Y7YNZDDCTD"
+        };
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const copro = document.getElementById('copro-input').value.trim();
-  const employee = document.getElementById('employee-input').value.trim();
-  const description = document.getElementById('desc-input').value.trim();
-  const files = document.getElementById('photos-input').files;
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-  if (!copro || !employee || !description) return;
+        const form = document.getElementById('report-form');
+        const status = document.getElementById('status');
 
-  status.textContent = "Envoi en cours…";
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-  try {
-    // Upload images et récupérer URLs
-    const photoUrls = [];
-    for (let file of files) {
-      const storageRef = ref(storage, `signalements/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      photoUrls.push(url);
-    }
+            const copro = document.getElementById('copro-input').value.trim();
+            const description = document.getElementById('desc-input').value.trim();
+            const employee = document.getElementById('signature-input').value.trim();
 
-    // Ajouter le signalement
-    await addDoc(collection(db, "signalements"), {
-      copro,
-      employee,
-      description,
-      photos: photoUrls,
-      createdAt: serverTimestamp()
-    });
+            if (!copro || !description || !employee) return;
 
-    status.textContent = "Signalement envoyé ✅";
-    form.reset();
-  } catch (err) {
-    console.error(err);
-    status.textContent = "Erreur lors de l’envoi ❌";
-  }
-});
+            status.textContent = "Envoi en cours…";
 
-document.querySelector('.nav-toggle').addEventListener('click', () => {
-  document.querySelector('.nav-menu').classList.toggle('show');
-});
-</script>
+            try {
+                await addDoc(collection(db, "signalements"), {
+                    copro,
+                    description,
+                    employee,
+                    createdAt: new Date()
+                });
+                status.textContent = "Signalement envoyé ✅";
+                form.reset();
+            } catch (err) {
+                console.error(err);
+                status.textContent = "Erreur lors de l’envoi ❌";
+            }
+        });
+
+        document.querySelector('.nav-toggle').addEventListener('click', () => {
+            document.querySelector('.nav-menu').classList.toggle('show');
+        });
+    </script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+
 </body>
+
 </html>

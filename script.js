@@ -238,6 +238,8 @@ addToItineraryBtn.addEventListener('click', () => {
 
 // Affiche l'itinéraire
 function renderItinerary() {
+    // Sauvegarde automatique
+  localStorage.setItem('itinerary', JSON.stringify(itinerary));
   if (!itinerary.length) {
     itineraryList.innerHTML = '<div class="empty-state">Aucune copropriété dans votre itinéraire pour aujourd\'hui</div>';
     return;
@@ -379,3 +381,4 @@ document.querySelector('#procedureModal .close-btn').addEventListener('click', c
 window.addEventListener('click', (e) => {
   if (e.target.id === 'procedureModal') closeModal();
 });
+

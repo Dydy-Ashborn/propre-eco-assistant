@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Voir les signalements</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <header class="site-header">
   <nav class="nav">
     <button class="nav-toggle" aria-label="Menu">&#9776;</button>
@@ -18,37 +19,43 @@
   </nav>
 </header>
 
-<main>
-  <h1>Voir les signalements</h1>
+<div class="container" style="    margin: auto;
+    margin-top: 1rem;">
 
-  <div id="gate">
-    <p>Page réservée aux patrons. Entrez le code de sécurité :</p>
+  <div class="header">
+    <h2>Voir les signalements</h2>
+    <p>Consultez les signalements envoyés par les employés.</p>
+  </div>
+
+  <div class="section" id="gate" style="margin-top:1rem">
+    <p>Entrez le code de sécurité :</p>
     <form id="code-form">
-      <input id="code-input" type="password" placeholder="Code de sécurité" required>
+      <input id="code-input" type="password" placeholder="Code de sécurité" required />
       <button class="btn btn-warning">Entrer</button>
     </form>
   </div>
 
-  <section id="dashboard" style="display:none;">
-    <button id="refresh" class="btn btn-info">Rafraîchir</button>
-    <table border="1" cellpadding="5">
+  <div class="section" id="dashboard" style="display:none;">
+    <button id="refresh" class="btn ">🔄 Rafraîchir</button>
+    <table border="1" cellpadding="5" class="table">
       <thead>
         <tr>
           <th>Copropriété</th>
-          <th>Employé</th>
           <th>Description</th>
-          <th>Photos</th>
+          <th>Employé</th>
           <th>Créé le</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody id="rows"></tbody>
     </table>
-  </section>
-</main>
+  </div>
 
-<footer>
-  <p>Prototype utilisant Firebase Firestore et Storage côté client.</p>
+</div>
+
+
+<footer class="app-footer">
+  Developed with <span style="color:red;">❤️</span> by Ashborn
 </footer>
 
 <script type="module">
@@ -67,32 +74,27 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const rows = document.getElementById('rows');
 
 async function load() {
-  rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
+  rows.innerHTML = '<tr><td colspan="5">Chargement…</td></tr>';
   try {
     const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
-      rows.innerHTML = '<tr><td colspan="6">Aucun signalement.</td></tr>';
+      rows.innerHTML = '<tr><td colspan="5">Aucun signalement.</td></tr>';
       return;
     }
-
     rows.innerHTML = '';
     snapshot.docs.forEach(docSnap => {
       const data = docSnap.data();
-      const photosHTML = (data.photos || []).map(url => `<a href="${url}" target="_blank"><img src="${url}" alt="photo" style="max-width:80px; max-height:80px; margin:2px;"></a>`).join('');
-      
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${data.copro}</td>
-        <td>${data.employee}</td>
         <td>${data.description}</td>
-        <td>${photosHTML}</td>
-        <td>${data.createdAt?.toDate ? data.createdAt.toDate().toLocaleString('fr-FR') : '-'}</td>
-        <td><button class="del" data-id="${docSnap.id}">Supprimer</button></td>
+        <td>${data.employee || ''}</td>
+        <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
+        <td><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></td>
       `;
       rows.appendChild(tr);
     });
@@ -105,17 +107,16 @@ async function load() {
         }
       });
     });
-
   } catch (err) {
     console.error(err);
-    rows.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
+    rows.innerHTML = '<tr><td colspan="5">Erreur de chargement</td></tr>';
   }
 }
 
 document.getElementById('code-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const code = document.getElementById('code-input').value;
-  if (code === "1234") {
+  if (code === "0000") {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     load();
@@ -129,5 +130,14 @@ document.querySelector('.nav-toggle').addEventListener('click', () => {
   document.querySelector('.nav-menu').classList.toggle('show');
 });
 </script>
+<style>
+    html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+</style>
+
 </body>
 </html>
