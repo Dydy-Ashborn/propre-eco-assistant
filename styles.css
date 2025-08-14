@@ -17,7 +17,7 @@ body {
 /* Container central */
 .container {
   max-width: 900px;
-  /* margin: 30px auto 60px; */
+  margin: 30px auto 60px;
   padding: 0 20px;
   background: #fff;
   border-radius: 10px;
@@ -956,4 +956,20 @@ footer {
     text-align: right;
   }
 }
+
+#code-form {
+      align-items: baseline;
+
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+    max-height: 0; /* fermé par défaut */
+}
+
 

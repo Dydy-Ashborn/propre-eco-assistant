@@ -10,20 +10,22 @@
 
 <body>
 
-   <header class="site-header">
-  <nav class="nav">
-    <button class="nav-toggle" aria-label="Menu">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
-    <ul class="nav-menu">
-      <li><a href="index.html">Accueil</a></li>
-      <li><a href="signaler.html">Signaler un problème</a></li>
-      <li><a href="voir.html">Voir les signalements</a></li>
-    </ul>
-  </nav>
-</header>
+    <header class="site-header">
+        <nav class="nav">
+            <button class="nav-toggle" aria-label="Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="signaler.html">Signaler un problème</a></li>
+                <li><a href="voir.html">Voir les signalements</a></li>
+                <li><a href="pointeuse.html">Pointeuse</a></li>
+
+            </ul>
+        </nav>
+    </header>
 
     <div class="container" style="
     margin-top: 1rem;">
@@ -36,13 +38,16 @@
         <div class="section">
             <form id="report-form" class="form">
                 <label for="copro-input">🔍 Rechercher une copropriété</label>
-                <input type="text" id="copro-input" class="search-input" placeholder="Nom de la copropriété…" required />
-                
+                <input type="text" id="copro-input" class="search-input" placeholder="Nom de la copropriété…"
+                    required />
+
                 <label for="desc-input">Description du problème</label>
-                <textarea class="search-input" id="desc-input" style="border: 2px solid #28a745;" placeholder="Décrivez le problème…"  required></textarea>
+                <textarea class="search-input" id="desc-input" style="border: 2px solid #28a745;"
+                    placeholder="Décrivez le problème…" required></textarea>
 
                 <label for="signature-input">Signature de l'employé</label>
-                <textarea id="signature-input" placeholder="Ton prénom"  class="search-input" style="border: 2px solid #28a745;" required style="    width: 119px;
+                <textarea id="signature-input" placeholder="Ton prénom" class="search-input"
+                    style="border: 2px solid #28a745;" required style="    width: 119px;
     height: 45px;"></textarea>
 
                 <button class="btn btn-warning" type="submit">Envoyer</button>
@@ -117,14 +122,14 @@
         }
     </style>
     <script>
-  const toggleButton = document.querySelector('.nav-toggle');
-  const menu = document.querySelector('.nav-menu');
+        const toggleButton = document.querySelector('.nav-toggle');
+        const menu = document.querySelector('.nav-menu');
 
-  toggleButton.addEventListener('click', () => {
-    toggleButton.classList.toggle('open');
-    menu.classList.toggle('open');
-  });
-</script>
+        toggleButton.addEventListener('click', () => {
+            toggleButton.classList.toggle('open');
+            menu.classList.toggle('open');
+        });
+    </script>
 
 </body>
 

@@ -1,137 +1,147 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Voir les signalements</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    html, body {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Voir les signalements</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        html,
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
 
-    .container {
-      margin: 1rem auto;
-      width: 95%;
-      max-width: 1200px;
-    }
+        .container {
+            margin: 1rem auto;
+            width: 95%;
+            max-width: 1200px;
+        }
 
-    .table-container {
-      width: 100%;
-      overflow-x: auto; /* Permet le scroll horizontal sur mobile */
-      margin-top: 1rem;
-    }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            /* Permet le scroll horizontal sur mobile */
+            margin-top: 1rem;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    th, td {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      text-align: left;
-      white-space: nowrap; /* Empêche le texte de passer à la ligne */
-    }
+        th,
+        td {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            text-align: left;
+            white-space: nowrap;
+            /* Empêche le texte de passer à la ligne */
+        }
 
-    @media (max-width: 600px) {
-      th, td {
-        font-size: 0.85rem;
-        padding: 0.4rem;
-      }
-    }
-  </style>
+        @media (max-width: 600px) {
+
+            th,
+            td {
+                font-size: 0.85rem;
+                padding: 0.4rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
 
-   <header class="site-header">
-  <nav class="nav">
-    <button class="nav-toggle" aria-label="Menu">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
-    <ul class="nav-menu">
-      <li><a href="index.html">Accueil</a></li>
-      <li><a href="signaler.html">Signaler un problème</a></li>
-      <li><a href="voir.html">Voir les signalements</a></li>
-    </ul>
-  </nav>
-</header>
+    <header class="site-header">
+        <nav class="nav">
+            <button class="nav-toggle" aria-label="Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="signaler.html">Signaler un problème</a></li>
+                <li><a href="voir.html">Voir les signalements</a></li>
+                <li><a href="pointeuse.html">Pointeuse</a></li>
 
-<div class="container">
+            </ul>
+        </nav>
+    </header>
 
-  <div class="header">
-    <h2>Voir les signalements</h2>
-    <p>Consultez les signalements envoyés par les employés.</p>
-  </div>
+    <div class="container">
 
-  <div class="section" id="gate" style="margin-top:1rem">
-    <p>Entrez le code de sécurité :</p>
-    <form id="code-form">
-      <input id="code-input" type="password" placeholder="Code de sécurité" required />
-      <button class="btn btn-warning">Entrer</button>
-    </form>
-  </div>
+        <div class="header">
+            <h2>Voir les signalements</h2>
+            <p>Consultez les signalements envoyés par les employés.</p>
+        </div>
 
-  <div class="section" id="dashboard" style="display:none;">
-    <button id="refresh" class="btn">🔄 Rafraîchir</button>
+        <div class="section" id="gate" style="margin-top:1rem">
+            <p>Entrez le code de sécurité :</p>
+            <form id="code-form">
+                <input id="code-input" type="password" placeholder="Code de sécurité" required />
+                <button class="btn btn-warning">Entrer</button>
+            </form>
+        </div>
 
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Copropriété</th>
-            <th>Description</th>
-            <th>Employé</th>
-            <th>Créé le</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
+        <div class="section" id="dashboard" style="display:none;">
+            <button id="refresh" class="btn">🔄 Rafraîchir</button>
+
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Copropriété</th>
+                            <th>Description</th>
+                            <th>Employé</th>
+                            <th>Créé le</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
+            </div>
+
+        </div>
+
     </div>
 
-  </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-</div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.firebasestorage.app",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469",
+            measurementId: "G-Y7YNZDDCTD"
+        };
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const rows = document.getElementById('rows');
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
-    authDomain: "copro-256d7.firebaseapp.com",
-    projectId: "copro-256d7",
-    storageBucket: "copro-256d7.firebasestorage.app",
-    messagingSenderId: "665588381388",
-    appId: "1:665588381388:web:a0567533ff1a62407db469",
-    measurementId: "G-Y7YNZDDCTD"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const rows = document.getElementById('rows');
-
-  async function load() {
-    rows.innerHTML = '<tr><td colspan="5">Chargement…</td></tr>';
-    try {
-      const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) {
-        rows.innerHTML = '<tr><td colspan="5">Aucun signalement.</td></tr>';
-        return;
-      }
-      rows.innerHTML = '';
-      snapshot.docs.forEach(docSnap => {
-        const data = docSnap.data();
-        const tr = document.createElement('tr');
-       tr.innerHTML = `
+        async function load() {
+            rows.innerHTML = '<tr><td colspan="5">Chargement…</td></tr>';
+            try {
+                const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) {
+                    rows.innerHTML = '<tr><td colspan="5">Aucun signalement.</td></tr>';
+                    return;
+                }
+                rows.innerHTML = '';
+                snapshot.docs.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
   <td data-label="Copropriété"><span>${data.copro}</span></td>
   <td data-label="Description"><span>${data.description}</span></td>
   <td data-label="Employé"><span>${data.employee || ''}</span></td>
@@ -139,49 +149,51 @@
   <td data-label="Actions"><span><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></span></td>
 `;
 
-        rows.appendChild(tr);
-      });
+                    rows.appendChild(tr);
+                });
 
-      document.querySelectorAll('.del').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (confirm("Supprimer ce signalement ?")) {
-            await deleteDoc(doc(db, "signalements", btn.dataset.id));
-            load();
-          }
+                document.querySelectorAll('.del').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm("Supprimer ce signalement ?")) {
+                            await deleteDoc(doc(db, "signalements", btn.dataset.id));
+                            load();
+                        }
+                    });
+                });
+            } catch (err) {
+                console.error(err);
+                rows.innerHTML = '<tr><td colspan="5">Erreur de chargement</td></tr>';
+            }
+        }
+
+        document.getElementById('code-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = document.getElementById('code-input').value;
+            if (code === "0000") {
+                document.getElementById('gate').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                load();
+            } else {
+                alert("Code incorrect ❌");
+            }
         });
-      });
-    } catch (err) {
-      console.error(err);
-      rows.innerHTML = '<tr><td colspan="5">Erreur de chargement</td></tr>';
-    }
-  }
 
-  document.getElementById('code-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const code = document.getElementById('code-input').value;
-    if (code === "0000") {
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      load();
-    } else {
-      alert("Code incorrect ❌");
-    }
-  });
+        document.getElementById('refresh').addEventListener('click', load);
+        document.querySelector('.nav-toggle').addEventListener('click', () => {
+            document.querySelector('.nav-menu').classList.toggle('show');
+        });
+    </script>
+    <script>
+        const toggleButton = document.querySelector('.nav-toggle');
+        const menu = document.querySelector('.nav-menu');
 
-  document.getElementById('refresh').addEventListener('click', load);
-  document.querySelector('.nav-toggle').addEventListener('click', () => {
-    document.querySelector('.nav-menu').classList.toggle('show');
-  });
-</script>
-<script>
-  const toggleButton = document.querySelector('.nav-toggle');
-  const menu = document.querySelector('.nav-menu');
+        toggleButton.addEventListener('click', () => {
+            toggleButton.classList.toggle('open');
+            menu.classList.toggle('open');
+        });
+    </script>
 
-  toggleButton.addEventListener('click', () => {
-    toggleButton.classList.toggle('open');
-    menu.classList.toggle('open');
-  });
-</script>
 
 </body>
+
 </html>
