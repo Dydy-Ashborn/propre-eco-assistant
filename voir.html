@@ -24,7 +24,6 @@
         .table-container {
             width: 100%;
             overflow-x: auto;
-            /* Permet le scroll horizontal sur mobile */
             margin-top: 1rem;
         }
 
@@ -39,42 +38,32 @@
             border: 1px solid #ccc;
             text-align: left;
             white-space: nowrap;
-            /* Empêche le texte de passer à la ligne */
         }
 
-        @media (max-width: 600px) {
-
-            th,
-            td {
-                font-size: 0.85rem;
-                padding: 0.4rem;
-            }
+        .thumb {
+            max-width: 80px;
+            max-height: 80px;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-
-
     <header class="site-header">
         <nav class="nav">
             <button class="nav-toggle" aria-label="Menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </button>
             <ul class="nav-menu">
                 <li><a href="index.html">Accueil</a></li>
                 <li><a href="signaler.html">Signaler un problème</a></li>
                 <li><a href="voir.html">Voir les signalements</a></li>
                 <li><a href="pointeuse.html">Pointeuse</a></li>
-
             </ul>
         </nav>
     </header>
 
     <div class="container">
-
         <div class="header">
             <h2>Voir les signalements</h2>
             <p>Consultez les signalements envoyés par les employés.</p>
@@ -98,6 +87,7 @@
                             <th>Copropriété</th>
                             <th>Description</th>
                             <th>Employé</th>
+                            <th>Images</th>
                             <th>Créé le</th>
                             <th>Actions</th>
                         </tr>
@@ -105,9 +95,7 @@
                     <tbody id="rows"></tbody>
                 </table>
             </div>
-
         </div>
-
     </div>
 
     <script type="module">
@@ -128,26 +116,45 @@
         const db = getFirestore(app);
         const rows = document.getElementById('rows');
 
+        async function deleteFromImgBB(deleteUrl) {
+            try {
+                await fetch(deleteUrl);
+            } catch (err) {
+                console.error("Erreur suppression ImgBB :", err);
+            }
+        }
+
         async function load() {
-            rows.innerHTML = '<tr><td colspan="5">Chargement…</td></tr>';
+            rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
             try {
                 const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
                 const snapshot = await getDocs(q);
                 if (snapshot.empty) {
-                    rows.innerHTML = '<tr><td colspan="5">Aucun signalement.</td></tr>';
+                    rows.innerHTML = '<tr><td colspan="6">Aucun signalement.</td></tr>';
                     return;
                 }
                 rows.innerHTML = '';
                 snapshot.docs.forEach(docSnap => {
                     const data = docSnap.data();
                     const tr = document.createElement('tr');
+
+                    let imgHTML = "";
+                    if (data.images && data.images.length > 0) {
+                        imgHTML = data.images.map(img =>
+                            `<a href="${img.url}" target="_blank"><img src="${img.url}" class="thumb" /></a>`
+                        ).join(" ");
+                    }
+
                     tr.innerHTML = `
-  <td data-label="Copropriété"><span>${data.copro}</span></td>
-  <td data-label="Description"><span>${data.description}</span></td>
-  <td data-label="Employé"><span>${data.employee || ''}</span></td>
-  <td data-label="Créé le"><span>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</span></td>
-  <td data-label="Actions"><span><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></span></td>
-`;
+                    <td>${data.copro}</td>
+                    <td>${data.description}</td>
+                    <td>${data.employee || ''}</td>
+                    <td>${imgHTML}</td>
+                    <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
+                    <td><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></td>
+                `;
+
+                    tr.dataset.deleteUrls = JSON.stringify((data.images || []).map(img => img.deleteUrl));
 
                     rows.appendChild(tr);
                 });
@@ -155,6 +162,13 @@
                 document.querySelectorAll('.del').forEach(btn => {
                     btn.addEventListener('click', async () => {
                         if (confirm("Supprimer ce signalement ?")) {
+                            const tr = btn.closest('tr');
+                            const deleteUrls = JSON.parse(tr.dataset.deleteUrls || "[]");
+
+                            for (let url of deleteUrls) {
+                                await deleteFromImgBB(url);
+                            }
+
                             await deleteDoc(doc(db, "signalements", btn.dataset.id));
                             load();
                         }
@@ -162,7 +176,7 @@
                 });
             } catch (err) {
                 console.error(err);
-                rows.innerHTML = '<tr><td colspan="5">Erreur de chargement</td></tr>';
+                rows.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
             }
         }
 
@@ -179,21 +193,8 @@
         });
 
         document.getElementById('refresh').addEventListener('click', load);
-        document.querySelector('.nav-toggle').addEventListener('click', () => {
-            document.querySelector('.nav-menu').classList.toggle('show');
-        });
     </script>
-    <script>
-        const toggleButton = document.querySelector('.nav-toggle');
-        const menu = document.querySelector('.nav-menu');
-
-        toggleButton.addEventListener('click', () => {
-            toggleButton.classList.toggle('open');
-            menu.classList.toggle('open');
-        });
-    </script>
-
-
+    <script> const toggleButton = document.querySelector('.nav-toggle'); const menu = document.querySelector('.nav-menu'); toggleButton.addEventListener('click', () => { toggleButton.classList.toggle('open'); menu.classList.toggle('open'); }); </script>
 </body>
 
 </html>

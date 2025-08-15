@@ -972,4 +972,20 @@ footer {
     max-height: 0; /* fermé par défaut */
 }
 
+/* Garde le comportement actuel par défaut */
+th, td {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* Sauf pour la colonne description */
+td:nth-child(2) {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 300px; /* limite sur desktop */
+}
+
+
 

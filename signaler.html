@@ -13,23 +13,18 @@
     <header class="site-header">
         <nav class="nav">
             <button class="nav-toggle" aria-label="Menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </button>
             <ul class="nav-menu">
                 <li><a href="index.html">Accueil</a></li>
                 <li><a href="signaler.html">Signaler un problème</a></li>
                 <li><a href="voir.html">Voir les signalements</a></li>
                 <li><a href="pointeuse.html">Pointeuse</a></li>
-
             </ul>
         </nav>
     </header>
 
-    <div class="container" style="
-    margin-top: 1rem;">
-
+    <div class="container" style="margin-top: 1rem;">
         <div class="header">
             <h2>Signaler un problème</h2>
             <p>Soumettez un problème rencontré dans vos copropriétés.</p>
@@ -47,16 +42,19 @@
 
                 <label for="signature-input">Signature de l'employé</label>
                 <textarea id="signature-input" placeholder="Ton prénom" class="search-input"
-                    style="border: 2px solid #28a745;" required style="    width: 119px;
-    height: 45px;"></textarea>
+                    style="border: 2px solid #28a745;" required></textarea>
+
+                <label for="images-input">📷 Ajouter des images</label>
+                <p style="
+    color: #666;
+    font-style: italic;;">⚠️ 3 images maximum</p>
+                <input type="file" id="images-input" multiple accept="image/*" />
 
                 <button class="btn btn-warning" type="submit">Envoyer</button>
                 <span id="status" class="status"></span>
             </form>
         </div>
-
     </div>
-
 
     <footer class="app-footer">
         Developed with <span style="color:red;">❤️</span> by Ashborn
@@ -81,6 +79,25 @@
 
         const form = document.getElementById('report-form');
         const status = document.getElementById('status');
+        const API_KEY = "7f0e4433bcc19c0f1408f57919fbcf14";
+
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) throw new Error("Upload ImgBB échoué");
+
+            const data = await res.json();
+            return {
+                url: data.data.display_url,
+                deleteUrl: data.data.delete_url
+            };
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -88,18 +105,35 @@
             const copro = document.getElementById('copro-input').value.trim();
             const description = document.getElementById('desc-input').value.trim();
             const employee = document.getElementById('signature-input').value.trim();
+            const files = document.getElementById('images-input').files;
 
             if (!copro || !description || !employee) return;
 
             status.textContent = "Envoi en cours…";
 
             try {
+                let images = [];
+
+                // Upload des images si présentes
+                if (files.length > 0) {
+                    for (let file of files) {
+                        try {
+                            const uploaded = await uploadToImgBB(file);
+                            images.push(uploaded);
+                        } catch (err) {
+                            console.error("Erreur upload image :", err);
+                        }
+                    }
+                }
+
                 await addDoc(collection(db, "signalements"), {
                     copro,
                     description,
                     employee,
+                    images, // tableau [{url, deleteUrl}]
                     createdAt: new Date()
                 });
+
                 status.textContent = "Signalement envoyé ✅";
                 form.reset();
             } catch (err) {
@@ -112,6 +146,8 @@
             document.querySelector('.nav-menu').classList.toggle('show');
         });
     </script>
+    <script> const toggleButton = document.querySelector('.nav-toggle'); const menu = document.querySelector('.nav-menu'); toggleButton.addEventListener('click', () => { toggleButton.classList.toggle('open'); menu.classList.toggle('open'); }); </script>
+
     <style>
         html,
         body {
@@ -121,16 +157,6 @@
             flex-direction: column;
         }
     </style>
-    <script>
-        const toggleButton = document.querySelector('.nav-toggle');
-        const menu = document.querySelector('.nav-menu');
-
-        toggleButton.addEventListener('click', () => {
-            toggleButton.classList.toggle('open');
-            menu.classList.toggle('open');
-        });
-    </script>
-
 </body>
 
 </html>
