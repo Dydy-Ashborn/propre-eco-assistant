@@ -182,7 +182,7 @@ function showPropertyDetails(p) {
     <div><strong>Adresse :</strong> ${p.adresse || '-'}</div>
     <div><strong>Code :</strong> ${p.code || '-'}</div>
     <div style="margin-top:10px; display:flex; gap:10px;">
-      <button class="btn-action btn-procedure" id="showProcedureBtn">📄 Procédures</button>
+      <button class="btn-action btn-procedure" id="showProcedureBtn">📄 Procédure</button>
     </div>
   `;
   propertyDetails.style.display = 'block';
