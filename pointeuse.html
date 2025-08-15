@@ -86,11 +86,11 @@
     </header>
 
     <h2>🕒 Pointeuse</h2>
-    <p style="text-align:center; color:#ffffff!important">Sélectionnez votre profil et entrez votre code pour ouvrir votre Google Sheet :</p><br>
+    <p style="text-align:center; color:#ffffff">Sélectionnez votre profil et entrez votre code pour ouvrir votre Google Sheet :</p><br>
 
     <div id="employeeList"></div>
 
-   <style>
+    <style>
     .employee-card {
         position: relative;
         background: white;
@@ -165,6 +165,14 @@
 </style>
 
 <script>
+    // Toggle menu
+        const toggleButton = document.querySelector('.nav-toggle');
+        const menu = document.querySelector('.nav-menu');
+
+        toggleButton.addEventListener('click', () => {
+            toggleButton.classList.toggle('open');
+            menu.classList.toggle('open');
+        });
     const FAVORITE_KEY = "favoriteEmployee";
 
     const employees = [
