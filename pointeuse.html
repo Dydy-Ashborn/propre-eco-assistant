@@ -77,95 +77,98 @@
                 <span class="bar"></span>
             </button>
             <ul class="nav-menu">
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="signaler.html">Signaler un problème</a></li>
-                <li><a href="voir.html">Voir les signalements</a></li>
-                <li><a href="pointeuse.html">Pointeuse</a></li>
+                <li><a href="index.html">🏠 Accueil</a></li>
+                <li><a href="signaler.html">📢 Signaler un problème</a></li>
+                <li><a href="voir.html">📖 Voir les signalements</a></li>
+                <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
             </ul>
         </nav>
     </header>
 
     <h2>🕒 Pointeuse</h2>
-    <p style="text-align:center; color:#ffffff">Sélectionnez votre profil et entrez votre code pour ouvrir votre Google Sheet :</p><br>
+    <p style="text-align:center; color:#ffffff">Sélectionnez votre profil et entrez votre code pour ouvrir votre Google
+        Sheet :</p><br>
 
     <div id="employeeList"></div>
 
     <style>
-    .employee-card {
-        position: relative;
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+        .employee-card {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-    .employee-card:hover {
-        transform: translateY(-3px); /* moins de zoom */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+        .employee-card:hover {
+            transform: translateY(-3px);
+            /* moins de zoom */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
 
-    /* Conteneur boutons */
-    .btn-group {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 10px;
-    }
+        /* Conteneur boutons */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
 
-    .access-btn {
-        background: #4CAF50;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background 0.2s;
-    }
+        .access-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
 
-    .access-btn:hover {
-        background: #45a049;
-    }
+        .access-btn:hover {
+            background: #45a049;
+        }
 
-    .fav-btn {
-        background: none;
-        border: 1px solid #ccc;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
+        .fav-btn {
+            background: none;
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-    .fav-btn.active {
-        color: gold;
-        border-color: gold;
-        text-shadow: 0 0 3px rgba(255, 215, 0, 0.6);
-    }
+        .fav-btn.active {
+            color: gold;
+            border-color: gold;
+            text-shadow: 0 0 3px rgba(255, 215, 0, 0.6);
+        }
 
-    .fav-btn:hover {
-        transform: scale(1.15); /* zoom plus discret */
-    }
+        .fav-btn:hover {
+            transform: scale(1.15);
+            /* zoom plus discret */
+        }
 
-    /* Ruban favori */
-    .ribbon {
-        position: absolute;
-        top: -5px;
-        left: -5px;
-        background: gold;
-        color: black;
-        padding: 4px 8px;
-        font-size: 0.75rem;
-        font-weight: bold;
-        border-radius: 5px 0 5px 0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-</style>
+        /* Ruban favori */
+        .ribbon {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            background: gold;
+            color: black;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 5px 0 5px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 
-<script>
-    // Toggle menu
+    <script>
+        // Toggle menu
         const toggleButton = document.querySelector('.nav-toggle');
         const menu = document.querySelector('.nav-menu');
 
@@ -173,65 +176,76 @@
             toggleButton.classList.toggle('open');
             menu.classList.toggle('open');
         });
-    const FAVORITE_KEY = "favoriteEmployee";
+        const FAVORITE_KEY = "favoriteEmployee";
 
-    const employees = [
-        { name: "Dylan", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-        { name: "Océane", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-        { name: "Sam", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" }
-    ];
+        const employees = [
+            { name: "Dylan", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Océane", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Samuel", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Jérémie", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Carlos", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Sandra", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Manon", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Stéphane", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
+            { name: "Jocelyne", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" }
 
-    const container = document.getElementById('employeeList');
-    const favoriteName = localStorage.getItem(FAVORITE_KEY);
+        ];
 
-    if (favoriteName) {
-        employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
-    }
+        const container = document.getElementById('employeeList');
+        const favoriteName = localStorage.getItem(FAVORITE_KEY);
 
-    employees.forEach(emp => {
-        const card = document.createElement('div');
-        card.className = 'employee-card';
-
-        if (emp.name === favoriteName) {
-            const ribbon = document.createElement('div');
-            ribbon.className = 'ribbon';
-            ribbon.textContent = "Favori";
-            card.appendChild(ribbon);
+        if (favoriteName) {
+            employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
         }
 
-        card.innerHTML += `<h3>${emp.name}</h3>`;
+        employees.forEach(emp => {
+            const card = document.createElement('div');
+            card.className = 'employee-card';
 
-        const btnGroup = document.createElement('div');
-        btnGroup.className = 'btn-group';
-
-        const accessBtn = document.createElement('button');
-        accessBtn.className = 'access-btn';
-        accessBtn.textContent = 'Accéder';
-        accessBtn.addEventListener('click', () => {
-            const userCode = prompt(`Entrez votre code pour ${emp.name}:`);
-            if (userCode === emp.code) {
-                window.open(emp.sheet, '_blank');
-            } else {
-                alert("Code incorrect !");
+            if (emp.name === favoriteName) {
+                const ribbon = document.createElement('div');
+                ribbon.className = 'ribbon';
+                ribbon.textContent = "Favori";
+                card.appendChild(ribbon);
             }
+
+            card.innerHTML += `<h3>${emp.name}</h3>`;
+
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'btn-group';
+
+            const accessBtn = document.createElement('button');
+            accessBtn.className = 'access-btn';
+            accessBtn.textContent = 'Accéder';
+            accessBtn.addEventListener('click', () => {
+                const userCode = prompt(`Entrez votre code pour ${emp.name}:`);
+                if (userCode === emp.code) {
+                    window.open(emp.sheet, '_blank');
+                } else {
+                    alert("Code incorrect !");
+                }
+            });
+
+            const favBtn = document.createElement('button');
+            favBtn.className = `fav-btn ${emp.name === favoriteName ? 'active' : ''}`;
+            favBtn.textContent = emp.name === favoriteName ? '★' : '☆';
+            favBtn.addEventListener('click', () => {
+                localStorage.setItem(FAVORITE_KEY, emp.name);
+                location.reload();
+            });
+
+            btnGroup.appendChild(accessBtn);
+            btnGroup.appendChild(favBtn);
+            card.appendChild(btnGroup);
+
+            container.appendChild(card);
         });
-
-        const favBtn = document.createElement('button');
-        favBtn.className = `fav-btn ${emp.name === favoriteName ? 'active' : ''}`;
-        favBtn.textContent = emp.name === favoriteName ? '★' : '☆';
-        favBtn.addEventListener('click', () => {
-            localStorage.setItem(FAVORITE_KEY, emp.name);
-            location.reload();
-        });
-
-        btnGroup.appendChild(accessBtn);
-        btnGroup.appendChild(favBtn);
-        card.appendChild(btnGroup);
-
-        container.appendChild(card);
-    });
-</script>
+    </script>
 
 
 </body>
+
 </html>
