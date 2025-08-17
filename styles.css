@@ -1014,6 +1014,8 @@ td:nth-child(2) {
   position: relative;
   overflow: hidden;
   margin: 15px 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .carousel-track {
@@ -1021,11 +1023,14 @@ td:nth-child(2) {
   transition: transform 0.4s ease-in-out;
 }
 
-.carousel img {
-  width: 100%;
+.carousel-track img {
+  flex: 0 0 100%; /* Chaque image prend 100% de la largeur du carousel */
+  max-width: 100%;
   border-radius: 10px;
+  object-fit: cover;
 }
 
+/* Boutons */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -1036,13 +1041,21 @@ td:nth-child(2) {
   padding: 6px 10px;
   cursor: pointer;
   border-radius: 50%;
+  z-index: 10;
 }
 
 .carousel-btn.prev { left: 10px; }
 .carousel-btn.next { right: 10px; }
 
+/* Confirmation */
 .confirmation {
   margin: 12px 0;
   font-size: 14px;
 }
 
+/* Ajustements mobile */
+@media (max-width: 600px) {
+  .carousel-btn {
+    padding: 4px 8px;
+  }
+}
