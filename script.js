@@ -381,27 +381,28 @@ window.addEventListener("load", () => {
 });
 
 // Navigation carrousel
-nextBtn.addEventListener("click", () => {
-  const items = document.querySelectorAll(".carousel img");
-  index = (index + 1) % items.length;
-  track.style.transform = `translateX(-${index * 100}%)`;
-});
+// nextBtn.addEventListener("click", () => {
+//   const items = document.querySelectorAll(".carousel img");
+//   index = (index + 1) % items.length;
+//   track.style.transform = `translateX(-${index * 100}%)`;
+// });
 
-prevBtn.addEventListener("click", () => {
-  const items = document.querySelectorAll(".carousel img");
-  index = (index - 1 + items.length) % items.length;
-  track.style.transform = `translateX(-${index * 100}%)`;
-});
+// prevBtn.addEventListener("click", () => {
+//   const items = document.querySelectorAll(".carousel img");
+//   index = (index - 1 + items.length) % items.length;
+//   track.style.transform = `translateX(-${index * 100}%)`;
+// });
 
 // Fermer la modale
-closeAnnouncement.addEventListener("click", () => {
-  if (ackCheckbox.checked) {
-    localStorage.setItem("announcementSeen", "true");
-    announcementModal.style.display = "none";
-  } else {
-    alert("⚠️ Merci de cocher la case avant de fermer l’annonce.");
-  }
-});// --- Import Firebase Firestore et Storage ---
+// closeAnnouncement.addEventListener("click", () => {
+//   if (ackCheckbox.checked) {
+//     localStorage.setItem("announcementSeen", "true");
+//     announcementModal.style.display = "none";
+//   } else {
+//     alert("⚠️ Merci de cocher la case avant de fermer l’annonce.");
+//   }
+// });
+// --- Import Firebase Firestore et Storage ---
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
