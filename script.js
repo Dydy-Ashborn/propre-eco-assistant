@@ -359,3 +359,46 @@ navToggle.addEventListener('click', () => {
   await loadCsv();
   renderItinerary();
 })();
+// --------------------
+// Gestion Annonce
+// --------------------
+const announcementModal = document.getElementById("announcementModal");
+const closeAnnouncement = document.getElementById("closeAnnouncement");
+const ackCheckbox = document.getElementById("ackCheckbox");
+
+// Carrousel
+const track = document.querySelector(".carousel-track");
+const prevBtn = document.querySelector(".carousel-btn.prev");
+const nextBtn = document.querySelector(".carousel-btn.next");
+let index = 0;
+
+// Affiche la modale si non validée
+window.addEventListener("load", () => {
+  const seen = localStorage.getItem("announcementSeen");
+  if (!seen) {
+    announcementModal.style.display = "block";
+  }
+});
+
+// Navigation carrousel
+nextBtn.addEventListener("click", () => {
+  const items = document.querySelectorAll(".carousel img");
+  index = (index + 1) % items.length;
+  track.style.transform = `translateX(-${index * 100}%)`;
+});
+
+prevBtn.addEventListener("click", () => {
+  const items = document.querySelectorAll(".carousel img");
+  index = (index - 1 + items.length) % items.length;
+  track.style.transform = `translateX(-${index * 100}%)`;
+});
+
+// Fermer la modale
+closeAnnouncement.addEventListener("click", () => {
+  if (ackCheckbox.checked) {
+    localStorage.setItem("announcementSeen", "true");
+    announcementModal.style.display = "none";
+  } else {
+    alert("⚠️ Merci de cocher la case avant de fermer l’annonce.");
+  }
+});
