@@ -57,7 +57,10 @@
             <ul class="nav-menu">
                 <li><a href="index.html">🏠 Accueil</a></li>
                 <li><a href="signaler.html">📢 Signaler un problème</a></li>
-                <li><a href="voir.html">📖 Voir les signalements</a></li>
+                <li><a href="voir.html">
+          📖 Voir les signalements
+          <span id="notifBadge" class="notif-badge">0</span>
+        </a></li>
                 <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
             </ul>
         </nav>
@@ -194,6 +197,8 @@
 
         document.getElementById('refresh').addEventListener('click', load);
     </script>
+      <script type="module" src="script.js"></script>
+  <script type="module" src="app.js"></script>
     <script> const toggleButton = document.querySelector('.nav-toggle'); const menu = document.querySelector('.nav-menu'); toggleButton.addEventListener('click', () => { toggleButton.classList.toggle('open'); menu.classList.toggle('open'); }); </script>
 </body>
 
