@@ -429,44 +429,51 @@ const status = document.getElementById('status');
 if(form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    status.textContent = "Envoi en cours…";
 
     const copro = document.getElementById('copro-input').value.trim();
-    const employee = document.getElementById('employee-input').value.trim();
     const description = document.getElementById('desc-input').value.trim();
-    const photos = document.getElementById('photo-input').files;
+    const employee = document.getElementById('signature-input').value.trim();
+    const files = document.getElementById('images-input').files;
 
-    if (!copro || !employee || !description) {
-      status.textContent = "Merci de remplir tous les champs.";
-      return;
+    if (!copro || !description || !employee) return;
+
+    // Vérifier le nombre de fichiers
+    if (files.length > 3) {
+        alert("⚠️ Maximum 3 images autorisées");
+        return;
     }
+
+    status.textContent = "Envoi en cours…";
 
     try {
-      let photoURLs = [];
+        let images = [];
 
-      if (photos.length > 0) {
-        for (let i = 0; i < photos.length; i++) {
-          const file = photos[i];
-          const storageRef = ref(storage, `signalements/${Date.now()}_${file.name}`);
-          await uploadBytes(storageRef, file);
-          const url = await getDownloadURL(storageRef);
-          photoURLs.push(url);
+        // Upload des images si présentes
+        if (files.length > 0) {
+            for (let file of files) {
+                try {
+                    const uploaded = await uploadToImgBB(file);
+                    images.push(uploaded);
+                } catch (err) {
+                    console.error("Erreur upload image :", err);
+                }
+            }
         }
-      }
 
-      await addDoc(collection(db, "signalements"), {
-        copro,
-        employee,
-        description,
-        photos: photoURLs,
-        createdAt: new Date()
-      });
+        await addDoc(collection(db, "signalements"), {
+            copro,
+            description,
+            employee,
+            images, // tableau [{url, deleteUrl}]
+            createdAt: new Date()
+        });
 
-      status.textContent = "Signalement envoyé ✅";
-      form.reset();
+        status.textContent = "Signalement envoyé ✅";
+        form.reset();
     } catch (err) {
-      console.error(err);
-      status.textContent = "Erreur lors de l’envoi ❌";
+        console.error(err);
+        status.textContent = "Erreur lors de l’envoi ❌";
     }
-  });
+});
+
 }
