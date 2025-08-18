@@ -280,6 +280,8 @@ function renderItinerary() {
     `;
     div.querySelector('button').addEventListener('click', () => {
       itinerary.splice(idx, 1);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(itinerary));
+
       renderItinerary();
     });
     itineraryList.appendChild(div);
