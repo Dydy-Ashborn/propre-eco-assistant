@@ -100,10 +100,10 @@ function renderPropertiesList() {
 
   propertiesList.innerHTML = "";
   const visibleSlice = properties.slice(0, visibleCount);
-visibleSlice.forEach((p) => {
-  const div = document.createElement('div');
-  div.className = "property-card";
-  div.innerHTML = `
+  visibleSlice.forEach((p) => {
+    const div = document.createElement('div');
+    div.className = "property-card";
+    div.innerHTML = `
     <div class="property-card-info">
       <div class="property-field"><label>Nom:</label> ${p.nom || "-"}</div>
       <div class="property-field"><label>Adresse:</label> ${p.adresse || "-"}</div>
@@ -114,16 +114,16 @@ visibleSlice.forEach((p) => {
     </div>
   `;
 
-  div.querySelector('button').addEventListener('click', () => {
-    selectProperty(properties.indexOf(p));  // ton code existant
-    const detailsSection = document.getElementById('searchInput');
-    if (detailsSection) {
-      detailsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
+    div.querySelector('button').addEventListener('click', () => {
+      selectProperty(properties.indexOf(p));  // ton code existant
+      const detailsSection = document.getElementById('searchInput');
+      if (detailsSection) {
+        detailsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
 
-  propertiesList.appendChild(div);
-});
+    propertiesList.appendChild(div);
+  });
 
 
   showMoreBtn.style.display = visibleCount >= properties.length ? "none" : "inline-block";
@@ -257,7 +257,7 @@ if (procedureModal) {
 function renderItinerary() {
   const itineraryList = document.getElementById("itineraryList");
   if (!itineraryList) return; // si pas d'élément, on sort
-  
+
   localStorage.setItem('itinerary', JSON.stringify(itinerary));
 
   if (!itinerary.length) {
@@ -286,6 +286,13 @@ function renderItinerary() {
   });
 }
 
+// Clé dans le localStorage
+const STORAGE_KEY = "itineraireDuJour";
+
+// Charger l'itinéraire depuis le localStorage au démarrage
+itinerary = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+renderItinerary(); // Affiche l'itinéraire au chargement de la page
+
 if (addToItineraryBtn) {
   addToItineraryBtn.addEventListener('click', () => {
     if (!selectedProperty) {
@@ -295,9 +302,14 @@ if (addToItineraryBtn) {
       return alert("Cette copropriété est déjà dans votre itinéraire");
     }
     itinerary.push(selectedProperty);
+
+    // Sauvegarder dans le localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(itinerary));
+
     renderItinerary();
   });
 }
+
 
 if (optimizeItineraryBtn) {
   optimizeItineraryBtn.addEventListener('click', () => {
@@ -323,12 +335,14 @@ if (optimizeItineraryBtn) {
 }
 
 if (clearItineraryBtn) {
-clearItineraryBtn.addEventListener('click', () => {
-  if (confirm("Voulez-vous vraiment vider votre itinéraire ?")) {
-    itinerary = [];
-    renderItinerary();
-  }
-});
+  clearItineraryBtn.addEventListener('click', () => {
+    if (confirm("Voulez-vous vraiment vider votre itinéraire ?")) {
+      itinerary = [];
+      localStorage.removeItem(STORAGE_KEY); // supprime du localStorage
+
+      renderItinerary();
+    }
+  });
 }
 
 
@@ -350,29 +364,29 @@ function showNotification(message, color = "#28a745") {
 }
 
 if (syncCsvBtn) {
-syncCsvBtn.addEventListener('click', async () => {
-  try {
-    syncCsvBtn.classList.add("btn-loading");
-    const resp = await fetch(`https://api.github.com/gists/${gistId}`);
-    if (!resp.ok) throw new Error("Impossible de récupérer le Gist");
-    const data = await resp.json();
-    csvUrl = Object.values(data.files)[0].raw_url;
-    await loadCsv();
-    showNotification("✅ Données mises à jour");
-  } catch (err) {
-    showNotification("❌ Erreur de mise à jour", "#dc3545");
-    console.error(err);
-  } finally {
-    syncCsvBtn.classList.remove("btn-loading");
-  }
-});
+  syncCsvBtn.addEventListener('click', async () => {
+    try {
+      syncCsvBtn.classList.add("btn-loading");
+      const resp = await fetch(`https://api.github.com/gists/${gistId}`);
+      if (!resp.ok) throw new Error("Impossible de récupérer le Gist");
+      const data = await resp.json();
+      csvUrl = Object.values(data.files)[0].raw_url;
+      await loadCsv();
+      showNotification("✅ Données mises à jour");
+    } catch (err) {
+      showNotification("❌ Erreur de mise à jour", "#dc3545");
+      console.error(err);
+    } finally {
+      syncCsvBtn.classList.remove("btn-loading");
+    }
+  });
 }
 
-if(showMoreBtn) {
-showMoreBtn.addEventListener('click', () => {
-  visibleCount += VISIBLE_STEP;
-  renderPropertiesList();
-});
+if (showMoreBtn) {
+  showMoreBtn.addEventListener('click', () => {
+    visibleCount += VISIBLE_STEP;
+    renderPropertiesList();
+  });
 }
 
 
