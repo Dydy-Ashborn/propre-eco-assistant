@@ -63,23 +63,33 @@ function parseCsvLine(line) {
 // =======================
 async function loadCsv() {
   visibleCount = VISIBLE_STEP;
+
   if (!csvUrl) {
-    propertiesList.innerHTML = '<div class="empty-state" style="color:red;">Aucune URL CSV disponible</div>';
-    showMoreBtn.style.display = "none";
+    if (propertiesList) {
+      propertiesList.innerHTML = '<div class="empty-state" style="color:red;">Aucune URL CSV disponible</div>';
+    }
+    if (showMoreBtn) showMoreBtn.style.display = "none";
     return;
   }
-  propertiesList.innerHTML = '<div class="empty-state">Chargement des copropriétés...</div>';
+
+  if (propertiesList) {
+    propertiesList.innerHTML = '<div class="empty-state">Chargement des copropriétés...</div>';
+  }
+
   try {
     const resp = await fetch(csvUrl, { cache: "no-store" });
     if (!resp.ok) throw new Error("Erreur lors du chargement du fichier CSV");
     properties = parseCsv(await resp.text());
     renderPropertiesList();
   } catch (err) {
-    propertiesList.innerHTML = `<div class="empty-state" style="color: red;">Erreur : ${err.message}</div>`;
+    if (propertiesList) {
+      propertiesList.innerHTML = `<div class="empty-state" style="color: red;">Erreur : ${err.message}</div>`;
+    }
     properties = [];
-    showMoreBtn.style.display = "none";
+    if (showMoreBtn) showMoreBtn.style.display = "none";
   }
 }
+
 
 function renderPropertiesList() {
   if (!properties.length) {
@@ -132,46 +142,54 @@ function selectProperty(idx) {
 // =======================
 // Recherche
 // =======================
-searchInput.addEventListener('input', () => {
-  const val = searchInput.value.trim().toLowerCase();
-  searchResults.innerHTML = "";
-  propertyDetails.style.display = 'none';
-  selectedProperty = null;
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    const val = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = "";
+    propertyDetails.style.display = 'none';
+    selectedProperty = null;
 
-  if (!val) {
-    searchResults.classList.remove('show');
-    return;
-  }
-
-  const filtered = properties.filter(p => p.nom && p.nom.toLowerCase().includes(val));
-  if (!filtered.length) {
-    searchResults.innerHTML = `<div class="search-result-item">Aucune copropriété trouvée</div>`;
-    searchResults.classList.add('show');
-    return;
-  }
-
-  filtered.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'search-result-item';
-    div.textContent = p.nom;
-    div.addEventListener('click', () => {
-      selectedProperty = p;
-      searchInput.value = p.nom;
-      searchResults.innerHTML = "";
+    if (!val) {
       searchResults.classList.remove('show');
-      showPropertyDetails(p);
-    });
-    searchResults.appendChild(div);
-  });
+      return;
+    }
 
-  searchResults.classList.add('show');
-});
+    const filtered = properties.filter(p => p.nom && p.nom.toLowerCase().includes(val));
+    if (!filtered.length) {
+      searchResults.innerHTML = `<div class="search-result-item">Aucune copropriété trouvée</div>`;
+      searchResults.classList.add('show');
+      return;
+    }
+
+    filtered.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'search-result-item';
+      div.textContent = p.nom;
+      div.addEventListener('click', () => {
+        selectedProperty = p;
+        searchInput.value = p.nom;
+        searchResults.innerHTML = "";
+        searchResults.classList.remove('show');
+        showPropertyDetails(p);
+      });
+      searchResults.appendChild(div);
+    });
+
+    searchResults.classList.add('show');
+  });
+}
+
 
 document.addEventListener('click', e => {
+  const searchResults = document.getElementById('searchResults');
+  const searchInput = document.getElementById('searchInput');
+  if (!searchResults || !searchInput) return; // si l'un des deux n'existe pas, on sort
+
   if (!searchResults.contains(e.target) && e.target !== searchInput) {
     searchResults.classList.remove('show');
   }
 });
+
 
 // =======================
 // Détails & Procédures
@@ -219,16 +237,29 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-document.querySelector('#procedureModal .close-btn').addEventListener('click', closeModal);
-window.addEventListener('click', (e) => {
-  if (e.target.id === 'procedureModal') closeModal();
-});
+const closeBtn = document.querySelector('#procedureModal .close-btn');
+const procedureModal = document.getElementById('procedureModal');
+
+if (closeBtn) {
+  closeBtn.addEventListener('click', closeModal);
+}
+
+if (procedureModal) {
+  window.addEventListener('click', (e) => {
+    if (e.target === procedureModal) closeModal();
+  });
+}
+
 
 // =======================
 // Itinéraire
 // =======================
 function renderItinerary() {
+  const itineraryList = document.getElementById("itineraryList");
+  if (!itineraryList) return; // si pas d'élément, on sort
+  
   localStorage.setItem('itinerary', JSON.stringify(itinerary));
+
   if (!itinerary.length) {
     itineraryList.innerHTML = '<div class="empty-state">Aucune copropriété dans votre itinéraire pour aujourd\'hui</div>';
     return;
@@ -255,43 +286,51 @@ function renderItinerary() {
   });
 }
 
-addToItineraryBtn.addEventListener('click', () => {
-  if (!selectedProperty) return alert("Veuillez sélectionner une copropriété");
-  if (itinerary.find(p => p.nom === selectedProperty.nom)) {
-    return alert("Cette copropriété est déjà dans votre itinéraire");
-  }
-  itinerary.push(selectedProperty);
-  renderItinerary();
-});
+if (addToItineraryBtn) {
+  addToItineraryBtn.addEventListener('click', () => {
+    if (!selectedProperty) {
+      return alert("Veuillez sélectionner une copropriété");
+    }
+    if (itinerary.find(p => p.nom === selectedProperty.nom)) {
+      return alert("Cette copropriété est déjà dans votre itinéraire");
+    }
+    itinerary.push(selectedProperty);
+    renderItinerary();
+  });
+}
 
-optimizeItineraryBtn.addEventListener('click', () => {
-  if (!itinerary.length) return alert("Votre itinéraire est vide");
+if (optimizeItineraryBtn) {
+  optimizeItineraryBtn.addEventListener('click', () => {
+    if (!itinerary.length) return alert("Votre itinéraire est vide");
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords;
-      const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
-      // On utilise la latitude et longitude pour le point de départ
-      window.open(`https://www.google.com/maps/dir/${latitude},${longitude}/${waypoints}`, '_blank');
-    }, error => {
-      alert("Impossible de récupérer la position actuelle. Google Maps ouvrira sans point de départ précis.");
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
+        // Point de départ = position actuelle
+        window.open(`https://www.google.com/maps/dir/${latitude},${longitude}/${waypoints}`, '_blank');
+      }, error => {
+        alert("Impossible de récupérer la position actuelle. Google Maps ouvrira sans point de départ précis.");
+        const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
+        window.open(`https://www.google.com/maps/dir/${waypoints}`, '_blank');
+      });
+    } else {
+      alert("La géolocalisation n'est pas supportée par votre navigateur.");
       const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
       window.open(`https://www.google.com/maps/dir/${waypoints}`, '_blank');
-    });
-  } else {
-    alert("La géolocalisation n'est pas supportée par votre navigateur.");
-    const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
-    window.open(`https://www.google.com/maps/dir/${waypoints}`, '_blank');
-  }
-});
+    }
+  });
+}
 
-
+if (clearItineraryBtn) {
 clearItineraryBtn.addEventListener('click', () => {
   if (confirm("Voulez-vous vraiment vider votre itinéraire ?")) {
     itinerary = [];
     renderItinerary();
   }
 });
+}
+
 
 // =======================
 // Utilitaires
@@ -310,6 +349,7 @@ function showNotification(message, color = "#28a745") {
   }, 2500);
 }
 
+if (syncCsvBtn) {
 syncCsvBtn.addEventListener('click', async () => {
   try {
     syncCsvBtn.classList.add("btn-loading");
@@ -326,11 +366,15 @@ syncCsvBtn.addEventListener('click', async () => {
     syncCsvBtn.classList.remove("btn-loading");
   }
 });
+}
 
+if(showMoreBtn) {
 showMoreBtn.addEventListener('click', () => {
   visibleCount += VISIBLE_STEP;
   renderPropertiesList();
 });
+}
+
 
 // =======================
 // Navigation Mobile
@@ -374,9 +418,12 @@ let index = 0;
 
 // Affiche la modale si non validée
 window.addEventListener("load", () => {
-  const seen = localStorage.getItem("announcementSeen");
-  if (!seen) {
-    announcementModal.style.display = "block";
+  const announcementModal = document.getElementById("announcementModal");
+  if (announcementModal) {
+    const seen = localStorage.getItem("announcementSeen");
+    if (!seen) {
+      announcementModal.style.display = "block";
+    }
   }
 });
 
@@ -426,8 +473,7 @@ const storage = getStorage(app);
 // --- Formulaire de signalement ---
 const form = document.getElementById('report-form');
 const status = document.getElementById('status');
-
-if(form) {
+if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -440,41 +486,55 @@ if(form) {
 
     // Vérifier le nombre de fichiers
     if (files.length > 3) {
-        alert("⚠️ Maximum 3 images autorisées");
-        return;
+      alert("⚠️ Maximum 3 images autorisées");
+      return;
     }
 
     status.textContent = "Envoi en cours…";
 
     try {
-        let images = [];
+      let images = [];
 
-        // Upload des images si présentes
-        if (files.length > 0) {
-            for (let file of files) {
-                try {
-                    const uploaded = await uploadToImgBB(file);
-                    images.push(uploaded);
-                } catch (err) {
-                    console.error("Erreur upload image :", err);
-                }
-            }
+      // Upload des images si présentes
+      if (files.length > 0) {
+        for (let file of files) {
+          try {
+            const uploaded = await uploadToImgBB(file);
+            images.push(uploaded); // [{url, deleteUrl}]
+          } catch (err) {
+            console.error("Erreur upload image :", err);
+          }
         }
+      }
 
-        await addDoc(collection(db, "signalements"), {
-            copro,
-            description,
-            employee,
-            images, // tableau [{url, deleteUrl}]
-            createdAt: new Date()
-        });
+      // Enregistrement dans Firebase
+      await addDoc(collection(db, "signalements"), {
+        copro,
+        description,
+        employee,
+        images,
+        createdAt: new Date()
+      });
 
-        status.textContent = "Signalement envoyé ✅";
-        form.reset();
+      // ✅ Envoi notification ntfy
+      let message = `🚨 Signalement de ${employee} sur ${copro}\n${description}`;
+      // Si une image est disponible, on ajoute l'URL à la notif
+      if (images.length > 0 && images[0].url) {
+        message += `\n${images[0].url}`;
+      }
+
+      await fetch("https://ntfy.sh/signalement-propre-eco", {
+        method: "POST",
+        body: message // pas de headers compliqués pour éviter l’erreur
+      });
+
+      status.textContent = "Signalement envoyé ✅";
+      form.reset();
     } catch (err) {
-        console.error(err);
-        status.textContent = "Erreur lors de l’envoi ❌";
+      console.error(err);
+      status.textContent = "Erreur lors de l’envoi ❌";
     }
-});
-
+  });
 }
+
+
