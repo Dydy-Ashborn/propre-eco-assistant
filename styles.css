@@ -1071,3 +1071,11 @@ td:nth-child(2) {
     font-size: 14px;
     display: none; /* cachée si pas de notifications */
   }
+
+  /* Sur mobile : toolbar en colonne */
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch; /* pour que les boutons prennent toute la largeur */
+  }
+}
