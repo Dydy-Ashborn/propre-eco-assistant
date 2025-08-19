@@ -2,204 +2,239 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Voir les signalements</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        html,
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voir les signalements</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    html,
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
 
-        .container {
-            margin: 1rem auto;
-            width: 95%;
-            max-width: 1200px;
-        }
+    .container {
+      margin: 1rem auto;
+      width: 95%;
+      max-width: 1200px;
+    }
 
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 1rem;
-        }
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-        th,
-        td {
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            text-align: left;
-            white-space: nowrap;
-        }
+    th,
+    td {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      text-align: left;
+      white-space: nowrap;
+    }
 
-        .thumb {
-            max-width: 80px;
-            max-height: 80px;
-            cursor: pointer;
-        }
-    </style>
+    .thumb {
+      max-width: 80px;
+      max-height: 80px;
+      cursor: pointer;
+    }
+
+    .toolbar {
+      margin: 1rem 0;
+      display: flex;
+      gap: 10px;
+    }
+  </style>
 </head>
 
 <body>
-    <header class="site-header">
-        <nav class="nav">
-            <button class="nav-toggle" aria-label="Menu">
-                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-            </button>
-            <ul class="nav-menu">
-                <li><a href="index.html">🏠 Accueil</a></li>
-                <li><a href="signaler.html">📢 Signaler un problème</a></li>
-                <li><a href="voir.html">
-          📖 Voir les signalements
-          <span id="notifBadge" class="notif-badge">0</span>
-        </a></li>
-                <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
-            </ul>
-        </nav>
-    </header>
+  <header class="site-header">
+    <nav class="nav">
+      <button class="nav-toggle" aria-label="Menu">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+      <ul class="nav-menu">
+        <li><a href="index.html">🏠 Accueil</a></li>
+        <li><a href="signaler.html">📢 Signaler un problème</a></li>
+        <li><a href="voir.html">
+            📖 Voir les signalements
+            <span id="notifBadge" class="notif-badge">0</span>
+          </a></li>
+        <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <div class="container">
-        <div class="header">
-            <h2>Voir les signalements</h2>
-            <p>Consultez les signalements envoyés par les employés.</p>
-        </div>
-
-        <div class="section" id="gate" style="margin-top:1rem">
-            <p>Entrez le code de sécurité :</p>
-            <form id="code-form">
-                <input id="code-input" type="password" placeholder="Code de sécurité" required />
-                <button class="btn btn-warning">Entrer</button>
-            </form>
-        </div>
-
-        <div class="section" id="dashboard" style="display:none;">
-            <button id="refresh" class="btn">🔄 Rafraîchir</button>
-
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Copropriété</th>
-                            <th>Description</th>
-                            <th>Employé</th>
-                            <th>Images</th>
-                            <th>Créé le</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rows"></tbody>
-                </table>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h2>Voir les signalements</h2>
+      <p>Consultez les signalements envoyés par les employés.</p>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    <div class="section" id="gate" style="margin-top:1rem">
+      <p>Entrez le code de sécurité :</p>
+      <form id="code-form">
+        <input id="code-input" type="password" placeholder="Code de sécurité" required />
+        <button class="btn btn-warning">Entrer</button>
+      </form>
+    </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
-            authDomain: "copro-256d7.firebaseapp.com",
-            projectId: "copro-256d7",
-            storageBucket: "copro-256d7.firebasestorage.app",
-            messagingSenderId: "665588381388",
-            appId: "1:665588381388:web:a0567533ff1a62407db469",
-            measurementId: "G-Y7YNZDDCTD"
-        };
+    <div class="section" id="dashboard" style="display:none;">
+      <div class="toolbar">
+        <button id="refresh" class="btn">🔄 Rafraîchir</button>
+        <button id="sortByDate" class="btn" style="background-color:#27ae60!important;">📅 Trier par date</button>
+        <button id="sortByEmployee" class="btn" style="background-color:#27ae60!important;">👤 Trier par employé</button>
+        <button id="deleteSelected" class="btn btn-danger">🗑️ Supprimer sélection</button>
+      </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const rows = document.getElementById('rows');
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll"></th>
+              <th>Copropriété</th>
+              <th>Description</th>
+              <th>Employé</th>
+              <th>Images</th>
+              <th>Créé le</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-        async function deleteFromImgBB(deleteUrl) {
-            try {
-                await fetch(deleteUrl);
-            } catch (err) {
-                console.error("Erreur suppression ImgBB :", err);
-            }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+      authDomain: "copro-256d7.firebaseapp.com",
+      projectId: "copro-256d7",
+      storageBucket: "copro-256d7.firebasestorage.app",
+      messagingSenderId: "665588381388",
+      appId: "1:665588381388:web:a0567533ff1a62407db469",
+      measurementId: "G-Y7YNZDDCTD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const rows = document.getElementById('rows');
+
+    let currentSort = "createdAt";
+
+    async function deleteFromImgBB(deleteUrl) {
+      try {
+        await fetch(deleteUrl);
+      } catch (err) {
+        console.error("Erreur suppression ImgBB :", err);
+      }
+    }
+
+    async function load() {
+      rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
+      try {
+        const q = query(collection(db, "signalements"), orderBy(currentSort, "asc"));
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+          rows.innerHTML = '<tr><td colspan="6">Aucun signalement.</td></tr>';
+          return;
         }
+        rows.innerHTML = '';
+        snapshot.docs.forEach(docSnap => {
+          const data = docSnap.data();
+          const tr = document.createElement('tr');
 
-        async function load() {
-            rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
-            try {
-                const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
-                const snapshot = await getDocs(q);
-                if (snapshot.empty) {
-                    rows.innerHTML = '<tr><td colspan="6">Aucun signalement.</td></tr>';
-                    return;
-                }
-                rows.innerHTML = '';
-                snapshot.docs.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const tr = document.createElement('tr');
+          let imgHTML = "";
+          if (data.images && data.images.length > 0) {
+            imgHTML = data.images.map(img =>
+              `<a href="${img.url}" target="_blank"><img src="${img.url}" class="thumb" /></a>`
+            ).join(" ");
+          }
 
-                    let imgHTML = "";
-                    if (data.images && data.images.length > 0) {
-                        imgHTML = data.images.map(img =>
-                            `<a href="${img.url}" target="_blank"><img src="${img.url}" class="thumb" /></a>`
-                        ).join(" ");
-                    }
+          tr.innerHTML = `
+            <td><input type="checkbox" class="rowCheckbox" data-id="${docSnap.id}" data-urls='${JSON.stringify((data.images || []).map(img => img.deleteUrl))}'></td>
+            <td>${data.copro}</td>
+            <td>${data.description}</td>
+            <td>${data.employee || ''}</td>
+            <td>${imgHTML}</td>
+            <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
+          `;
 
-                    tr.innerHTML = `
-                    <td>${data.copro}</td>
-                    <td>${data.description}</td>
-                    <td>${data.employee || ''}</td>
-                    <td>${imgHTML}</td>
-                    <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
-                    <td><button class="btn btn-danger del" data-id="${docSnap.id}">Supprimer</button></td>
-                `;
-
-                    tr.dataset.deleteUrls = JSON.stringify((data.images || []).map(img => img.deleteUrl));
-
-                    rows.appendChild(tr);
-                });
-
-                document.querySelectorAll('.del').forEach(btn => {
-                    btn.addEventListener('click', async () => {
-                        if (confirm("Supprimer ce signalement ?")) {
-                            const tr = btn.closest('tr');
-                            const deleteUrls = JSON.parse(tr.dataset.deleteUrls || "[]");
-
-                            for (let url of deleteUrls) {
-                                await deleteFromImgBB(url);
-                            }
-
-                            await deleteDoc(doc(db, "signalements", btn.dataset.id));
-                            load();
-                        }
-                    });
-                });
-            } catch (err) {
-                console.error(err);
-                rows.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
-            }
-        }
-
-        document.getElementById('code-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const code = document.getElementById('code-input').value;
-            if (code === "110389") {
-                document.getElementById('gate').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                load();
-            } else {
-                alert("Code incorrect ❌");
-            }
+          rows.appendChild(tr);
         });
+      } catch (err) {
+        console.error(err);
+        rows.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
+      }
+    }
 
-        document.getElementById('refresh').addEventListener('click', load);
-    </script>
-      <script type="module" src="script.js"></script>
+    async function deleteSelected() {
+      const selected = document.querySelectorAll(".rowCheckbox:checked");
+      if (selected.length === 0) {
+        alert("Sélectionne au moins un signalement.");
+        return;
+      }
+      if (!confirm(`Supprimer ${selected.length} signalement(s) ?`)) return;
+
+      for (let checkbox of selected) {
+        const deleteUrls = JSON.parse(checkbox.dataset.urls || "[]");
+        for (let url of deleteUrls) {
+          await deleteFromImgBB(url);
+        }
+        await deleteDoc(doc(db, "signalements", checkbox.dataset.id));
+      }
+      load();
+    }
+
+    document.getElementById('code-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = document.getElementById('code-input').value;
+      if (code === "110389") {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        load();
+      } else {
+        alert("Code incorrect ❌");
+      }
+    });
+
+    document.getElementById('refresh').addEventListener('click', load);
+    document.getElementById('sortByDate').addEventListener('click', () => {
+      currentSort = "createdAt";
+      load();
+    });
+    document.getElementById('sortByEmployee').addEventListener('click', () => {
+      currentSort = "employee";
+      load();
+    });
+    document.getElementById('deleteSelected').addEventListener('click', deleteSelected);
+
+    document.getElementById('selectAll').addEventListener('change', (e) => {
+      const checkboxes = document.querySelectorAll('.rowCheckbox');
+      checkboxes.forEach(cb => cb.checked = e.target.checked);
+    });
+  </script>
+
+  <script type="module" src="script.js"></script>
   <script type="module" src="app.js"></script>
-    <script> const toggleButton = document.querySelector('.nav-toggle'); const menu = document.querySelector('.nav-menu'); toggleButton.addEventListener('click', () => { toggleButton.classList.toggle('open'); menu.classList.toggle('open'); }); </script>
+  <script>
+    const toggleButton = document.querySelector('.nav-toggle');
+    const menu = document.querySelector('.nav-menu');
+    toggleButton.addEventListener('click', () => {
+      toggleButton.classList.toggle('open');
+      menu.classList.toggle('open');
+    });
+  </script>
 </body>
 
 </html>
