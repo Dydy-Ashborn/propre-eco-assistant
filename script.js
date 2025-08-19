@@ -317,24 +317,49 @@ if (optimizeItineraryBtn) {
   optimizeItineraryBtn.addEventListener('click', () => {
     if (!itinerary.length) return alert("Votre itinéraire est vide");
 
+    const openGoogleMaps = (startCoords = null) => {
+      const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
+      
+      // URL app Google Maps pour iOS
+      let gmapsAppUrl;
+      if (startCoords) {
+        gmapsAppUrl = `comgooglemaps://?saddr=${startCoords.lat},${startCoords.lng}&daddr=${waypoints}&directionsmode=driving`;
+      } else {
+        gmapsAppUrl = `comgooglemaps://?daddr=${waypoints}&directionsmode=driving`;
+      }
+
+      // URL web fallback
+      const gmapsWebUrl = startCoords
+        ? `https://www.google.com/maps/dir/${startCoords.lat},${startCoords.lng}/${waypoints}`
+        : `https://www.google.com/maps/dir/${waypoints}`;
+
+      // Essayer d'ouvrir l'app Google Maps
+      window.location.href = gmapsAppUrl;
+
+      // Fallback web après 1s si app non installée
+      setTimeout(() => {
+        window.open(gmapsWebUrl, '_blank');
+      }, 1000);
+    };
+
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
-        // Point de départ = position actuelle
-        window.open(`https://www.google.com/maps/dir/${latitude},${longitude}/${waypoints}`, '_blank');
-      }, error => {
-        alert("Impossible de récupérer la position actuelle. Google Maps ouvrira sans point de départ précis.");
-        const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
-        window.open(`https://www.google.com/maps/dir/${waypoints}`, '_blank');
-      });
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          openGoogleMaps({ lat: latitude, lng: longitude });
+        },
+        error => {
+          alert("Impossible de récupérer la position actuelle. Google Maps ouvrira sans point de départ précis.");
+          openGoogleMaps();
+        }
+      );
     } else {
       alert("La géolocalisation n'est pas supportée par votre navigateur.");
-      const waypoints = itinerary.map(p => encodeURIComponent(p.adresse)).join('/');
-      window.open(`https://www.google.com/maps/dir/${waypoints}`, '_blank');
+      openGoogleMaps();
     }
   });
 }
+
 
 if (clearItineraryBtn) {
   clearItineraryBtn.addEventListener('click', () => {
@@ -486,71 +511,5 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// --- Formulaire de signalement ---
-const form = document.getElementById('report-form');
-const status = document.getElementById('status');
-if (form) {
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const copro = document.getElementById('copro-input').value.trim();
-    const description = document.getElementById('desc-input').value.trim();
-    const employee = document.getElementById('signature-input').value.trim();
-    const files = document.getElementById('images-input').files;
-
-    if (!copro || !description || !employee) return;
-
-    // Vérifier le nombre de fichiers
-    if (files.length > 3) {
-      alert("⚠️ Maximum 3 images autorisées");
-      return;
-    }
-
-    status.textContent = "Envoi en cours…";
-
-    try {
-      let images = [];
-
-      // Upload des images si présentes
-      if (files.length > 0) {
-        for (let file of files) {
-          try {
-            const uploaded = await uploadToImgBB(file);
-            images.push(uploaded); // [{url, deleteUrl}]
-          } catch (err) {
-            console.error("Erreur upload image :", err);
-          }
-        }
-      }
-
-      // Enregistrement dans Firebase
-      await addDoc(collection(db, "signalements"), {
-        copro,
-        description,
-        employee,
-        images,
-        createdAt: new Date()
-      });
-
-      // ✅ Envoi notification ntfy
-      let message = `🚨 Signalement de ${employee} sur ${copro}\n${description}`;
-      // Si une image est disponible, on ajoute l'URL à la notif
-      if (images.length > 0 && images[0].url) {
-        message += `\n${images[0].url}`;
-      }
-
-      await fetch("https://ntfy.sh/signalement-propre-eco", {
-        method: "POST",
-        body: message // pas de headers compliqués pour éviter l’erreur
-      });
-
-      status.textContent = "Signalement envoyé ✅";
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      status.textContent = "Erreur lors de l’envoi ❌";
-    }
-  });
-}
 
 

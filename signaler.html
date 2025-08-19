@@ -136,6 +136,18 @@
                     createdAt: new Date()
                 });
 
+                // ✅ Envoi notification ntfy
+                let message = `🚨 Signalement de ${employee} sur ${copro}\n${description}`;
+                // Si une image est disponible, on ajoute l'URL à la notif
+                if (images.length > 0 && images[0].url) {
+                    message += `\n${images[0].url}`;
+                }
+
+                await fetch("https://ntfy.sh/signalement-propre-eco", {
+                    method: "POST",
+                    body: message // pas de headers compliqués pour éviter l’erreur
+                });
+                
                 status.textContent = "Signalement envoyé ✅";
                 form.reset();
             } catch (err) {
