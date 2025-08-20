@@ -28,7 +28,7 @@ jobs:
         run: python fetch_plannings.py
 
       - name: Upload plannings
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: plannings
           path: plannings.json
