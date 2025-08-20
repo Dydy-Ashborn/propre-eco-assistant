@@ -1,8 +1,10 @@
-credentials.json
-token.json
-credentials.json
-token.json
-token.json
-credentials.json
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+venv/
+
+# Secrets
+token.json
+credentials.json
