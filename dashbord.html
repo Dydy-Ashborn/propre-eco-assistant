@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Propre Eco</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #f59e0b;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header moderne avec glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo i {
+            background: var(--primary);
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Navigation moderne */
+        .nav-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Badge de notification corrigé */
+        .notif-badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            margin-left: 0.25rem;
+            min-width: 1.2rem;
+            height: 1.2rem;
+            text-align: center;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            animation: none;
+            transition: var(--transition);
+        }
+
+        .notif-badge.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        .notif-badge.updated {
+            animation: gentlePulse 0.6s ease-out;
+        }
+
+        @keyframes gentlePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation item caché par défaut */
+        .nav-signalements {
+            display: none;
+        }
+
+        .nav-signalements.authenticated {
+            display: flex;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1400px;
+            /* margin: 2rem auto; */
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* Welcome header */
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.25rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sections modernes */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .section-title {
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title i {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Code d'accès */
+        .access-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            background: white;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group::before {
+            content: '\f023';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard container */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards avec glassmorphism moderne */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--surface-alt) 0%, rgba(255, 255, 255, 0.8) 100%);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .card-title i {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Boutons modernes */
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-agenda {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-agenda:hover {
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Tables modernes */
+        .table-container {
+            overflow: hidden;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            max-height: 500px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:hover {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        /* Images avec hover effect */
+        .thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            margin: 0.25rem;
+        }
+
+        .thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        /* États de chargement */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        /* Alert moderne */
+        .alert {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #92400e;
+            font-size: 0.9rem;
+        }
+
+        .alert i {
+            color: var(--secondary);
+        }
+
+        /* Calendar styles */
+        .calendar {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .calendar-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .calendar-month {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day-header {
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            background: var(--surface-alt);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            border: 1px solid var(--border);
+            padding: 0.5rem;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .calendar-day:hover {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .calendar-day.other-month {
+            background: #f8f9fa;
+            color: var(--text-light);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--primary-light) 0%, rgba(16, 185, 129, 0.1) 100%);
+            font-weight: 700;
+        }
+
+        .calendar-day.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-day-number {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .calendar-note {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem;
+            border-radius: 4px;
+            margin-top: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .calendar-note-indicator {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+        }
+
+        /* Modal pour ajouter/éditer des notes */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: var(--text-light);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-cancel:hover {
+            background: var(--text);
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-delete:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Responsive design amélioré */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .nav-menu a {
+                color: var(--text);
+                background: rgba(16, 185, 129, 0.1);
+                border-color: var(--border);
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 2rem;
+            }
+
+            .welcome-header p {
+                font-size: 1.1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                min-width: 500px;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .thumb {
+                width: 60px;
+                height: 60px;
+            }
+
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-day {
+                min-height: 60px;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            table {
+                min-width: 400px;
+            }
+
+            .thumb {
+                width: 50px;
+                height: 50px;
+            }
+
+            .calendar-day {
+                min-height: 50px;
+            }
+        }
+
+        /* Animations d'entrée */
+        .card {
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Scrollbar personnalisée */
+        .table-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Status messages */
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+            display: none;
+        }
+
+        .status.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #28a745;
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .status.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #dc3545;
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i>
+                Propre Eco Assistant
+            </a>
+            
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li class="nav-signalements"><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge" class="notif-badge loading">⟳</span></a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+      
+        <!-- Section Code d'accès -->
+        <section class="section" id="gate">
+            <h2 class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                Accès sécurisé
+            </h2>
+            
+            <form id="code-form" class="access-form">
+                <div class="input-group">
+                    <input id="code-input" type="password" class="form-input" placeholder="Code de sécurité" required />
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-unlock"></i>
+                    Accéder au tableau de bord
+                </button>
+                <div id="status" class="status"></div>
+            </form>
+        </section>
+
+        <!-- Section Dashboard -->
+        <div class="dashboard-container" id="dashboard" style="display: none;">
+          
+
+            <!-- Derniers signalements -->
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2 class="card-title">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Derniers signalements
+                        </h2>
+                        <p class="card-subtitle">
+                            <i class="fas fa-clock"></i>
+                            Problèmes récemment signalés
+                        </p>
+                    </div>
+                    <button class="btn" onclick="window.location.href='voir.html'">
+                        <i class="fas fa-list"></i>
+                        Voir tous les signalements
+                    </button>
+                </header>
+                
+                <div class="table-container">
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-building"></i> Copropriété</th>
+                                    <th><i class="fas fa-comment"></i> Description</th>
+                                    <th><i class="fas fa-user"></i> Employé</th>
+                                    <th><i class="fas fa-images"></i> Images</th>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="signalementsBody">
+                                <tr>
+                                    <td colspan="5" class="loading">
+                                        <i class="fas fa-spinner"></i>
+                                        Chargement des signalements...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dernières feuilles de passage -->
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2 class="card-title">
+                            <i class="fas fa-file-signature"></i>
+                            Feuilles de passage
+                        </h2>
+                        <p class="card-subtitle">
+                            <i class="fas fa-clock"></i>
+                            Passages récents validés
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="window.open('https://dylan-propreeco.imgbb.com/')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Gérer sur ImgBB
+                    </button>
+                </header>
+
+                <div class="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Les photos sont supprimées automatiquement tous les mois</span>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-building"></i> Copropriété</th>
+                                    <th><i class="fas fa-camera"></i> Photo</th>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feuillesBody">
+                                <tr>
+                                    <td colspan="3" class="loading">
+                                        <i class="fas fa-spinner"></i>
+                                        Chargement des feuilles...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+              <!-- Agenda des travaux -->
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2 class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Agenda des travaux
+                        </h2>
+                        <p class="card-subtitle">
+                            <i class="fas fa-tasks"></i>
+                            Planification des prochains travaux
+                        </p>
+                    </div>
+                    <button class="btn btn-agenda" onclick="goToToday()">
+                        <i class="fas fa-calendar-day"></i>
+                        Aujourd'hui
+                    </button>
+                </header>
+                
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" onclick="previousMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="calendar-month" id="currentMonth"></div>
+                        <button class="calendar-nav-btn" onclick="nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Lun</div>
+                        <div class="calendar-day-header">Mar</div>
+                        <div class="calendar-day-header">Mer</div>
+                        <div class="calendar-day-header">Jeu</div>
+                        <div class="calendar-day-header">Ven</div>
+                        <div class="calendar-day-header">Sam</div>
+                        <div class="calendar-day-header">Dim</div>
+                        <div id="calendarDays"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter/éditer des notes -->
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Ajouter une note</h3>
+                <button class="modal-close" onclick="closeNoteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="noteForm">
+                <div class="form-group">
+                    <label class="form-label" for="noteDate">Date</label>
+                    <input type="text" id="noteDate" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="noteText">Travaux à prévoir</label>
+                    <textarea id="noteText" class="form-textarea" placeholder="Décrivez les travaux à effectuer pour cette date..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeNoteModal()">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                    <button type="button" id="deleteNoteBtn" class="btn btn-delete" style="display: none;" onclick="deleteNote()">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.appspot.com",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469",
+            measurementId: "G-Y7YNZDDCTD"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const status = document.getElementById('status');
+
+        // État d'authentification global
+        window.isAuthenticated = false;
+
+        // Variables pour le calendrier
+        let currentDate = new Date();
+        let selectedDateKey = null;
+        let agendaNotes = {};
+
+        // Navigation mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.querySelector('.nav-toggle');
+            const menu = document.querySelector('.nav-menu');
+
+            if (toggleButton && menu) {
+                toggleButton.addEventListener('click', () => {
+                    menu.classList.toggle('open');
+                });
+
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menu.classList.remove('open');
+                    });
+                });
+            }
+        });
+
+        // Affichage des messages de statut
+        function showStatus(message, type) {
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-times-circle'
+            };
+            
+            status.innerHTML = `
+                <i class="${icons[type]}"></i>
+                ${message}
+            `;
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Authentification avec gestion de l'affichage du badge
+        document.getElementById('code-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = document.getElementById('code-input').value;
+            const submitBtn = e.target.querySelector('button');
+            
+            if (code === "110389") {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authentification...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    // Marquer comme authentifié
+                    window.isAuthenticated = true;
+                    
+                    // Afficher l'élément de navigation des signalements
+                    const navSignalements = document.querySelector('.nav-signalements');
+                    if (navSignalements) {
+                        navSignalements.classList.add('authenticated');
+                    }
+                    
+                    document.getElementById('gate').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'grid';
+                    showStatus('Accès autorisé', 'success');
+                    loadSignalements();
+                    loadFeuilles();
+                    loadAgendaNotes();
+                    renderCalendar();
+                }, 1000);
+            } else {
+                showStatus('Code de sécurité incorrect', 'error');
+                document.getElementById('code-input').focus();
+                
+                // Animation d'erreur
+                const form = document.getElementById('code-form');
+                form.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    form.style.animation = '';
+                }, 500);
+            }
+        });
+
+        // Fonctions du calendrier
+        function renderCalendar() {
+            const monthNames = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+            ];
+
+            const currentMonthElement = document.getElementById('currentMonth');
+            const calendarDaysElement = document.getElementById('calendarDays');
+
+            currentMonthElement.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+            // Calculer le premier jour du mois et le nombre de jours
+            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const firstDayWeekday = (firstDayOfMonth.getDay() + 6) % 7; // Lundi = 0
+            const daysInMonth = lastDayOfMonth.getDate();
+
+            calendarDaysElement.innerHTML = '';
+
+            // Jours du mois précédent
+            const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 0);
+            for (let i = firstDayWeekday - 1; i >= 0; i--) {
+                const dayNumber = prevMonth.getDate() - i;
+                const dayElement = createDayElement(dayNumber, true, currentDate.getFullYear(), currentDate.getMonth() - 1);
+                calendarDaysElement.appendChild(dayElement);
+            }
+
+            // Jours du mois courant
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = createDayElement(day, false, currentDate.getFullYear(), currentDate.getMonth());
+                calendarDaysElement.appendChild(dayElement);
+            }
+
+            // Jours du mois suivant
+            const totalDays = calendarDaysElement.children.length;
+            const remainingDays = 42 - totalDays; // 6 semaines * 7 jours
+            for (let day = 1; day <= remainingDays; day++) {
+                const dayElement = createDayElement(day, true, currentDate.getFullYear(), currentDate.getMonth() + 1);
+                calendarDaysElement.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(dayNumber, isOtherMonth, year, month) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            
+            if (isOtherMonth) {
+                dayElement.classList.add('other-month');
+            }
+
+            const today = new Date();
+            if (!isOtherMonth && dayNumber === today.getDate() && 
+                month === today.getMonth() && year === today.getFullYear()) {
+                dayElement.classList.add('today');
+            }
+
+            const dayNumberElement = document.createElement('div');
+            dayNumberElement.className = 'calendar-day-number';
+            dayNumberElement.textContent = dayNumber;
+            dayElement.appendChild(dayNumberElement);
+
+            // Clé unique pour la date
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+            dayElement.dataset.dateKey = dateKey;
+
+            // Vérifier s'il y a une note pour ce jour
+            if (agendaNotes[dateKey]) {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'calendar-note';
+                noteElement.textContent = agendaNotes[dateKey].substring(0, 20) + (agendaNotes[dateKey].length > 20 ? '...' : '');
+                dayElement.appendChild(noteElement);
+
+                const indicator = document.createElement('div');
+                indicator.className = 'calendar-note-indicator';
+                dayElement.appendChild(indicator);
+            }
+
+            dayElement.addEventListener('click', () => openNoteModal(dateKey, dayNumber, month, year));
+
+            return dayElement;
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
+        // Fonctions pour les notes
+        function openNoteModal(dateKey, day, month, year) {
+            selectedDateKey = dateKey;
+            const monthNames = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+            ];
+
+            document.getElementById('noteDate').value = `${day} ${monthNames[month]} ${year}`;
+            document.getElementById('noteText').value = agendaNotes[dateKey] || '';
+            
+            const modal = document.getElementById('noteModal');
+            const deleteBtn = document.getElementById('deleteNoteBtn');
+            
+            if (agendaNotes[dateKey]) {
+                document.getElementById('modalTitle').textContent = 'Modifier la note';
+                deleteBtn.style.display = 'inline-flex';
+            } else {
+                document.getElementById('modalTitle').textContent = 'Ajouter une note';
+                deleteBtn.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+            document.getElementById('noteText').focus();
+        }
+
+        function closeNoteModal() {
+            const modal = document.getElementById('noteModal');
+            modal.classList.remove('active');
+            selectedDateKey = null;
+        }
+
+        // Gestionnaire de soumission du formulaire de note
+        document.getElementById('noteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedDateKey) return;
+
+            const noteText = document.getElementById('noteText').value.trim();
+            
+            try {
+                if (noteText) {
+                    // Sauvegarder la note
+                    await db.collection('agenda_notes').doc(selectedDateKey).set({
+                        note: noteText,
+                        date: selectedDateKey,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    agendaNotes[selectedDateKey] = noteText;
+                } else {
+                    // Supprimer la note si le texte est vide
+                    await db.collection('agenda_notes').doc(selectedDateKey).delete();
+                    delete agendaNotes[selectedDateKey];
+                }
+
+                renderCalendar();
+                closeNoteModal();
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error);
+                alert('Erreur lors de la sauvegarde de la note');
+            }
+        });
+
+        // Supprimer une note
+        async function deleteNote() {
+            if (!selectedDateKey || !confirm('Êtes-vous sûr de vouloir supprimer cette note ?')) {
+                return;
+            }
+
+            try {
+                await db.collection('agenda_notes').doc(selectedDateKey).delete();
+                delete agendaNotes[selectedDateKey];
+                renderCalendar();
+                closeNoteModal();
+            } catch (error) {
+                console.error('Erreur lors de la suppression:', error);
+                alert('Erreur lors de la suppression de la note');
+            }
+        }
+
+        // Charger les notes de l'agenda
+        async function loadAgendaNotes() {
+            try {
+                const snapshot = await db.collection('agenda_notes').get();
+                agendaNotes = {};
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    agendaNotes[data.date] = data.note;
+                });
+                renderCalendar();
+            } catch (error) {
+                console.error('Erreur lors du chargement des notes:', error);
+            }
+        }
+
+        // Chargement des signalements avec gestion d'erreur améliorée
+        async function loadSignalements() {
+            const tbody = document.getElementById('signalementsBody');
+            
+            try {
+                const snapshot = await db.collection('signalements')
+                    .orderBy('createdAt', 'desc')
+                    .limit(10)
+                    .get();
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: #6b7280;">
+                                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                                Aucun signalement trouvé
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    let imgHTML = '';
+                    
+                    if (data.images && data.images.length > 0) {
+                        imgHTML = data.images.map(img => `
+                            <img src="${img.url}" 
+                                 class="thumb" 
+                                 alt="Image du signalement"
+                                 onclick="window.open('${img.url}', '_blank')"
+                                 loading="lazy">
+                        `).join('');
+                    } else {
+                        imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
+                    }
+
+                    const date = data.createdAt ? 
+                        data.createdAt.toDate().toLocaleString('fr-FR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Date inconnue';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${data.copro || 'Non spécifiée'}</strong></td>
+                            <td>${data.description || 'Pas de description'}</td>
+                            <td>${data.employee || 'Non spécifié'}</td>
+                            <td>${imgHTML}</td>
+                            <td>${date}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (error) {
+                console.error('Erreur lors du chargement des signalements:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: #ef4444;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                            Erreur de chargement des signalements
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Chargement des feuilles de passage avec gestion d'erreur améliorée
+        async function loadFeuilles() {
+            const tbody = document.getElementById("feuillesBody");
+            
+            try {
+                const snapshot = await db.collection("feuilles_passage")
+                    .orderBy("createdAt", "desc")
+                    .limit(20)
+                    .get();
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="3" style="text-align: center; padding: 2rem; color: #6b7280;">
+                                <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                                Aucune feuille de passage trouvée
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const tr = document.createElement("tr");
+
+                    // Copropriété
+                    const tdCopro = document.createElement("td");
+                    tdCopro.innerHTML = `<strong>${data.copro || "Non spécifiée"}</strong>`;
+                    tr.appendChild(tdCopro);
+
+                    // Photo
+                    const tdPhoto = document.createElement("td");
+                    if (data.url) {
+                        const img = document.createElement("img");
+                        img.src = data.url;
+                        img.className = "thumb";
+                        img.alt = "Feuille signée";
+                        img.loading = "lazy";
+                        img.onclick = () => window.open(data.url, "_blank");
+                        tdPhoto.appendChild(img);
+                    } else {
+                        tdPhoto.innerHTML = '<span style="color: #6b7280; font-style: italic;">Pas de photo</span>';
+                    }
+                    tr.appendChild(tdPhoto);
+
+                    // Date
+                    const tdDate = document.createElement("td");
+                    const date = data.createdAt?.toDate?.() || new Date();
+                    tdDate.textContent = date.toLocaleString("fr-FR", {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    tr.appendChild(tdDate);
+
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error('Erreur lors du chargement des feuilles:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 2rem; color: #ef4444;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                            Erreur de chargement des feuilles
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Fermer le modal en cliquant à l'extérieur
+        document.getElementById('noteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'noteModal') {
+                closeNoteModal();
+            }
+        });
+
+        // Fermer le modal avec Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('noteModal').classList.contains('active')) {
+                closeNoteModal();
+            }
+        });
+    </script>
+
+    <!-- Badge script corrigé -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.firebasestorage.app",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469",
+            measurementId: "G-Y7YNZDDCTD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const notifBadge = document.getElementById('notifBadge');
+
+        // Service de notification corrigé
+        class NotificationService {
+            constructor() {
+                this.init();
+            }
+
+            async updateNotificationBadge() {
+                try {
+                    const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+                    const querySnapshot = await getDocs(q);
+                    const count = querySnapshot.size;
+                    
+                    if (notifBadge) {
+                        notifBadge.textContent = count;
+                        notifBadge.classList.remove('loading');
+                        
+                        // Animation plus douce
+                        if (count > 0) {
+                            notifBadge.classList.add('updated');
+                            setTimeout(() => {
+                                notifBadge.classList.remove('updated');
+                            }, 600);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de la récupération du nombre de signalements:", error);
+                    if (notifBadge) {
+                        notifBadge.textContent = "!";
+                        notifBadge.classList.remove('loading');
+                    }
+                }
+            }
+
+            setupRealTimeListener() {
+                const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+                onSnapshot(q, (snapshot) => {
+                    const count = snapshot.size;
+                    if (notifBadge) {
+                        notifBadge.textContent = count;
+                        notifBadge.classList.remove('loading');
+                        
+                        // Animation plus douce uniquement si authentifié
+                        if (count > 0 && window.isAuthenticated) {
+                            notifBadge.classList.add('updated');
+                            setTimeout(() => {
+                                notifBadge.classList.remove('updated');
+                            }, 600);
+                        }
+                    }
+                }, (error) => {
+                    console.error("Erreur lors de l'écoute des signalements:", error);
+                    if (notifBadge) {
+                        notifBadge.textContent = "!";
+                        notifBadge.classList.remove('loading');
+                    }
+                });
+            }
+
+            init() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Attendre un peu avant de charger le badge pour éviter le flash
+                    setTimeout(() => {
+                        this.updateNotificationBadge();
+                        this.setupRealTimeListener();
+                    }, 500);
+                });
+            }
+        }
+
+        new NotificationService();
+    </script>
+
+</body>
+</html>

@@ -2,239 +2,1094 @@
 <html lang="fr">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Voir les signalements</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    html,
-    body {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voir les signalements - Propre Eco</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="apple-touch-icon" href="iphone.png">
+    <link rel="icon" type="image/png" href="d6d38760-30b5-4026-8f90-0f5236d62d28 (1).png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .container {
-      margin: 1rem auto;
-      width: 95%;
-      max-width: 1200px;
-    }
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #f59e0b;
+            --accent: #8b5cf6;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-      margin-top: 1rem;
-    }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+        /* Header moderne avec glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    th,
-    td {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      text-align: left;
-      white-space: nowrap;
-    }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-    .thumb {
-      max-width: 80px;
-      max-height: 80px;
-      cursor: pointer;
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
 
-    .toolbar {
-      margin: 1rem 0;
-      display: flex;
-      gap: 10px;
-    }
-  </style>
+        .logo i {
+            background: var(--primary);
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Navigation moderne */
+        .nav-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .notif-badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.25rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* Header de bienvenue */
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.25rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sections modernes */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title i {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Code d'accès */
+        .access-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            background: white;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group::before {
+            content: '\f023';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Boutons modernes */
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Table moderne */
+        .table-container {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .modern-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modern-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .modern-table tbody tr:hover {
+            background: var(--surface-alt);
+            transform: scale(1.01);
+        }
+
+        .modern-table tbody tr:nth-child(even) {
+            background: rgba(16, 185, 129, 0.02);
+        }
+
+        /* Images thumbnail */
+        .thumb {
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Checkbox personnalisé */
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            cursor: pointer;
+        }
+        /* Checkbox personnalisé */
+.custom-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Carré visible */
+.custom-checkbox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    background: white;
+    transition: all 0.2s;
+    z-index: 1;
+}
+
+/* Check à l’intérieur quand coché */
+.custom-checkbox::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* Case cochée */
+.custom-checkbox input[type="checkbox"]:checked + ::after {
+    opacity: 1;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + ::before {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+
+        .custom-checkbox::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            background: white;
+            transition: var(--transition);
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked+ ::before,
+        .custom-checkbox:has(input[type="checkbox"]:checked)::before {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked+ ::after,
+        .custom-checkbox:has(input[type="checkbox"]:checked)::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            margin-top: auto;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .nav-menu a {
+                color: var(--text);
+                background: rgba(16, 185, 129, 0.1);
+                border-color: var(--border);
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 2rem;
+            }
+
+            .welcome-header p {
+                font-size: 1.1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .toolbar .btn {
+                justify-content: center;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .modern-table {
+                min-width: 800px;
+            }
+
+            .modern-table th,
+            .modern-table td {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+        }
+
+        .notif-badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.25rem;
+            animation: pulse 2s infinite;
+            min-width: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .notif-badge.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <header class="site-header">
-    <nav class="nav">
-      <button class="nav-toggle" aria-label="Menu">
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-      </button>
-      <ul class="nav-menu">
-        <li><a href="index.html">🏠 Accueil</a></li>
-        <li><a href="signaler.html">📢 Signaler un problème</a></li>
-        <li><a href="voir.html">
-            📖 Voir les signalements
-            <span id="notifBadge" class="notif-badge">0</span>
-          </a></li>
-        <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i>
+                Propre Eco Assistant
+            </a>
 
-  <div class="container">
-    <div class="header">
-      <h2>Voir les signalements</h2>
-      <p>Consultez les signalements envoyés par les employés.</p>
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
+                class="notif-badge">0</span></a></li> -->
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Header de bienvenue -->
+        <div class="welcome-header">
+            <h1>Signalements</h1>
+            <p>Consultez et gérez tous les signalements</p>
+        </div>
+
+        <!-- Section Dashboard directement affichée, section gate supprimée -->
+        <section class="section" id="dashboard">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                Tableau de bord des signalements
+            </h2>
+
+            <div class="toolbar">
+                <button id="refresh" class="btn">
+                    <i class="fas fa-sync-alt"></i>
+                    Rafraîchir
+                </button>
+                <button id="sortByDate" class="btn btn-success">
+                    <i class="fas fa-calendar-alt"></i>
+                    Trier par date
+                </button>
+                <button id="sortByEmployee" class="btn btn-success">
+                    <i class="fas fa-user"></i>
+                    Trier par employé
+                </button>
+                <button id="deleteSelected" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i>
+                    Supprimer sélection
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="custom-checkbox">
+                                    <input type="checkbox" id="selectAll">
+                                </div>
+                            </th>
+                            <th>Copropriété</th>
+                            <th>Description</th>
+                            <th>Employé</th>
+                            <th>Images</th>
+                            <th>Date de création</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows">
+                        <tr>
+                            <td colspan="6" class="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <div>Chargement des signalements...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </div>
 
-    <div class="section" id="gate" style="margin-top:1rem">
-      <p>Entrez le code de sécurité :</p>
-      <form id="code-form">
-        <input id="code-input" type="password" placeholder="Code de sécurité" required />
-        <button class="btn btn-warning">Entrer</button>
-      </form>
-    </div>
+    <footer class="app-footer">
+        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+    </footer>
 
-    <div class="section" id="dashboard" style="display:none;">
-      <div class="toolbar">
-        <button id="refresh" class="btn">🔄 Rafraîchir</button>
-        <button id="sortByDate" class="btn" style="background-color:#27ae60!important;">📅 Trier par date</button>
-        <button id="sortByEmployee" class="btn" style="background-color:#27ae60!important;">👤 Trier par employé</button>
-        <button id="deleteSelected" class="btn btn-danger">🗑️ Supprimer sélection</button>
-      </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-      <div class="table-container">
-        <table class="table">
-          <thead>
-            <tr>
-              <th><input type="checkbox" id="selectAll"></th>
-              <th>Copropriété</th>
-              <th>Description</th>
-              <th>Employé</th>
-              <th>Images</th>
-              <th>Créé le</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.firebasestorage.app",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469",
+            measurementId: "G-Y7YNZDDCTD"
+        };
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const rows = document.getElementById('rows');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
-      authDomain: "copro-256d7.firebaseapp.com",
-      projectId: "copro-256d7",
-      storageBucket: "copro-256d7.firebasestorage.app",
-      messagingSenderId: "665588381388",
-      appId: "1:665588381388:web:a0567533ff1a62407db469",
-      measurementId: "G-Y7YNZDDCTD"
-    };
+        let currentSort = "createdAt";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const rows = document.getElementById('rows');
+        // Navigation mobile
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.querySelector('.nav-toggle');
+            const menu = document.querySelector('.nav-menu');
 
-    let currentSort = "createdAt";
+            toggleButton.addEventListener('click', () => {
+                menu.classList.toggle('open');
+            });
 
-    async function deleteFromImgBB(deleteUrl) {
-      try {
-        await fetch(deleteUrl);
-      } catch (err) {
-        console.error("Erreur suppression ImgBB :", err);
-      }
-    }
-
-    async function load() {
-      rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
-      try {
-        const q = query(collection(db, "signalements"), orderBy(currentSort, "asc"));
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          rows.innerHTML = '<tr><td colspan="6">Aucun signalement.</td></tr>';
-          return;
-        }
-        rows.innerHTML = '';
-        snapshot.docs.forEach(docSnap => {
-          const data = docSnap.data();
-          const tr = document.createElement('tr');
-
-          let imgHTML = "";
-          if (data.images && data.images.length > 0) {
-            imgHTML = data.images.map(img =>
-              `<a href="${img.url}" target="_blank"><img src="${img.url}" class="thumb" /></a>`
-            ).join(" ");
-          }
-
-          tr.innerHTML = `
-            <td><input type="checkbox" class="rowCheckbox" data-id="${docSnap.id}" data-urls='${JSON.stringify((data.images || []).map(img => img.deleteUrl))}'></td>
-            <td>${data.copro}</td>
-            <td>${data.description}</td>
-            <td>${data.employee || ''}</td>
-            <td>${imgHTML}</td>
-            <td>${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : ''}</td>
-          `;
-
-          rows.appendChild(tr);
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.remove('open');
+                });
+            });
         });
-      } catch (err) {
-        console.error(err);
-        rows.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
-      }
-    }
 
-    async function deleteSelected() {
-      const selected = document.querySelectorAll(".rowCheckbox:checked");
-      if (selected.length === 0) {
-        alert("Sélectionne au moins un signalement.");
-        return;
-      }
-      if (!confirm(`Supprimer ${selected.length} signalement(s) ?`)) return;
-
-      for (let checkbox of selected) {
-        const deleteUrls = JSON.parse(checkbox.dataset.urls || "[]");
-        for (let url of deleteUrls) {
-          await deleteFromImgBB(url);
+        async function deleteFromImgBB(deleteUrl) {
+            try {
+                await fetch(deleteUrl);
+            } catch (err) {
+                console.error("Erreur suppression ImgBB :", err);
+            }
         }
-        await deleteDoc(doc(db, "signalements", checkbox.dataset.id));
-      }
-      load();
-    }
 
-    document.getElementById('code-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const code = document.getElementById('code-input').value;
-      if (code === "110389") {
-        document.getElementById('gate').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        load();
-      } else {
-        alert("Code incorrect ❌");
-      }
-    });
+        async function load() {
+            rows.innerHTML = `
+                <tr>
+                    <td colspan="6" class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div>Chargement des signalements...</div>
+                    </td>
+                </tr>
+            `;
 
-    document.getElementById('refresh').addEventListener('click', load);
-    document.getElementById('sortByDate').addEventListener('click', () => {
-      currentSort = "createdAt";
-      load();
-    });
-    document.getElementById('sortByEmployee').addEventListener('click', () => {
-      currentSort = "employee";
-      load();
-    });
-    document.getElementById('deleteSelected').addEventListener('click', deleteSelected);
+            try {
+                const q = query(collection(db, "signalements"), orderBy(currentSort, "asc"));
+                const snapshot = await getDocs(q);
 
-    document.getElementById('selectAll').addEventListener('change', (e) => {
-      const checkboxes = document.querySelectorAll('.rowCheckbox');
-      checkboxes.forEach(cb => cb.checked = e.target.checked);
-    });
-  </script>
+                if (snapshot.empty) {
+                    rows.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <div>Aucun signalement trouvé</div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
 
-  <script type="module" src="script.js"></script>
-  <script type="module" src="app.js"></script>
-  <script>
-    const toggleButton = document.querySelector('.nav-toggle');
-    const menu = document.querySelector('.nav-menu');
-    toggleButton.addEventListener('click', () => {
-      toggleButton.classList.toggle('open');
-      menu.classList.toggle('open');
-    });
-  </script>
+                rows.innerHTML = '';
+                let index = 0;
+
+                snapshot.docs.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const tr = document.createElement('tr');
+                    tr.style.animationDelay = `${index * 0.1}s`;
+                    tr.className = 'table-row-animated';
+
+                    let imgHTML = "";
+                    if (data.images && data.images.length > 0) {
+                        imgHTML = data.images.map(img =>
+                            `<a href="${img.url}" target="_blank" style="margin-right: 0.5rem;">
+                                <img src="${img.url}" class="thumb" alt="Signalement" />
+                            </a>`
+                        ).join("");
+                    }
+
+                    tr.innerHTML = `
+                        <td>
+                            <div class="custom-checkbox">
+                                <input type="checkbox" class="rowCheckbox" data-id="${docSnap.id}" 
+                                       data-urls='${JSON.stringify((data.images || []).map(img => img.deleteUrl))}'>
+                            </div>
+                        </td>
+                        <td><strong>${data.copro || 'Non spécifiée'}</strong></td>
+                        <td style="max-width: 300px; word-wrap: break-word;">${data.description || 'Aucune description'}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-user-circle" style="color: var(--primary);"></i>
+                                ${data.employee || 'Anonyme'}
+                            </div>
+                        </td>
+                        <td>${imgHTML || '<span style="color: var(--text-light);">Aucune image</span>'}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-calendar-alt" style="color: var(--text-light);"></i>
+                                ${data.createdAt ? data.createdAt.toDate().toLocaleString('fr-FR') : 'Date inconnue'}
+                            </div>
+                        </td>
+                    `;
+
+                    rows.appendChild(tr);
+                    index++;
+                });
+
+                // Animation d'entrée pour les lignes
+                const style = document.createElement('style');
+                style.textContent = `
+                    .table-row-animated {
+                        opacity: 0;
+                        transform: translateY(20px);
+                        animation: slideInRow 0.5s ease-out forwards;
+                    }
+                    @keyframes slideInRow {
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+
+            } catch (err) {
+                console.error(err);
+                rows.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i>
+                            <div>Erreur lors du chargement des données</div>
+                        </td>
+                    </tr>
+                `;
+                showNotification('Erreur lors du chargement des données', 'error');
+            }
+        }
+
+        async function deleteSelected() {
+            const selected = document.querySelectorAll(".rowCheckbox:checked");
+            if (selected.length === 0) {
+                showNotification('Veuillez sélectionner au moins un signalement', 'warning');
+                return;
+            }
+
+            if (!confirm(`Êtes-vous sûr de vouloir supprimer ${selected.length} signalement(s) ?`)) return;
+
+            showNotification('Suppression en cours...', 'info');
+
+            try {
+                for (let checkbox of selected) {
+                    const deleteUrls = JSON.parse(checkbox.dataset.urls || "[]");
+                    for (let url of deleteUrls) {
+                        await deleteFromImgBB(url);
+                    }
+                    await deleteDoc(doc(db, "signalements", checkbox.dataset.id));
+                }
+                showNotification(`${selected.length} signalement(s) supprimé(s) avec succès`, 'success');
+                load();
+            } catch (error) {
+                console.error(error);
+                showNotification('Erreur lors de la suppression', 'error');
+            }
+        }
+
+        // Événements
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('gate')?.remove();
+            document.getElementById('dashboard').style.display = 'block';
+            load();
+        });
+
+        document.getElementById('refresh').addEventListener('click', () => {
+            const refreshBtn = document.getElementById('refresh');
+            const originalContent = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+            refreshBtn.disabled = true;
+
+            setTimeout(() => {
+                load().then(() => {
+                    refreshBtn.innerHTML = originalContent;
+                    refreshBtn.disabled = false;
+                    showNotification('Données actualisées', 'success');
+                });
+            }, 500);
+        });
+
+        document.getElementById('sortByDate').addEventListener('click', () => {
+            currentSort = "createdAt";
+            showNotification('Tri par date appliqué', 'info');
+            load();
+        });
+
+        document.getElementById('sortByEmployee').addEventListener('click', () => {
+            currentSort = "employee";
+            showNotification('Tri par employé appliqué', 'info');
+            load();
+        });
+
+        document.getElementById('deleteSelected').addEventListener('click', deleteSelected);
+
+        document.getElementById('selectAll').addEventListener('change', (e) => {
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+
+            const count = checkboxes.length;
+            if (e.target.checked && count > 0) {
+                showNotification(`${count} signalement(s) sélectionné(s)`, 'info');
+            }
+        });
+
+        // Notifications modernes
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' :
+                    type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' :
+                        type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+                            'linear-gradient(135deg, #3b82f6, #2563eb)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideInRight 0.3s ease-out;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+
+            const icons = {
+                success: 'fas fa-check-circle',
+                warning: 'fas fa-exclamation-triangle',
+                error: 'fas fa-times-circle',
+                info: 'fas fa-info-circle'
+            };
+
+            notification.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Styles pour les animations
+        const additionalStyles = document.createElement('style');
+        additionalStyles.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(additionalStyles);
+    </script>
+    <script type="module" src="badge.js"></script>
+
 </body>
 
 </html>

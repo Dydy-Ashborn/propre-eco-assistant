@@ -1,185 +1,683 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pointeuse</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pointeuse - Propre Eco</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="apple-touch-icon" href="iphone.png">
+    <link rel="icon" type="image/png" href="d6d38760-30b5-4026-8f90-0f5236d62d28 (1).png">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #f59e0b;
+            --accent: #8b5cf6;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #3d9852;
-            color: #333;
-            padding: 20px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ffffff;
+        /* Header moderne avec glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        #employeeList {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            max-width: 800px;
-            margin: 20px auto;
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .employee-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .employee-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .employee-card button {
-            margin-top: 10px;
-            background: #4CAF50;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo i {
+            background: var(--primary);
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Navigation moderne */
+        .nav-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: white;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
+            transition: var(--transition);
         }
 
-        .employee-card button:hover {
-            background: #45a049;
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
 
-        @media(max-width: 500px) {
-            #employeeList {
-                grid-template-columns: 1fr;
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .notif-badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.25rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* Header de bienvenue */
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-    </style>
-</head>
 
-<body>
+        .welcome-header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
 
-    <!-- MENU IDENTIQUE À INDEX -->
-    <header class="site-header">
-        <nav class="nav">
-            <button class="nav-toggle" aria-label="Menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-            <ul class="nav-menu">
-                <li><a href="index.html">🏠 Accueil</a></li>
-                <li><a href="signaler.html">📢 Signaler un problème</a></li>
-                <li><a href="voir.html">
-                        📖 Voir les signalements
-                        <span id="notifBadge" class="notif-badge">0</span>
-                    </a></li>
-                <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
-            </ul>
-        </nav>
-    </header>
+        .welcome-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.25rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-    <h2>🕒 Pointeuse</h2>
-    <p style="text-align:center; color:#ffffff">Sélectionnez votre profil et entrez votre code pour ouvrir votre Google
-        Sheet :</p><br>
+        /* Grille des employés */
+        #employeeList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            animation: slideUp 0.8s ease-out;
+        }
 
-    <div id="employeeList"></div>
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    <style>
+        /* Cartes d'employés modernes */
         .employee-card {
             position: relative;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            padding: 2rem;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+            overflow: hidden;
+            animation: cardSlideIn 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .employee-card:nth-child(1) { animation-delay: 0.1s; }
+        .employee-card:nth-child(2) { animation-delay: 0.2s; }
+        .employee-card:nth-child(3) { animation-delay: 0.3s; }
+        .employee-card:nth-child(4) { animation-delay: 0.4s; }
+        .employee-card:nth-child(5) { animation-delay: 0.5s; }
+        .employee-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes cardSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .employee-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .employee-card:hover {
-            transform: translateY(-3px);
-            /* moins de zoom */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
         }
 
-        /* Conteneur boutons */
+        .employee-card.favorite {
+            border: 2px solid var(--secondary);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .employee-card.favorite::before {
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+        }
+
+        /* Avatar employé */
+        .employee-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            transition: var(--transition);
+        }
+
+        .employee-card:hover .employee-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .employee-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Groupe de boutons */
         .btn-group {
             display: flex;
+            gap: 0.75rem;
             justify-content: center;
-            gap: 8px;
-            margin-top: 10px;
+            align-items: center;
         }
 
+        /* Boutons modernes */
         .access-btn {
-            background: #4CAF50;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .access-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .access-btn:hover::before {
+            left: 100%;
         }
 
         .access-btn:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
         }
 
         .fav-btn {
-            background: none;
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .fav-btn.active {
-            color: gold;
-            border-color: gold;
-            text-shadow: 0 0 3px rgba(255, 215, 0, 0.6);
+            transition: var(--transition);
+            color: var(--text-light);
         }
 
         .fav-btn:hover {
-            transform: scale(1.15);
-            /* zoom plus discret */
+            transform: scale(1.1);
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .fav-btn.active {
+            background: linear-gradient(135deg, var(--secondary), #d97706);
+            border-color: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .fav-btn.active:hover {
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
         }
 
         /* Ruban favori */
         .ribbon {
             position: absolute;
-            top: -5px;
-            left: -5px;
-            background: gold;
-            color: black;
-            padding: 4px 8px;
+            top: -8px;
+            left: -8px;
+            background: linear-gradient(135deg, var(--secondary), #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
             font-size: 0.75rem;
-            font-weight: bold;
-            border-radius: 5px 0 5px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            border-radius: 8px 0 8px 0;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            z-index: 1;
+            animation: ribbonGlow 2s ease-in-out infinite;
         }
+
+        @keyframes ribbonGlow {
+            0%, 100% { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+        }
+
+        /* Modale de saisie de code */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 400px;
+            margin: 2rem auto;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header i {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 50%;
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 0.5rem;
+            background: white;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            margin-top: auto;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .nav-menu a {
+                color: var(--text);
+                background: rgba(16, 185, 129, 0.1);
+                border-color: var(--border);
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 2rem;
+            }
+
+            .welcome-header p {
+                font-size: 1.1rem;
+            }
+
+            #employeeList {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .employee-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .employee-card {
+                padding: 1rem;
+            }
+
+            .employee-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .access-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .notif-badge {
+    background: var(--secondary);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    margin-left: 0.25rem;
+    animation: pulse 2s infinite;
+    min-width: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.notif-badge.loading {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
     </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i>
+                Propre Eco Assistant
+            </a>
+            
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+          
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+          <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
+                class="notif-badge">0</span></a></li> -->
+          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+
+        </ul>
+      </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Header de bienvenue -->
+        <div class="welcome-header">
+            <h1>Pointeuse</h1>
+            <p>Sélectionnez votre profil et accédez à votre feuille de temps</p>
+        </div>
+
+        <!-- Grille des employés -->
+        <div id="employeeList"></div>
+    </div>
+
+    <!-- Modale de saisie de code -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-lock"></i>
+                <h3 class="modal-title" id="modalTitle">Code d'accès</h3>
+            </div>
+            <input type="password" id="codeInput" class="code-input" placeholder="••••" maxlength="4">
+            <div class="modal-buttons">
+                <button id="cancelBtn" class="access-btn btn-cancel">
+                    <i class="fas fa-times"></i>
+                    Annuler
+                </button>
+                <button id="confirmBtn" class="access-btn">
+                    <i class="fas fa-unlock"></i>
+                    Valider
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+    </footer>
 
     <script>
-        // Toggle menu
-        const toggleButton = document.querySelector('.nav-toggle');
-        const menu = document.querySelector('.nav-menu');
-
-        toggleButton.addEventListener('click', () => {
-            toggleButton.classList.toggle('open');
-            menu.classList.toggle('open');
-        });
+        // Variables globales
         const FAVORITE_KEY = "favoriteEmployee";
+        let currentEmployee = null;
 
         const employees = [
             { name: "Dylan", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
@@ -194,62 +692,218 @@
             { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
             { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
             { name: "Jocelyne", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" }
-
         ];
 
+        // Éléments DOM
         const container = document.getElementById('employeeList');
-        const favoriteName = localStorage.getItem(FAVORITE_KEY);
+        const modal = document.getElementById('codeModal');
+        const codeInput = document.getElementById('codeInput');
+        const modalTitle = document.getElementById('modalTitle');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
 
-        if (favoriteName) {
-            employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
+        // Navigation mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.querySelector('.nav-toggle');
+            const menu = document.querySelector('.nav-menu');
+
+            toggleButton.addEventListener('click', () => {
+                menu.classList.toggle('open');
+            });
+
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.remove('open');
+                });
+            });
+
+            // Initialisation
+            loadEmployees();
+        });
+
+        // Génération des initiales
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase();
         }
 
-        employees.forEach(emp => {
-            const card = document.createElement('div');
-            card.className = 'employee-card';
-
-            if (emp.name === favoriteName) {
-                const ribbon = document.createElement('div');
-                ribbon.className = 'ribbon';
-                ribbon.textContent = "Favori";
-                card.appendChild(ribbon);
+        // Chargement des employés
+        function loadEmployees() {
+            const favoriteName = localStorage.getItem(FAVORITE_KEY);
+            
+            // Trier pour mettre le favori en premier
+            if (favoriteName) {
+                employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
             }
 
-            card.innerHTML += `<h3>${emp.name}</h3>`;
+            employees.forEach((emp, index) => {
+                const card = document.createElement('div');
+                card.className = `employee-card ${emp.name === favoriteName ? 'favorite' : ''}`;
+                card.style.animationDelay = `${(index % 6) * 0.1}s`;
 
-            const btnGroup = document.createElement('div');
-            btnGroup.className = 'btn-group';
-
-            const accessBtn = document.createElement('button');
-            accessBtn.className = 'access-btn';
-            accessBtn.textContent = 'Accéder';
-            accessBtn.addEventListener('click', () => {
-                const userCode = prompt(`Entrez votre code pour ${emp.name}:`);
-                if (userCode === emp.code) {
-                    window.open(emp.sheet, '_blank');
-                } else {
-                    alert("Code incorrect !");
+                // Ruban favori
+                let ribbonHTML = '';
+                if (emp.name === favoriteName) {
+                    ribbonHTML = '<div class="ribbon"><i class="fas fa-star"></i> Favori</div>';
                 }
+
+                card.innerHTML = `
+                    ${ribbonHTML}
+                    <div class="employee-avatar">
+                        ${getInitials(emp.name)}
+                    </div>
+                    <div class="employee-name">${emp.name}</div>
+                    <div class="btn-group">
+                        <button class="access-btn" onclick="openAccessModal('${emp.name}')">
+                            <i class="fas fa-clock"></i>
+                            Accéder
+                        </button>
+                        <button class="fav-btn ${emp.name === favoriteName ? 'active' : ''}" 
+                                onclick="toggleFavorite('${emp.name}')">
+                            ${emp.name === favoriteName ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'}
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
             });
+        }
 
-            const favBtn = document.createElement('button');
-            favBtn.className = `fav-btn ${emp.name === favoriteName ? 'active' : ''}`;
-            favBtn.textContent = emp.name === favoriteName ? '★' : '☆';
-            favBtn.addEventListener('click', () => {
-                localStorage.setItem(FAVORITE_KEY, emp.name);
-                location.reload();
-            });
+        // Ouvrir la modale d'accès
+        window.openAccessModal = function(employeeName) {
+            currentEmployee = employees.find(emp => emp.name === employeeName);
+            modalTitle.textContent = `Code d'accès - ${employeeName}`;
+            modal.style.display = 'block';
+            codeInput.focus();
+        };
 
-            btnGroup.appendChild(accessBtn);
-            btnGroup.appendChild(favBtn);
-            card.appendChild(btnGroup);
+        // Basculer le favori
+        window.toggleFavorite = function(employeeName) {
+            const currentFavorite = localStorage.getItem(FAVORITE_KEY);
+            
+            if (currentFavorite === employeeName) {
+                localStorage.removeItem(FAVORITE_KEY);
+                showNotification('Favori supprimé', 'info');
+            } else {
+                localStorage.setItem(FAVORITE_KEY, employeeName);
+                showNotification(`${employeeName} défini comme favori`, 'success');
+            }
+            
+            setTimeout(() => location.reload(), 500);
+        };
 
-            container.appendChild(card);
+        // Gestion de la modale
+        confirmBtn.addEventListener('click', validateCode);
+        cancelBtn.addEventListener('click', closeModal);
+
+        codeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validateCode();
+            }
         });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        function validateCode() {
+            const enteredCode = codeInput.value;
+            
+            if (!currentEmployee) return;
+            
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+            confirmBtn.disabled = true;
+            
+            setTimeout(() => {
+                if (enteredCode === currentEmployee.code) {
+                    showNotification(`Accès autorisé pour ${currentEmployee.name}`, 'success');
+                    window.open(currentEmployee.sheet, '_blank');
+                    closeModal();
+                } else {
+                    showNotification('Code incorrect', 'error');
+                    codeInput.value = '';
+                    codeInput.focus();
+                    
+                    // Animation d'erreur
+                    codeInput.style.animation = 'shake 0.5s ease-in-out';
+                    setTimeout(() => {
+                        codeInput.style.animation = '';
+                    }, 500);
+                }
+                
+                confirmBtn.innerHTML = '<i class="fas fa-unlock"></i> Valider';
+                confirmBtn.disabled = false;
+            }, 800);
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            codeInput.value = '';
+            currentEmployee = null;
+            confirmBtn.innerHTML = '<i class="fas fa-unlock"></i> Valider';
+            confirmBtn.disabled = false;
+        }
+
+        // Notifications modernes
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 
+                              type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 
+                              type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
+                              'linear-gradient(135deg, #3b82f6, #2563eb)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 1001;
+                font-weight: 600;
+                animation: slideInRight 0.3s ease-out;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                max-width: 300px;
+            `;
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                warning: 'fas fa-exclamation-triangle',
+                error: 'fas fa-times-circle',
+                info: 'fas fa-info-circle'
+            };
+            
+            notification.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Styles pour les animations
+        const additionalStyles = document.createElement('style');
+        additionalStyles.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(additionalStyles);
     </script>
-    <script type="module" src="script.js"></script>
-    <script type="module" src="app.js"></script>
+     <script type="module" src="badge.js"></script>
 
 </body>
-
 </html>

@@ -1,70 +1,723 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Signaler un problème</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signaler un problème - Propre Eco</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #f59e0b;
+            --accent: #ef4444;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header moderne avec glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo i {
+            background: var(--primary);
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Navigation moderne */
+        .nav-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .notif-badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.25rem;
+            animation: pulse 2s infinite;
+            min-width: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .notif-badge.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* Card principale */
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--accent) 0%, #dc2626 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><radialGradient id="a"><stop offset="20%" stop-color="%23fff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23fff" stop-opacity="0"/></radialGradient></defs><rect width="100" height="20" fill="url(%23a)"/></svg>');
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .card-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .card-header p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        /* Formulaire moderne */
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .form-label i {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Inputs modernes */
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: white;
+            color: var(--text);
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Section d'upload de fichiers */
+        .upload-section {
+            padding: 2rem;
+            border: 3px dashed var(--primary);
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: var(--transition);
+        }
+
+        .upload-section:hover::before {
+            left: 100%;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        .upload-info {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-input:hover {
+            border-color: var(--primary);
+            background: var(--surface-alt);
+        }
+
+        /* Preview des images */
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            aspect-ratio: 1;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .preview-item:hover {
+            transform: scale(1.05);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-remove:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        /* Boutons modernes */
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 1rem 2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Status messages */
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+            display: none;
+        }
+
+        .status.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #28a745;
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .status.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #dc3545;
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .status.loading {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0;
+            border: 2px solid #2196f3;
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            margin-top: auto;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .nav-menu a {
+                color: var(--text);
+                background: rgba(16, 185, 129, 0.1);
+                border-color: var(--border);
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
+            }
+
+            .card-header {
+                padding: 1.5rem;
+            }
+
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .card-content {
+                padding: 1.5rem;
+            }
+
+            .form {
+                gap: 1.5rem;
+            }
+
+            .upload-section {
+                padding: 1.5rem;
+            }
+
+            .image-preview {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .card-header h1 {
+                font-size: 1.25rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-label {
+                font-size: 1rem;
+            }
+
+            .form-input {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
-    <header class="site-header">
-        <nav class="nav">
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i>
+                Propre Eco Assistant
+            </a>
+            
             <button class="nav-toggle" aria-label="Menu">
-                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                <i class="fas fa-bars"></i>
             </button>
-            <ul class="nav-menu">
-                <li><a href="index.html">🏠 Accueil</a></li>
-                <li><a href="signaler.html">📢 Signaler un problème</a></li>
-                <li><a href="voir.html">
-                        📖 Voir les signalements
-                        <span id="notifBadge" class="notif-badge">0</span>
-                    </a></li>
-                <li><a href="pointeuse.html">🕝 Pointeuse</a></li>
-            </ul>
-        </nav>
+            
+            
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+          <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
+                class="notif-badge">0</span></a></li> -->
+          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+
+        </ul>
+      </nav>
+        </div>
     </header>
 
-    <div class="container" style="margin-top: 1rem;">
-        <div class="header">
-            <h2>Signaler un problème</h2>
-            <p>Soumettez un problème rencontré dans vos copropriétés.</p>
-        </div>
+    <div class="container">
+        <div class="main-card">
+            <div class="card-header">
+                <h1>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Signaler un problème
+                </h1>
+                <p>Soumettez un problème rencontré dans vos copropriétés</p>
+            </div>
 
-        <div class="section">
-            <form id="report-form" class="form">
-                <label for="copro-input">🔍 Rechercher une copropriété</label>
-                <input type="text" id="copro-input" class="search-input" placeholder="Nom de la copropriété…"
-                    required />
+            <div class="card-content">
+                <form id="report-form" class="form">
+                    <!-- Copropriété -->
+                    <div class="form-group">
+                        <label for="copro-input" class="form-label">
+                            <i class="fas fa-building"></i>
+                            Copropriété
+                        </label>
+                        <input 
+                            type="text" 
+                            id="copro-input" 
+                            class="form-input" 
+                            placeholder="Nom de la copropriété..."
+                            required 
+                        />
+                    </div>
 
-                <label for="desc-input">Description du problème</label>
-                <textarea class="search-input" id="desc-input" style="border: 2px solid #28a745;"
-                    placeholder="Décrivez le problème…" required></textarea>
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="desc-input" class="form-label">
+                            <i class="fas fa-comment-alt"></i>
+                            Description du problème
+                        </label>
+                        <textarea 
+                            id="desc-input" 
+                            class="form-input form-textarea"
+                            placeholder="Décrivez le problème rencontré en détail..."
+                            required
+                        ></textarea>
+                    </div>
 
-                <label for="signature-input">Signature de l'employé</label>
-                <textarea id="signature-input" placeholder="Ton prénom" class="search-input"
-                    style="border: 2px solid #28a745;" required></textarea>
+                    <!-- Employé -->
+                    <div class="form-group">
+                        <label for="signature-input" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Signature de l'employé
+                        </label>
+                        <input 
+                            type="text" 
+                            id="signature-input" 
+                            class="form-input"
+                            placeholder="Votre prénom"
+                            required 
+                        />
+                    </div>
 
-                <label for="images-input">📷 Ajouter des images</label>
-                <p style="color: #666; font-style: italic;">⚠️ 3 images maximum</p>
-                <input type="file" id="images-input" multiple accept="image/*" />
+                    <!-- Images -->
+                    <div class="form-group">
+                        <label for="images-input" class="form-label">
+                            <i class="fas fa-images"></i>
+                            Ajouter des images
+                        </label>
+                        <div class="upload-section">
+                            <div class="upload-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Maximum 3 images</span>
+                            </div>
+                            <input 
+                                type="file" 
+                                id="images-input" 
+                                class="file-input"
+                                multiple 
+                                accept="image/*" 
+                            />
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+                    </div>
 
+                    <!-- Bouton d'envoi -->
+                    <button class="btn btn-warning" type="submit">
+                        <i class="fas fa-paper-plane"></i>
+                        Envoyer le signalement
+                    </button>
 
-                <button class="btn btn-warning" type="submit">Envoyer</button>
-                <span id="status" class="status"></span>
-            </form>
+                    <div id="status" class="status"></div>
+                </form>
+            </div>
         </div>
     </div>
 
     <footer class="app-footer">
-        Developed with <span style="color:red;">❤️</span> by Ashborn
+        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
@@ -81,8 +734,106 @@
 
         const form = document.getElementById('report-form');
         const status = document.getElementById('status');
+        const imagesInput = document.getElementById('images-input');
+        const imagePreview = document.getElementById('image-preview');
+        const notifBadge = document.getElementById('notifBadge');
         const API_KEY = "7f0e4433bcc19c0f1408f57919fbcf14";
 
+        let selectedFiles = [];
+
+        // Fonction pour compter et mettre à jour le badge de notification
+        async function updateNotificationBadge() {
+            try {
+                const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                const count = querySnapshot.size;
+                
+                notifBadge.textContent = count;
+                notifBadge.classList.remove('loading');
+                
+                // Animation si nouveau signalement
+                if (count > 0) {
+                    notifBadge.style.animation = 'pulse 0.5s ease-out';
+                    setTimeout(() => {
+                        notifBadge.style.animation = 'pulse 2s infinite';
+                    }, 500);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération du nombre de signalements:", error);
+                notifBadge.textContent = "!";
+                notifBadge.classList.remove('loading');
+            }
+        }
+
+        // Navigation mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.querySelector('.nav-toggle');
+            const menu = document.querySelector('.nav-menu');
+
+            toggleButton.addEventListener('click', () => {
+                menu.classList.toggle('open');
+            });
+
+            // Fermer le menu en cliquant sur un lien
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.remove('open');
+                });
+            });
+
+            // Charger le compteur de notifications au démarrage
+            updateNotificationBadge();
+            
+            // Mettre à jour le compteur toutes les 30 secondes
+            setInterval(updateNotificationBadge, 30000);
+        });
+
+        // Gestion des images
+        imagesInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            // Limiter à 3 images
+            if (files.length > 3) {
+                showStatus('Vous ne pouvez sélectionner que 3 images maximum', 'error');
+                return;
+            }
+
+            selectedFiles = files;
+            displayImagePreview(files);
+        });
+
+        function displayImagePreview(files) {
+            imagePreview.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}" class="preview-image">
+                        <button type="button" class="preview-remove" onclick="removeImage(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    imagePreview.appendChild(previewItem);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Fonction globale pour supprimer une image
+        window.removeImage = function(index) {
+            selectedFiles.splice(index, 1);
+            displayImagePreview(selectedFiles);
+            
+            // Mettre à jour l'input file
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            imagesInput.files = dt.files;
+        };
+
+        // Upload vers ImgBB
         async function uploadToImgBB(file) {
             const formData = new FormData();
             formData.append("image", file);
@@ -101,33 +852,66 @@
             };
         }
 
+        // Affichage des messages de statut
+        function showStatus(message, type) {
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-times-circle',
+                loading: 'fas fa-spinner fa-spin'
+            };
+            
+            status.innerHTML = `
+                <i class="${icons[type]}"></i>
+                ${message}
+            `;
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Soumission du formulaire
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const copro = document.getElementById('copro-input').value.trim();
             const description = document.getElementById('desc-input').value.trim();
             const employee = document.getElementById('signature-input').value.trim();
-            const files = document.getElementById('images-input').files;
 
-            if (!copro || !description || !employee) return;
+            if (!copro || !description || !employee) {
+                showStatus('Veuillez remplir tous les champs obligatoires', 'error');
+                return;
+            }
 
-            status.textContent = "Envoi en cours…";
+            showStatus("Envoi du signalement en cours...", "loading");
 
             try {
                 let images = [];
 
                 // Upload des images si présentes
-                if (files.length > 0) {
-                    for (let file of files) {
+                if (selectedFiles.length > 0) {
+                    showStatus(`Upload des images... (0/${selectedFiles.length})`, "loading");
+                    
+                    for (let i = 0; i < selectedFiles.length; i++) {
                         try {
-                            const uploaded = await uploadToImgBB(file);
+                            showStatus(`Upload des images... (${i + 1}/${selectedFiles.length})`, "loading");
+                            const uploaded = await uploadToImgBB(selectedFiles[i]);
                             images.push(uploaded);
                         } catch (err) {
                             console.error("Erreur upload image :", err);
+                            showStatus(`Erreur lors de l'upload de l'image ${i + 1}`, "error");
                         }
                     }
                 }
 
+                showStatus("Enregistrement du signalement...", "loading");
+
+                // Enregistrer dans Firebase
                 await addDoc(collection(db, "signalements"), {
                     copro,
                     description,
@@ -136,44 +920,64 @@
                     createdAt: new Date()
                 });
 
-                // ✅ Envoi notification ntfy
-                let message = `🚨 Signalement de ${employee} sur ${copro}\n${description}`;
-                // Si une image est disponible, on ajoute l'URL à la notif
+                // Envoi notification ntfy
+                let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
+                
+                // Ajouter l'URL de la première image si disponible
                 if (images.length > 0 && images[0].url) {
-                    message += `\n${images[0].url}`;
+                    message += `\n📸 ${images[0].url}`;
                 }
 
-                await fetch("https://ntfy.sh/signalement-propre-eco", {
-                    method: "POST",
-                    body: message // pas de headers compliqués pour éviter l’erreur
-                });
+                try {
+                    await fetch("https://ntfy.sh/signalement-propre-eco", {
+                        method: "POST",
+                        body: message
+                    });
+                } catch (ntfyError) {
+                    console.error("Erreur notification ntfy:", ntfyError);
+                }
                 
-                status.textContent = "Signalement envoyé ✅";
+                showStatus("✅ Signalement envoyé avec succès !", "success");
+                
+                // Réinitialiser le formulaire
                 form.reset();
+                selectedFiles = [];
+                imagePreview.innerHTML = '';
+                
+                // Mettre à jour immédiatement le compteur de notifications
+                setTimeout(() => {
+                    updateNotificationBadge();
+                }, 1000);
+                
             } catch (err) {
-                console.error(err);
-                status.textContent = "Erreur lors de l’envoi ❌";
+                console.error("Erreur:", err);
+                showStatus(`❌ Erreur lors de l'envoi : ${err.message}`, "error");
             }
         });
 
-        document.querySelector('.nav-toggle').addEventListener('click', () => {
-            document.querySelector('.nav-menu').classList.toggle('show');
+        // Écouter les changements en temps réel (optionnel)
+        // Ceci permettra de mettre à jour le compteur si d'autres utilisateurs ajoutent des signalements
+        import { onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        
+        // Écouter les changements en temps réel
+        const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const count = snapshot.size;
+            notifBadge.textContent = count;
+            notifBadge.classList.remove('loading');
+            
+            // Animation pour les nouveaux signalements
+            if (count > 0) {
+                notifBadge.style.animation = 'pulse 0.5s ease-out';
+                setTimeout(() => {
+                    notifBadge.style.animation = 'pulse 2s infinite';
+                }, 500);
+            }
+        }, (error) => {
+            console.error("Erreur lors de l'écoute des signalements:", error);
+            notifBadge.textContent = "!";
+            notifBadge.classList.remove('loading');
         });
     </script>
-    <script> const toggleButton = document.querySelector('.nav-toggle'); const menu = document.querySelector('.nav-menu'); toggleButton.addEventListener('click', () => { toggleButton.classList.toggle('open'); menu.classList.toggle('open'); }); </script>
-
-    <style>
-        html,
-        body {
-            height: auto;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
-
-    <script type="module" src="script.js"></script>
-    <script type="module" src="app.js"></script>
 </body>
-
 </html>
