@@ -622,32 +622,137 @@
         .main-card {
             margin-top: 1rem;
         }
+
         .notif-badge {
-    background: var(--secondary);
-    color: white;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    margin-left: 0.25rem;
-    animation: pulse 2s infinite;
-    min-width: 1.5rem;
-    text-align: center;
-    font-weight: 700;
-}
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.25rem;
+            animation: pulse 2s infinite;
+            min-width: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
 
-.notif-badge.loading {
-    animation: spin 1s linear infinite;
-}
+        .notif-badge.loading {
+            animation: spin 1s linear infinite;
+        }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
+        @keyframes pulse {
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .modern-search {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: white;
+            color: var(--text);
+            transition: var(--transition);
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>');
+            background-repeat: no-repeat;
+            background-position: left 1rem center;
+            background-size: 1.25rem;
+        }
+
+        .modern-search:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .search-result-item.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+        }
+
+        .search-result-code {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            background: var(--surface-alt);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .search-result-item.selected .search-result-code {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .no-results {
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -663,20 +768,20 @@
                 <i class="fas fa-bars"></i>
             </button>
 
-             
-             
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
-                class="notif-badge">0</span></a></li> -->
-          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
 
-        </ul>
-      </nav>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
+                class="notif-badge">0</span></a></li> -->
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+
+                </ul>
+            </nav>
         </div>
     </header>
 
@@ -701,9 +806,11 @@
                         <i class="fas fa-building"></i>
                         Copropriété
                     </h3>
-                    <select id="propertySelect" class="modern-select">
-                        <option value="">Choisir une copropriété...</option>
-                    </select>
+                    <div class="search-container">
+                        <input type="text" id="propertySearch" class="modern-search"
+                            placeholder="Rechercher une copropriété par nom ou code..." autocomplete="off" />
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
                 </div>
 
                 <!-- Section 2: Confirmation -->
@@ -776,7 +883,6 @@
         let properties = [];
 
         // Éléments DOM
-        const propertySelect = document.getElementById('propertySelect');
         const propertyName = document.getElementById('propertyName');
         const propertyAddress = document.getElementById('propertyAddress');
         const propertyCode = document.getElementById('propertyCode');
@@ -788,7 +894,8 @@
         const compressionInfo = document.getElementById('compressionInfo');
         const uploadBtn = document.getElementById('uploadBtn');
         const messages = document.getElementById('messages');
-
+const propertySearch = document.getElementById('propertySearch');
+const searchResults = document.getElementById('searchResults');
         const IMGBB_API_KEY = "5667189ac916d67ca3e097312dd0443a";
 
         // Navigation mobile
@@ -807,7 +914,115 @@
                 });
             });
         });
+function filterProperties(query) {
+    if (!query.trim()) {
+        filteredProperties = [];
+        searchResults.classList.remove('show');
+        return;
+    }
+    
+    const lowerQuery = query.toLowerCase();
+    filteredProperties = properties.filter(p => 
+        (p.nom && p.nom.toLowerCase().includes(lowerQuery)) ||
+        (p.code && p.code.toLowerCase().includes(lowerQuery)) ||
+        (p.adresse && p.adresse.toLowerCase().includes(lowerQuery))
+    );
+    
+    displaySearchResults();
+}
 
+function displaySearchResults() {
+    if (filteredProperties.length === 0) {
+        searchResults.innerHTML = '<div class="no-results"><i class="fas fa-search"></i> Aucune copropriété trouvée</div>';
+    } else {
+        searchResults.innerHTML = filteredProperties.map((property, index) => `
+            <div class="search-result-item" data-index="${index}">
+                <div class="search-result-name">${property.nom || 'Nom non défini'}</div>
+                <div class="search-result-code">${property.code || 'N/A'}</div>
+            </div>
+        `).join('');
+    }
+    searchResults.classList.add('show');
+}
+
+function selectProperty(property) {
+    selectedProperty = property;
+    propertySearch.value = property.nom || 'Nom non défini';
+    propertyName.textContent = property.nom || 'Nom non défini';
+    propertyAddress.textContent = property.adresse || 'Adresse non définie';
+    propertyCode.textContent = property.code || 'N/A';
+    searchResults.classList.remove('show');
+    updateButtonStates();
+}
+propertySearch.addEventListener('input', (e) => {
+    const query = e.target.value;
+    if (!query.trim()) {
+        selectedProperty = null;
+        propertyName.textContent = 'Sélectionnez une copropriété';
+        propertyAddress.textContent = 'Adresse non définie';
+        propertyCode.textContent = 'N/A';
+        updateButtonStates();
+    }
+    filterProperties(query);
+});
+
+propertySearch.addEventListener('focus', () => {
+    if (propertySearch.value.trim()) {
+        filterProperties(propertySearch.value);
+    }
+});
+
+// Gestion des clics sur les résultats
+searchResults.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (item) {
+        const index = parseInt(item.dataset.index);
+        selectProperty(filteredProperties[index]);
+    }
+});
+
+// Fermer les résultats en cliquant ailleurs
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+        searchResults.classList.remove('show');
+    }
+});
+
+// Navigation au clavier
+propertySearch.addEventListener('keydown', (e) => {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    let selectedIndex = Array.from(items).findIndex(item => item.classList.contains('selected'));
+    
+    switch (e.key) {
+        case 'ArrowDown':
+            e.preventDefault();
+            if (selectedIndex < items.length - 1) {
+                if (selectedIndex >= 0) items[selectedIndex].classList.remove('selected');
+                items[selectedIndex + 1].classList.add('selected');
+            }
+            break;
+            
+        case 'ArrowUp':
+            e.preventDefault();
+            if (selectedIndex > 0) {
+                items[selectedIndex].classList.remove('selected');
+                items[selectedIndex - 1].classList.add('selected');
+            }
+            break;
+            
+        case 'Enter':
+            e.preventDefault();
+            if (selectedIndex >= 0) {
+                selectProperty(filteredProperties[selectedIndex]);
+            }
+            break;
+            
+        case 'Escape':
+            searchResults.classList.remove('show');
+            propertySearch.blur();
+            break;
+    }
+});
         // Chargement des copropriétés
         async function loadProperties() {
             try {
@@ -820,7 +1035,7 @@
                 const csvResp = await fetch(csvUrl, { cache: "no-store" });
                 const csvText = await csvResp.text();
                 properties = parseCsv(csvText);
-                populatePropertySelect();
+
             } catch (e) {
                 console.error(e);
                 showMessage("Erreur lors du chargement des copropriétés", "error");
@@ -839,33 +1054,8 @@
             });
         }
 
-        function populatePropertySelect() {
-            propertySelect.innerHTML = '<option value="">Choisir une copropriété...</option>';
-            properties.forEach((p, i) => {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.textContent = p.nom || `Copropriété ${i + 1}`;
-                propertySelect.appendChild(opt);
-            });
-        }
 
         // Event listeners
-        propertySelect.addEventListener('change', () => {
-            const i = propertySelect.value;
-            if (i === '') {
-                selectedProperty = null;
-                propertyName.textContent = 'Sélectionnez une copropriété';
-                propertyAddress.textContent = 'Adresse non définie';
-                propertyCode.textContent = 'N/A';
-                updateButtonStates();
-                return;
-            }
-            selectedProperty = properties[i];
-            propertyName.textContent = selectedProperty.nom || 'Nom non défini';
-            propertyAddress.textContent = selectedProperty.adresse || 'Adresse non définie';
-            propertyCode.textContent = selectedProperty.code || 'N/A';
-            updateButtonStates();
-        });
 
         workConfirmation.addEventListener('change', updateButtonStates);
         photoBtn.addEventListener('click', () => photoInput.click());
@@ -1062,11 +1252,12 @@
 
         // Réinitialiser le formulaire
         function resetForm() {
-            propertySelect.value = '';
+            propertySearch.value = '';
             selectedProperty = null;
             propertyName.textContent = 'Sélectionnez une copropriété';
             propertyAddress.textContent = 'Adresse non définie';
             propertyCode.textContent = 'N/A';
+            searchResults.classList.remove('show');
             workConfirmation.checked = false;
             photoInput.value = '';
             compressedImageBlob = null;

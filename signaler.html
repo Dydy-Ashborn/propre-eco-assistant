@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -142,13 +143,25 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Container principal */
@@ -206,8 +219,13 @@
         }
 
         @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .card-header h1 {
@@ -348,10 +366,12 @@
 
         /* Preview des images */
         .image-preview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            max-width: 30%;
         }
 
         .preview-item {
@@ -393,6 +413,18 @@
         .preview-remove:hover {
             background: #dc2626;
             transform: scale(1.1);
+        }
+
+        .preview-size {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         /* Boutons modernes */
@@ -486,8 +518,15 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Footer */
@@ -499,6 +538,19 @@
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             margin-top: auto;
+        }
+
+        .compression-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         /* Responsive design */
@@ -600,24 +652,20 @@
                 <i class="fas fa-leaf"></i>
                 Propre Eco Assistant
             </a>
-            
+
             <button class="nav-toggle" aria-label="Menu">
                 <i class="fas fa-bars"></i>
             </button>
-            
-            
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
-                class="notif-badge">0</span></a></li> -->
-          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
 
-        </ul>
-      </nav>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
@@ -639,13 +687,8 @@
                             <i class="fas fa-building"></i>
                             Copropriété
                         </label>
-                        <input 
-                            type="text" 
-                            id="copro-input" 
-                            class="form-input" 
-                            placeholder="Nom de la copropriété..."
-                            required 
-                        />
+                        <input type="text" id="copro-input" class="form-input" placeholder="Nom de la copropriété..."
+                            required />
                     </div>
 
                     <!-- Description -->
@@ -654,12 +697,8 @@
                             <i class="fas fa-comment-alt"></i>
                             Description du problème
                         </label>
-                        <textarea 
-                            id="desc-input" 
-                            class="form-input form-textarea"
-                            placeholder="Décrivez le problème rencontré en détail..."
-                            required
-                        ></textarea>
+                        <textarea id="desc-input" class="form-input form-textarea"
+                            placeholder="Décrivez le problème rencontré en détail..." required></textarea>
                     </div>
 
                     <!-- Employé -->
@@ -668,13 +707,8 @@
                             <i class="fas fa-user"></i>
                             Signature de l'employé
                         </label>
-                        <input 
-                            type="text" 
-                            id="signature-input" 
-                            class="form-input"
-                            placeholder="Votre prénom"
-                            required 
-                        />
+                        <input type="text" id="signature-input" class="form-input" placeholder="Votre prénom"
+                            required />
                     </div>
 
                     <!-- Images -->
@@ -688,13 +722,7 @@
                                 <i class="fas fa-info-circle"></i>
                                 <span>Maximum 3 images</span>
                             </div>
-                            <input 
-                                type="file" 
-                                id="images-input" 
-                                class="file-input"
-                                multiple 
-                                accept="image/*" 
-                            />
+                            <input type="file" id="images-input" class="file-input" multiple accept="image/*" />
                             <div id="image-preview" class="image-preview"></div>
                         </div>
                     </div>
@@ -717,7 +745,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
@@ -732,111 +760,110 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Elements DOM
         const form = document.getElementById('report-form');
         const status = document.getElementById('status');
         const imagesInput = document.getElementById('images-input');
         const imagePreview = document.getElementById('image-preview');
-        const notifBadge = document.getElementById('notifBadge');
         const API_KEY = "7f0e4433bcc19c0f1408f57919fbcf14";
 
+        // Variables globales pour les images
         let selectedFiles = [];
+        let compressedFiles = [];
 
-        // Fonction pour compter et mettre à jour le badge de notification
-        async function updateNotificationBadge() {
-            try {
-                const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-                const count = querySnapshot.size;
-                
-                notifBadge.textContent = count;
-                notifBadge.classList.remove('loading');
-                
-                // Animation si nouveau signalement
-                if (count > 0) {
-                    notifBadge.style.animation = 'pulse 0.5s ease-out';
-                    setTimeout(() => {
-                        notifBadge.style.animation = 'pulse 2s infinite';
-                    }, 500);
+        // Fonction de compression intelligente d'image
+        async function compressImageSmart(file, maxW = 800, maxH = 600, quality = 0.6) {
+            if ('createImageBitmap' in window) {
+                try {
+                    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+                    const { blob } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
+                        const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx.drawImage(bitmap, 0, 0, w, h);
+                    }, quality);
+
+                    // Si encore trop lourd, réduire encore la qualité
+                    if (blob.size > 300 * 1024) {
+                        const { blob: blob2 } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
+                            const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
+                            canvas.width = w;
+                            canvas.height = h;
+                            ctx.drawImage(bitmap, 0, 0, w, h);
+                        }, 0.4);
+                        return { blob: blob2 };
+                    }
+                    return { blob };
+                } catch (error) {
+                    console.error('Erreur createImageBitmap:', error);
                 }
-            } catch (error) {
-                console.error("Erreur lors de la récupération du nombre de signalements:", error);
-                notifBadge.textContent = "!";
-                notifBadge.classList.remove('loading');
-            }
-        }
-
-        // Navigation mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggleButton = document.querySelector('.nav-toggle');
-            const menu = document.querySelector('.nav-menu');
-
-            toggleButton.addEventListener('click', () => {
-                menu.classList.toggle('open');
-            });
-
-            // Fermer le menu en cliquant sur un lien
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.addEventListener('click', () => {
-                    menu.classList.remove('open');
-                });
-            });
-
-            // Charger le compteur de notifications au démarrage
-            updateNotificationBadge();
-            
-            // Mettre à jour le compteur toutes les 30 secondes
-            setInterval(updateNotificationBadge, 30000);
-        });
-
-        // Gestion des images
-        imagesInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            
-            // Limiter à 3 images
-            if (files.length > 3) {
-                showStatus('Vous ne pouvez sélectionner que 3 images maximum', 'error');
-                return;
             }
 
-            selectedFiles = files;
-            displayImagePreview(files);
-        });
+            // Fallback avec Image classique
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = async () => {
+                    try {
+                        const { blob } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
+                            const { w, h } = fit(img.width, img.height, maxW, maxH);
+                            canvas.width = w;
+                            canvas.height = h;
+                            ctx.drawImage(img, 0, 0, w, h);
+                        }, quality);
 
-        function displayImagePreview(files) {
-            imagePreview.innerHTML = '';
-            
-            files.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'preview-item';
-                    previewItem.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview ${index + 1}" class="preview-image">
-                        <button type="button" class="preview-remove" onclick="removeImage(${index})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    imagePreview.appendChild(previewItem);
+                        // Si encore trop lourd, réduire encore la qualité
+                        if (blob.size > 300 * 1024) {
+                            const { blob: blob2 } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
+                                const { w, h } = fit(img.width, img.height, maxW, maxH);
+                                canvas.width = w;
+                                canvas.height = h;
+                                ctx.drawImage(img, 0, 0, w, h);
+                            }, 0.4);
+                            resolve({ blob: blob2 });
+                        } else {
+                            resolve({ blob });
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
                 };
-                reader.readAsDataURL(file);
+                img.onerror = () => reject(new Error('Impossible de charger l\'image'));
+                img.src = URL.createObjectURL(file);
             });
         }
 
-        // Fonction globale pour supprimer une image
-        window.removeImage = function(index) {
-            selectedFiles.splice(index, 1);
-            displayImagePreview(selectedFiles);
-            
-            // Mettre à jour l'input file
-            const dt = new DataTransfer();
-            selectedFiles.forEach(file => dt.items.add(file));
-            imagesInput.files = dt.files;
-        };
+        function fit(w, h, maxW, maxH) {
+            let rw = w, rh = h;
+            if (rw > rh && rw > maxW) {
+                rh = Math.round(rh * (maxW / rw));
+                rw = maxW;
+            } else if (rh >= rw && rh > maxH) {
+                rw = Math.round(rw * (maxH / rh));
+                rh = maxH;
+            }
+            return { w: rw, h: rh };
+        }
+
+        function drawToCanvas(srcW, srcH, drawCallback, quality = 0.6) {
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                try {
+                    drawCallback(canvas, ctx);
+                    canvas.toBlob(blob => {
+                        if (!blob) return reject(new Error('Échec de la conversion en blob'));
+                        resolve({ blob });
+                    }, 'image/jpeg', quality);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        }
 
         // Upload vers ImgBB
-        async function uploadToImgBB(file) {
+        async function uploadToImgBB(blob) {
             const formData = new FormData();
-            formData.append("image", file);
+            formData.append("image", blob);
 
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {
                 method: "POST",
@@ -852,17 +879,114 @@
             };
         }
 
+        // Gestion des images
+        imagesInput.addEventListener('change', async function (e) {
+            const files = Array.from(e.target.files);
+
+            // Limiter à 3 images
+            if (files.length > 3) {
+                showStatus('Vous ne pouvez sélectionner que 3 images maximum', 'error');
+                return;
+            }
+
+            selectedFiles = files;
+            compressedFiles = [];
+
+            // Afficher un message de compression
+            showStatus('Compression des images en cours...', 'loading');
+
+            try {
+                // Compresser chaque image
+                for (let i = 0; i < files.length; i++) {
+                    showStatus(`Compression des images... (${i + 1}/${files.length})`, 'loading');
+                    const compressed = await compressImageSmart(files[i]);
+                    compressedFiles.push(compressed.blob);
+                }
+
+                await displayImagePreview(files, compressedFiles);
+                showStatus('Images compressées avec succès !', 'success');
+
+            } catch (error) {
+                console.error('Erreur lors de la compression:', error);
+                showStatus('Erreur lors de la compression des images', 'error');
+            }
+        });
+
+        // Affichage des previews d'images
+        async function displayImagePreview(originalFiles, compressedBlobs) {
+            imagePreview.innerHTML = '';
+
+            for (let i = 0; i < originalFiles.length; i++) {
+                const originalFile = originalFiles[i];
+                const compressedBlob = compressedBlobs[i];
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const originalKB = (originalFile.size / 1024).toFixed(1);
+                    const compressedKB = (compressedBlob.size / 1024).toFixed(1);
+
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${i + 1}" class="preview-image">
+                        <button type="button" class="preview-remove" onclick="removeImage(${i})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="preview-size">${compressedKB} KB</div>
+                    `;
+                    imagePreview.appendChild(previewItem);
+
+                    // Afficher les infos de compression après la dernière image
+                    if (i === originalFiles.length - 1) {
+                        const totalOriginal = originalFiles.reduce((sum, file) => sum + file.size, 0);
+                        const totalCompressed = compressedBlobs.reduce((sum, blob) => sum + blob.size, 0);
+                        const totalRatio = ((1 - totalCompressed / totalOriginal) * 100).toFixed(1);
+
+                        const compressionInfo = document.createElement('div');
+                        compressionInfo.className = 'compression-info';
+                        compressionInfo.innerHTML = `
+                            <i class="fas fa-chart-line"></i>
+                            <span>
+                                <strong>Compression totale :</strong> 
+                                ${(totalOriginal / 1024).toFixed(1)} KB → ${(totalCompressed / 1024).toFixed(1)} KB 
+                                (-${totalRatio}%)
+                            </span>
+                        `;
+                        imagePreview.appendChild(compressionInfo);
+                    }
+                };
+                reader.readAsDataURL(compressedBlob);
+            }
+        }
+
+        // Fonction globale pour supprimer une image
+        window.removeImage = function (index) {
+            selectedFiles.splice(index, 1);
+            compressedFiles.splice(index, 1);
+
+            if (selectedFiles.length > 0) {
+                displayImagePreview(selectedFiles, compressedFiles);
+            } else {
+                imagePreview.innerHTML = '';
+            }
+
+            // Mettre à jour l'input file
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            imagesInput.files = dt.files;
+        };
+
         // Affichage des messages de statut
         function showStatus(message, type) {
             status.className = `status ${type}`;
             status.style.display = 'block';
-            
+
             const icons = {
                 success: 'fas fa-check-circle',
                 error: 'fas fa-times-circle',
                 loading: 'fas fa-spinner fa-spin'
             };
-            
+
             status.innerHTML = `
                 <i class="${icons[type]}"></i>
                 ${message}
@@ -893,14 +1017,14 @@
             try {
                 let images = [];
 
-                // Upload des images si présentes
-                if (selectedFiles.length > 0) {
-                    showStatus(`Upload des images... (0/${selectedFiles.length})`, "loading");
-                    
-                    for (let i = 0; i < selectedFiles.length; i++) {
+                // Upload des images compressées si présentes
+                if (compressedFiles.length > 0) {
+                    showStatus(`Upload des images... (0/${compressedFiles.length})`, "loading");
+
+                    for (let i = 0; i < compressedFiles.length; i++) {
                         try {
-                            showStatus(`Upload des images... (${i + 1}/${selectedFiles.length})`, "loading");
-                            const uploaded = await uploadToImgBB(selectedFiles[i]);
+                            showStatus(`Upload des images... (${i + 1}/${compressedFiles.length})`, "loading");
+                            const uploaded = await uploadToImgBB(compressedFiles[i]);
                             images.push(uploaded);
                         } catch (err) {
                             console.error("Erreur upload image :", err);
@@ -922,7 +1046,7 @@
 
                 // Envoi notification ntfy
                 let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
-                
+
                 // Ajouter l'URL de la première image si disponible
                 if (images.length > 0 && images[0].url) {
                     message += `\n📸 ${images[0].url}`;
@@ -936,48 +1060,40 @@
                 } catch (ntfyError) {
                     console.error("Erreur notification ntfy:", ntfyError);
                 }
-                
+
                 showStatus("✅ Signalement envoyé avec succès !", "success");
-                
+
                 // Réinitialiser le formulaire
                 form.reset();
                 selectedFiles = [];
+                compressedFiles = [];
                 imagePreview.innerHTML = '';
-                
-                // Mettre à jour immédiatement le compteur de notifications
-                setTimeout(() => {
-                    updateNotificationBadge();
-                }, 1000);
-                
+
             } catch (err) {
                 console.error("Erreur:", err);
                 showStatus(`❌ Erreur lors de l'envoi : ${err.message}`, "error");
             }
         });
 
-        // Écouter les changements en temps réel (optionnel)
-        // Ceci permettra de mettre à jour le compteur si d'autres utilisateurs ajoutent des signalements
-        import { onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-        
-        // Écouter les changements en temps réel
-        const q = query(collection(db, "signalements"), orderBy("createdAt", "desc"));
-        onSnapshot(q, (snapshot) => {
-            const count = snapshot.size;
-            notifBadge.textContent = count;
-            notifBadge.classList.remove('loading');
-            
-            // Animation pour les nouveaux signalements
-            if (count > 0) {
-                notifBadge.style.animation = 'pulse 0.5s ease-out';
-                setTimeout(() => {
-                    notifBadge.style.animation = 'pulse 2s infinite';
-                }, 500);
+        // Navigation mobile
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.querySelector('.nav-toggle');
+            const menu = document.querySelector('.nav-menu');
+
+            if (toggleButton && menu) {
+                toggleButton.addEventListener('click', () => {
+                    menu.classList.toggle('open');
+                });
+
+                // Fermer le menu en cliquant sur un lien
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menu.classList.remove('open');
+                    });
+                });
             }
-        }, (error) => {
-            console.error("Erreur lors de l'écoute des signalements:", error);
-            notifBadge.textContent = "!";
-            notifBadge.classList.remove('loading');
         });
     </script>
 </body>
+
 </html>

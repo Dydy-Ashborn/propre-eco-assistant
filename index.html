@@ -355,6 +355,13 @@
       color: var(--text);
     }
 
+    .property-details-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
     /* Status de géolocalisation */
     .geolocation-status {
       display: flex;
@@ -452,6 +459,15 @@
       box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
+    .btn-info {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-info:hover {
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    }
+
     /* Itinéraire */
     .itinerary {
       background: var(--surface-alt);
@@ -499,6 +515,16 @@
     .itinerary-item:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
+    }
+
+    .itinerary-item-content {
+      flex: 1;
+    }
+
+    .itinerary-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
 
     .empty-state {
@@ -572,6 +598,7 @@
       overflow-y: auto;
       box-shadow: var(--shadow-lg);
       animation: modalSlideIn 0.3s ease-out;
+      position: relative;
     }
 
     @keyframes modalSlideIn {
@@ -601,6 +628,23 @@
     .close-btn:hover {
       color: var(--accent);
       transform: scale(1.1);
+    }
+
+    .procedure-content {
+      white-space: pre-line;
+      line-height: 1.8;
+      color: var(--text);
+      margin: 1rem 0;
+    }
+
+    .procedure-footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      text-align: center;
+      color: var(--primary-dark);
+      font-weight: 600;
     }
 
     /* Footer */
@@ -675,6 +719,20 @@
 
       .property-actions {
         flex-direction: column;
+      }
+
+      .property-details-actions {
+        flex-direction: column;
+      }
+
+      .itinerary-item {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .itinerary-item-actions {
+        align-self: stretch;
+        justify-content: center;
       }
 
       .btn {
@@ -763,12 +821,9 @@
         <ul class="nav-menu">
           <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
           <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
-                class="notif-badge">0</span></a></li> -->
           <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
           <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
           <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
-
         </ul>
       </nav>
     </div>
@@ -795,10 +850,16 @@
 
       <div class="property-details" id="propertyDetails" style="display:none;">
         <div class="property-info" id="propertyInfo"></div>
-        <button class="btn" id="addToItinerary">
-          <i class="fas fa-plus"></i>
-          Ajouter à mon itinéraire
-        </button>
+        <div class="property-details-actions">
+          <button class="btn" id="addToItinerary">
+            <i class="fas fa-plus"></i>
+            Ajouter à mon itinéraire
+          </button>
+          <button class="btn btn-info" id="showProcedureBtn" style="display:none;">
+            <i class="fas fa-list-ul"></i>
+            Voir la procédure
+          </button>
+        </div>
       </div>
 
       <div style="margin-top: 1.5rem; text-align: right;">
@@ -872,9 +933,8 @@
     <div class="modal-content">
       <button class="close-btn">&times;</button>
       <h2 id="procedureTitle"></h2>
-      <div id="procedureText"></div>
-      <div class="procedure-footer"
-        style="margin-top: 2rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius); text-align: center;">
+      <div class="procedure-content" id="procedureText"></div>
+      <div class="procedure-footer">
         <i class="fas fa-star"></i>
         Merci pour votre travail, n'oubliez pas que chaque geste compte !
       </div>
@@ -888,10 +948,12 @@
   <script>
     // Variables globales
     let properties = [];
+    let procedures = {};
     let currentItinerary = [];
     let userLocation = null;
     let displayedProperties = 0;
     const propertiesPerPage = 12;
+    let selectedProperty = null;
 
     // Éléments DOM
     const searchInput = document.getElementById('searchInput');
@@ -899,6 +961,7 @@
     const propertyDetails = document.getElementById('propertyDetails');
     const propertyInfo = document.getElementById('propertyInfo');
     const addToItineraryBtn = document.getElementById('addToItinerary');
+    const showProcedureBtn = document.getElementById('showProcedureBtn');
     const syncBtn = document.getElementById('syncCsv');
     const itineraryList = document.getElementById('itineraryList');
     const optimizeBtn = document.getElementById('optimizeItinerary');
@@ -907,6 +970,7 @@
     const showMoreBtn = document.getElementById('showMoreBtn');
     const procedureModal = document.getElementById('procedureModal');
     const locationStatus = document.getElementById('locationStatus');
+
 
     // Initialisation au chargement de la page
     document.addEventListener('DOMContentLoaded', function () {
@@ -927,6 +991,7 @@
       loadStoredData();
       getCurrentLocation();
       loadProperties();
+      loadProcedures();
       updateItineraryDisplay();
     });
 
@@ -1015,7 +1080,25 @@
         showErrorState('Erreur lors du chargement des données');
       }
     }
+    
+    // Chargement des procédures depuis le fichier JSON
+    async function loadProcedures() {
+      try {
+        const response = await fetch('procedures.json', { cache: "no-store" });
 
+        if (!response.ok) {
+          throw new Error("Erreur de chargement des procédures");
+        }
+
+        procedures = await response.json();
+        console.log('Procédures chargées avec succès');
+
+      } catch (error) {
+        console.error('Erreur lors du chargement des procédures:', error);
+        showNotification('Erreur lors du chargement des procédures', 'warning');
+        procedures = {}; // Objet vide en cas d'erreur
+      }
+    }
     function parseCsv(text) {
       if (!text) return [];
       const lines = text.trim().split(/\r?\n/).filter(Boolean);
@@ -1076,6 +1159,8 @@
     function createPropertyCard(property) {
       const card = document.createElement('div');
       card.className = 'property-card';
+      const hasProcedure = procedures.hasOwnProperty(property.nom);
+
       card.innerHTML = `
         <h4>${property.nom || 'Nom non défini'}</h4>
         <p><i class="fas fa-map-marker-alt"></i> ${property.adresse || 'Adresse non définie'}</p>
@@ -1084,8 +1169,8 @@
           <button class="btn" onclick="addPropertyToItinerary('${property.nom}')">
             <i class="fas fa-plus"></i> Ajouter
           </button>
-          ${property.procedure ? `
-            <button class="btn btn-warning" onclick="showProcedure('${property.nom}', \`${property.procedure}\`)">
+          ${hasProcedure ? `
+            <button class="btn btn-info" onclick="showProcedure('${property.nom}')">
               <i class="fas fa-list-ul"></i> Procédure
             </button>
           ` : ''}
@@ -1144,14 +1229,24 @@
       const property = properties.find(p => p.nom === propertyName);
       if (!property) return;
 
+      selectedProperty = property;
+      const hasProcedure = procedures.hasOwnProperty(propertyName);
+
       propertyInfo.innerHTML = `
         <h3>${property.nom || 'Nom non défini'}</h3>
         <p><i class="fas fa-map-marker-alt"></i> <strong>Adresse:</strong> ${property.adresse || 'Non définie'}</p>
         <p><i class="fas fa-lock"></i> <strong>Code:</strong> ${property.code || 'N/A'}</p>
-        ${property.procedure ? `<p><i class="fas fa-list-ul"></i> <strong>Procédure disponible</strong></p>` : ''}
+        ${hasProcedure ? `<p><i class="fas fa-list-ul"></i> <strong>Procédure disponible</strong></p>` : ''}
       `;
 
       addToItineraryBtn.onclick = () => addPropertyToItinerary(propertyName);
+
+      if (hasProcedure) {
+        showProcedureBtn.style.display = 'inline-flex';
+        showProcedureBtn.onclick = () => showProcedure(propertyName);
+      } else {
+        showProcedureBtn.style.display = 'none';
+      }
 
       propertyDetails.style.display = 'block';
       searchResults.style.display = 'none';
@@ -1185,19 +1280,29 @@
         return;
       }
 
-      itineraryList.innerHTML = currentItinerary.map((property, index) => `
-        <div class="itinerary-item">
-          <div>
-            <strong>${property.nom || 'Nom non défini'}</strong>
-            <br>
-            <small><i class="fas fa-map-marker-alt"></i> ${property.adresse || 'Adresse non définie'}</small><br>
-            <small><i class="fas fa-lock"></i> ${property.code || 'Code non défini'}</small>
+      itineraryList.innerHTML = currentItinerary.map((property, index) => {
+        const hasProcedure = procedures.hasOwnProperty(property.nom);
+        return `
+          <div class="itinerary-item">
+            <div class="itinerary-item-content">
+              <strong>${property.nom || 'Nom non défini'}</strong>
+              <br>
+              <small><i class="fas fa-map-marker-alt"></i> ${property.adresse || 'Adresse non définie'}</small><br>
+              <small><i class="fas fa-lock"></i> ${property.code || 'Code non défini'}</small>
+            </div>
+            <div class="itinerary-item-actions">
+              ${hasProcedure ? `
+                <button class="btn btn-info" onclick="showProcedure('${property.nom}')" style="padding: 0.5rem;">
+                  <i class="fas fa-list-ul"></i>
+                </button>
+              ` : ''}
+              <button class="btn btn-danger" onclick="removeFromItinerary(${index})" style="padding: 0.5rem;">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
-          <button class="btn btn-danger" onclick="removeFromItinerary(${index})" style="padding: 0.5rem;">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     window.removeFromItinerary = function (index) {
@@ -1279,9 +1384,15 @@
     showMoreBtn.addEventListener('click', displayProperties);
 
     // Procédures
-    window.showProcedure = function (propertyName, procedure) {
+    window.showProcedure = function (propertyName) {
+      const procedure = procedures[propertyName];
+      if (!procedure) {
+        showNotification('Aucune procédure disponible pour cette copropriété', 'warning');
+        return;
+      }
+
       document.getElementById('procedureTitle').textContent = `Procédure - ${propertyName}`;
-      document.getElementById('procedureText').innerHTML = procedure.replace(/\n/g, '<br>');
+      document.getElementById('procedureText').textContent = procedure;
       procedureModal.style.display = 'block';
     };
 
