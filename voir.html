@@ -713,6 +713,100 @@
                 transform: rotate(360deg);
             }
         }
+        /* Conteneur scrollable */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius);
+    background: white;
+    box-shadow: var(--shadow);
+}
+
+/* Tableau */
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 600px; /* permet le scroll horizontal sur petits écrans */
+}
+
+.modern-table th, .modern-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.modern-table th {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modern-table tbody tr:hover {
+    background: var(--surface-alt);
+    transform: scale(1.01);
+}
+
+.modern-table tbody tr:nth-child(even) {
+    background: rgba(16, 185, 129, 0.02);
+}
+
+/* Images thumbnail */
+.thumb {
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.thumb:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 768px) {
+    .modern-table {
+        min-width: 100%; /* s’adapte à l’écran */
+        font-size: 0.8rem;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .toolbar .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modern-table th, .modern-table td {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-table {
+        font-size: 0.75rem;
+    }
+
+    .thumb {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    .toolbar .btn {
+        font-size: 0.75rem;
+    }
+
+    .toolbar {
+        gap: 0.25rem;
+    }
+}
+
     </style>
 </head>
 

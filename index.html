@@ -9,6 +9,89 @@
   <link rel="apple-touch-icon" href="iphone.png">
   <link rel="icon" type="image/png" href="d6d38760-30b5-4026-8f90-0f5236d62d28 (1).png">
   <style>
+    /* Résultats de recherche - version complètement adaptative */
+/* Résultats de recherche - z-index ajusté */
+/* Ajustement pour que le dropdown ne dépasse pas la navbar */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 90; /* En dessous de la navbar */
+  display: none;
+  max-height: calc(100vh - 200px); /* Limite la hauteur pour éviter de dépasser */
+  overflow-y: auto; /* Scroll si nécessaire */
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 1.5rem; /* Réduit de 4rem à 1.5rem */
+  z-index: 120; /* Réduit mais toujours au-dessus du contenu */
+  overflow: visible;
+}
+
+/* Section de recherche avec espacement normal */
+.section:first-of-type {
+  overflow: visible !important;
+  z-index: 100;
+  margin-bottom: 2rem; /* Réduit de 8rem à 2rem normal */
+  position: relative;
+}
+
+/* Toutes les sections - retour à l'espacement normal */
+.section {
+  position: relative;
+  overflow: visible;
+  margin-bottom: 2rem; /* Retour à la valeur normale */
+}
+
+/* Les autres sections */
+.section:not(:first-of-type) {
+  z-index: 1;
+  margin-top: 0; /* Supprimé l'espacement supplémentaire */
+}
+
+/* Mobile : comportement différent */
+@media (max-width: 768px) {
+  .search-results {
+    max-height: 60vh; /* Limite sur mobile */
+    overflow-y: auto;
+    border-radius: var(--radius);
+    margin-top: 0.5rem;
+    position: fixed; /* Changé à fixed pour mobile */
+    left: 1rem;
+    right: 1rem;
+    top: auto;
+  }
+  
+  .search-container {
+    margin-bottom: 2rem;
+  }
+  
+  .section:first-of-type {
+    margin-bottom: 3rem;
+  }
+}
+
+/* Force l'affichage au-dessus de tout */
+body:has(.search-results[style*="display: block"]) .section:not(:first-of-type) {
+  z-index: 0;
+}
+/* Reset des propriétés qui pourraient interférer */
+.search-results * {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Container général sans limitation */
+.container {
+  overflow: visible;
+  position: relative;
+}
     * {
       margin: 0;
       padding: 0;
@@ -51,7 +134,7 @@
       padding: 1rem 2rem;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
     }
 
     .header-content {
@@ -260,11 +343,7 @@
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    /* Recherche moderne */
-    .search-container {
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
+
 
     .search-input {
       width: 100%;
@@ -296,21 +375,7 @@
       font-size: 1.1rem;
     }
 
-    /* Résultats de recherche */
-    .search-results {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 0 0 var(--radius) var(--radius);
-      box-shadow: var(--shadow-lg);
-      max-height: 300px;
-      overflow-y: auto;
-      z-index: 10;
-      display: none;
-    }
+
 
     .search-result-item {
       padding: 1rem;
@@ -813,6 +878,7 @@
         Propre Eco Assistant
       </a>
 
+
       <button class="nav-toggle" aria-label="Menu">
         <i class="fas fa-bars"></i>
       </button>
@@ -987,14 +1053,16 @@
         });
       });
 
-      // Initialisation
+      // Initialisation modifiée
       loadStoredData();
       getCurrentLocation();
       loadProperties();
-      loadProcedures();
-      updateItineraryDisplay();
-    });
 
+      // Charger les procédures puis mettre à jour l'affichage de l'itinéraire
+      loadProcedures().then(() => {
+        updateItineraryDisplay();
+      });
+    });
     // Chargement des données depuis le stockage local
     function loadStoredData() {
       const stored = localStorage.getItem('itinerary');
@@ -1010,6 +1078,25 @@
 
     // Géolocalisation
     function getCurrentLocation() {
+      // Vérifier d'abord si on a une position récente en cache
+      const cachedLocation = localStorage.getItem('userLocation');
+      const cacheTime = localStorage.getItem('userLocationTime');
+      const now = Date.now();
+
+      // Si on a une position de moins de 10 minutes, l'utiliser
+      if (cachedLocation && cacheTime && (now - parseInt(cacheTime)) < 600000) { // 10 minutes au lieu de 30
+        try {
+          const cached = JSON.parse(cachedLocation);
+          userLocation = cached;
+          updateLocationStatus('success', 'Position utilisée depuis le cache');
+          return;
+        } catch (e) {
+          // Nettoyer le cache corrompu
+          localStorage.removeItem('userLocation');
+          localStorage.removeItem('userLocationTime');
+        }
+      }
+
       if (!navigator.geolocation) {
         updateLocationStatus('error', 'Géolocalisation non supportée par votre navigateur');
         return;
@@ -1021,9 +1108,18 @@
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
+
+          // Sauvegarder en cache
+          localStorage.setItem('userLocation', JSON.stringify(userLocation));
+          localStorage.setItem('userLocationTime', now.toString());
+
           updateLocationStatus('success', `Position détectée (±${Math.round(position.coords.accuracy)}m)`);
         },
         (error) => {
+          // Nettoyer le cache en cas d'erreur
+          localStorage.removeItem('userLocation');
+          localStorage.removeItem('userLocationTime');
+
           let errorMessage = 'Erreur de géolocalisation';
           switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -1039,11 +1135,17 @@
           updateLocationStatus('error', errorMessage);
         },
         {
-          enableHighAccuracy: true,
+          enableHighAccuracy: true, // Remis à true
           timeout: 10000,
-          maximumAge: 300000 // 5 minutes
+          maximumAge: 600000 // 10 minutes
         }
       );
+    }
+    // Fonction utilitaire pour forcer une nouvelle géolocalisation
+    function forceLocationRefresh() {
+      localStorage.removeItem('userLocation');
+      localStorage.removeItem('userLocationTime');
+      getCurrentLocation();
     }
 
     function updateLocationStatus(type, message) {
@@ -1080,7 +1182,7 @@
         showErrorState('Erreur lors du chargement des données');
       }
     }
-    
+
     // Chargement des procédures depuis le fichier JSON
     async function loadProcedures() {
       try {
@@ -1092,11 +1194,13 @@
 
         procedures = await response.json();
         console.log('Procédures chargées avec succès');
+        return procedures; // Retourner les procédures chargées
 
       } catch (error) {
         console.error('Erreur lors du chargement des procédures:', error);
         showNotification('Erreur lors du chargement des procédures', 'warning');
         procedures = {}; // Objet vide en cas d'erreur
+        return procedures;
       }
     }
     function parseCsv(text) {
@@ -1471,6 +1575,7 @@
         getCurrentLocation();
       }
     });
+
   </script>
 </body>
 

@@ -642,6 +642,24 @@
                 font-size: 1rem;
             }
         }
+
+        /* Alert moderne */
+        .alert {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #92400e;
+            font-size: 0.9rem;
+        }
+
+        .alert i {
+            color: var(--secondary);
+        }
     </style>
 </head>
 
@@ -697,6 +715,12 @@
                             <i class="fas fa-comment-alt"></i>
                             Description du problème
                         </label>
+
+                        <div class="alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Merci de renseigner le numéro de batiment si la copropriété en comporte
+                                plusieurs.</span>
+                        </div>
                         <textarea id="desc-input" class="form-input form-textarea"
                             placeholder="Décrivez le problème rencontré en détail..." required></textarea>
                     </div>
@@ -744,6 +768,8 @@
     </footer>
 
     <script type="module">
+
+        let notif = false;
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
@@ -1047,19 +1073,22 @@
                 // Envoi notification ntfy
                 let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
 
-                // Ajouter l'URL de la première image si disponible
-                if (images.length > 0 && images[0].url) {
-                    message += `\n📸 ${images[0].url}`;
+                if (notif == true) {
+                    // Ajouter l'URL de la première image si disponible
+                    if (images.length > 0 && images[0].url) {
+                        message += `\n📸 ${images[0].url}`;
+                    }
+
+                    try {
+                        await fetch("https://ntfy.sh/signalement-propre-eco", {
+                            method: "POST",
+                            body: message
+                        });
+                    } catch (ntfyError) {
+                        console.error("Erreur notification ntfy:", ntfyError);
+                    }
                 }
 
-                try {
-                    await fetch("https://ntfy.sh/signalement-propre-eco", {
-                        method: "POST",
-                        body: message
-                    });
-                } catch (ntfyError) {
-                    console.error("Erreur notification ntfy:", ntfyError);
-                }
 
                 showStatus("✅ Signalement envoyé avec succès !", "success");
 
