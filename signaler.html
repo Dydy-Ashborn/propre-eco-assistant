@@ -7,6 +7,96 @@
     <title>Signaler un problème - Propre Eco</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        .signature-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(72, 187, 120, 0.05);
+            border: 1px solid rgba(72, 187, 120, 0.2);
+            border-radius: 8px;
+        }
+
+        .signature-saved {
+            color: #48bb78;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .signature-saved i {
+            font-size: 1rem;
+        }
+
+        .change-signature {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .change-signature:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .change-signature:active {
+            transform: translateY(0);
+        }
+
+        /* Style pour l'input quand la signature est sauvegardée */
+        .form-input[readonly] {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff) !important;
+            border-color: #48bb78;
+            color: #2d3748;
+            cursor: not-allowed;
+        }
+
+        .form-input[readonly]:focus {
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+            border-color: #48bb78;
+        }
+
+        /* Animation pour la transition */
+        .form-input {
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive pour mobile */
+        @media (max-width: 768px) {
+            .signature-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .signature-saved {
+                text-align: center;
+                justify-content: center;
+            }
+
+            .change-signature {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        .nav-toggle {
+            font-size: 1.5rem;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -729,7 +819,7 @@
                     <div class="form-group">
                         <label for="signature-input" class="form-label">
                             <i class="fas fa-user"></i>
-                            Signature de l'employé
+                            Signature de l'agent
                         </label>
                         <input type="text" id="signature-input" class="form-input" placeholder="Votre prénom"
                             required />
@@ -792,6 +882,53 @@
         const imagesInput = document.getElementById('images-input');
         const imagePreview = document.getElementById('image-preview');
         const API_KEY = "7f0e4433bcc19c0f1408f57919fbcf14";
+
+        // Gestion de la signature sauvegardée
+        const signatureInput = document.getElementById('signature-input');
+        const savedSignature = localStorage.getItem('agent-signature');
+
+        // Charger la signature sauvegardée au chargement de la page
+        if (savedSignature) {
+            signatureInput.value = savedSignature;
+            signatureInput.readOnly = true;
+            signatureInput.style.backgroundColor = '#f0f8ff';
+
+            // Ajouter un bouton pour changer la signature
+            const signatureGroup = signatureInput.parentElement;
+            const changeButton = document.createElement('div');
+            changeButton.className = 'signature-controls';
+            changeButton.innerHTML = `
+        <div class="signature-saved">
+            <i class="fas fa-check-circle"></i>
+            Signature sauvegardée
+        </div>
+        <button type="button" class="change-signature" onclick="changeSignature()">
+            <i class="fas fa-edit"></i> Modifier
+        </button>
+    `;
+            signatureGroup.appendChild(changeButton);
+        }
+
+        // Fonction pour permettre de changer la signature
+        window.changeSignature = function () {
+            signatureInput.readOnly = false;
+            signatureInput.style.backgroundColor = '';
+            signatureInput.focus();
+            signatureInput.select();
+
+            // Supprimer les contrôles
+            const controls = document.querySelector('.signature-controls');
+            if (controls) {
+                controls.remove();
+            }
+        };
+
+        // Sauvegarder la signature quand l'utilisateur tape
+        signatureInput.addEventListener('blur', function () {
+            if (this.value.trim()) {
+                localStorage.setItem('agent-signature', this.value.trim());
+            }
+        });
 
         // Variables globales pour les images
         let selectedFiles = [];
@@ -1026,12 +1163,18 @@
         }
 
         // Soumission du formulaire
+        // Soumission du formulaire
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const copro = document.getElementById('copro-input').value.trim();
             const description = document.getElementById('desc-input').value.trim();
             const employee = document.getElementById('signature-input').value.trim();
+
+            // Sauvegarder la signature si ce n'est pas déjà fait
+            if (employee) {
+                localStorage.setItem('agent-signature', employee);
+            }
 
             if (!copro || !description || !employee) {
                 showStatus('Veuillez remplir tous les champs obligatoires', 'error');
@@ -1089,7 +1232,6 @@
                     }
                 }
 
-
                 showStatus("✅ Signalement envoyé avec succès !", "success");
 
                 // Réinitialiser le formulaire
@@ -1098,12 +1240,18 @@
                 compressedFiles = [];
                 imagePreview.innerHTML = '';
 
+                // Remettre la signature sauvegardée après reset
+                if (savedSignature) {
+                    signatureInput.value = savedSignature;
+                }
+
             } catch (err) {
                 console.error("Erreur:", err);
                 showStatus(`❌ Erreur lors de l'envoi : ${err.message}`, "error");
             }
         });
 
+        // Navigation mobile
         // Navigation mobile
         document.addEventListener('DOMContentLoaded', function () {
             const toggleButton = document.querySelector('.nav-toggle');

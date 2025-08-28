@@ -7,6 +7,9 @@
     <title>Feuille de passage Signée - Propre Eco</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        .nav-toggle {
+            font-size: 1.5rem;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -83,7 +86,7 @@
             align-items: center;
             gap: 0.75rem;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             text-decoration: none;
         }
@@ -1325,6 +1328,7 @@
         });
         const agentName = document.getElementById('agentName');
         const AGENT_NAME_STORAGE_KEY = 'propre_eco_agent_name_v1';
+        
         function loadAgentName() {
             const savedName = localStorage.getItem(AGENT_NAME_STORAGE_KEY);
             if (savedName) {
