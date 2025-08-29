@@ -10,6 +10,7 @@
         .nav-toggle {
             font-size: 1.5rem;
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -40,7 +41,7 @@
             --primary-light: #d1fae5;
             --secondary: #f59e0b;
             --accent: #8b5cf6;
-            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
             --surface: #ffffff;
             --surface-alt: #f8fafc;
             --text: #1f2937;
@@ -62,7 +63,6 @@
 
         /* Header moderne avec glassmorphism */
         .header {
-            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem 2rem;
@@ -86,7 +86,7 @@
             align-items: center;
             gap: 0.75rem;
             color: white;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 800;
             text-decoration: none;
         }
@@ -798,7 +798,7 @@
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-                <i class="fas fa-leaf"></i>
+                <img src="img/logo.png" width="60px" alt="">
                 Propre Eco Assistant
             </a>
 
@@ -1328,7 +1328,7 @@
         });
         const agentName = document.getElementById('agentName');
         const AGENT_NAME_STORAGE_KEY = 'propre_eco_agent_name_v1';
-        
+
         function loadAgentName() {
             const savedName = localStorage.getItem(AGENT_NAME_STORAGE_KEY);
             if (savedName) {

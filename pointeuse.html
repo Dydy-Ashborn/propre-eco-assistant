@@ -24,7 +24,7 @@
             --primary-light: #d1fae5;
             --secondary: #f59e0b;
             --accent: #8b5cf6;
-            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+--background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
             --surface: #ffffff;
             --surface-alt: #f8fafc;
             --text: #1f2937;
@@ -48,7 +48,6 @@
 
         /* Header moderne avec glassmorphism */
         .header {
-            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem 2rem;
@@ -619,7 +618,8 @@
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-                <i class="fas fa-leaf"></i>
+                                <img src="img/logo.png" width="60px" alt="">
+
                 Propre Eco Assistant
             </a>
             
@@ -685,18 +685,16 @@
 
         const employees = [
             { name: "Dylan", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Océane", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Samuel", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Jérémie", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Carlos", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Sandra", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Manon", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Stéphane", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Jocelyne", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" }
-        ];
+            { name: "Océane", sheet: "https://docs.google.com/spreadsheets/d/1sHQFYH586g2PPFY8cTANA6kqSP_vyfBREMk5lGfDbeA/edit?usp=sharing", code: "2103" },
+            { name: "Samuel", sheet: "https://docs.google.com/spreadsheets/d/1ZrJ3V-m8WIOZFgZ0Cta8PPYWjRNUKW1oY1zCZ_GLDxg/edit?usp=sharing", code: "1202" },
+            { name: "Jérémie", sheet: "https://docs.google.com/spreadsheets/d/1x-8swb0QjQ2pbZUlzm5YGErUl951-35zgCsT46D0jTA/edit?usp=sharing", code: "1810" },
+            { name: "Carlos", sheet: "https://docs.google.com/spreadsheets/d/1m8jp4xT1N5Bg-PmnyXGNSNtbMoo5FByK3p3fua6loSA/edit?usp=sharing", code: "1234" },
+            { name: "Sandra", sheet: "https://docs.google.com/spreadsheets/d/1_Scic1PPbfk7MEbcSiJvLKzEuJA0iMUTl6763SBh3lA/edit?usp=sharing", code: "sp12" },
+            { name: "Manon", sheet: "https://docs.google.com/spreadsheets/d/1_bYkzAZXtjDl9r7I7zdNr0kqYcdlQ9HZP9dl5AHLZSI/edit?usp=sharing", code: "1306" },
+            { name: "Stéphane", sheet: "https://docs.google.com/spreadsheets/d/1TEOI2z5j4dqBrC9aEkNoLvJzUs3ssgZJaX-a0t8wW6c/edit?usp=sharing", code: "1272" },
+            { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/1bL8XVwxaTP0GU7GAXJV5n0ooTiL2AcEUNdE2i4H6uFI/edit?usp=sharing", code: "3636" },
+            { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/1TfmZmRjhqZ09d8aiIjFtudszg2kyQnIktvTWIr-KpZc/edit?usp=sharing", code: "2604" },
+            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1234" }        ];
 
         // Éléments DOM
         const container = document.getElementById('employeeList');

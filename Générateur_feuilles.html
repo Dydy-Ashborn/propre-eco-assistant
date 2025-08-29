@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Dates avec Récurrence</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        #printTitle {
+            color: #4aaf70;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4aaf70, #4aaf70);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4aaf70, #4aaf70);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .print-header {
+            display: none;
+        }
+
+        .controls {
+            padding: 30px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .control-group:hover {
+            border-color: #4aaf70;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 175, 112, 0.15);
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #4aaf70;
+            box-shadow: 0 0 0 3px rgba(74, 175, 112, 0.1);
+        }
+
+        .task-recurrence-section {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .task-recurrence-section h3 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4aaf70, #4aaf70);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 175, 112, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 175, 112, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .table-container {
+            padding: 30px;
+            background: white;
+        }
+
+        .schedule-info {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 20px;
+            margin: 0 30px;
+            border-radius: 12px;
+            border-left: 6px solid #f59e0b;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #92400e;
+            line-height: 1.6;
+        }
+
+        .editable-info {
+            cursor: pointer;
+            padding: 5px;
+            margin: 2px 0;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .editable-info:hover {
+            background-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .editable-info input {
+            background: white;
+            border: 2px solid #f59e0b;
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 100%;
+            font-weight: bold;
+            color: #92400e;
+            font-size: inherit;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #e0e7ff;
+        }
+
+        .line-number {
+            background-color: #f3f4f6 !important;
+            font-weight: bold;
+            color: #6b7280;
+            width: 60px;
+        }
+
+        .date-cell {
+            font-weight: 600;
+            color: #1f2937;
+            background-color: #f3f4f6;
+        }
+
+        .editable {
+            background-color: transparent !important;
+            cursor: pointer;
+            min-height: 20px;
+            padding: 8px;
+                font-weight: bold;
+
+        }
+
+        .editable:hover {
+            background-color: #dbeafe !important;
+        }
+
+        .editable input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 4px;
+            text-align: center;
+            font-size: inherit;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .info-box h3 {
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* STYLES D'IMPRESSION OPTIMISÉS */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                margin: 1cm;
+                size: A4;
+                @top-left {
+                    content: none;
+                }
+                @top-center {
+                    content: none;
+                }
+                @top-right {
+                    content: none;
+                }
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+            }
+
+            .header {
+                display: none !important;
+            }
+
+            .print-header {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                border-bottom: 3px solid #6b0094;
+                background: white;
+                margin-bottom: 15px;
+                page-break-inside: avoid;
+            }
+
+            .print-header .logo {
+                width: 180px !important;
+                height: auto;
+                flex-shrink: 0;
+            }
+
+            .print-header .title {
+                flex-grow: 1;
+                text-align: center;
+                font-size: 25px !important;
+                font-weight: bold !important;
+                margin: 0 30px;
+                line-height: 1.2;
+            }
+
+            .controls,
+            .buttons {
+                display: none !important;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                background: white;
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .schedule-info {
+                background: #fef3c7 !important;
+                border: 2px solid #f59e0b !important;
+                border-left: 6px solid #f59e0b !important;
+                margin: 15px 0 !important;
+                padding: 15px !important;
+                color: #92400e !important;
+                font-size: 12px !important;
+                page-break-inside: avoid;
+            }
+
+            .editable-info {
+                color: #92400e !important;
+            }
+
+            .table-container {
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            table {
+                width: 100% !important;
+                border: 2px solid black !important;
+                border-collapse: collapse !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                font-size: 11px !important;
+            }
+
+            th {
+                background: #4aaf70 !important;
+                color: white !important;
+                border: 1px solid #4aaf70 !important;
+                padding: 8px 4px !important;
+                font-size: 10px !important;
+                font-weight: bold !important;
+            }
+
+            td {
+                border: 1px solid #374151 !important;
+                padding: 8px 4px !important;
+                font-size: 11px !important;
+                background: white !important;
+                color: black !important;
+            }
+
+            th:first-child {
+                display: none !important;
+            }
+
+            .line-number {
+                display: none !important;
+            }
+
+            /* Ajuster la largeur des colonnes pour l'impression */
+            th:nth-child(2) {
+                width: 30% !important;
+            }
+
+            th:nth-child(3) {
+                width: 30% !important;
+            }
+
+            th:nth-child(4) {
+                width: 40% !important;
+            }
+
+            .date-cell {
+                background: #fff2cc !important;
+                font-weight: bold !important;
+                color: #92400e !important;
+            }
+
+            tr:nth-child(even) td {
+                background-color: #f0f9ff !important;
+            }
+
+            tr:hover {
+                background-color: inherit !important;
+            }
+
+            .print-header,
+            .schedule-info {
+                page-break-inside: avoid;
+            }
+
+            table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 200px;
+            }
+
+            .task-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="container">
+        <div class="print-header">
+            <div class="logo">
+                    <img src="./img/Sans-titre-1.png" alt="logo" style="width:200px; height: auto;">
+            </div>
+            <div class="title" id="printTitle">FICHE D'ENTRETIEN</div>
+            <div style="width:180px;"></div>
+        </div>
+
+        <div class="header">
+            <h1>📅 Générateur de fiches d'entretien </h1>
+        </div>
+
+        <div class="controls">
+            <div class="info-box">
+                <p>Configurez votre récurrence et générez automatiquement vos dates d'intervention</p>
+            </div>
+
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="startDate">📅 Date de début :</label>
+                    <input type="date" id="startDate" value="2025-09-02">
+                </div>
+
+                <div class="control-group">
+                    <label for="recurrence">🔄 Récurrence :</label>
+                    <select id="recurrence">
+                        <option value="weekly1">1x par semaine</option>
+                        <option value="weekly2">2x par semaine</option>
+                        <option value="biweekly">Tous les 15 jours</option>
+                        <option value="monthly">1x par mois</option>
+                        <option value="weekly3">Toutes les 3 semaines</option>
+                        <option value="fixed">Jour fixe (préciser)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="dayOfWeek">📋 Jour de la semaine :</label>
+                    <select id="dayOfWeek">
+                        <option value="1">Lundi</option>
+                        <option value="2" selected>Mardi</option>
+                        <option value="3">Mercredi</option>
+                        <option value="4">Jeudi</option>
+                        <option value="5">Vendredi</option>
+                        <option value="6">Samedi</option>
+                        <option value="0">Dimanche</option>
+                    </select>
+                </div>
+
+                <div class="control-group" id="secondDayGroup" style="display: none;">
+                    <label for="secondDay">📋 2ème jour (2x/sem) :</label>
+                    <select id="secondDay">
+                        <option value="1">Lundi</option>
+                        <option value="2">Mardi</option>
+                        <option value="3">Mercredi</option>
+                        <option value="4">Jeudi</option>
+                        <option value="5" selected>Vendredi</option>
+                        <option value="6">Samedi</option>
+                        <option value="0">Dimanche</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="numberOfDates">🔢 Nombre de dates :</label>
+                    <input type="number" id="numberOfDates" value="58" min="1" max="100">
+                </div>
+
+                <div class="control-group">
+                    <label for="title">📝 Titre :</label>
+                    <input type="text" id="title" placeholder="Titre">
+                </div>
+            </div>
+
+            <div class="task-recurrence-section">
+                <h3>🔧 Récurrence des tâches annexe</h3>
+                <div class="task-grid">
+                    <div class="control-group">
+                        <label for="taskName">📝 Nom de la tâche :</label>
+                        <input type="text" id="taskName" placeholder="ex: CAVES, ESCALIERS, VITRES...">
+                    </div>
+                    <div class="control-group">
+                        <label for="taskFrequency">⏰ Fréquence :</label>
+                        <select id="taskFrequency">
+                            <option value="">Aucune récurrence</option>
+                            <option value="first">Premier passage de chaque mois</option>
+                            <option value="last">Dernier passage de chaque mois</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-primary" onclick="generateDates()">🚀 Générer le Planning</button>
+                <button class="btn-print" onclick="printPlanning()">🖨️ Imprimer</button>
+                <button class="btn-danger" onclick="clearTable()">🗑️ Effacer</button>
+            </div>
+        </div>
+
+        <div class="schedule-info">
+            <div class="editable-info" onclick="editInfoCell(this, 'info1')"><strong></strong></div>
+            <div class="editable-info" onclick="editInfoCell(this, 'info2')"><strong></strong></div>
+        </div>
+
+        <div class="table-container">
+            <table id="mainTable">
+                <div class="empty-state" id="emptyState">
+                    <h3>📋 Aucun planning généré</h3>
+                    <p>Configurez vos paramètres ci-dessus et cliquez sur "Générer le Planning"</p>
+                </div>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let generatedData = [];
+        let scheduleInfo = {
+            info1: 'Mardi Vendredi : 2*/Semaine du 15/12 au 15/04 et du 01/07 au 31/08',
+            info2: 'MARDI : 1*/Semaine HORS SAISON'
+        };
+
+        // Gestion de l'affichage du 2ème jour pour 2x/semaine
+        document.getElementById('recurrence').addEventListener('change', function () {
+            const secondDayGroup = document.getElementById('secondDayGroup');
+
+            if (this.value === 'weekly2') {
+                secondDayGroup.style.display = 'block';
+            } else {
+                secondDayGroup.style.display = 'none';
+            }
+        });
+
+        function editInfoCell(cell, infoKey) {
+            const currentValue = scheduleInfo[infoKey] || '';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+
+            const originalHTML = cell.innerHTML;
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+
+            function saveValue() {
+                const newValue = input.value.trim();
+                scheduleInfo[infoKey] = newValue;
+                if (newValue) {
+                    cell.innerHTML = `<strong>${newValue}</strong>`;
+                } else {
+                    cell.innerHTML = '<strong>Cliquez pour ajouter du texte...</strong>';
+                }
+            }
+
+            input.addEventListener('blur', saveValue);
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    saveValue();
+                } else if (e.key === 'Escape') {
+                    cell.innerHTML = originalHTML;
+                }
+            });
+        }
+
+        function isFirstDayOfMonth(date) {
+            return date.getDate() === 1;
+        }
+
+        function isLastDayOfMonth(date) {
+            const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            const lastDay = new Date(nextMonth - 1);
+            return date.getDate() === lastDay.getDate();
+        }
+
+        function findFirstLastPassages(dates) {
+            const monthlyPassages = {};
+            
+            // Grouper les dates par mois
+            dates.forEach((date, index) => {
+                const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+                if (!monthlyPassages[monthKey]) {
+                    monthlyPassages[monthKey] = [];
+                }
+                monthlyPassages[monthKey].push({date, index});
+            });
+
+            const firstPassages = new Set();
+            const lastPassages = new Set();
+
+            // Pour chaque mois, identifier le premier et dernier passage
+            Object.values(monthlyPassages).forEach(monthDates => {
+                if (monthDates.length > 0) {
+                    // Trier les dates du mois
+                    monthDates.sort((a, b) => a.date - b.date);
+                    
+                    // Premier passage du mois
+                    firstPassages.add(monthDates[0].index);
+                    
+                    // Dernier passage du mois
+                    lastPassages.add(monthDates[monthDates.length - 1].index);
+                }
+            });
+
+            return { firstPassages, lastPassages };
+        }
+
+        function generateDates() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const recurrence = document.getElementById('recurrence').value;
+            const dayOfWeek = parseInt(document.getElementById('dayOfWeek').value);
+            const secondDay = parseInt(document.getElementById('secondDay').value);
+            const numberOfDates = parseInt(document.getElementById('numberOfDates').value);
+            const title = document.getElementById('title').value;
+            const taskName = document.getElementById('taskName').value;
+            const taskFrequency = document.getElementById('taskFrequency').value;
+
+            if (isNaN(startDate.getTime())) {
+                alert('⚠️ Veuillez sélectionner une date de début valide');
+                return;
+            }
+
+            // Mettre à jour le titre d'impression
+            document.getElementById('printTitle').innerHTML = `${title} <br>FICHE D\'ENTRETIEN`;
+
+            generatedData = [];
+            const dates = [];
+            let currentDate = new Date(startDate);
+
+            // Ajuster la date de début au bon jour de la semaine
+            const dayDiff = (dayOfWeek - currentDate.getDay() + 7) % 7;
+            currentDate.setDate(currentDate.getDate() + dayDiff);
+
+            switch (recurrence) {
+                case 'weekly1':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                    break;
+
+                case 'weekly2':
+                    let count = 0;
+                    while (count < numberOfDates) {
+                        // Premier jour de la semaine
+                        const firstDate = new Date(currentDate);
+                        firstDate.setDate(currentDate.getDate() + (dayOfWeek - currentDate.getDay() + 7) % 7);
+                        dates.push(new Date(firstDate));
+                        count++;
+
+                        if (count < numberOfDates) {
+                            // Deuxième jour de la semaine
+                            const secondDate = new Date(currentDate);
+                            secondDate.setDate(currentDate.getDate() + (secondDay - currentDate.getDay() + 7) % 7);
+                            if (secondDate > firstDate) {
+                                dates.push(new Date(secondDate));
+                            } else {
+                                secondDate.setDate(secondDate.getDate() + 7);
+                                dates.push(new Date(secondDate));
+                            }
+                            count++;
+                        }
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                    break;
+
+                case 'biweekly':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 14);
+                    }
+                    break;
+
+                case 'monthly':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setMonth(currentDate.getMonth() + 1);
+                    }
+                    break;
+
+                case 'weekly3':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 21);
+                    }
+                    break;
+
+                case 'fixed':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                    break;
+            }
+
+            // Trier les dates
+            dates.sort((a, b) => a - b);
+
+            // Identifier les premiers et derniers passages de chaque mois
+            const { firstPassages, lastPassages } = findFirstLastPassages(dates);
+
+            // Créer les données pour le tableau
+            for (let i = 0; i < dates.length; i++) {
+                let taches = '';
+                
+                // Ajouter la tâche spéciale si elle correspond aux critères
+                if (taskName && taskFrequency) {
+                    if (taskFrequency === 'first' && firstPassages.has(i)) {
+                        taches = taskName;
+                    } else if (taskFrequency === 'last' && lastPassages.has(i)) {
+                        taches = taskName;
+                    }
+                }
+
+                generatedData.push({
+                    date: formatDate(dates[i]),
+                    intervenant: '',
+                    taches: taches
+                });
+            }
+
+            renderTable(title);
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function renderTable(title) {
+            const table = document.getElementById('mainTable');
+
+            let html = `
+                <thead>
+                    <tr>
+                        <th style="width: 8%;">#</th>
+                        <th style="width: 30%;">JOUR DE PASSAGE</th>
+                        <th style="width: 30%;">INTERVENANT</th>
+                        <th style="width: 32%;">TÂCHES ANNEXES</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            generatedData.forEach((row, index) => {
+                html += `
+                    <tr>
+                        <td class="line-number">${index + 1}</td>
+                        <td class="date-cell">${row.date}</td>
+                        <td class="editable" onclick="editCell(this, ${index}, 'intervenant')">${row.intervenant}</td>
+                        <td class="editable" onclick="editCell(this, ${index}, 'taches')">${row.taches}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function editCell(cell, index, field) {
+            const currentValue = generatedData[index][field];
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+            input.style.border = 'none';
+            input.style.background = 'transparent';
+            input.style.width = '100%';
+            input.style.textAlign = 'center';
+            input.style.fontSize = 'inherit';
+
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+
+            function saveValue() {
+                generatedData[index][field] = input.value;
+                cell.innerHTML = input.value;
+            }
+
+            input.addEventListener('blur', saveValue);
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    saveValue();
+                }
+            });
+        }
+
+        function printPlanning() {
+            if (generatedData.length === 0) {
+                alert('⚠️ Aucun planning à imprimer. Générez d\'abord un planning.');
+                return;
+            }
+
+            window.print();
+        }
+
+        function clearTable() {
+            if (confirm('🗑️ Êtes-vous sûr de vouloir effacer tout le planning ?')) {
+                generatedData = [];
+                document.getElementById('mainTable').innerHTML = '';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function exportToExcel() {
+            if (generatedData.length === 0) {
+                alert('⚠️ Aucune donnée à exporter. Générez d\'abord un planning.');
+                return;
+            }
+
+            const title = document.getElementById('title').value;
+
+            // Créer le workbook avec des options avancées
+            const wb = XLSX.utils.book_new();
+
+            // Préparer les données pour Excel avec formatage
+            const wsData = [
+                [''], // Ligne vide pour l'espacement
+                [title.toUpperCase()], // Titre principal
+                ['FICHE D\'ENTRETIEN DES COMMUNS'], // Sous-titre
+                [''], // Ligne vide
+                ['📅 PLANNING D\'INTERVENTION'], // Section planning
+                [scheduleInfo.info1], // Info horaires modifiable 1
+                [scheduleInfo.info2], // Info horaires modifiable 2
+                [''], // Ligne vide
+                ['JOUR DE PASSAGE', 'INTERVENANT', 'TÂCHES ANNEXES'] // En-têtes
+            ];
+
+            // Ajouter les données avec formatage
+            generatedData.forEach((row, index) => {
+                wsData.push([
+                    row.date,
+                    row.intervenant || '',
+                    row.taches || ''
+                ]);
+            });
+
+            // Ajouter lignes de signature
+            wsData.push([''], [''], ['Signature Responsable :', 'Date de contrôle :', '']);
+
+            // Créer la feuille
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+            // Configuration avancée des colonnes
+            ws['!cols'] = [
+                { wch: 18 },  // Date  
+                { wch: 25 },  // Intervenant
+                { wch: 40 }   // Tâches
+            ];
+
+            // Fusionner les cellules pour un meilleur rendu
+            ws['!merges'] = [
+                { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } }, // Titre principal
+                { s: { r: 2, c: 0 }, e: { r: 2, c: 2 } }, // Sous-titre
+                { s: { r: 4, c: 0 }, e: { r: 4, c: 2 } }, // Section planning
+                { s: { r: 5, c: 0 }, e: { r: 5, c: 2 } }, // Info horaires 1
+                { s: { r: 6, c: 0 }, e: { r: 6, c: 2 } }, // Info horaires 2
+                { s: { r: wsData.length - 1, c: 0 }, e: { r: wsData.length - 1, c: 1 } }, // Signature responsable
+                { s: { r: wsData.length - 1, c: 2 }, e: { r: wsData.length - 1, c: 2 } }  // Date contrôle
+            ];
+
+            // Appliquer des styles cellule par cellule
+            const range = XLSX.utils.decode_range(ws['!ref']);
+
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cell_address = XLSX.utils.encode_cell({ c: C, r: R });
+                    if (!ws[cell_address]) ws[cell_address] = { t: 's', v: '' };
+
+                    // Styles par défaut
+                    ws[cell_address].s = {
+                        alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+                        border: {
+                            top: { style: 'thin', color: { rgb: '000000' } },
+                            bottom: { style: 'thin', color: { rgb: '000000' } },
+                            left: { style: 'thin', color: { rgb: '000000' } },
+                            right: { style: 'thin', color: { rgb: '000000' } }
+                        },
+                        font: { name: 'Calibri', sz: 11 }
+                    };
+
+                    // Styles spécifiques par ligne
+                    if (R === 1) { // Titre principal
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 18, bold: true, color: { rgb: '6b0094' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'f0f8ff' } };
+                        ws[cell_address].s.border = {
+                            top: { style: 'thick', color: { rgb: '6b0094' } },
+                            bottom: { style: 'thick', color: { rgb: '6b0094' } },
+                            left: { style: 'thick', color: { rgb: '6b0094' } },
+                            right: { style: 'thick', color: { rgb: '6b0094' } }
+                        };
+                    } else if (R === 2) { // Sous-titre
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 14, bold: true, color: { rgb: '008000' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'f0fff0' } };
+                    } else if (R === 4) { // Section planning
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 12, bold: true, color: { rgb: '000080' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'e6f3ff' } };
+                    } else if (R === 5 || R === 6) { // Infos horaires
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 10, italic: true };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'fffacd' } };
+                    } else if (R === 8) { // En-têtes de colonnes
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'ffffff' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: '4472c4' } };
+                        ws[cell_address].s.border = {
+                            top: { style: 'thick', color: { rgb: '000000' } },
+                            bottom: { style: 'thick', color: { rgb: '000000' } },
+                            left: { style: 'thick', color: { rgb: '000000' } },
+                            right: { style: 'thick', color: { rgb: '000000' } }
+                        };
+                    } else if (R > 8 && R < wsData.length - 2) { // Lignes de données
+                        if (C === 0) { // Colonne Date
+                            ws[cell_address].s.fill = { fgColor: { rgb: 'fff2cc' } };
+                            ws[cell_address].s.font = { name: 'Calibri', sz: 11, bold: true };
+                        } else { // Colonnes éditables
+                            ws[cell_address].s.fill = { fgColor: { rgb: 'ffffff' } };
+                            if (R % 2 === 0) {
+                                ws[cell_address].s.fill = { fgColor: { rgb: 'f8f9fa' } };
+                            }
+                        }
+                    } else if (R === wsData.length - 1) { // Ligne signature
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 10, bold: true };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'e8f4fd' } };
+                        ws[cell_address].s.border = {
+                            top: { style: 'thick', color: { rgb: '000000' } },
+                            bottom: { style: 'thick', color: { rgb: '000000' } },
+                            left: { style: 'thick', color: { rgb: '000000' } },
+                            right: { style: 'thick', color: { rgb: '000000' } }
+                        };
+                    }
+                }
+            }
+
+            // Définir la zone d'impression
+            ws['!printHeader'] = 1;
+            ws['!margins'] = { left: 0.7, right: 0.7, top: 0.75, bottom: 0.75, header: 0.3, footer: 0.3 };
+
+            // Ajouter la feuille au workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Planning Entretien");
+
+            // Exporter le fichier
+            const fileName = `PLANNING_ENTRETIEN_${title.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+
+            // Afficher confirmation
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert';
+            alertDiv.innerHTML = `✅ Fichier Excel formaté exporté : ${fileName}`;
+            document.querySelector('.controls').appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 4000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function () {
+            // Définir la date par défaut à aujourd'hui
+            const today = new Date();
+            document.getElementById('startDate').value = today.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+
+</html>
