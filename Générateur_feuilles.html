@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Générateur de Dates avec Récurrence</title>
-      <link rel="apple-touch-icon" href="img/logo.png">
+    <link rel="apple-touch-icon" href="img/logo.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         #printTitle {
@@ -639,15 +639,15 @@
             </div>
 
             <div class="task-recurrence-section">
-                <h3>🔧 Récurrence des tâches annexe</h3>
+                <h3>🔧 Récurrence des tâches annexe (Bloc 1)</h3>
                 <div class="task-grid">
                     <div class="control-group">
-                        <label for="taskName">📝 Nom de la tâche :</label>
-                        <input type="text" id="taskName" placeholder="ex: CAVES, ESCALIERS, VITRES...">
+                        <label for="taskName1">📝 Nom de la tâche :</label>
+                        <input type="text" id="taskName1" placeholder="ex: CAVES, ESCALIERS, VITRES...">
                     </div>
                     <div class="control-group">
-                        <label for="taskFrequency">⏰ Fréquence :</label>
-                        <select id="taskFrequency">
+                        <label for="taskFrequency1">⏰ Fréquence :</label>
+                        <select id="taskFrequency1">
                             <option value="">Aucune récurrence</option>
                             <option value="first">Premier passage de chaque mois</option>
                             <option value="last">Dernier passage de chaque mois</option>
@@ -656,12 +656,33 @@
                 </div>
             </div>
 
+            <div class="task-recurrence-section">
+                <h3>🔧 Récurrence des tâches annexe (Bloc 2)</h3>
+                <div class="task-grid">
+                    <div class="control-group">
+                        <label for="taskName2">📝 Nom de la tâche :</label>
+                        <input type="text" id="taskName2" placeholder="ex: CAVES, ESCALIERS, VITRES...">
+                    </div>
+                    <div class="control-group">
+                        <label for="taskFrequency2">⏰ Fréquence :</label>
+                        <select id="taskFrequency2">
+                            <option value="">Aucune récurrence</option>
+                            <option value="first">Premier passage de chaque mois</option>
+                            <option value="last">Dernier passage de chaque mois</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+
             <div class="buttons">
                 <button class="btn-primary" onclick="generateDates()">🚀 Générer le Planning</button>
                 <button class="btn-print" onclick="printPlanning()">🖨️ Imprimer</button>
                 <button class="btn-danger" onclick="clearTable()">🗑️ Effacer</button>
             </div>
         </div>
+
 
         <div class="schedule-info">
             <div class="editable-info" onclick="editInfoCell(this, 'info1')"><strong></strong></div>
@@ -770,123 +791,118 @@
             return { firstPassages, lastPassages };
         }
 
-        function generateDates() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const recurrence = document.getElementById('recurrence').value;
-            const dayOfWeek = parseInt(document.getElementById('dayOfWeek').value);
-            const secondDay = parseInt(document.getElementById('secondDay').value);
-            const numberOfDates = parseInt(document.getElementById('numberOfDates').value);
-            const title = document.getElementById('title').value;
-            const taskName = document.getElementById('taskName').value;
-            const taskFrequency = document.getElementById('taskFrequency').value;
+      function generateDates() {
+    const startDate = new Date(document.getElementById('startDate').value);
+    const recurrence = document.getElementById('recurrence').value;
+    const dayOfWeek = parseInt(document.getElementById('dayOfWeek').value);
+    const secondDay = parseInt(document.getElementById('secondDay').value);
+    const numberOfDates = parseInt(document.getElementById('numberOfDates').value);
+    const title = document.getElementById('title').value;
 
-            if (isNaN(startDate.getTime())) {
-                alert('⚠️ Veuillez sélectionner une date de début valide');
-                return;
+    // 🔧 Bloc 1
+    const taskName1 = document.getElementById('taskName1').value;
+    const taskFrequency1 = document.getElementById('taskFrequency1').value;
+
+    // 🔧 Bloc 2
+    const taskName2 = document.getElementById('taskName2').value;
+    const taskFrequency2 = document.getElementById('taskFrequency2').value;
+
+    if (isNaN(startDate.getTime())) {
+        alert('⚠️ Veuillez sélectionner une date de début valide');
+        return;
+    }
+
+    // Mettre à jour le titre impression
+    document.getElementById('printTitle').innerHTML = `${title} <br>FICHE D\'ENTRETIEN`;
+
+    generatedData = [];
+    const dates = [];
+    let currentDate = new Date(startDate);
+
+    // Ajuster la date au bon jour
+    const dayDiff = (dayOfWeek - currentDate.getDay() + 7) % 7;
+    currentDate.setDate(currentDate.getDate() + dayDiff);
+
+    switch (recurrence) {
+        case 'weekly1':
+            for (let i = 0; i < numberOfDates; i++) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 7);
             }
-
-            // Mettre à jour le titre d'impression
-            document.getElementById('printTitle').innerHTML = `${title} <br>FICHE D\'ENTRETIEN`;
-
-            generatedData = [];
-            const dates = [];
-            let currentDate = new Date(startDate);
-
-            // Ajuster la date de début au bon jour de la semaine
-            const dayDiff = (dayOfWeek - currentDate.getDay() + 7) % 7;
-            currentDate.setDate(currentDate.getDate() + dayDiff);
-
-            switch (recurrence) {
-                case 'weekly1':
-                    for (let i = 0; i < numberOfDates; i++) {
-                        dates.push(new Date(currentDate));
-                        currentDate.setDate(currentDate.getDate() + 7);
-                    }
-                    break;
-
-                case 'weekly2':
-                    let count = 0;
-                    while (count < numberOfDates) {
-                        // Premier jour de la semaine
-                        const firstDate = new Date(currentDate);
-                        firstDate.setDate(currentDate.getDate() + (dayOfWeek - currentDate.getDay() + 7) % 7);
-                        dates.push(new Date(firstDate));
-                        count++;
-
-                        if (count < numberOfDates) {
-                            // Deuxième jour de la semaine
-                            const secondDate = new Date(currentDate);
-                            secondDate.setDate(currentDate.getDate() + (secondDay - currentDate.getDay() + 7) % 7);
-                            if (secondDate > firstDate) {
-                                dates.push(new Date(secondDate));
-                            } else {
-                                secondDate.setDate(secondDate.getDate() + 7);
-                                dates.push(new Date(secondDate));
-                            }
-                            count++;
-                        }
-                        currentDate.setDate(currentDate.getDate() + 7);
-                    }
-                    break;
-
-                case 'biweekly':
-                    for (let i = 0; i < numberOfDates; i++) {
-                        dates.push(new Date(currentDate));
-                        currentDate.setDate(currentDate.getDate() + 14);
-                    }
-                    break;
-
-                case 'monthly':
-                    for (let i = 0; i < numberOfDates; i++) {
-                        dates.push(new Date(currentDate));
-                        currentDate.setMonth(currentDate.getMonth() + 1);
-                    }
-                    break;
-
-                case 'weekly3':
-                    for (let i = 0; i < numberOfDates; i++) {
-                        dates.push(new Date(currentDate));
-                        currentDate.setDate(currentDate.getDate() + 21);
-                    }
-                    break;
-
-                case 'fixed':
-                    for (let i = 0; i < numberOfDates; i++) {
-                        dates.push(new Date(currentDate));
-                        currentDate.setDate(currentDate.getDate() + 7);
-                    }
-                    break;
-            }
-
-            // Trier les dates
-            dates.sort((a, b) => a - b);
-
-            // Identifier les premiers et derniers passages de chaque mois
-            const { firstPassages, lastPassages } = findFirstLastPassages(dates);
-
-            // Créer les données pour le tableau
-            for (let i = 0; i < dates.length; i++) {
-                let taches = '';
-
-                // Ajouter la tâche spéciale si elle correspond aux critères
-                if (taskName && taskFrequency) {
-                    if (taskFrequency === 'first' && firstPassages.has(i)) {
-                        taches = taskName;
-                    } else if (taskFrequency === 'last' && lastPassages.has(i)) {
-                        taches = taskName;
-                    }
+            break;
+        case 'weekly2':
+            let count = 0;
+            while (count < numberOfDates) {
+                const firstDate = new Date(currentDate);
+                firstDate.setDate(currentDate.getDate() + (dayOfWeek - currentDate.getDay() + 7) % 7);
+                dates.push(new Date(firstDate));
+                count++;
+                if (count < numberOfDates) {
+                    const secondDate = new Date(currentDate);
+                    secondDate.setDate(currentDate.getDate() + (secondDay - currentDate.getDay() + 7) % 7);
+                    if (secondDate <= firstDate) secondDate.setDate(secondDate.getDate() + 7);
+                    dates.push(new Date(secondDate));
+                    count++;
                 }
-
-                generatedData.push({
-                    date: formatDate(dates[i]),
-                    intervenant: '',
-                    taches: taches
-                });
+                currentDate.setDate(currentDate.getDate() + 7);
             }
+            break;
+        case 'biweekly':
+            for (let i = 0; i < numberOfDates; i++) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 14);
+            }
+            break;
+        case 'monthly':
+            for (let i = 0; i < numberOfDates; i++) {
+                dates.push(new Date(currentDate));
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
+            break;
+        case 'weekly3':
+            for (let i = 0; i < numberOfDates; i++) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 21);
+            }
+            break;
+        case 'fixed':
+            for (let i = 0; i < numberOfDates; i++) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 7);
+            }
+            break;
+    }
 
-            renderTable(title);
-            document.getElementById('emptyState').style.display = 'none';
+    // Trier les dates
+    dates.sort((a, b) => a - b);
+
+    // Déterminer premiers/derniers passages
+    const { firstPassages, lastPassages } = findFirstLastPassages(dates);
+
+    // Construire données avec 2 blocs de tâches
+    for (let i = 0; i < dates.length; i++) {
+        let taches = [];
+
+        if (taskName1 && taskFrequency1) {
+            if (taskFrequency1 === 'first' && firstPassages.has(i)) taches.push(taskName1);
+            if (taskFrequency1 === 'last' && lastPassages.has(i)) taches.push(taskName1);
         }
+
+        if (taskName2 && taskFrequency2) {
+            if (taskFrequency2 === 'first' && firstPassages.has(i)) taches.push(taskName2);
+            if (taskFrequency2 === 'last' && lastPassages.has(i)) taches.push(taskName2);
+        }
+
+        generatedData.push({
+            date: formatDate(dates[i]),
+            intervenant: '',
+            taches: taches.join(', ')
+        });
+    }
+
+    renderTable(title);
+    document.getElementById('emptyState').style.display = 'none';
+}
 
         function formatDate(date) {
             const day = date.getDate().toString().padStart(2, '0');
