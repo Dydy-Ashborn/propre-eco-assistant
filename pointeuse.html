@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pointeuse - Propre Eco</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="apple-touch-icon" href="iphone.png">
+    <link rel="apple-touch-icon" href="img/logo.png">
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/png" href="d6d38760-30b5-4026-8f90-0f5236d62d28 (1).png">
     <style>
         .nav-toggle {
             font-size: 1.5rem;
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +26,7 @@
             --primary-light: #d1fae5;
             --secondary: #f59e0b;
             --accent: #8b5cf6;
---background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+            --background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
             --surface: #ffffff;
             --surface-alt: #f8fafc;
             --text: #1f2937;
@@ -140,8 +142,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         /* Container principal */
@@ -164,6 +173,7 @@
                 opacity: 0;
                 transform: translateY(-50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -197,6 +207,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -220,12 +231,29 @@
             transform: translateY(20px);
         }
 
-        .employee-card:nth-child(1) { animation-delay: 0.1s; }
-        .employee-card:nth-child(2) { animation-delay: 0.2s; }
-        .employee-card:nth-child(3) { animation-delay: 0.3s; }
-        .employee-card:nth-child(4) { animation-delay: 0.4s; }
-        .employee-card:nth-child(5) { animation-delay: 0.5s; }
-        .employee-card:nth-child(6) { animation-delay: 0.6s; }
+        .employee-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .employee-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .employee-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .employee-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .employee-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .employee-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
 
         @keyframes cardSlideIn {
             to {
@@ -246,8 +274,15 @@
         }
 
         @keyframes shimmer {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         .employee-card:hover {
@@ -388,8 +423,15 @@
         }
 
         @keyframes ribbonGlow {
-            0%, 100% { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
-            50% { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+
+            0%,
+            100% {
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+            }
         }
 
         /* Modale de saisie de code */
@@ -423,6 +465,7 @@
                 opacity: 0;
                 transform: scale(0.9) translateY(-50px);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
@@ -585,32 +628,45 @@
                 justify-content: center;
             }
         }
+
         .notif-badge {
-    background: var(--secondary);
-    color: white;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    margin-left: 0.25rem;
-    animation: pulse 2s infinite;
-    min-width: 1.5rem;
-    text-align: center;
-    font-weight: 700;
-}
+            background: var(--secondary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.25rem;
+            animation: pulse 2s infinite;
+            min-width: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
 
-.notif-badge.loading {
-    animation: spin 1s linear infinite;
-}
+        .notif-badge.loading {
+            animation: spin 1s linear infinite;
+        }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
+        @keyframes pulse {
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -618,27 +674,27 @@
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-                                <img src="img/logo.png" width="60px" alt="">
+                <img src="img/logo.png" width="60px" alt="">
 
                 Propre Eco Assistant
             </a>
-            
+
             <button class="nav-toggle" aria-label="Menu">
                 <i class="fas fa-bars"></i>
             </button>
-          
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
-                class="notif-badge">0</span></a></li> -->
-          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
 
-        </ul>
-      </nav>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <!-- <li><a href="voir.html"><i class="fas fa-eye"></i> Signalements <span id="notifBadge"
+                class="notif-badge">0</span></a></li> -->
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+
+                </ul>
+            </nav>
         </div>
     </header>
 
@@ -694,7 +750,7 @@
             { name: "Stéphane", sheet: "https://docs.google.com/spreadsheets/d/1TEOI2z5j4dqBrC9aEkNoLvJzUs3ssgZJaX-a0t8wW6c/edit?usp=sharing", code: "1272" },
             { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/1bL8XVwxaTP0GU7GAXJV5n0ooTiL2AcEUNdE2i4H6uFI/edit?usp=sharing", code: "3636" },
             { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/1TfmZmRjhqZ09d8aiIjFtudszg2kyQnIktvTWIr-KpZc/edit?usp=sharing", code: "2604" },
-            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1234" }        ];
+            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1234" }];
 
         // Éléments DOM
         const container = document.getElementById('employeeList');
@@ -705,7 +761,7 @@
         const cancelBtn = document.getElementById('cancelBtn');
 
         // Navigation mobile
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const toggleButton = document.querySelector('.nav-toggle');
             const menu = document.querySelector('.nav-menu');
 
@@ -731,7 +787,7 @@
         // Chargement des employés
         function loadEmployees() {
             const favoriteName = localStorage.getItem(FAVORITE_KEY);
-            
+
             // Trier pour mettre le favori en premier
             if (favoriteName) {
                 employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
@@ -771,7 +827,7 @@
         }
 
         // Ouvrir la modale d'accès
-        window.openAccessModal = function(employeeName) {
+        window.openAccessModal = function (employeeName) {
             currentEmployee = employees.find(emp => emp.name === employeeName);
             modalTitle.textContent = `Code d'accès - ${employeeName}`;
             modal.style.display = 'block';
@@ -779,9 +835,9 @@
         };
 
         // Basculer le favori
-        window.toggleFavorite = function(employeeName) {
+        window.toggleFavorite = function (employeeName) {
             const currentFavorite = localStorage.getItem(FAVORITE_KEY);
-            
+
             if (currentFavorite === employeeName) {
                 localStorage.removeItem(FAVORITE_KEY);
                 showNotification('Favori supprimé', 'info');
@@ -789,7 +845,7 @@
                 localStorage.setItem(FAVORITE_KEY, employeeName);
                 showNotification(`${employeeName} défini comme favori`, 'success');
             }
-            
+
             setTimeout(() => location.reload(), 500);
         };
 
@@ -797,13 +853,13 @@
         confirmBtn.addEventListener('click', validateCode);
         cancelBtn.addEventListener('click', closeModal);
 
-        codeInput.addEventListener('keypress', function(e) {
+        codeInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 validateCode();
             }
         });
 
-        modal.addEventListener('click', function(e) {
+        modal.addEventListener('click', function (e) {
             if (e.target === modal) {
                 closeModal();
             }
@@ -811,12 +867,12 @@
 
         function validateCode() {
             const enteredCode = codeInput.value;
-            
+
             if (!currentEmployee) return;
-            
+
             confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
             confirmBtn.disabled = true;
-            
+
             setTimeout(() => {
                 if (enteredCode === currentEmployee.code) {
                     showNotification(`Accès autorisé pour ${currentEmployee.name}`, 'success');
@@ -826,14 +882,14 @@
                     showNotification('Code incorrect', 'error');
                     codeInput.value = '';
                     codeInput.focus();
-                    
+
                     // Animation d'erreur
                     codeInput.style.animation = 'shake 0.5s ease-in-out';
                     setTimeout(() => {
                         codeInput.style.animation = '';
                     }, 500);
                 }
-                
+
                 confirmBtn.innerHTML = '<i class="fas fa-unlock"></i> Valider';
                 confirmBtn.disabled = false;
             }, 800);
@@ -854,10 +910,10 @@
                 position: fixed;
                 top: 2rem;
                 right: 2rem;
-                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 
-                              type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 
-                              type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
-                              'linear-gradient(135deg, #3b82f6, #2563eb)'};
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' :
+                    type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' :
+                        type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+                            'linear-gradient(135deg, #3b82f6, #2563eb)'};
                 color: white;
                 padding: 1rem 1.5rem;
                 border-radius: 12px;
@@ -869,14 +925,14 @@
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 max-width: 300px;
             `;
-            
+
             const icons = {
                 success: 'fas fa-check-circle',
                 warning: 'fas fa-exclamation-triangle',
                 error: 'fas fa-times-circle',
                 info: 'fas fa-info-circle'
             };
-            
+
             notification.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
             document.body.appendChild(notification);
 
@@ -905,7 +961,8 @@
         `;
         document.head.appendChild(additionalStyles);
     </script>
-     <script type="module" src="badge.js"></script>
+    <script type="module" src="badge.js"></script>
 
 </body>
+
 </html>
