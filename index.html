@@ -10,88 +10,100 @@
   <link rel="icon" type="image/png" href="d6d38760-30b5-4026-8f90-0f5236d62d28 (1).png">
   <style>
     /* Résultats de recherche - version complètement adaptative */
-/* Résultats de recherche - z-index ajusté */
-/* Ajustement pour que le dropdown ne dépasse pas la navbar */
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 0 0 var(--radius) var(--radius);
-  box-shadow: var(--shadow-lg);
-  z-index: 90; /* En dessous de la navbar */
-  display: none;
-  max-height: calc(100vh - 200px); /* Limite la hauteur pour éviter de dépasser */
-  overflow-y: auto; /* Scroll si nécessaire */
-}
+    /* Résultats de recherche - z-index ajusté */
+    /* Ajustement pour que le dropdown ne dépasse pas la navbar */
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow-lg);
+      z-index: 90;
+      /* En dessous de la navbar */
+      display: none;
+      max-height: calc(100vh - 200px);
+      /* Limite la hauteur pour éviter de dépasser */
+      overflow-y: auto;
+      /* Scroll si nécessaire */
+    }
 
-.search-container {
-  position: relative;
-  margin-bottom: 1.5rem; /* Réduit de 4rem à 1.5rem */
-  z-index: 120; /* Réduit mais toujours au-dessus du contenu */
-  overflow: visible;
-}
+    .search-container {
+      position: relative;
+      margin-bottom: 1.5rem;
+      /* Réduit de 4rem à 1.5rem */
+      z-index: 120;
+      /* Réduit mais toujours au-dessus du contenu */
+      overflow: visible;
+    }
 
-/* Section de recherche avec espacement normal */
-.section:first-of-type {
-  overflow: visible !important;
-  z-index: 100;
-  margin-bottom: 2rem; /* Réduit de 8rem à 2rem normal */
-  position: relative;
-}
+    /* Section de recherche avec espacement normal */
+    .section:first-of-type {
+      overflow: visible !important;
+      z-index: 100;
+      margin-bottom: 2rem;
+      /* Réduit de 8rem à 2rem normal */
+      position: relative;
+    }
 
-/* Toutes les sections - retour à l'espacement normal */
-.section {
-  position: relative;
-  overflow: visible;
-  margin-bottom: 2rem; /* Retour à la valeur normale */
-}
+    /* Toutes les sections - retour à l'espacement normal */
+    .section {
+      position: relative;
+      overflow: visible;
+      margin-bottom: 2rem;
+      /* Retour à la valeur normale */
+    }
 
-/* Les autres sections */
-.section:not(:first-of-type) {
-  z-index: 1;
-  margin-top: 0; /* Supprimé l'espacement supplémentaire */
-}
+    /* Les autres sections */
+    .section:not(:first-of-type) {
+      z-index: 1;
+      margin-top: 0;
+      /* Supprimé l'espacement supplémentaire */
+    }
 
-/* Mobile : comportement différent */
-@media (max-width: 768px) {
-  .search-results {
-    max-height: 60vh; /* Limite sur mobile */
-    overflow-y: auto;
-    border-radius: var(--radius);
-    margin-top: 0.5rem;
-    position: fixed; /* Changé à fixed pour mobile */
-    left: 1rem;
-    right: 1rem;
-    top: auto;
-  }
-  
-  .search-container {
-    margin-bottom: 2rem;
-  }
-  
-  .section:first-of-type {
-    margin-bottom: 3rem;
-  }
-}
+    /* Mobile : comportement différent */
+    @media (max-width: 768px) {
+      .search-results {
+        max-height: 60vh;
+        /* Limite sur mobile */
+        overflow-y: auto;
+        border-radius: var(--radius);
+        margin-top: 0.5rem;
+        position: fixed;
+        /* Changé à fixed pour mobile */
+        left: 1rem;
+        right: 1rem;
+        top: auto;
+      }
 
-/* Force l'affichage au-dessus de tout */
-body:has(.search-results[style*="display: block"]) .section:not(:first-of-type) {
-  z-index: 0;
-}
-/* Reset des propriétés qui pourraient interférer */
-.search-results * {
-  max-height: none !important;
-  overflow: visible !important;
-}
+      .search-container {
+        margin-bottom: 2rem;
+      }
 
-/* Container général sans limitation */
-.container {
-  overflow: visible;
-  position: relative;
-}
+      .section:first-of-type {
+        margin-bottom: 3rem;
+      }
+    }
+
+    /* Force l'affichage au-dessus de tout */
+    body:has(.search-results[style*="display: block"]) .section:not(:first-of-type) {
+      z-index: 0;
+    }
+
+    /* Reset des propriétés qui pourraient interférer */
+    .search-results * {
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
+    /* Container général sans limitation */
+    .container {
+      overflow: visible;
+      position: relative;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -104,7 +116,7 @@ body:has(.search-results[style*="display: block"]) .section:not(:first-of-type) 
       --primary-light: #d1fae5;
       --secondary: #f59e0b;
       --accent: #8b5cf6;
---background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+      --background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
       --surface: #ffffff;
       --surface-alt: #f8fafc;
       --text: #1f2937;
@@ -874,7 +886,7 @@ body:has(.search-results[style*="display: block"]) .section:not(:first-of-type) 
   <header class="header">
     <div class="header-content">
       <a href="index.html" class="logo">
-                        <img src="img/logo.png" width="60px" alt="">
+        <img src="img/logo.png" width="60px" alt="">
 
         Propre Eco Assistant
       </a>
@@ -1317,14 +1329,21 @@ body:has(.search-results[style*="display: block"]) .section:not(:first-of-type) 
         searchResults.style.display = 'block';
         return;
       }
-
       searchResults.innerHTML = matches.slice(0, 5).map(property => `
-        <div class="search-result-item" onclick="selectProperty('${property.nom}')">
-          <strong>${property.nom || 'Nom non défini'}</strong>
-          <br>
-          <small><i class="fas fa-map-marker-alt"></i> ${property.adresse || 'Adresse non définie'}</small>
-        </div>
-      `).join('');
+  <div class="search-result-item" data-value="${property.nom}">
+    <strong>${property.nom || 'Nom non défini'}</strong>
+    <br>
+    <small><i class="fas fa-map-marker-alt"></i> ${property.adresse || 'Adresse non définie'}</small>
+  </div>
+`).join('');
+
+      // Attache les événements après l’injection
+      document.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', () => {
+          selectProperty(item.dataset.value);
+        });
+      });
+
 
       searchResults.style.display = 'block';
     }
