@@ -854,6 +854,42 @@
             }
             break;
         case 'monthly':
+    // Jour de la semaine de la date de départ (0=dimanche, 1=lundi, etc.)
+    let targetDay = startDate.getDay();
+    
+    // Calculer dans quelle semaine du mois se trouve la date de départ
+    let startWeekOfMonth = Math.ceil(startDate.getDate() / 7) - 1; // 0-indexé
+    
+    for (let i = 0; i < numberOfDates; i++) {
+        // Créer une date pour le 1er du mois cible
+        let targetMonth = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+        
+        // Trouver le premier jour de la semaine cible dans ce mois
+        let daysDiff = (targetDay - targetMonth.getDay() + 7) % 7;
+        let firstOccurrence = new Date(targetMonth.getFullYear(), targetMonth.getMonth(), 1 + daysDiff);
+        
+        // Ajouter les semaines nécessaires pour atteindre le bon rang
+        let targetDate = new Date(firstOccurrence.getFullYear(), firstOccurrence.getMonth(), 
+                                 firstOccurrence.getDate() + (startWeekOfMonth * 7));
+        
+        // Vérifier que la date générée est bien dans le mois voulu
+        if (targetDate.getMonth() === targetMonth.getMonth()) {
+            dates.push(targetDate);
+        } else {
+            // Si on déborde (ex: 5ème mardi n'existe pas), prendre le dernier du mois
+            let lastWeek = startWeekOfMonth - 1;
+            while (lastWeek >= 0) {
+                let fallbackDate = new Date(firstOccurrence.getFullYear(), firstOccurrence.getMonth(), 
+                                          firstOccurrence.getDate() + (lastWeek * 7));
+                if (fallbackDate.getMonth() === targetMonth.getMonth()) {
+                    dates.push(fallbackDate);
+                    break;
+                }
+                lastWeek--;
+            }
+        }
+    }
+    break;
             for (let i = 0; i < numberOfDates; i++) {
                 dates.push(new Date(currentDate));
                 currentDate.setMonth(currentDate.getMonth() + 1);
