@@ -2,10 +2,10 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Signaler un problème - Propre Eco</title>
-  <link rel="apple-touch-icon" href="img/logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoyer des photos - Propre Eco</title>
+    <link rel="apple-touch-icon" href="img/logo.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .signature-controls {
@@ -57,7 +57,6 @@
             transform: translateY(0);
         }
 
-        /* Style pour l'input quand la signature est sauvegardée */
         .form-input[readonly] {
             background: linear-gradient(135deg, #f0f8ff, #e6f3ff) !important;
             border-color: #48bb78;
@@ -70,12 +69,10 @@
             border-color: #48bb78;
         }
 
-        /* Animation pour la transition */
         .form-input {
             transition: all 0.3s ease;
         }
 
-        /* Responsive pour mobile */
         @media (max-width: 768px) {
             .signature-controls {
                 flex-direction: column;
@@ -108,8 +105,8 @@
             --primary: #10b981;
             --primary-dark: #059669;
             --primary-light: #d1fae5;
-            --secondary: #f59e0b;
-            --accent: #ef4444;
+            --secondary: #3b82f6;
+            --accent: #8b5cf6;
             --background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
             --surface: #ffffff;
             --surface-alt: #f8fafc;
@@ -132,7 +129,6 @@
             flex-direction: column;
         }
 
-        /* Header moderne avec glassmorphism */
         .header {
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -169,7 +165,6 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
-        /* Navigation moderne */
         .nav-toggle {
             display: none;
             background: rgba(255, 255, 255, 0.2);
@@ -215,46 +210,6 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .notif-badge {
-            background: var(--secondary);
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            margin-left: 0.25rem;
-            animation: pulse 2s infinite;
-            min-width: 1.5rem;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .notif-badge.loading {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Container principal */
         .container {
             max-width: 800px;
             margin: 2rem auto;
@@ -262,7 +217,6 @@
             flex: 1;
         }
 
-        /* Card principale */
         .main-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -289,7 +243,7 @@
         }
 
         .card-header {
-            background: linear-gradient(135deg, var(--accent) 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
             color: white;
             padding: 2rem;
             text-align: center;
@@ -338,7 +292,6 @@
             padding: 2rem;
         }
 
-        /* Formulaire moderne */
         .form {
             display: flex;
             flex-direction: column;
@@ -361,14 +314,13 @@
         }
 
         .form-label i {
-            background: var(--primary);
+            background: var(--secondary);
             color: white;
             padding: 0.5rem;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        /* Inputs modernes */
         .form-input {
             width: 100%;
             padding: 1rem 1.25rem;
@@ -383,8 +335,8 @@
 
         .form-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
             transform: translateY(-2px);
         }
 
@@ -397,12 +349,11 @@
             resize: vertical;
         }
 
-        /* Section d'upload de fichiers */
         .upload-section {
             padding: 2rem;
-            border: 3px dashed var(--primary);
+            border: 3px dashed var(--secondary);
             border-radius: var(--radius);
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
             text-align: center;
             transition: var(--transition);
             position: relative;
@@ -425,7 +376,7 @@
         }
 
         .upload-section:hover {
-            border-color: var(--primary-dark);
+            border-color: #2563eb;
             transform: scale(1.02);
         }
 
@@ -450,11 +401,10 @@
         }
 
         .file-input:hover {
-            border-color: var(--primary);
+            border-color: var(--secondary);
             background: var(--surface-alt);
         }
 
-        /* Preview des images */
         .image-preview {
             margin: auto;
             display: flex;
@@ -487,7 +437,7 @@
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: var(--accent);
+            background: #ef4444;
             color: white;
             border: none;
             border-radius: 50%;
@@ -517,9 +467,8 @@
             font-weight: 600;
         }
 
-        /* Boutons modernes */
         .btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, #2563eb 100%);
             color: white;
             border: none;
             border-radius: var(--radius);
@@ -533,7 +482,7 @@
             justify-content: center;
             gap: 0.75rem;
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
             position: relative;
             overflow: hidden;
             width: 100%;
@@ -556,23 +505,13 @@
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
 
         .btn:active {
             transform: translateY(0);
         }
 
-        .btn-warning {
-            background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        }
-
-        .btn-warning:hover {
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        }
-
-        /* Status messages */
         .status {
             margin-top: 1rem;
             padding: 1rem;
@@ -619,7 +558,6 @@
             }
         }
 
-        /* Footer */
         .app-footer {
             text-align: center;
             padding: 2rem;
@@ -643,7 +581,23 @@
             gap: 0.5rem;
         }
 
-        /* Responsive design */
+        .alert {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #92400e;
+            font-size: 0.9rem;
+        }
+
+        .alert i {
+            color: #f59e0b;
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 1rem;
@@ -673,7 +627,7 @@
 
             .nav-menu a {
                 color: var(--text);
-                background: rgba(16, 185, 129, 0.1);
+                background: rgba(59, 130, 246, 0.1);
                 border-color: var(--border);
             }
 
@@ -732,122 +686,106 @@
                 font-size: 1rem;
             }
         }
-
-        /* Alert moderne */
-        .alert {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #f59e0b;
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: #92400e;
-            font-size: 0.9rem;
-        }
-
-        .alert i {
-            color: var(--secondary);
-        }
     </style>
 </head>
 
 <body>
     <header class="header">
-    <div class="header-content">
-      <a href="index.html" class="logo">
-        <img src="img/logo.png" width="60px" alt="">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="img/logo.png" width="60px" alt="">
 
-        Propre Eco Assistant
-      </a>
+                Propre Eco Assistant
+            </a>
 
 
-      <button class="nav-toggle" aria-label="Menu">
-        <i class="fas fa-bars"></i>
-      </button>
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
 
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-          <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
-          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
     <div class="container">
         <div class="main-card">
             <div class="card-header">
                 <h1>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Signaler un problème
+                    <i class="fas fa-camera"></i>
+                    Envoyer des photos
                 </h1>
-                <p>Soumettez un problème rencontré dans vos copropriétés</p>
+                <p>Partagez des photos de vos chantiers spécifiques</p>
             </div>
 
             <div class="card-content">
-                <form id="report-form" class="form">
-                    <!-- Copropriété -->
+                <form id="photos-form" class="form">
+                    <!-- Nom du chantier -->
                     <div class="form-group">
-                        <label for="copro-input" class="form-label">
-                            <i class="fas fa-building"></i>
-                            Copropriété
+                        <label for="chantier-input" class="form-label">
+                            <i class="fas fa-hard-hat"></i>
+                            Nom du chantier
                         </label>
-                        <input type="text" id="copro-input" class="form-input" placeholder="Nom de la copropriété..."
+                        <input type="text" id="chantier-input" class="form-input"
+                            placeholder="Ex: Rénovation façade, Nettoyage parking, etc..." required />
+                    </div>
+
+                    <!-- Description optionnelle -->
+                    <div class="form-group">
+                        <label for="description-input" class="form-label">
+                            <i class="fas fa-comment-alt"></i>
+                            Description (optionnel)
+                        </label>
+                        <textarea id="description-input" class="form-input form-textarea"
+                            placeholder="Commentaires, détails sur les travaux..."></textarea>
+                    </div>
+
+                    <!-- Agent -->
+                    <div class="form-group">
+                        <label for="agent-input" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Nom de l'agent
+                        </label>
+                        <input type="text" id="agent-input" class="form-input" placeholder="Votre prénom et nom"
                             required />
                     </div>
 
-                    <!-- Description -->
+                    <!-- Photos -->
                     <div class="form-group">
-                        <label for="desc-input" class="form-label">
-                            <i class="fas fa-comment-alt"></i>
-                            Description du problème
+                        <label for="photos-input" class="form-label">
+                            <i class="fas fa-images"></i>
+                            Photos du chantier
                         </label>
+                        <div class="alert">
+                            <i class="fas fa-info-circle"></i>
+                            <span><strong>iPhone :</strong> Si vos photos ne se chargent pas, allez dans Réglages >
+                                Appareil photo > Formats > sélectionnez "Plus compatible" pour prendre des photos en
+                                JPEG.</span>
+                        </div>
+                        <div class="upload-section">
+                            <input type="file" id="photos-input" class="file-input" multiple
+                                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" />
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
 
                         <div class="alert">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>Merci de renseigner le numéro de batiment si la copropriété en comporte
-                                plusieurs.</span>
-                        </div>
-                        <textarea id="desc-input" class="form-input form-textarea"
-                            placeholder="Décrivez le problème rencontré en détail..." required></textarea>
-                    </div>
-
-                    <!-- Employé -->
-                    <div class="form-group">
-                        <label for="signature-input" class="form-label">
-                            <i class="fas fa-user"></i>
-                            Signature de l'agent
-                        </label>
-                        <input type="text" id="signature-input" class="form-input" placeholder="Votre prénom"
-                            required />
-                    </div>
-
-                    <!-- Images -->
-                    <div class="form-group">
-                        <label for="images-input" class="form-label">
-                            <i class="fas fa-images"></i>
-                            Ajouter des images
-                        </label>
-                        <div class="upload-section">
-                            <div class="upload-info">
-                                <i class="fas fa-info-circle"></i>
-                                <span>Maximum 3 images</span>
-                            </div>
-                            <input type="file" id="images-input" class="file-input" multiple accept="image/*" />
-                            <div id="image-preview" class="image-preview"></div>
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Prenez des photos avant/pendant/après pour documenter l'avancement du chantier.</span>
                         </div>
                     </div>
 
                     <!-- Bouton d'envoi -->
-                    <button class="btn btn-warning" type="submit">
-                        <i class="fas fa-paper-plane"></i>
-                        Envoyer le signalement
+                    <button class="btn" type="submit">
+                        <i class="fas fa-upload"></i>
+                        Envoyer les photos
                     </button>
 
                     <div id="status" class="status"></div>
@@ -861,10 +799,8 @@
     </footer>
 
     <script type="module">
-
-        let notif = false;//(inversé)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
@@ -880,135 +816,174 @@
         const db = getFirestore(app);
 
         // Elements DOM
-        const form = document.getElementById('report-form');
+        const form = document.getElementById('photos-form');
         const status = document.getElementById('status');
-        const imagesInput = document.getElementById('images-input');
+        const photosInput = document.getElementById('photos-input');
         const imagePreview = document.getElementById('image-preview');
         const API_KEY = "7f0e4433bcc19c0f1408f57919fbcf14";
 
-        // Gestion de la signature sauvegardée
-        const signatureInput = document.getElementById('signature-input');
-        const savedSignature = localStorage.getItem('agent-signature');
+        // Gestion de l'agent sauvegardé
+        const agentInput = document.getElementById('agent-input');
+        const savedAgent = localStorage.getItem('agent-signature');
 
-        // Charger la signature sauvegardée au chargement de la page
-        if (savedSignature) {
-            signatureInput.value = savedSignature;
-            signatureInput.readOnly = true;
-            signatureInput.style.backgroundColor = '#f0f8ff';
+        if (savedAgent) {
+            agentInput.value = savedAgent;
+            agentInput.readOnly = true;
+            agentInput.style.backgroundColor = '#f0f8ff';
 
-            // Ajouter un bouton pour changer la signature
-            const signatureGroup = signatureInput.parentElement;
+            const agentGroup = agentInput.parentElement;
             const changeButton = document.createElement('div');
             changeButton.className = 'signature-controls';
             changeButton.innerHTML = `
-        <div class="signature-saved">
-            <i class="fas fa-check-circle"></i>
-            Signature sauvegardée
-        </div>
-        <button type="button" class="change-signature" onclick="changeSignature()">
-            <i class="fas fa-edit"></i> Modifier
-        </button>
-    `;
-            signatureGroup.appendChild(changeButton);
+                <div class="signature-saved">
+                    <i class="fas fa-check-circle"></i>
+                    Agent sauvegardé
+                </div>
+                <button type="button" class="change-signature" onclick="changeAgent()">
+                    <i class="fas fa-edit"></i> Modifier
+                </button>
+            `;
+            agentGroup.appendChild(changeButton);
         }
 
-        // Fonction pour permettre de changer la signature
-        window.changeSignature = function () {
-            signatureInput.readOnly = false;
-            signatureInput.style.backgroundColor = '';
-            signatureInput.focus();
-            signatureInput.select();
+        window.changeAgent = function () {
+            agentInput.readOnly = false;
+            agentInput.style.backgroundColor = '';
+            agentInput.focus();
+            agentInput.select();
 
-            // Supprimer les contrôles
             const controls = document.querySelector('.signature-controls');
             if (controls) {
                 controls.remove();
             }
         };
 
-        // Sauvegarder la signature quand l'utilisateur tape
-        signatureInput.addEventListener('blur', function () {
+        agentInput.addEventListener('blur', function () {
             if (this.value.trim()) {
                 localStorage.setItem('agent-signature', this.value.trim());
             }
         });
 
-        // Variables globales pour les images
+        // Variables pour les images
         let selectedFiles = [];
         let compressedFiles = [];
 
-        // Fonction de compression intelligente d'image
-       // Fonction de compression intelligente d'image AMÉLIORÉE
-async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) {
-    // Augmenter la taille max et la qualité de base
-    
-    if ('createImageBitmap' in window) {
-        try {
-            const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-            const { blob } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
-                const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
-                canvas.width = w;
-                canvas.height = h;
-                ctx.drawImage(bitmap, 0, 0, w, h);
-            }, quality);
-
-            // Seulement si l'image est VRAIMENT trop lourde (+ de 500KB), réduire la qualité
-            if (blob.size > 500 * 1024) {
-                const { blob: blob2 } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
-                    const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
-                    canvas.width = w;
-                    canvas.height = h;
-                    ctx.drawImage(bitmap, 0, 0, w, h);
-                }, 0.65); // Qualité moins agressive
-                return { blob: blob2 };
+        // Fonction de compression d'image
+        // Fonction de compression d'image AMÉLIORÉE
+        async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) {
+            // Vérifier d'abord si le fichier est valide
+            if (!file || !file.type.startsWith('image/')) {
+                throw new Error('Fichier non valide ou non supporté');
             }
-            return { blob };
-        } catch (error) {
-            console.error('Erreur createImageBitmap:', error);
-        }
-    }
 
-    // Fallback avec Image classique
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = async () => {
-            try {
-                const { blob } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
-                    const { w, h } = fit(img.width, img.height, maxW, maxH);
-                    canvas.width = w;
-                    canvas.height = h;
-                    
-                    // Améliorer la qualité de rendu
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    
-                    ctx.drawImage(img, 0, 0, w, h);
-                }, quality);
+            // Essayer createImageBitmap en premier (plus moderne)
+            if ('createImageBitmap' in window) {
+                try {
+                    const bitmap = await createImageBitmap(file, {
+                        imageOrientation: 'from-image',
+                        premultiplyAlpha: 'none',
+                        colorSpaceConversion: 'none'
+                    });
 
-                // Seulement si l'image est VRAIMENT trop lourde
-                if (blob.size > 500 * 1024) {
-                    const { blob: blob2 } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
-                        const { w, h } = fit(img.width, img.height, maxW, maxH);
+                    const { blob } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
+                        const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
                         canvas.width = w;
                         canvas.height = h;
-                        
-                        ctx.imageSmoothingEnabled = true;
-                        ctx.imageSmoothingQuality = 'high';
-                        
-                        ctx.drawImage(img, 0, 0, w, h);
-                    }, 0.65);
-                    resolve({ blob: blob2 });
-                } else {
-                    resolve({ blob });
+                        ctx.drawImage(bitmap, 0, 0, w, h);
+                    }, quality);
+
+                    bitmap.close(); // Libérer la mémoire
+
+                    if (blob.size > 500 * 1024) {
+                        const bitmap2 = await createImageBitmap(file, {
+                            imageOrientation: 'from-image',
+                            premultiplyAlpha: 'none',
+                            colorSpaceConversion: 'none'
+                        });
+
+                        const { blob: blob2 } = await drawToCanvas(bitmap2.width, bitmap2.height, (canvas, ctx) => {
+                            const { w, h } = fit(bitmap2.width, bitmap2.height, maxW, maxH);
+                            canvas.width = w;
+                            canvas.height = h;
+                            ctx.drawImage(bitmap2, 0, 0, w, h);
+                        }, 0.65);
+
+                        bitmap2.close();
+                        return { blob: blob2 };
+                    }
+                    return { blob };
+                } catch (error) {
+                    console.warn('createImageBitmap échoué, fallback vers Image:', error.message);
+                    // Continue avec la méthode Image fallback ci-dessous
                 }
-            } catch (error) {
-                reject(error);
             }
-        };
-        img.onerror = () => reject(new Error('Impossible de charger l\'image'));
-        img.src = URL.createObjectURL(file);
-    });
-}
+
+            // Fallback avec Image classique (plus compatible)
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+
+                // Gérer les erreurs de chargement
+                img.onerror = (error) => {
+                    console.error('Erreur chargement image:', error);
+                    reject(new Error(`Impossible de charger l'image: ${file.name}. Format peut-être non supporté.`));
+                };
+
+                // Gérer l'abort si l'image prend trop de temps
+                const timeout = setTimeout(() => {
+                    img.src = '';
+                    reject(new Error(`Timeout lors du chargement de l'image: ${file.name}`));
+                }, 30000); // 30 secondes max
+
+                img.onload = async () => {
+                    clearTimeout(timeout);
+
+                    try {
+                        // Vérifier si l'image est valide
+                        if (img.width === 0 || img.height === 0) {
+                            throw new Error('Image corrompue ou dimensions invalides');
+                        }
+
+                        const { blob } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
+                            const { w, h } = fit(img.width, img.height, maxW, maxH);
+                            canvas.width = w;
+                            canvas.height = h;
+
+                            // Améliorer la qualité de rendu
+                            ctx.imageSmoothingEnabled = true;
+                            ctx.imageSmoothingQuality = 'high';
+
+                            ctx.drawImage(img, 0, 0, w, h);
+                        }, quality);
+
+                        if (blob.size > 500 * 1024) {
+                            const { blob: blob2 } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
+                                const { w, h } = fit(img.width, img.height, maxW, maxH);
+                                canvas.width = w;
+                                canvas.height = h;
+
+                                ctx.imageSmoothingEnabled = true;
+                                ctx.imageSmoothingQuality = 'high';
+
+                                ctx.drawImage(img, 0, 0, w, h);
+                            }, 0.65);
+                            resolve({ blob: blob2 });
+                        } else {
+                            resolve({ blob });
+                        }
+                    } catch (error) {
+                        reject(new Error(`Erreur lors de la compression de ${file.name}: ${error.message}`));
+                    }
+                };
+
+                // Créer l'URL pour l'image
+                try {
+                    img.src = URL.createObjectURL(file);
+                } catch (error) {
+                    clearTimeout(timeout);
+                    reject(new Error(`Impossible de créer l'URL pour ${file.name}`));
+                }
+            });
+        }
         function fit(w, h, maxW, maxH) {
             let rw = w, rh = h;
             if (rw > rh && rw > maxW) {
@@ -1056,40 +1031,89 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
             };
         }
 
-        // Gestion des images
-        imagesInput.addEventListener('change', async function (e) {
+        // Gestion des photos
+        // Gestion des photos - VERSION AVEC SUPPORT HEIC
+        photosInput.addEventListener('change', async function (e) {
             const files = Array.from(e.target.files);
 
-            // Limiter à 3 images
-            if (files.length > 3) {
-                showStatus('Vous ne pouvez sélectionner que 3 images maximum', 'error');
+            if (files.length === 0) return;
+
+            // Séparer les fichiers HEIC des autres
+            const heicFiles = files.filter(file => file.name.toLowerCase().includes('.heic'));
+            const validFiles = files.filter(file => {
+                // Exclure les fichiers HEIC
+                if (file.name.toLowerCase().includes('.heic')) {
+                    return false;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    showStatus(`${file.name} n'est pas une image valide`, 'error');
+                    return false;
+                }
+                if (file.size > 50 * 1024 * 1024) { // 50MB max
+                    showStatus(`${file.name} est trop volumineux (max 50MB)`, 'error');
+                    return false;
+                }
+                return true;
+            });
+
+            // Informer l'utilisateur des fichiers HEIC non supportés
+            if (heicFiles.length > 0) {
+                showStatus(`${heicFiles.length} fichiers HEIC détectés. Veuillez les convertir en JPEG depuis votre iPhone : Réglages > Appareil photo > Formats > Plus compatible`, 'error');
+            }
+
+            if (validFiles.length === 0) {
+                if (heicFiles.length > 0) {
+                    showStatus('Aucune image supportée. Les fichiers HEIC doivent être convertis en JPEG.', 'error');
+                } else {
+                    showStatus('Aucune image valide sélectionnée', 'error');
+                }
                 return;
             }
 
-            selectedFiles = files;
+            selectedFiles = validFiles;
             compressedFiles = [];
 
-            // Afficher un message de compression
-            showStatus('Compression des images en cours...', 'loading');
+            showStatus(`Compression de ${validFiles.length} photos en cours...`, 'loading');
+
+            let successCount = 0;
+            let errorCount = 0;
 
             try {
-                // Compresser chaque image
-                for (let i = 0; i < files.length; i++) {
-                    showStatus(`Compression des images... (${i + 1}/${files.length})`, 'loading');
-                    const compressed = await compressImageSmart(files[i]);
-                    compressedFiles.push(compressed.blob);
+                for (let i = 0; i < validFiles.length; i++) {
+                    try {
+                        showStatus(`Compression des photos... (${i + 1}/${validFiles.length})`, 'loading');
+                        const compressed = await compressImageSmart(validFiles[i]);
+                        compressedFiles.push(compressed.blob);
+                        successCount++;
+                    } catch (error) {
+                        console.error(`Erreur compression ${validFiles[i].name}:`, error);
+                        errorCount++;
+                    }
                 }
 
-                await displayImagePreview(files, compressedFiles);
-                showStatus('Images compressées avec succès !', 'success');
+                if (successCount > 0) {
+                    await displayImagePreview(validFiles.slice(0, successCount), compressedFiles);
+
+                    let message = `${successCount} photos compressées avec succès`;
+                    if (errorCount > 0) {
+                        message += `, ${errorCount} erreurs`;
+                    }
+                    if (heicFiles.length > 0) {
+                        message += `. ${heicFiles.length} fichiers HEIC ignorés`;
+                    }
+
+                    showStatus(message, successCount > 0 ? 'success' : 'error');
+                } else {
+                    showStatus('Erreur lors de la compression de toutes les photos', 'error');
+                }
 
             } catch (error) {
-                console.error('Erreur lors de la compression:', error);
-                showStatus('Erreur lors de la compression des images', 'error');
+                console.error('Erreur générale:', error);
+                showStatus('Erreur lors de la compression des photos', 'error');
             }
         });
-
-        // Affichage des previews d'images
+        // Affichage des previews
         async function displayImagePreview(originalFiles, compressedBlobs) {
             imagePreview.innerHTML = '';
 
@@ -1113,7 +1137,6 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                     `;
                     imagePreview.appendChild(previewItem);
 
-                    // Afficher les infos de compression après la dernière image
                     if (i === originalFiles.length - 1) {
                         const totalOriginal = originalFiles.reduce((sum, file) => sum + file.size, 0);
                         const totalCompressed = compressedBlobs.reduce((sum, blob) => sum + blob.size, 0);
@@ -1136,7 +1159,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
             }
         }
 
-        // Fonction globale pour supprimer une image
+        // Fonction globale pour supprimer une photo
         window.removeImage = function (index) {
             selectedFiles.splice(index, 1);
             compressedFiles.splice(index, 1);
@@ -1147,10 +1170,9 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                 imagePreview.innerHTML = '';
             }
 
-            // Mettre à jour l'input file
             const dt = new DataTransfer();
             selectedFiles.forEach(file => dt.items.add(file));
-            imagesInput.files = dt.files;
+            photosInput.files = dt.files;
         };
 
         // Affichage des messages de statut
@@ -1177,76 +1199,53 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
         }
 
         // Soumission du formulaire
-        // Soumission du formulaire
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const copro = document.getElementById('copro-input').value.trim();
-            const description = document.getElementById('desc-input').value.trim();
-            const employee = document.getElementById('signature-input').value.trim();
+            // NOUVEAU CODE (CORRIGÉ)
+            const chantier = document.getElementById('chantier-input').value.trim();
+            const description = document.getElementById('description-input').value.trim();
+            const agent = document.getElementById('agent-input').value.trim();
 
-            // Sauvegarder la signature si ce n'est pas déjà fait
-            if (employee) {
-                localStorage.setItem('agent-signature', employee);
+            if (agent) {
+                localStorage.setItem('agent-signature', agent);
             }
 
-            if (!copro || !description || !employee) {
+            if (!chantier || !agent) { // Suppression de localisation
                 showStatus('Veuillez remplir tous les champs obligatoires', 'error');
                 return;
             }
 
-            showStatus("Envoi du signalement en cours...", "loading");
+            showStatus("Envoi des photos en cours...", "loading");
 
             try {
-                let images = [];
+                let photos = [];
 
-                // Upload des images compressées si présentes
-                if (compressedFiles.length > 0) {
-                    showStatus(`Upload des images... (0/${compressedFiles.length})`, "loading");
+                showStatus(`Upload des photos... (0/${compressedFiles.length})`, "loading");
 
-                    for (let i = 0; i < compressedFiles.length; i++) {
-                        try {
-                            showStatus(`Upload des images... (${i + 1}/${compressedFiles.length})`, "loading");
-                            const uploaded = await uploadToImgBB(compressedFiles[i]);
-                            images.push(uploaded);
-                        } catch (err) {
-                            console.error("Erreur upload image :", err);
-                            showStatus(`Erreur lors de l'upload de l'image ${i + 1}`, "error");
-                        }
+                for (let i = 0; i < compressedFiles.length; i++) {
+                    try {
+                        showStatus(`Upload des photos... (${i + 1}/${compressedFiles.length})`, "loading");
+                        const uploaded = await uploadToImgBB(compressedFiles[i]);
+                        photos.push(uploaded);
+                    } catch (err) {
+                        console.error("Erreur upload photo :", err);
+                        showStatus(`Erreur lors de l'upload de la photo ${i + 1}`, "error");
                     }
                 }
 
-                showStatus("Enregistrement du signalement...", "loading");
+                showStatus("Enregistrement des données...", "loading");
 
-                // Enregistrer dans Firebase
-                await addDoc(collection(db, "signalements"), {
-                    copro,
-                    description,
-                    employee,
-                    images, // tableau [{url, deleteUrl}]
+                // Enregistrer dans Firebase dans la collection "photos_chantiers"
+                await addDoc(collection(db, "photos_chantiers"), {
+                    chantier,
+                    description: description || null,
+                    agent,
+                    photos,
                     createdAt: new Date()
                 });
 
-                // Envoi notification ntfy
-                let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
-
-                if (notif == false) {
-                    // Ajouter l'URL de la première image si disponible
-                    if (images.length > 0 && images[0].url) {
-                        message += `\n📸 ${images[0].url}`;
-                    }
-
-                    try {
-                        await fetch("https://ntfy.sh/signalement-propre-eco", {
-                            method: "POST",
-                            body: message
-                        });
-                    } catch (ntfyError) {
-                        console.error("Erreur notification ntfy:", ntfyError);
-                    }
-                }
-
-                showStatus("✅ Signalement envoyé avec succès !", "success");
+                showStatus("✅ Photos envoyées avec succès !", "success");
 
                 // Réinitialiser le formulaire
                 form.reset();
@@ -1254,9 +1253,9 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                 compressedFiles = [];
                 imagePreview.innerHTML = '';
 
-                // Remettre la signature sauvegardée après reset
-                if (savedSignature) {
-                    signatureInput.value = savedSignature;
+                // Remettre l'agent sauvegardé après reset
+                if (savedAgent) {
+                    agentInput.value = savedAgent;
                 }
 
             } catch (err) {
@@ -1265,7 +1264,6 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
             }
         });
 
-        // Navigation mobile
         // Navigation mobile
         document.addEventListener('DOMContentLoaded', function () {
             const toggleButton = document.querySelector('.nav-toggle');
@@ -1276,7 +1274,6 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                     menu.classList.toggle('open');
                 });
 
-                // Fermer le menu en cliquant sur un lien
                 document.querySelectorAll('.nav-menu a').forEach(link => {
                     link.addEventListener('click', () => {
                         menu.classList.remove('open');
