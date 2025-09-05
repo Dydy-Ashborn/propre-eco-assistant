@@ -398,8 +398,8 @@ body {
 }
 
 .btn-small:hover {
-    background: #f3f4f6;
-    border-color: #3b82f6;
+    
+    border-color: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
 .btn-small.active {
