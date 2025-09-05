@@ -8,6 +8,237 @@
     <link rel="apple-touch-icon" href="img/logo.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Styles pour la preview améliorée */
+        .image-preview {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .image-preview::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .image-preview::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .image-preview::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .image-preview::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .preview-header {
+            position: sticky;
+            top: 0;
+            background: #f8fafc;
+            z-index: 10;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-counter {
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-compact {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-compact:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .preview-grid.compact {
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .preview-item:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-grid.compact .preview-image {
+            height: 60px;
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+        }
+
+        .preview-remove:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .preview-size {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            text-align: center;
+        }
+
+        .compression-info {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Bouton d'envoi flottant */
+        .floating-submit {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .floating-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.5);
+        }
+
+        .floating-submit.visible {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .preview-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+
+            .preview-grid.compact {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+
+            .floating-submit {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation pour le scroll */
+        .scroll-indicator {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
         .signature-controls {
             display: flex;
             align-items: center;
@@ -764,21 +995,26 @@
                             <i class="fas fa-images"></i>
                             Photos du chantier
                         </label>
-                       
+
                         <div class="upload-section">
                             <input type="file" id="photos-input" class="file-input" multiple
                                 accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" />
                             <div id="image-preview" class="image-preview"></div>
                         </div>
 
-                        <div class="alert">
+                        <!-- <div class="alert">
                             <i class="fas fa-lightbulb"></i>
                             <span>Prenez des photos avant/pendant/après pour documenter l'avancement du chantier.</span>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Bouton d'envoi -->
-                    <button class="btn" type="submit">
+                    <button class="btn" type="submit" id="normal-submit">
+                        <i class="fas fa-upload"></i>
+                        Envoyer les photos
+                    </button>
+                    <!-- AJOUTER CETTE LIGNE -->
+                    <button class="floating-submit" type="submit" id="floating-submit">
                         <i class="fas fa-upload"></i>
                         Envoyer les photos
                     </button>
@@ -1109,29 +1345,65 @@
             }
         });
         // Affichage des previews
+        // Remplacer votre fonction displayImagePreview par celle-ci
         async function displayImagePreview(originalFiles, compressedBlobs) {
-            imagePreview.innerHTML = '';
+            const imagePreview = document.getElementById('image-preview');
 
+            if (originalFiles.length === 0) {
+                imagePreview.innerHTML = '';
+                toggleFloatingButton(false);
+                return;
+            }
+
+            // Créer le header sticky
+            const header = document.createElement('div');
+            header.className = 'preview-header';
+            header.innerHTML = `
+        <div class="preview-counter">
+            <i class="fas fa-images"></i>
+            <span>${originalFiles.length} photo${originalFiles.length > 1 ? 's' : ''}</span>
+        </div>
+        <div class="preview-actions">
+            <button type="button" class="btn-small btn-compact" onclick="toggleCompactMode()">
+                <i class="fas fa-compress-alt"></i>
+                ${compactMode ? 'Normal' : 'Compact'}
+            </button>
+            <button type="button" class="btn-small btn-clear" onclick="clearAllImages()">
+                <i class="fas fa-trash"></i>
+                Tout supprimer
+            </button>
+        </div>
+    `;
+
+            // Créer la grille
+            const grid = document.createElement('div');
+            grid.className = `preview-grid ${compactMode ? 'compact' : ''}`;
+
+            imagePreview.innerHTML = '';
+            imagePreview.appendChild(header);
+            imagePreview.appendChild(grid);
+
+            // Ajouter les images
             for (let i = 0; i < originalFiles.length; i++) {
                 const originalFile = originalFiles[i];
                 const compressedBlob = compressedBlobs[i];
 
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const originalKB = (originalFile.size / 1024).toFixed(1);
                     const compressedKB = (compressedBlob.size / 1024).toFixed(1);
 
                     const previewItem = document.createElement('div');
                     previewItem.className = 'preview-item';
                     previewItem.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview ${i + 1}" class="preview-image">
-                        <button type="button" class="preview-remove" onclick="removeImage(${i})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <div class="preview-size">${compressedKB} KB</div>
-                    `;
-                    imagePreview.appendChild(previewItem);
+                <img src="${e.target.result}" alt="Preview ${i + 1}" class="preview-image" onclick="previewImage('${e.target.result}', ${i})">
+                <button type="button" class="preview-remove" onclick="removeImage(${i})">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="preview-size">${compressedKB} KB</div>
+            `;
+                    grid.appendChild(previewItem);
 
+                    // Ajouter les infos de compression après la dernière image
                     if (i === originalFiles.length - 1) {
                         const totalOriginal = originalFiles.reduce((sum, file) => sum + file.size, 0);
                         const totalCompressed = compressedBlobs.reduce((sum, blob) => sum + blob.size, 0);
@@ -1140,20 +1412,88 @@
                         const compressionInfo = document.createElement('div');
                         compressionInfo.className = 'compression-info';
                         compressionInfo.innerHTML = `
-                            <i class="fas fa-chart-line"></i>
-                            <span>
-                                <strong>Compression totale :</strong> 
-                                ${(totalOriginal / 1024).toFixed(1)} KB → ${(totalCompressed / 1024).toFixed(1)} KB 
-                                (-${totalRatio}%)
-                            </span>
-                        `;
+                    <i class="fas fa-chart-line"></i>
+                    <span>
+                        <strong>Compression totale :</strong> 
+                        ${(totalOriginal / 1024).toFixed(1)} KB → ${(totalCompressed / 1024).toFixed(1)} KB 
+                        (-${totalRatio}%)
+                    </span>
+                `;
                         imagePreview.appendChild(compressionInfo);
                     }
                 };
                 reader.readAsDataURL(compressedBlob);
             }
+
+            // Activer le bouton flottant si beaucoup d'images
+            toggleFloatingButton(originalFiles.length > 10);
         }
 
+        // Variables pour l'interface améliorée
+        let compactMode = false;
+
+        // Fonctions utilitaires
+        window.toggleCompactMode = function () {
+            compactMode = !compactMode;
+            displayImagePreview(selectedFiles, compressedFiles);
+        };
+
+        window.clearAllImages = function () {
+            if (confirm('Supprimer toutes les photos sélectionnées ?')) {
+                selectedFiles = [];
+                compressedFiles = [];
+                document.getElementById('photos-input').value = '';
+                displayImagePreview([], []);
+            }
+        };
+
+        window.previewImage = function (src, index) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    `;
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.cssText = `
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+    `;
+
+            modal.appendChild(img);
+            modal.onclick = () => modal.remove();
+            document.body.appendChild(modal);
+        };
+
+        function toggleFloatingButton(show) {
+            const floatingBtn = document.getElementById('floating-submit');
+            const normalBtn = document.getElementById('normal-submit');
+
+            if (show) {
+                floatingBtn.classList.add('visible');
+                normalBtn.style.display = 'none';
+            } else {
+                floatingBtn.classList.remove('visible');
+                normalBtn.style.display = 'block';
+            }
+        }
+
+        // Gérer le clic sur le bouton flottant
+        document.getElementById('floating-submit').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('photos-form').dispatchEvent(new Event('submit'));
+        });
         // Fonction globale pour supprimer une photo
         window.removeImage = function (index) {
             selectedFiles.splice(index, 1);
