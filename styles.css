@@ -494,7 +494,7 @@ th {
     text-align: left;
     font-weight: 700;
     color: var(--text);
-    font-size: 0.9rem;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 2px solid var(--border);
