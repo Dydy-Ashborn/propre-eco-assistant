@@ -254,7 +254,7 @@
                         </p>
                     </div>
                     <div class="card-buttons">
-                           <button class="btn btn-secondary" onclick="window.open('https://dylan-propreeco.imgbb.com/')">
+                        <button class="btn btn-secondary" onclick="window.open('https://dylan-propreeco.imgbb.com/')">
                             <i class="fas fa-external-link-alt"></i>
                             Supprimer sur ImgBB
                         </button>
@@ -307,7 +307,7 @@
                         </div>
                     </div>
                 </div>
-                 <div class="alert">
+                <div class="alert">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>Pensez à télécharger et supprimer toutes les photos une fois par mois.</span>
                 </div>
@@ -527,8 +527,24 @@
                             return;
                         }
 
-                        // Compter le nombre total de photos
-                        const totalPhotos = photosData.reduce((sum, item) => sum + (item.photos ? item.photos.length : 0), 0);
+                        // DEBUG: Afficher la structure des données
+                        console.log('Première entrée de données:', photosData[0]);
+                        console.log('Structure photos:', photosData[0]?.photos);
+
+                        // Compter le nombre total de photos avec vérification
+                        let totalPhotos = 0;
+                        let validEntries = 0;
+
+                        photosData.forEach(item => {
+                            if (item.photos && Array.isArray(item.photos)) {
+                                totalPhotos += item.photos.length;
+                                validEntries++;
+                            } else {
+                                console.warn(`Entrée sans photos valides:`, item.id, item.photos);
+                            }
+                        });
+
+                        console.log(`Total photos trouvées: ${totalPhotos} dans ${validEntries} entrées`);
 
                         if (totalPhotos === 0) {
                             showFastNotification('Aucune photo trouvée dans les chantiers', 'warning');
@@ -540,38 +556,95 @@
                         const zip = new JSZip();
                         let processed = 0;
                         let successful = 0;
+                        let errors = [];
 
                         for (const chantierData of photosData) {
-                            if (chantierData.photos && chantierData.photos.length > 0) {
-                                const chantierName = (chantierData.chantier || 'chantier_inconnu').replace(/[^a-zA-Z0-9]/g, '_');
-                                const agentName = (chantierData.agent || 'agent_inconnu').replace(/[^a-zA-Z0-9]/g, '_');
-                                const date = chantierData.createdAt && chantierData.createdAt.toDate ?
-                                    chantierData.createdAt.toDate().toISOString().slice(0, 10) : 'date_inconnue';
-
-                                const folderName = `${date}_${chantierName}_${agentName}`;
-
-                                for (let i = 0; i < chantierData.photos.length; i++) {
-                                    const photo = chantierData.photos[i];
-                                    try {
-                                        if (photo.url) {
-                                            const response = await fetch(photo.url);
-                                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-                                            const blob = await response.blob();
-                                            const extension = photo.url.split('.').pop().split('?')[0] || 'jpg';
-                                            const filename = `${folderName}/photo_${i + 1}.${extension}`;
-
-                                            zip.file(filename, blob);
-                                            successful++;
-                                        }
-                                        processed++;
-                                        downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${processed}/${totalPhotos}`;
-                                    } catch (imageError) {
-                                        console.error(`Erreur téléchargement photo ${chantierData.id}:`, imageError);
-                                        processed++;
-                                    }
-                                }
+                            if (!chantierData.photos || !Array.isArray(chantierData.photos)) {
+                                console.warn(`Pas de photos pour le chantier ${chantierData.id}`);
+                                continue;
                             }
+
+                            if (chantierData.photos.length === 0) {
+                                console.warn(`Tableau photos vide pour le chantier ${chantierData.id}`);
+                                continue;
+                            }
+
+                            // Créer un nom de dossier pour chaque chantier
+                            const chantierName = (chantierData.chantier || 'chantier_inconnu').replace(/[^a-zA-Z0-9\s]/g, '_');
+                            const agentName = (chantierData.agent || 'agent_inconnu').replace(/[^a-zA-Z0-9\s]/g, '_');
+
+                            // Format de date DD-MM-YYYY
+                            let dateFormatted = 'date_inconnue';
+                            if (chantierData.createdAt && chantierData.createdAt.toDate) {
+                                const dateObj = chantierData.createdAt.toDate();
+                                const day = String(dateObj.getDate()).padStart(2, '0');
+                                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                                const year = dateObj.getFullYear();
+                                dateFormatted = `${day}-${month}-${year}`;
+                            }
+
+                            // Ajouter un ID court pour éviter les conflits
+                            const shortId = chantierData.id.slice(-3);
+                            const folderName = `${dateFormatted}_${chantierName}_${agentName}_${shortId}`;
+                            console.log(`Traitement du chantier: ${folderName} (${chantierData.photos.length} photos)`);
+
+                            for (let i = 0; i < chantierData.photos.length; i++) {
+                                const photo = chantierData.photos[i];
+                                processed++;
+
+                                try {
+                                    if (!photo || !photo.url) {
+                                        console.warn(`Photo ${i + 1} sans URL pour le chantier ${chantierData.id}`);
+                                        errors.push(`Photo ${i + 1} du chantier ${chantierName}: pas d'URL`);
+                                        continue;
+                                    }
+
+                                    console.log(`Téléchargement photo ${processed}/${totalPhotos}: ${photo.url}`);
+
+                                    // Ajouter un timeout pour éviter les blocages
+                                    const controller = new AbortController();
+                                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 secondes
+
+                                    const response = await fetch(photo.url, {
+                                        signal: controller.signal,
+                                        mode: 'cors',
+                                        cache: 'no-cache'
+                                    });
+
+                                    clearTimeout(timeoutId);
+
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+                                    }
+
+                                    const blob = await response.blob();
+
+                                    // Vérifier que le blob contient bien une image
+                                    if (blob.size === 0) {
+                                        throw new Error('Fichier vide');
+                                    }
+
+                                    const extension = photo.url.split('.').pop().split('?')[0] || 'jpg';
+                                    const filename = `${folderName}/photo_${i + 1}.${extension}`;
+
+                                    zip.file(filename, blob);
+                                    successful++;
+
+                                    console.log(`✓ Photo ${successful} ajoutée: ${filename}`);
+
+                                } catch (imageError) {
+                                    const errorMsg = `Photo ${i + 1} du chantier ${chantierName}: ${imageError.message}`;
+                                    console.error(`Erreur téléchargement:`, errorMsg);
+                                    errors.push(errorMsg);
+                                }
+
+                                // Mettre à jour l'affichage
+                                downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${processed}/${totalPhotos}`;
+                            }
+                        }
+
+                        if (successful === 0) {
+                            throw new Error(`Aucune photo n'a pu être téléchargée. Erreurs: ${errors.slice(0, 3).join(', ')}${errors.length > 3 ? '...' : ''}`);
                         }
 
                         downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération ZIP...';
@@ -582,6 +655,7 @@
                             compressionOptions: { level: 6 }
                         });
 
+                        // Créer le lien de téléchargement
                         const url = window.URL.createObjectURL(zipBlob);
                         const a = document.createElement('a');
                         a.href = url;
@@ -591,17 +665,23 @@
                         document.body.removeChild(a);
                         window.URL.revokeObjectURL(url);
 
-                        showFastNotification(`Archive téléchargée : ${successful}/${totalPhotos} photos de chantiers`, 'success', 5000);
+                        // Message de succès avec détails
+                        let successMsg = `Archive téléchargée : ${successful}/${totalPhotos} photos de chantiers`;
+                        if (errors.length > 0) {
+                            successMsg += ` (${errors.length} erreurs)`;
+                            console.warn('Erreurs de téléchargement:', errors);
+                        }
+
+                        showFastNotification(successMsg, successful === totalPhotos ? 'success' : 'warning', 5000);
 
                     } catch (error) {
                         console.error('Erreur téléchargement photos chantiers:', error);
-                        showFastNotification('Erreur lors du téléchargement des photos de chantiers', 'error');
+                        showFastNotification(`Erreur lors du téléchargement: ${error.message}`, 'error');
                     } finally {
                         downloadBtn.innerHTML = originalContent;
                         downloadBtn.disabled = false;
                     }
                 }
-
                 async function deleteAllPhotosChantiers() {
                     try {
                         const countSnapshot = await db.collection('photos_chantiers').get();
@@ -919,291 +999,291 @@
             </script>
 
             <style>
-/* Styles pour la galerie photos */
-.photos-cell {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-}
+                /* Styles pour la galerie photos */
+                .photos-cell {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                    align-items: center;
+                }
 
-.photos-cell .thumb {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 2px solid #e5e7eb;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+                .photos-cell .thumb {
+                    width: 60px;
+                    height: 60px;
+                    object-fit: cover;
+                    border-radius: 8px;
+                    border: 2px solid #e5e7eb;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
 
-.photos-cell .thumb:hover {
-    transform: scale(1.1);
-    border-color: #8b5cf6;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-}
+                .photos-cell .thumb:hover {
+                    transform: scale(1.1);
+                    border-color: #8b5cf6;
+                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+                }
 
-.view-all-photos-btn {
-    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
-    color: white;
-    border: none;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
+                .view-all-photos-btn {
+                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+                    color: white;
+                    border: none;
+                    padding: 0.5rem 0.75rem;
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    transition: all 0.3s ease;
+                    white-space: nowrap;
+                }
 
-.view-all-photos-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-}
+                .view-all-photos-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+                }
 
-/* Modal de galerie */
-.photo-gallery-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+                /* Modal de galerie */
+                .photo-gallery-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 9999;
+                    display: none;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
 
-.photo-gallery-modal.active {
-    opacity: 1;
-}
+                .photo-gallery-modal.active {
+                    opacity: 1;
+                }
 
-.gallery-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
-}
+                .gallery-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.9);
+                    backdrop-filter: blur(10px);
+                }
 
-.gallery-container {
-    position: relative;
-    width: 95%;
-    max-width: 1200px;
-    height: 90%;
-    background: white;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
+                .gallery-container {
+                    position: relative;
+                    width: 95%;
+                    max-width: 1200px;
+                    height: 90%;
+                    background: white;
+                    border-radius: 16px;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+                }
 
-.gallery-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
-    color: white;
-}
+                .gallery-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+                    color: white;
+                }
 
-.gallery-info h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-}
+                .gallery-info h3 {
+                    margin: 0;
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                }
 
-.gallery-info p {
-    margin: 0.25rem 0 0 0;
-    opacity: 0.9;
-    font-size: 0.9rem;
-}
+                .gallery-info p {
+                    margin: 0.25rem 0 0 0;
+                    opacity: 0.9;
+                    font-size: 0.9rem;
+                }
 
-.gallery-close {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
+                .gallery-close {
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                }
 
-.gallery-close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
+                .gallery-close:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: scale(1.1);
+                }
 
-.gallery-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
+                .gallery-main {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                }
 
-.gallery-image-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    position: relative;
-    background: #f8fafc;
-}
+                .gallery-image-container {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                    background: #f8fafc;
+                }
 
-.gallery-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
-    border: none;
-    color: white;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 10;
-}
+                .gallery-nav {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+                    border: none;
+                    color: white;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    z-index: 10;
+                }
 
-.gallery-prev {
-    left: 1rem;
-}
+                .gallery-prev {
+                    left: 1rem;
+                }
 
-.gallery-next {
-    right: 1rem;
-}
+                .gallery-next {
+                    right: 1rem;
+                }
 
-.gallery-nav:hover {
-    background: linear-gradient(135deg, #4aaf70 0%, #2c6f47 100%);
-    transform: translateY(-50%) scale(1.1);
-}
+                .gallery-nav:hover {
+                    background: linear-gradient(135deg, #4aaf70 0%, #2c6f47 100%);
+                    transform: translateY(-50%) scale(1.1);
+                }
 
-.gallery-image-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
+                .gallery-image-wrapper {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                }
 
-.gallery-image-wrapper img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 8px;
-}
+                .gallery-image-wrapper img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                    border-radius: 8px;
+                }
 
-.gallery-counter {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
+                .gallery-counter {
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    background: rgba(0, 0, 0, 0.7);
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 20px;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                }
 
-.gallery-thumbnails {
-    display: flex;
-    gap: 0.5rem;
-    padding: 1rem;
-    overflow-x: auto;
-    background: #f1f5f9;
-    border-top: 1px solid #e2e8f0;
-}
+                .gallery-thumbnails {
+                    display: flex;
+                    gap: 0.5rem;
+                    padding: 1rem;
+                    overflow-x: auto;
+                    background: #f1f5f9;
+                    border-top: 1px solid #e2e8f0;
+                }
 
-.gallery-thumbnail {
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: all 0.3s ease;
-}
+                .gallery-thumbnail {
+                    flex-shrink: 0;
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    cursor: pointer;
+                    border: 3px solid transparent;
+                    transition: all 0.3s ease;
+                }
 
-.gallery-thumbnail.active {
-    border-color: #8b5cf6;
-}
+                .gallery-thumbnail.active {
+                    border-color: #8b5cf6;
+                }
 
-.gallery-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+                .gallery-thumbnail img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
 
-.gallery-thumbnail:hover {
-    transform: scale(1.05);
-}
+                .gallery-thumbnail:hover {
+                    transform: scale(1.05);
+                }
 
-.gallery-actions {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-}
+                .gallery-actions {
+                    display: flex;
+                    gap: 1rem;
+                    padding: 1rem 1.5rem;
+                    background: #f8fafc;
+                    border-top: 1px solid #e2e8f0;
+                }
 
-.gallery-btn {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-}
+                .gallery-btn {
+                    background: linear-gradient(135deg, #6366f1, #4f46e5);
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    transition: all 0.3s ease;
+                }
 
-.gallery-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-}
+                .gallery-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+                }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .gallery-container {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-    }
-    
-    .gallery-nav {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .gallery-actions {
-        flex-direction: column;
-    }
-    
-    .view-all-photos-btn {
-        font-size: 0.7rem;
-        padding: 0.4rem 0.6rem;
-    }
-}
-</style>
+                /* Responsive */
+                @media (max-width: 768px) {
+                    .gallery-container {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 0;
+                    }
+
+                    .gallery-nav {
+                        width: 40px;
+                        height: 40px;
+                    }
+
+                    .gallery-actions {
+                        flex-direction: column;
+                    }
+
+                    .view-all-photos-btn {
+                        font-size: 0.7rem;
+                        padding: 0.4rem 0.6rem;
+                    }
+                }
+            </style>
 
             <style>
                 /* Styles spécifiques pour les photos des chantiers */
