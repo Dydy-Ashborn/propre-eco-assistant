@@ -338,186 +338,187 @@
         }
 
         /* STYLES D'IMPRESSION OPTIMISÉS */
-       @media print {
-    * {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
 
-    @page {
-        margin: 1cm;
-        size: A4;
+            @page {
+                margin: 1cm;
+                size: A4;
 
-        @top-left {
-            content: none !important;
+                @top-left {
+                    content: none;
+                }
+
+                @top-center {
+                    content: none;
+                }
+
+                @top-right {
+                    content: none;
+                }
+
+                @bottom-left {
+                    content: none !important;
+                }
+
+                @bottom-center {
+                    content: none !important;
+                }
+
+                @bottom-right {
+                    content: none !important;
+                }
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+            }
+
+            .header {
+                display: none !important;
+            }
+
+            .print-header {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                border-bottom: 3px solid #6b0094;
+                background: white;
+                margin-bottom: 15px;
+                page-break-inside: avoid;
+            }
+
+            .print-header .logo {
+                width: 180px !important;
+                height: auto;
+                flex-shrink: 0;
+            }
+
+            .print-header .title {
+                flex-grow: 1;
+                text-align: center;
+                font-size: 25px !important;
+                font-weight: bold !important;
+                margin: 0 30px;
+                line-height: 1.2;
+            }
+
+            .controls,
+            .buttons {
+                display: none !important;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                background: white;
+                max-width: none;
+                margin: 0;
+
+            }
+
+            .schedule-info {
+                background: #fef3c7 !important;
+                border: 2px solid #f59e0b !important;
+                border-left: 6px solid #f59e0b !important;
+                margin: 15px 0 !important;
+                padding: 15px !important;
+                color: #92400e !important;
+                font-size: 12px !important;
+                page-break-inside: avoid;
+            }
+
+            .editable-info {
+                color: #92400e !important;
+            }
+
+            .table-container {
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            table {
+                width: 100% !important;
+                border: 2px solid black !important;
+                border-collapse: collapse !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                font-size: 11px !important;
+            }
+
+            th {
+                background: #4aaf70 !important;
+                color: white !important;
+                border: 1px solid #4aaf70 !important;
+                padding: 8px 4px !important;
+                font-size: 10px !important;
+                font-weight: bold !important;
+            }
+
+            td {
+                border: 1px solid #374151 !important;
+                padding: 8px 4px !important;
+                font-size: 11px !important;
+                background: white !important;
+                color: black !important;
+            }
+
+            th:first-child {
+                display: none !important;
+            }
+
+            .line-number {
+                display: none !important;
+            }
+
+            /* Ajuster la largeur des colonnes pour l'impression */
+            th:nth-child(2) {
+                width: 30% !important;
+            }
+
+            th:nth-child(3) {
+                width: 30% !important;
+            }
+
+            th:nth-child(4) {
+                width: 40% !important;
+            }
+
+            .date-cell {
+                background: #fff2cc !important;
+                font-weight: bold !important;
+                color: #92400e !important;
+            }
+
+            tr:nth-child(even) td {
+                background-color: #f0f9ff !important;
+            }
+
+            tr:hover {
+                background-color: inherit !important;
+            }
+
+            .print-header,
+            .schedule-info {
+                page-break-inside: avoid;
+            }
+
+            table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
         }
-
-        @top-center {
-            content: none !important;
-        }
-
-        @top-right {
-            content: none !important;
-        }
-        
-        @bottom-left {
-            content: none !important;
-        }
-
-        @bottom-center {
-            content: none !important;
-        }
-
-        @bottom-right {
-            content: none !important;
-        }
-    }
-
-    body {
-        background: white !important;
-        margin: 0;
-        padding: 0;
-        font-size: 12px;
-    }
-
-    .header {
-        display: none !important;
-    }
-
-    .print-header {
-        display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px;
-        border-bottom: 3px solid #6b0094;
-        background: white;
-        margin-bottom: 15px;
-        page-break-inside: avoid;
-    }
-
-    .print-header .logo {
-        width: 180px !important;
-        height: auto;
-        flex-shrink: 0;
-    }
-
-    .print-header .title {
-        flex-grow: 1;
-        text-align: center;
-        font-size: 25px !important;
-        font-weight: bold !important;
-        margin: 0 30px;
-        line-height: 1.2;
-    }
-
-    .controls,
-    .buttons {
-        display: none !important;
-    }
-
-    .container {
-        box-shadow: none;
-        border-radius: 0;
-        background: white;
-        max-width: none;
-        margin: 0;
-    }
-
-    .schedule-info {
-        background: #fef3c7 !important;
-        border: 2px solid #f59e0b !important;
-        border-left: 6px solid #f59e0b !important;
-        margin: 15px 0 !important;
-        padding: 15px !important;
-        color: #92400e !important;
-        font-size: 12px !important;
-        page-break-inside: avoid;
-    }
-
-    .editable-info {
-        color: #92400e !important;
-    }
-
-    .table-container {
-        padding: 0 !important;
-        background: white !important;
-    }
-
-    table {
-        width: 100% !important;
-        border: 2px solid black !important;
-        border-collapse: collapse !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        font-size: 11px !important;
-    }
-
-    th {
-        background: #4aaf70 !important;
-        color: white !important;
-        border: 1px solid #4aaf70 !important;
-        padding: 8px 4px !important;
-        font-size: 10px !important;
-        font-weight: bold !important;
-    }
-
-    td {
-        border: 1px solid #374151 !important;
-        padding: 8px 4px !important;
-        font-size: 11px !important;
-        background: white !important;
-        color: black !important;
-    }
-
-    th:first-child {
-        display: none !important;
-    }
-
-    .line-number {
-        display: none !important;
-    }
-
-    /* Ajuster la largeur des colonnes pour l'impression */
-    th:nth-child(2) {
-        width: 30% !important;
-    }
-
-    th:nth-child(3) {
-        width: 30% !important;
-    }
-
-    th:nth-child(4) {
-        width: 40% !important;
-    }
-
-    .date-cell {
-        background: #fff2cc !important;
-        font-weight: bold !important;
-        color: #92400e !important;
-    }
-
-    tr:nth-child(even) td {
-        background-color: #f0f9ff !important;
-    }
-
-    tr:hover {
-        background-color: inherit !important;
-    }
-
-    .print-header,
-    .schedule-info {
-        page-break-inside: avoid;
-    }
-
-    table {
-        page-break-inside: auto;
-    }
-
-    tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
-}
 
         @media (max-width: 768px) {
             .controls-grid {
