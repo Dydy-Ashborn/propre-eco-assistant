@@ -388,28 +388,14 @@
                     pageItems.forEach(data => {
                         let photosHTML = '';
                         if (data.photos && data.photos.length) {
-                            // Afficher seulement les 3 premières photos en miniature
-                            const displayPhotos = data.photos.slice(0, 3);
-                            photosHTML = displayPhotos.map((photo, index) =>
-                                `<img src="${photo.url}" class="thumb" alt="Photo chantier ${index + 1}" 
-         onclick="openPhotoGallery('${data.id}', ${index})" loading="lazy">`
-                            ).join('');
+                            // Afficher seulement la première photo
+                            const firstPhoto = data.photos[0];
+                            photosHTML = `<img src="${firstPhoto.url}" class="thumb" alt="Photo chantier" 
+                         onclick="openPhotoGallery('${data.id}', 0)" loading="lazy">`;
 
-                            // Bouton pour voir toutes les photos si plus de 3
-                            if (data.photos.length > 3) {
-                                photosHTML += `
-            <button class="view-all-photos-btn" onclick="openPhotoGallery('${data.id}', 0)">
-                <i class="fas fa-images"></i>
-                Voir les ${data.photos.length} photos
-            </button>
-        `;
-                            } else if (data.photos.length > 1) {
-                                photosHTML += `
-            <button class="view-all-photos-btn" onclick="openPhotoGallery('${data.id}', 0)">
-                <i class="fas fa-expand"></i>
-                Voir en grand
-            </button>
-        `;
+                            // Ajouter un indicateur du nombre total de photos si plus d'une
+                            if (data.photos.length > 1) {
+                                photosHTML += `<span class="photo-count">+${data.photos.length - 1}</span>`;
                             }
                         } else {
                             photosHTML = '<span style="color: #6b7280; font-style: italic;">Aucune photo</span>';
@@ -422,19 +408,19 @@
                             }) : 'Date inconnue';
 
                         tbody.innerHTML += `
-    <tr>
-        <td><strong>${data.chantier || 'Non spécifié'}</strong></td>
-        <td>${data.description ? `<span style="color: #6b7280;">${data.description}</span>` : '<em style="color: #9ca3af;">Aucune description</em>'}</td>
-        <td><strong>${data.agent || 'Non spécifié'}</strong></td>
-        <td class="photos-cell">${photosHTML}</td>
-        <td>${date}</td>
-        <td>
-            <button class="btn-delete-single" onclick="deleteSingleChantier('${data.id}')" title="Supprimer ce chantier">
-                <i class="fas fa-trash"></i>
-            </button>
-        </td>
-    </tr>
-`;
+            <tr>
+                <td><strong>${data.chantier || 'Non spécifié'}</strong></td>
+                <td>${data.description ? `<span style="color: #6b7280;">${data.description}</span>` : '<em style="color: #9ca3af;">Aucune description</em>'}</td>
+                <td><strong>${data.agent || 'Non spécifié'}</strong></td>
+                <td class="photos-cell">${photosHTML}</td>
+                <td>${date}</td>
+                <td>
+                    <button class="btn-delete-single" onclick="deleteSingleChantier('${data.id}')" title="Supprimer ce chantier">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
                     });
                 }
                 function setupPhotosChantierPagination() {
@@ -1016,7 +1002,7 @@
                     }
                 }
 
-                
+
 
                 // Navigation dans la galerie
                 function prevPhoto() {
@@ -1753,7 +1739,7 @@
                 }
 
                 .photo-count {
-                    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
                     color: white;
                     padding: 0.25rem 0.5rem;
                     border-radius: 12px;
@@ -2331,7 +2317,7 @@
             document.getElementById('galleryDescription').textContent = `Agent: ${feuille.agent || 'Non spécifié'}`;
 
             updateMainImage();
-        
+
         }
 
         // Rendre les fonctions globales
