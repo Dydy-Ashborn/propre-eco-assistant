@@ -153,7 +153,7 @@ body {
 
 /* Container principal */
 .container {
-    max-width: 1400px;
+    /* max-width: 1400px; */
     padding: 0 1rem;
     flex: 1;
 }
