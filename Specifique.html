@@ -1008,18 +1008,18 @@
                         </div>
                     </div> -->
 
-                    <!-- Bouton d'envoi -->
-                    <button class="btn" type="submit" id="normal-submit">
-                        <i class="fas fa-upload"></i>
-                        Envoyer les photos
-                    </button>
-                    <!-- AJOUTER CETTE LIGNE -->
-                    <button class="floating-submit" type="submit" id="floating-submit">
-                        <i class="fas fa-upload"></i>
-                        Envoyer les photos
-                    </button>
+                        <!-- Bouton d'envoi -->
+                        <button class="btn" type="submit" id="normal-submit">
+                            <i class="fas fa-upload"></i>
+                            Envoyer les photos
+                        </button>
+                        <!-- AJOUTER CETTE LIGNE -->
+                        <button class="floating-submit" type="submit" id="floating-submit">
+                            <i class="fas fa-upload"></i>
+                            Envoyer les photos
+                        </button>
 
-                    <div id="status" class="status"></div>
+                        <div id="status" class="status"></div>
                 </form>
             </div>
         </div>
@@ -1537,7 +1537,6 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // NOUVEAU CODE (CORRIGÉ)
             const chantier = document.getElementById('chantier-input').value.trim();
             const description = document.getElementById('description-input').value.trim();
             const agent = document.getElementById('agent-input').value.trim();
@@ -1546,7 +1545,7 @@
                 localStorage.setItem('agent-signature', agent);
             }
 
-            if (!chantier || !agent) { // Suppression de localisation
+            if (!chantier || !agent) {
                 showStatus('Veuillez remplir tous les champs obligatoires', 'error');
                 return;
             }
@@ -1571,7 +1570,7 @@
 
                 showStatus("Enregistrement des données...", "loading");
 
-                // Enregistrer dans Firebase dans la collection "photos_chantiers"
+                // Enregistrer dans Firebase
                 await addDoc(collection(db, "photos_chantiers"), {
                     chantier,
                     description: description || null,
@@ -1579,6 +1578,29 @@
                     photos,
                     createdAt: new Date()
                 });
+
+                // Envoi notification ntfy
+                let message = `📸 Nouvelles photos de chantier de ${agent}\n🏗️ Chantier: ${chantier}`;
+
+                if (description) {
+                    message += `\n📝 ${description}`;
+                }
+
+                message += `\n📊 ${photos.length} photo${photos.length > 1 ? 's' : ''} ajoutée${photos.length > 1 ? 's' : ''}`;
+
+                // Ajouter l'URL de la première photo si disponible
+                if (photos.length > 0 && photos[0].url) {
+                    message += `\n📸 ${photos[0].url}`;
+                }
+
+                try {
+                    await fetch("https://ntfy.sh/signalement-propre-eco", {
+                        method: "POST",
+                        body: message
+                    });
+                } catch (ntfyError) {
+                    console.error("Erreur notification ntfy:", ntfyError);
+                }
 
                 showStatus("✅ Photos envoyées avec succès !", "success");
 
@@ -1598,7 +1620,6 @@
                 showStatus(`❌ Erreur lors de l'envoi : ${err.message}`, "error");
             }
         });
-
         // Navigation mobile
         document.addEventListener('DOMContentLoaded', function () {
             const toggleButton = document.querySelector('.nav-toggle');
