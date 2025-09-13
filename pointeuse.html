@@ -975,6 +975,13 @@
         document.head.appendChild(additionalStyles);
     </script>
     <script type="module" src="badge.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('✅ Service Worker enregistré', reg))
+      .catch(err => console.error('❌ Erreur Service Worker', err));
+  }
+</script>
 
 </body>
 
