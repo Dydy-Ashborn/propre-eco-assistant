@@ -297,6 +297,15 @@
             background-color: #f3f4f6;
         }
 
+        /* Styles pour les cellules vides (mode tableau vide) */
+        .empty-date-cell {
+            font-weight: 600;
+            color: #9ca3af;
+            background-color: #f9fafb;
+            min-height: 50px;
+            padding: 20px 10px !important;
+        }
+
         .editable {
             background-color: transparent !important;
             cursor: pointer;
@@ -485,6 +494,13 @@
                 color: black !important;
             }
 
+            /* Pour les cellules vides, donner plus d'espace */
+            .empty-date-cell {
+                min-height: 45px !important;
+                padding: 17px 10px !important;
+                background: #f9fafb !important;
+            }
+
             th:first-child {
                 display: none !important;
             }
@@ -650,10 +666,11 @@
                         <option value="monthly">1x par mois</option>
                         <option value="weekly3">Toutes les 3 semaines</option>
                         <option value="fixed">Jour fixe (préciser)</option>
+                        <option value="empty">Tableau vide (sans dates)</option>
                     </select>
                 </div>
 
-                <div class="control-group">
+                <div class="control-group" id="dayOfWeekGroup">
                     <label for="dayOfWeek">📋 Jour de la semaine :</label>
                     <select id="dayOfWeek">
                         <option value="1">Lundi</option>
@@ -680,7 +697,7 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="numberOfDates">🔢 Nombre de dates :</label>
+                    <label for="numberOfDates">🔢 Nombre de lignes :</label>
                     <input type="number" id="numberOfDates" value="58" min="1" max="100">
                 </div>
 
@@ -690,7 +707,7 @@
                 </div>
             </div>
 
-            <div class="task-recurrence-section">
+            <div class="task-recurrence-section" id="taskSection1">
                 <h3>🔧 Récurrence des tâches annexe (Bloc 1)</h3>
                 <div class="task-grid">
                     <div class="control-group">
@@ -699,16 +716,18 @@
                     </div>
                     <div class="control-group">
                         <label for="taskFrequency1">⏰ Fréquence :</label>
-                        <select id="taskFrequency1">
-                            <option value="">Aucune récurrence</option>
-                            <option value="first">Premier passage de chaque mois</option>
-                            <option value="last">Dernier passage de chaque mois</option>
-                        </select>
+                       <select id="taskFrequency1">
+    <option value="">Aucune récurrence</option>
+    <option value="first">Premier passage de chaque mois</option>
+    <option value="last">Dernier passage de chaque mois</option>
+    <option value="every2">1 passage sur 2</option>
+    <option value="weekly3times">3 fois par semaine</option>
+</select>
                     </div>
                 </div>
             </div>
 
-            <div class="task-recurrence-section">
+            <div class="task-recurrence-section" id="taskSection2">
                 <h3>🔧 Récurrence des tâches annexe (Bloc 2)</h3>
                 <div class="task-grid">
                     <div class="control-group">
@@ -717,11 +736,13 @@
                     </div>
                     <div class="control-group">
                         <label for="taskFrequency2">⏰ Fréquence :</label>
-                        <select id="taskFrequency2">
-                            <option value="">Aucune récurrence</option>
-                            <option value="first">Premier passage de chaque mois</option>
-                            <option value="last">Dernier passage de chaque mois</option>
-                        </select>
+                       <select id="taskFrequency2">
+    <option value="">Aucune récurrence</option>
+    <option value="first">Premier passage de chaque mois</option>
+    <option value="last">Dernier passage de chaque mois</option>
+    <option value="every2">1 passage sur 2</option>
+    <option value="weekly3times">3 fois par semaine</option>
+</select>
                     </div>
                 </div>
             </div>
@@ -759,14 +780,34 @@
             info2: 'MARDI : 1*/Semaine HORS SAISON'
         };
 
-        // Gestion de l'affichage du 2ème jour pour 2x/semaine
+        // Gestion de l'affichage des champs selon le type de récurrence
         document.getElementById('recurrence').addEventListener('change', function () {
+            const recurrence = this.value;
             const secondDayGroup = document.getElementById('secondDayGroup');
+            const dayOfWeekGroup = document.getElementById('dayOfWeekGroup');
+            const startDateGroup = document.querySelector('input[id="startDate"]').parentElement;
+            const taskSection1 = document.getElementById('taskSection1');
+            const taskSection2 = document.getElementById('taskSection2');
 
-            if (this.value === 'weekly2') {
+            if (recurrence === 'weekly2') {
                 secondDayGroup.style.display = 'block';
             } else {
                 secondDayGroup.style.display = 'none';
+            }
+
+            // Si mode tableau vide, masquer les options de dates et tâches récurrentes
+            if (recurrence === 'empty') {
+                dayOfWeekGroup.style.display = 'none';
+                startDateGroup.style.display = 'none';
+                taskSection1.style.display = 'none';
+                taskSection2.style.display = 'none';
+                document.querySelector('label[for="numberOfDates"]').textContent = '🔢 Nombre de lignes :';
+            } else {
+                dayOfWeekGroup.style.display = 'block';
+                startDateGroup.style.display = 'block';
+                taskSection1.style.display = 'block';
+                taskSection2.style.display = 'block';
+                document.querySelector('label[for="numberOfDates"]').textContent = '🔢 Nombre de dates :';
             }
         });
 
@@ -845,12 +886,20 @@
         }
 
         function generateDates() {
-            const startDate = new Date(document.getElementById('startDate').value);
             const recurrence = document.getElementById('recurrence').value;
-            const dayOfWeek = parseInt(document.getElementById('dayOfWeek').value);
-            const secondDay = parseInt(document.getElementById('secondDay').value);
             const numberOfDates = parseInt(document.getElementById('numberOfDates').value);
             const title = document.getElementById('title').value;
+
+            // Mode tableau vide
+            if (recurrence === 'empty') {
+                generateEmptyTable(numberOfDates, title);
+                return;
+            }
+
+            // Mode normal avec dates
+            const startDate = new Date(document.getElementById('startDate').value);
+            const dayOfWeek = parseInt(document.getElementById('dayOfWeek').value);
+            const secondDay = parseInt(document.getElementById('secondDay').value);
 
             // 🔧 Bloc 1
             const taskName1 = document.getElementById('taskName1').value;
@@ -943,11 +992,6 @@
                         }
                     }
                     break;
-                    for (let i = 0; i < numberOfDates; i++) {
-                        dates.push(new Date(currentDate));
-                        currentDate.setMonth(currentDate.getMonth() + 1);
-                    }
-                    break;
                 case 'weekly3':
                     for (let i = 0; i < numberOfDates; i++) {
                         dates.push(new Date(currentDate));
@@ -968,24 +1012,64 @@
             // Déterminer premiers/derniers passages
             const { firstPassages, lastPassages } = findFirstLastPassages(dates);
 
-            // Construire données avec 2 blocs de tâches
-            for (let i = 0; i < dates.length; i++) {
-                let taches = [];
+           // Construire données avec 2 blocs de tâches
+for (let i = 0; i < dates.length; i++) {
+    let taches = [];
 
-                if (taskName1 && taskFrequency1) {
-                    if (taskFrequency1 === 'first' && firstPassages.has(i)) taches.push(taskName1);
-                    if (taskFrequency1 === 'last' && lastPassages.has(i)) taches.push(taskName1);
-                }
+    // Bloc 1
+    if (taskName1 && taskFrequency1) {
+        if (taskFrequency1 === 'first' && firstPassages.has(i)) {
+            taches.push(taskName1);
+        }
+        if (taskFrequency1 === 'last' && lastPassages.has(i)) {
+            taches.push(taskName1);
+        }
+        if (taskFrequency1 === 'every2' && i % 2 === 0) {
+            taches.push(taskName1);
+        }
+        if (taskFrequency1 === 'weekly3times' && i % 7 < 3) {
+            taches.push(taskName1);
+        }
+    }
 
-                if (taskName2 && taskFrequency2) {
-                    if (taskFrequency2 === 'first' && firstPassages.has(i)) taches.push(taskName2);
-                    if (taskFrequency2 === 'last' && lastPassages.has(i)) taches.push(taskName2);
-                }
+    // Bloc 2
+    if (taskName2 && taskFrequency2) {
+        if (taskFrequency2 === 'first' && firstPassages.has(i)) {
+            taches.push(taskName2);
+        }
+        if (taskFrequency2 === 'last' && lastPassages.has(i)) {
+            taches.push(taskName2);
+        }
+        if (taskFrequency2 === 'every2' && i % 2 === 0) {
+            taches.push(taskName2);
+        }
+        if (taskFrequency2 === 'weekly3times' && i % 7 < 3) {
+            taches.push(taskName2);
+        }
+    }
 
+    generatedData.push({
+        date: formatDate(dates[i]),
+        intervenant: '',
+        taches: taches.join(', ')
+    });
+}
+            renderTable(title);
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        function generateEmptyTable(numberOfRows, title) {
+            // Mettre à jour le titre impression
+            document.getElementById('printTitle').innerHTML = `${title} <br>FICHE D\'ENTRETIEN`;
+
+            generatedData = [];
+            
+            // Générer des lignes vides
+            for (let i = 0; i < numberOfRows; i++) {
                 generatedData.push({
-                    date: formatDate(dates[i]),
+                    date: '',
                     intervenant: '',
-                    taches: taches.join(', ')
+                    taches: ''
                 });
             }
 
@@ -1016,10 +1100,13 @@
             `;
 
             generatedData.forEach((row, index) => {
+                const dateClass = row.date ? 'date-cell' : 'empty-date-cell';
+                const dateContent = row.date || '';
+                
                 html += `
                     <tr>
                         <td class="line-number">${index + 1}</td>
-                        <td class="date-cell">${row.date}</td>
+                        <td class="${dateClass} editable" onclick="editCell(this, ${index}, 'date')">${dateContent}</td>
                         <td class="editable" onclick="editCell(this, ${index}, 'intervenant')">${row.intervenant}</td>
                         <td class="editable" onclick="editCell(this, ${index}, 'taches')">${row.taches}</td>
                     </tr>
