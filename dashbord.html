@@ -439,31 +439,74 @@
                     });
                 }
                 function setupPhotosChantierPagination() {
-                    const container = document.getElementById('photosChantierPaginationControls');
-                    if (!container) return;
+    const container = document.getElementById('photosChantierPaginationControls');
+    if (!container) return;
 
-                    container.innerHTML = '';
+    container.innerHTML = '';
 
-                    const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
-                    if (totalPages <= 1) return;
+    const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
+    if (totalPages <= 1) return;
 
-                    for (let i = 1; i <= totalPages; i++) {
-                        const btn = document.createElement('button');
-                        btn.textContent = i;
-                        btn.className = "btn btn-small";
-                        btn.style.margin = "0 0.25rem";
-                        if (i === currentPhotosChantierPage) btn.style.fontWeight = "bold";
+    const paginationWrapper = document.createElement('div');
+    paginationWrapper.className = 'pagination-wrapper';
 
-                        btn.addEventListener('click', () => {
-                            currentPhotosChantierPage = i;
-                            renderPhotosChantierPage();
-                            setupPhotosChantierPagination();
-                        });
+    // Bouton Précédent
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.className = 'btn btn-pagination';
+    prevBtn.disabled = currentPhotosChantierPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPhotosChantierPage > 1) {
+            currentPhotosChantierPage--;
+            renderPhotosChantierPage();
+            setupPhotosChantierPagination();
+        }
+    });
+    paginationWrapper.appendChild(prevBtn);
 
-                        container.appendChild(btn);
-                    }
-                }
+    // Calcul des pages à afficher
+    let startPage = Math.max(1, currentPhotosChantierPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    
+    if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+    }
 
+    // Afficher les numéros de page
+    for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = 'btn btn-pagination';
+        if (i === currentPhotosChantierPage) {
+            btn.classList.add('active');
+        }
+
+        btn.addEventListener('click', () => {
+            currentPhotosChantierPage = i;
+            renderPhotosChantierPage();
+            setupPhotosChantierPagination();
+        });
+
+        paginationWrapper.appendChild(btn);
+    }
+
+   
+    // Bouton Suivant
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.className = 'btn btn-pagination';
+    nextBtn.disabled = currentPhotosChantierPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPhotosChantierPage < totalPages) {
+            currentPhotosChantierPage++;
+            renderPhotosChantierPage();
+            setupPhotosChantierPagination();
+        }
+    });
+    paginationWrapper.appendChild(nextBtn);
+
+    container.appendChild(paginationWrapper);
+}
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
                     const agentFilter = document.getElementById('filterChantierAgent')?.value.trim().toLowerCase() || '';
@@ -2100,31 +2143,76 @@
         // Rendre la fonction globale
         window.deleteSingleSignalement = deleteSingleSignalement;
         function setupSignalementsPagination() {
-            const container = document.getElementById('signalementsPaginationControls');
-            if (!container) return;
+    const container = document.getElementById('signalementsPaginationControls');
+    if (!container) return;
 
-            container.innerHTML = '';
+    container.innerHTML = '';
 
-            const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
-            if (totalPages <= 1) return;
+    const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
+    if (totalPages <= 1) return;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = "btn btn-small";
-                btn.style.margin = "0 0.25rem";
-                if (i === currentSignalementPage) btn.style.fontWeight = "bold";
+    // Conteneur pour les contrôles
+    const paginationWrapper = document.createElement('div');
+    paginationWrapper.className = 'pagination-wrapper';
 
-                btn.addEventListener('click', () => {
-                    currentSignalementPage = i;
-                    renderSignalementsPage();
-                    setupSignalementsPagination();
-                });
+    // Bouton Précédent
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.className = 'btn btn-pagination';
+    prevBtn.disabled = currentSignalementPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentSignalementPage > 1) {
+            currentSignalementPage--;
+            renderSignalementsPage();
+            setupSignalementsPagination();
+        }
+    });
+    paginationWrapper.appendChild(prevBtn);
 
-                container.appendChild(btn);
-            }
+    // Calcul des pages à afficher
+    let startPage = Math.max(1, currentSignalementPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    
+    // Ajuster si on est proche de la fin
+    if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+    }
+
+    // Afficher les numéros de page
+    for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = 'btn btn-pagination';
+        if (i === currentSignalementPage) {
+            btn.classList.add('active');
         }
 
+        btn.addEventListener('click', () => {
+            currentSignalementPage = i;
+            renderSignalementsPage();
+            setupSignalementsPagination();
+        });
+
+        paginationWrapper.appendChild(btn);
+    }
+
+    
+    // Bouton Suivant
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.className = 'btn btn-pagination';
+    nextBtn.disabled = currentSignalementPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentSignalementPage < totalPages) {
+            currentSignalementPage++;
+            renderSignalementsPage();
+            setupSignalementsPagination();
+        }
+    });
+    paginationWrapper.appendChild(nextBtn);
+
+    container.appendChild(paginationWrapper);
+}
         function applySignalementsFilters() {
             const coproFilter = document.getElementById('filterCopro')?.value.trim().toLowerCase() || '';
             const dateFilter = document.getElementById('filterSignalDate')?.value || '';
@@ -2338,40 +2426,83 @@
         // Rendre les fonctions globales
         window.openSignalementGallery = openSignalementGallery;
         window.openFeuilleGallery = openFeuilleGallery;
-        function setupPaginationControls() {
-            const existing = document.getElementById("paginationControls");
-            if (existing) existing.remove();
+       function setupPaginationControls() {
+    const existing = document.getElementById("paginationControls");
+    if (existing) existing.remove();
 
-            const totalPages = Math.ceil(filteredFeuilles.length / itemsPerPage);
-            if (totalPages <= 1) return;
+    const totalPages = Math.ceil(filteredFeuilles.length / itemsPerPage);
+    if (totalPages <= 1) return;
 
-            const container = document.createElement("div");
-            container.id = "paginationControls";
-            container.style.textAlign = "center";
-            container.style.marginTop = "1rem";
+    const container = document.createElement("div");
+    container.id = "paginationControls";
+    container.className = "pagination-container";
 
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.textContent = i;
-                btn.className = "btn btn-small";
-                btn.style.margin = "0 0.25rem";
-                if (i === currentPage) btn.style.fontWeight = "bold";
+    const paginationWrapper = document.createElement('div');
+    paginationWrapper.className = 'pagination-wrapper';
 
-                btn.addEventListener("click", () => {
-                    currentPage = i;
-                    renderFeuillesPage();
-                    setupPaginationControls();
-                });
+    // Bouton Précédent
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.className = 'btn btn-pagination';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderFeuillesPage();
+            setupPaginationControls();
+        }
+    });
+    paginationWrapper.appendChild(prevBtn);
 
-                container.appendChild(btn);
-            }
+    // Calcul des pages à afficher
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    
+    if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+    }
 
-            const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
-            if (tableContainer) {
-                tableContainer.after(container);
-            }
+    // Afficher les numéros de page
+    for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.className = "btn btn-pagination";
+        if (i === currentPage) {
+            btn.classList.add('active');
         }
 
+        btn.addEventListener("click", () => {
+            currentPage = i;
+            renderFeuillesPage();
+            setupPaginationControls();
+        });
+
+        paginationWrapper.appendChild(btn);
+    }
+
+   
+
+    // Bouton Suivant
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.className = 'btn btn-pagination';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderFeuillesPage();
+            setupPaginationControls();
+        }
+    });
+    paginationWrapper.appendChild(nextBtn);
+
+    container.appendChild(paginationWrapper);
+
+    const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
+    if (tableContainer) {
+        tableContainer.after(container);
+    }
+}
         function applyFeuillesFilters() {
             const nameFilter = document.getElementById('filterName')?.value.trim() || '';
             const dateFilter = document.getElementById('filterDate')?.value || '';

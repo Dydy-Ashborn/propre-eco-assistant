@@ -1162,3 +1162,228 @@ tr:hover {
         min-height: 50px;
     }
 }
+/* ===== PAGINATION AMÉLIORÉE ===== */
+.pagination-container,
+#signalementsPaginationControls,
+#photosChantierPaginationControls {
+    text-align: center;
+    margin: 1.5rem 0;
+    padding: 1rem;
+}
+
+.pagination-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f8fafc;
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-pagination {
+    min-width: 40px;
+    height: 40px;
+    padding: 0.5rem;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-pagination:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+    border-color: #4aaf70;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.3);
+}
+
+.btn-pagination.active {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+    border-color: #4aaf70;
+    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.3);
+}
+
+.btn-pagination:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f1f5f9;
+}
+
+.pagination-dots {
+    color: #6b7280;
+    font-weight: bold;
+    padding: 0 0.25rem;
+}
+
+/* ===== TABLEAUX RESPONSIVE SANS SCROLL VERTICAL ===== */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible; /* Suppression du scroll vertical */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+table thead {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+}
+
+table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.85rem;
+    vertical-align: middle;
+}
+
+table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Images miniatures */
+.thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.thumb:hover {
+    transform: scale(1.1);
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 768px) {
+    .pagination-wrapper {
+        gap: 0.25rem;
+        padding: 0.35rem;
+    }
+
+    .btn-pagination {
+        min-width: 35px;
+        height: 35px;
+        font-size: 0.85rem;
+    }
+
+    .pagination-dots {
+        font-size: 0.85rem;
+    }
+
+    /* Adaptation des tableaux pour mobile */
+    table {
+        min-width: 100%;
+        font-size: 0.75rem;
+    }
+
+    table th,
+    table td {
+        padding: 0.5rem 0.35rem;
+        font-size: 0.75rem;
+    }
+
+    table th i {
+        display: none; /* Masquer les icônes sur mobile */
+    }
+
+    .thumb {
+        width: 40px;
+        height: 40px;
+    }
+
+    .btn-delete-single {
+        padding: 0.35rem;
+        font-size: 0.75rem;
+    }
+
+    .photo-count,
+    .view-all-photos-btn {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    /* Ajuster la largeur des colonnes */
+    table td:first-child,
+    table th:first-child {
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Colonne description */
+    table td:nth-child(2),
+    table th:nth-child(2) {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Colonne agent */
+    table td:nth-child(3),
+    table th:nth-child(3) {
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-pagination {
+        min-width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    table {
+        font-size: 0.7rem;
+    }
+
+    table th,
+    table td {
+        padding: 0.4rem 0.25rem;
+    }
+
+    .thumb {
+        width: 35px;
+        height: 35px;
+    }
+}
+.pagination-wrapper {
+    display: flex;
+    margin: auto;
+    }
