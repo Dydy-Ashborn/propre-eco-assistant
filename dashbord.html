@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Tableau de bord - Propre Eco</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="img/logo.png" />
     <link rel="apple-touch-icon" href="img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +20,7 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -194,10 +195,7 @@
                     </div>
                 </header>
 
-                <div class="alert">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Pensez à télécharger et supprimer toutes les photos une fois par mois.</span>
-                </div>
+             
 
                 <!-- FILTRES MAINTENANT À L'INTÉRIEUR DE LA CARD -->
                 <div class="filters-container">
@@ -285,10 +283,7 @@
                             Tout supprimer
                         </button>
                     </div>
-                    <div class="alert">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Pensez à télécharger et supprimer toutes les photos une fois par mois.</span>
-                    </div>
+                 
                 </header>
 
                 <!-- Filtres pour photos chantiers -->
@@ -429,41 +424,86 @@
                 <td><strong>${data.agent || 'Non spécifié'}</strong></td>
                 <td class="photos-cell">${photosHTML}</td>
                 <td>${date}</td>
-                <td>
-                    <button class="btn-delete-single" onclick="deleteSingleChantier('${data.id}')" title="Supprimer ce chantier">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
+               <td>
+    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+        <button class="btn-download-single" onclick="downloadSingleChantier('${data.id}')" title="Télécharger ce chantier">
+            <i class="fas fa-download"></i>
+        </button>
+        <button class="btn-delete-single" onclick="deleteSingleChantier('${data.id}')" title="Supprimer ce chantier">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</td>
             </tr>
         `;
                     });
                 }
                 function setupPhotosChantierPagination() {
-                    const container = document.getElementById('photosChantierPaginationControls');
-                    if (!container) return;
+    const container = document.getElementById('photosChantierPaginationControls');
+    if (!container) return;
 
-                    container.innerHTML = '';
+    container.innerHTML = '';
 
-                    const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
-                    if (totalPages <= 1) return;
+    const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
+    if (totalPages <= 1) return;
 
-                    for (let i = 1; i <= totalPages; i++) {
-                        const btn = document.createElement('button');
-                        btn.textContent = i;
-                        btn.className = "btn btn-small";
-                        btn.style.margin = "0 0.25rem";
-                        if (i === currentPhotosChantierPage) btn.style.fontWeight = "bold";
+    container.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    `;
 
-                        btn.addEventListener('click', () => {
-                            currentPhotosChantierPage = i;
-                            renderPhotosChantierPage();
-                            setupPhotosChantierPagination();
-                        });
+    // Bouton précédent
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.className = 'pagination-arrow';
+    prevBtn.disabled = currentPhotosChantierPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPhotosChantierPage > 1) {
+            currentPhotosChantierPage--;
+            renderPhotosChantierPage();
+            setupPhotosChantierPagination();
+        }
+    });
+    container.appendChild(prevBtn);
 
-                        container.appendChild(btn);
-                    }
-                }
+    // Afficher 5 pages maximum
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPhotosChantierPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = i === currentPhotosChantierPage ? 'pagination-number active' : 'pagination-number';
+        btn.addEventListener('click', () => {
+            currentPhotosChantierPage = i;
+            renderPhotosChantierPage();
+            setupPhotosChantierPagination();
+        });
+        container.appendChild(btn);
+    }
+
+    // Bouton suivant
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.className = 'pagination-arrow';
+    nextBtn.disabled = currentPhotosChantierPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPhotosChantierPage < totalPages) {
+            currentPhotosChantierPage++;
+            renderPhotosChantierPage();
+            setupPhotosChantierPagination();
+        }
+    });
+    container.appendChild(nextBtn);
+}
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
                     const agentFilter = document.getElementById('filterChantierAgent')?.value.trim().toLowerCase() || '';
@@ -707,11 +747,7 @@
                             return;
                         }
 
-                        const confirmation = prompt('Tapez "SUPPRIMER" pour confirmer la suppression définitive :');
-                        if (confirmation !== 'SUPPRIMER') {
-                            showFastNotification('Suppression annulée', 'warning');
-                            return;
-                        }
+
 
                         const deleteBtn = document.getElementById('deleteAllPhotosChantiers');
                         if (!deleteBtn) return;
@@ -997,6 +1033,96 @@
                         showFastNotification('Erreur lors de la suppression du chantier', 'error');
                     }
                 }
+
+                async function downloadSingleChantier(chantierId) {
+                    try {
+                        const chantier = allPhotosChantiers.find(c => c.id === chantierId);
+                        if (!chantier) {
+                            showFastNotification('Chantier introuvable', 'error');
+                            return;
+                        }
+
+                        const chantierName = (chantier.chantier || 'chantier_inconnu').replace(/[^a-zA-Z0-9\s]/g, '_');
+                        const agentName = (chantier.agent || 'agent_inconnu').replace(/[^a-zA-Z0-9\s]/g, '_');
+
+                        let dateFormatted = 'date_inconnue';
+                        if (chantier.createdAt && chantier.createdAt.toDate) {
+                            const dateObj = chantier.createdAt.toDate();
+                            const day = String(dateObj.getDate()).padStart(2, '0');
+                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const year = dateObj.getFullYear();
+                            dateFormatted = `${day}-${month}-${year}`;
+                        }
+
+                        if (!chantier.photos || chantier.photos.length === 0) {
+                            showFastNotification('Aucune photo à télécharger', 'warning');
+                            return;
+                        }
+
+                        showFastNotification(`Téléchargement de ${chantier.photos.length} photo(s)...`, 'info', 2000);
+
+                        // Si une seule photo, téléchargement direct
+                        if (chantier.photos.length === 1) {
+                            const photo = chantier.photos[0];
+                            const response = await fetch(photo.url);
+                            const blob = await response.blob();
+
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            const extension = photo.url.split('.').pop().split('?')[0] || 'jpg';
+                            a.download = `${dateFormatted}_${chantierName}_${agentName}.${extension}`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+
+                            showFastNotification('Photo téléchargée', 'success');
+                        } else {
+                            // Plusieurs photos : créer un ZIP
+                            const zip = new JSZip();
+                            const folderName = `${dateFormatted}_${chantierName}_${agentName}`;
+
+                            for (let i = 0; i < chantier.photos.length; i++) {
+                                const photo = chantier.photos[i];
+                                try {
+                                    const response = await fetch(photo.url);
+                                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                                    const blob = await response.blob();
+                                    const extension = photo.url.split('.').pop().split('?')[0] || 'jpg';
+                                    const filename = `photo_${i + 1}.${extension}`;
+
+                                    zip.file(`${folderName}/${filename}`, blob);
+                                } catch (error) {
+                                    console.error(`Erreur photo ${i + 1}:`, error);
+                                }
+                            }
+
+                            const zipBlob = await zip.generateAsync({
+                                type: "blob",
+                                compression: "DEFLATE",
+                                compressionOptions: { level: 6 }
+                            });
+
+                            const url = window.URL.createObjectURL(zipBlob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${folderName}.zip`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+
+                            showFastNotification(`${chantier.photos.length} photos téléchargées`, 'success');
+                        }
+
+                    } catch (error) {
+                        console.error('Erreur téléchargement chantier:', error);
+                        showFastNotification('Erreur lors du téléchargement', 'error');
+                    }
+                }
+                window.downloadSingleChantier = downloadSingleChantier;
 
                 // Mettre à jour le contenu de la galerie
                 function updateGalleryContent(chantier) {
@@ -1637,6 +1763,26 @@
                     font-size: 0.8rem;
                 }
 
+                .btn-download-single {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+                    color: white;
+                    border: none;
+                    padding: 0.5rem;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    font-size: 0.8rem;
+                }
+
+                .btn-download-single:hover {
+                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+                }
+
                 .btn-delete-single:hover {
                     background: #dc2626;
                     transform: translateY(-1px);
@@ -1775,6 +1921,73 @@
                         height: 50px;
                     }
                 }
+                /* Nouvelle pagination avec flèches */
+.pagination-arrow {
+    background: white;
+    border: 2px solid #e5e7eb;
+    color: #6b7280;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.pagination-arrow:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+    border-color: #4aaf70;
+    transform: scale(1.05);
+}
+
+.pagination-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-number {
+    background: white;
+    border: 2px solid #e5e7eb;
+    color: #374151;
+    min-width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0 0.75rem;
+}
+
+.pagination-number:hover {
+    background: #f3f4f6;
+    border-color: #4aaf70;
+    transform: translateY(-2px);
+}
+
+.pagination-number.active {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+    border-color: #4aaf70;
+    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.3);
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination-arrow,
+    .pagination-number {
+        min-width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}
             </style>
 
             <!-- Section Agenda des travaux  -->
@@ -1993,33 +2206,19 @@
 
             pageItems.forEach(data => {
                 let imgHTML = '';
-                if (data.images && data.images.length) {
-                    // Afficher seulement les 3 premières images en miniature
-                    const displayImages = data.images.slice(0, 3);
-                    imgHTML = displayImages.map((img, index) =>
-                        `<img src="${img.url}" class="thumb" alt="Image signalement ${index + 1}" 
-         onclick="openSignalementGallery('${data.id}', ${index})" loading="lazy">`
-                    ).join('');
+if (data.images && data.images.length) {
+    // Afficher seulement la première photo avec bulle si plus d'une
+    const firstImage = data.images[0];
+    imgHTML = `<img src="${firstImage.url}" class="thumb" alt="Image signalement" 
+                 onclick="openSignalementGallery('${data.id}', 0)" loading="lazy">`;
 
-                    // Bouton pour voir toutes les images si plus de 3
-                    if (data.images.length > 3) {
-                        imgHTML += `
-            <button class="view-all-photos-btn" onclick="openSignalementGallery('${data.id}', 0)">
-                <i class="fas fa-images"></i>
-                Voir les ${data.images.length} images
-            </button>
-        `;
-                    } else if (data.images.length > 1) {
-                        imgHTML += `
-            <button class="view-all-photos-btn" onclick="openSignalementGallery('${data.id}', 0)">
-                <i class="fas fa-expand"></i>
-                Voir en grand
-            </button>
-        `;
-                    }
-                } else {
-                    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
-                }
+    // Ajouter une bulle avec le nombre si plus d'une photo
+    if (data.images.length > 1) {
+        imgHTML += `<span class="photo-count">+${data.images.length - 1}</span>`;
+    }
+} else {
+    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
+}
 
                 const date = data.createdAt && data.createdAt.toDate ?
                     data.createdAt.toDate().toLocaleString('fr-FR', {
@@ -2100,31 +2299,72 @@
         // Rendre la fonction globale
         window.deleteSingleSignalement = deleteSingleSignalement;
         function setupSignalementsPagination() {
-            const container = document.getElementById('signalementsPaginationControls');
-            if (!container) return;
+    const container = document.getElementById('signalementsPaginationControls');
+    if (!container) return;
 
-            container.innerHTML = '';
+    container.innerHTML = '';
 
-            const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
-            if (totalPages <= 1) return;
+    const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
+    if (totalPages <= 1) return;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = "btn btn-small";
-                btn.style.margin = "0 0.25rem";
-                if (i === currentSignalementPage) btn.style.fontWeight = "bold";
+    // Style du conteneur
+    container.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    `;
 
-                btn.addEventListener('click', () => {
-                    currentSignalementPage = i;
-                    renderSignalementsPage();
-                    setupSignalementsPagination();
-                });
-
-                container.appendChild(btn);
-            }
+    // Bouton précédent
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.className = 'pagination-arrow';
+    prevBtn.disabled = currentSignalementPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentSignalementPage > 1) {
+            currentSignalementPage--;
+            renderSignalementsPage();
+            setupSignalementsPagination();
         }
+    });
+    container.appendChild(prevBtn);
 
+    // Afficher 5 pages maximum
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentSignalementPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = i === currentSignalementPage ? 'pagination-number active' : 'pagination-number';
+        btn.addEventListener('click', () => {
+            currentSignalementPage = i;
+            renderSignalementsPage();
+            setupSignalementsPagination();
+        });
+        container.appendChild(btn);
+    }
+
+    // Bouton suivant
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.className = 'pagination-arrow';
+    nextBtn.disabled = currentSignalementPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentSignalementPage < totalPages) {
+            currentSignalementPage++;
+            renderSignalementsPage();
+            setupSignalementsPagination();
+        }
+    });
+    container.appendChild(nextBtn);
+}
         function applySignalementsFilters() {
             const coproFilter = document.getElementById('filterCopro')?.value.trim().toLowerCase() || '';
             const dateFilter = document.getElementById('filterSignalDate')?.value || '';
@@ -2339,39 +2579,76 @@
         window.openSignalementGallery = openSignalementGallery;
         window.openFeuilleGallery = openFeuilleGallery;
         function setupPaginationControls() {
-            const existing = document.getElementById("paginationControls");
-            if (existing) existing.remove();
+    const existing = document.getElementById("paginationControls");
+    if (existing) existing.remove();
 
-            const totalPages = Math.ceil(filteredFeuilles.length / itemsPerPage);
-            if (totalPages <= 1) return;
+    const totalPages = Math.ceil(filteredFeuilles.length / itemsPerPage);
+    if (totalPages <= 1) return;
 
-            const container = document.createElement("div");
-            container.id = "paginationControls";
-            container.style.textAlign = "center";
-            container.style.marginTop = "1rem";
+    const container = document.createElement("div");
+    container.id = "paginationControls";
+    container.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    `;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.textContent = i;
-                btn.className = "btn btn-small";
-                btn.style.margin = "0 0.25rem";
-                if (i === currentPage) btn.style.fontWeight = "bold";
-
-                btn.addEventListener("click", () => {
-                    currentPage = i;
-                    renderFeuillesPage();
-                    setupPaginationControls();
-                });
-
-                container.appendChild(btn);
-            }
-
-            const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
-            if (tableContainer) {
-                tableContainer.after(container);
-            }
+    // Bouton précédent
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.className = 'pagination-arrow';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderFeuillesPage();
+            setupPaginationControls();
         }
+    });
+    container.appendChild(prevBtn);
 
+    // Afficher 5 pages maximum
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = i === currentPage ? 'pagination-number active' : 'pagination-number';
+        btn.addEventListener('click', () => {
+            currentPage = i;
+            renderFeuillesPage();
+            setupPaginationControls();
+        });
+        container.appendChild(btn);
+    }
+
+    // Bouton suivant
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.className = 'pagination-arrow';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderFeuillesPage();
+            setupPaginationControls();
+        }
+    });
+    container.appendChild(nextBtn);
+
+    const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
+    if (tableContainer) {
+        tableContainer.after(container);
+    }
+}
         function applyFeuillesFilters() {
             const nameFilter = document.getElementById('filterName')?.value.trim() || '';
             const dateFilter = document.getElementById('filterDate')?.value || '';
@@ -2605,11 +2882,7 @@
                     return;
                 }
 
-                const confirmation = prompt('Tapez "SUPPRIMER" pour confirmer la suppression définitive :');
-                if (confirmation !== 'SUPPRIMER') {
-                    showFastNotification('Suppression annulée', 'warning');
-                    return;
-                }
+
 
                 const deleteBtn = document.getElementById('deleteAllFeuilles');
                 if (!deleteBtn) return;
@@ -2765,12 +3038,12 @@
         });
     </script>
     <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
-  }
-</script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('✅ Service Worker enregistré', reg))
+                .catch(err => console.error('❌ Erreur Service Worker', err));
+        }
+    </script>
 
 </body>
 
