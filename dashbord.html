@@ -447,7 +447,6 @@
     const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
     if (totalPages <= 1) return;
 
-<<<<<<< HEAD
     container.style.cssText = `
         display: flex;
         align-items: center;
@@ -460,15 +459,6 @@
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
     prevBtn.className = 'pagination-arrow';
-=======
-    const paginationWrapper = document.createElement('div');
-    paginationWrapper.className = 'pagination-wrapper';
-
-    // Bouton Précédent
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'btn btn-pagination';
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     prevBtn.disabled = currentPhotosChantierPage === 1;
     prevBtn.addEventListener('click', () => {
         if (currentPhotosChantierPage > 1) {
@@ -477,7 +467,6 @@
             setupPhotosChantierPagination();
         }
     });
-<<<<<<< HEAD
     container.appendChild(prevBtn);
 
     // Afficher 5 pages maximum
@@ -493,33 +482,11 @@
         const btn = document.createElement('button');
         btn.textContent = i;
         btn.className = i === currentPhotosChantierPage ? 'pagination-number active' : 'pagination-number';
-=======
-    paginationWrapper.appendChild(prevBtn);
-
-    // Calcul des pages à afficher
-    let startPage = Math.max(1, currentPhotosChantierPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-    
-    if (endPage - startPage < 4) {
-        startPage = Math.max(1, endPage - 4);
-    }
-
-    // Afficher les numéros de page
-    for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = 'btn btn-pagination';
-        if (i === currentPhotosChantierPage) {
-            btn.classList.add('active');
-        }
-
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
         btn.addEventListener('click', () => {
             currentPhotosChantierPage = i;
             renderPhotosChantierPage();
             setupPhotosChantierPagination();
         });
-<<<<<<< HEAD
         container.appendChild(btn);
     }
 
@@ -527,17 +494,6 @@
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
     nextBtn.className = 'pagination-arrow';
-=======
-
-        paginationWrapper.appendChild(btn);
-    }
-
-   
-    // Bouton Suivant
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'btn btn-pagination';
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     nextBtn.disabled = currentPhotosChantierPage === totalPages;
     nextBtn.addEventListener('click', () => {
         if (currentPhotosChantierPage < totalPages) {
@@ -546,13 +502,7 @@
             setupPhotosChantierPagination();
         }
     });
-<<<<<<< HEAD
     container.appendChild(nextBtn);
-=======
-    paginationWrapper.appendChild(nextBtn);
-
-    container.appendChild(paginationWrapper);
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
 }
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
@@ -2357,7 +2307,6 @@ if (data.images && data.images.length) {
     const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
     if (totalPages <= 1) return;
 
-<<<<<<< HEAD
     // Style du conteneur
     container.style.cssText = `
         display: flex;
@@ -2371,50 +2320,16 @@ if (data.images && data.images.length) {
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
     prevBtn.className = 'pagination-arrow';
-=======
-    // Conteneur pour les contrôles
-    const paginationWrapper = document.createElement('div');
-    paginationWrapper.className = 'pagination-wrapper';
-
-    // Bouton Précédent
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'btn btn-pagination';
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     prevBtn.disabled = currentSignalementPage === 1;
     prevBtn.addEventListener('click', () => {
         if (currentSignalementPage > 1) {
             currentSignalementPage--;
             renderSignalementsPage();
             setupSignalementsPagination();
-<<<<<<< HEAD
-=======
-        }
-    });
-    paginationWrapper.appendChild(prevBtn);
-
-    // Calcul des pages à afficher
-    let startPage = Math.max(1, currentSignalementPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-    
-    // Ajuster si on est proche de la fin
-    if (endPage - startPage < 4) {
-        startPage = Math.max(1, endPage - 4);
-    }
-
-    // Afficher les numéros de page
-    for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = 'btn btn-pagination';
-        if (i === currentSignalementPage) {
-            btn.classList.add('active');
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
         }
     });
     container.appendChild(prevBtn);
 
-<<<<<<< HEAD
     // Afficher 5 pages maximum
     const maxVisible = 5;
     let startPage = Math.max(1, currentSignalementPage - Math.floor(maxVisible / 2));
@@ -2428,14 +2343,11 @@ if (data.images && data.images.length) {
         const btn = document.createElement('button');
         btn.textContent = i;
         btn.className = i === currentSignalementPage ? 'pagination-number active' : 'pagination-number';
-=======
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
         btn.addEventListener('click', () => {
             currentSignalementPage = i;
             renderSignalementsPage();
             setupSignalementsPagination();
         });
-<<<<<<< HEAD
         container.appendChild(btn);
     }
 
@@ -2443,17 +2355,6 @@ if (data.images && data.images.length) {
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
     nextBtn.className = 'pagination-arrow';
-=======
-
-        paginationWrapper.appendChild(btn);
-    }
-
-    
-    // Bouton Suivant
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'btn btn-pagination';
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     nextBtn.disabled = currentSignalementPage === totalPages;
     nextBtn.addEventListener('click', () => {
         if (currentSignalementPage < totalPages) {
@@ -2462,13 +2363,7 @@ if (data.images && data.images.length) {
             setupSignalementsPagination();
         }
     });
-<<<<<<< HEAD
     container.appendChild(nextBtn);
-=======
-    paginationWrapper.appendChild(nextBtn);
-
-    container.appendChild(paginationWrapper);
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
 }
         function applySignalementsFilters() {
             const coproFilter = document.getElementById('filterCopro')?.value.trim().toLowerCase() || '';
@@ -2683,11 +2578,7 @@ if (data.images && data.images.length) {
         // Rendre les fonctions globales
         window.openSignalementGallery = openSignalementGallery;
         window.openFeuilleGallery = openFeuilleGallery;
-<<<<<<< HEAD
         function setupPaginationControls() {
-=======
-       function setupPaginationControls() {
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     const existing = document.getElementById("paginationControls");
     if (existing) existing.remove();
 
@@ -2696,7 +2587,6 @@ if (data.images && data.images.length) {
 
     const container = document.createElement("div");
     container.id = "paginationControls";
-<<<<<<< HEAD
     container.style.cssText = `
         display: flex;
         align-items: center;
@@ -2709,50 +2599,16 @@ if (data.images && data.images.length) {
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
     prevBtn.className = 'pagination-arrow';
-=======
-    container.className = "pagination-container";
-
-    const paginationWrapper = document.createElement('div');
-    paginationWrapper.className = 'pagination-wrapper';
-
-    // Bouton Précédent
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'btn btn-pagination';
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     prevBtn.disabled = currentPage === 1;
     prevBtn.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
             renderFeuillesPage();
             setupPaginationControls();
-<<<<<<< HEAD
-=======
-        }
-    });
-    paginationWrapper.appendChild(prevBtn);
-
-    // Calcul des pages à afficher
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-    
-    if (endPage - startPage < 4) {
-        startPage = Math.max(1, endPage - 4);
-    }
-
-    // Afficher les numéros de page
-    for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className = "btn btn-pagination";
-        if (i === currentPage) {
-            btn.classList.add('active');
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
         }
     });
     container.appendChild(prevBtn);
 
-<<<<<<< HEAD
     // Afficher 5 pages maximum
     const maxVisible = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
@@ -2767,14 +2623,10 @@ if (data.images && data.images.length) {
         btn.textContent = i;
         btn.className = i === currentPage ? 'pagination-number active' : 'pagination-number';
         btn.addEventListener('click', () => {
-=======
-        btn.addEventListener("click", () => {
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
             currentPage = i;
             renderFeuillesPage();
             setupPaginationControls();
         });
-<<<<<<< HEAD
         container.appendChild(btn);
     }
 
@@ -2782,18 +2634,6 @@ if (data.images && data.images.length) {
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
     nextBtn.className = 'pagination-arrow';
-=======
-
-        paginationWrapper.appendChild(btn);
-    }
-
-   
-
-    // Bouton Suivant
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'btn btn-pagination';
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
     nextBtn.disabled = currentPage === totalPages;
     nextBtn.addEventListener('click', () => {
         if (currentPage < totalPages) {
@@ -2802,13 +2642,7 @@ if (data.images && data.images.length) {
             setupPaginationControls();
         }
     });
-<<<<<<< HEAD
     container.appendChild(nextBtn);
-=======
-    paginationWrapper.appendChild(nextBtn);
-
-    container.appendChild(paginationWrapper);
->>>>>>> 584485560ddfa55fb409480ebc5e702962b3112d
 
     const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
     if (tableContainer) {
