@@ -197,7 +197,7 @@
 
              
 
-                <!-- FILTRES MAINTENANT À L'INTÉRIEUR DE LA CARD -->
+                <!-- FILTRES MAINTENANT Ã€ L'INTÃ‰RIEUR DE LA CARD -->
                 <div class="filters-container">
                     <div class="filter-group">
                         <label for="filterName" class="filter-label">
@@ -297,6 +297,14 @@
                     </div>
 
                     <div class="filter-group">
+                        <label for="filterChantierDescription" class="filter-label">
+                            <i class="fas fa-comment-alt"></i>
+                            Filtrer par description
+                        </label>
+                        <input type="text" id="filterChantierDescription" class="filter-input" placeholder="Description...">
+                    </div>
+
+                    <div class="filter-group">
                         <label for="filterChantierAgent" class="filter-label">
                             <i class="fas fa-user"></i>
                             Filtrer par agent
@@ -358,7 +366,7 @@
                 const photosChantierPerPage = 10;
 
                 // =============================
-                //  PHOTOS DES CHANTIERS SPÉCIFIQUES
+                //  PHOTOS DES CHANTIERS SPÃ‰CIFIQUES
                 // =============================
                 async function loadPhotosChantierWithPagination() {
                     const tbody = document.getElementById('photosChantierBody');
@@ -506,6 +514,7 @@
 }
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
+                    const descriptionFilter = document.getElementById('filterChantierDescription')?.value.trim().toLowerCase() || '';
                     const agentFilter = document.getElementById('filterChantierAgent')?.value.trim().toLowerCase() || '';
                     const dateFilter = document.getElementById('filterChantierDate')?.value || '';
 
@@ -513,6 +522,9 @@
                         let match = true;
                         if (chantierFilter) {
                             match = match && (item.chantier || '').toLowerCase().includes(chantierFilter);
+                        }
+                        if (descriptionFilter) {
+                            match = match && (item.description || '').toLowerCase().includes(descriptionFilter);
                         }
                         if (agentFilter) {
                             match = match && (item.agent || '').toLowerCase().includes(agentFilter);
@@ -530,17 +542,19 @@
                     renderPhotosChantierPage();
                     setupPhotosChantierPagination();
 
-                    if (chantierFilter || agentFilter || dateFilter) {
-                        showFastNotification(`Filtre appliqué : ${chantierFilter ? 'Chantier: ' + chantierFilter : ''} ${agentFilter ? 'Agent: ' + agentFilter : ''} ${dateFilter ? 'Date: ' + dateFilter : ''}`, 'info', 3000);
+                    if (chantierFilter || descriptionFilter || agentFilter || dateFilter) {
+                        showFastNotification(`Filtre appliqué : ${chantierFilter ? 'Chantier: ' + chantierFilter : ''} ${descriptionFilter ? 'Description: ' + descriptionFilter : ''} ${agentFilter ? 'Agent: ' + agentFilter : ''} ${dateFilter ? 'Date: ' + dateFilter : ''}`, 'info', 3000);
                     }
                 }
 
                 function clearPhotosChantierFilters() {
                     const filterChantier = document.getElementById('filterChantierNom');
+                    const filterDescription = document.getElementById('filterChantierDescription');
                     const filterAgent = document.getElementById('filterChantierAgent');
                     const filterDate = document.getElementById('filterChantierDate');
 
                     if (filterChantier) filterChantier.value = '';
+                    if (filterDescription) filterDescription.value = '';
                     if (filterAgent) filterAgent.value = '';
                     if (filterDate) filterDate.value = '';
 
@@ -552,7 +566,7 @@
                 }
 
                 // =============================
-                //  TÉLÉCHARGEMENT ET SUPPRESSION DES PHOTOS CHANTIERS
+                //  TÃ‰LÃ‰CHARGEMENT ET SUPPRESSION DES PHOTOS CHANTIERS
                 // =============================
                 async function downloadAllPhotosChantiers() {
                     const downloadBtn = document.getElementById('downloadAllPhotosChantiers');
@@ -570,7 +584,7 @@
                         const photosData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                         if (photosData.length === 0) {
-                            showFastNotification('Aucune photo de chantier à télécharger', 'warning');
+                            showFastNotification('Aucune photo de chantier Ã  télécharger', 'warning');
                             return;
                         }
 
@@ -677,7 +691,7 @@
                                     zip.file(filename, blob);
                                     successful++;
 
-                                    console.log(`✓ Photo ${successful} ajoutée: ${filename}`);
+                                    console.log(`âœ“ Photo ${successful} ajoutée: ${filename}`);
 
                                 } catch (imageError) {
                                     const errorMsg = `Photo ${i + 1} du chantier ${chantierName}: ${imageError.message}`;
@@ -685,7 +699,7 @@
                                     errors.push(errorMsg);
                                 }
 
-                                // Mettre à jour l'affichage
+                                // Mettre Ã  jour l'affichage
                                 downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${processed}/${totalPhotos}`;
                             }
                         }
@@ -735,15 +749,15 @@
                         const count = countSnapshot.size;
 
                         if (count === 0) {
-                            showFastNotification('Aucune photo de chantier à supprimer', 'warning');
+                            showFastNotification('Aucune photo de chantier Ã  supprimer', 'warning');
                             return;
                         }
 
-                        if (!confirm(`⚠️ ATTENTION ⚠️\n\nVous allez supprimer définitivement ${count} séries de photos de chantiers spécifiques.\n\nCette action supprimera :\n• Toutes les images sur ImgBB\n• Toutes les données sur Firebase\n\nCette action est IRRÉVERSIBLE !\n\nContinuer ?`)) {
+                        if (!confirm(`âš ï¸ ATTENTION âš ï¸\n\nVous allez supprimer définitivement ${count} séries de photos de chantiers spécifiques.\n\nCette action supprimera :\nâ€¢ Toutes les images sur ImgBB\nâ€¢ Toutes les données sur Firebase\n\nCette action est IRRÃ‰VERSIBLE !\n\nContinuer ?`)) {
                             return;
                         }
 
-                        if (!confirm(`Dernière confirmation !\n\nÊtes-vous absolument certain de vouloir supprimer ${count} séries de photos de chantiers définitivement ?`)) {
+                        if (!confirm(`Dernière confirmation !\n\nÃŠtes-vous absolument certain de vouloir supprimer ${count} séries de photos de chantiers définitivement ?`)) {
                             return;
                         }
 
@@ -821,6 +835,7 @@
                     // Configuration des filtres photos chantiers après un délai
                     setTimeout(() => {
                         const filterChantierInput = document.getElementById('filterChantierNom');
+                        const filterDescriptionInput = document.getElementById('filterChantierDescription');
                         const filterAgentInput = document.getElementById('filterChantierAgent');
                         const filterDateInput = document.getElementById('filterChantierDate');
                         const clearFiltersBtn = document.getElementById('clearChantierFilters');
@@ -829,6 +844,13 @@
                             filterChantierInput.addEventListener('input', () => {
                                 clearTimeout(window.chantierFilterTimeout);
                                 window.chantierFilterTimeout = setTimeout(applyPhotosChantierFilters, 500);
+                            });
+                        }
+
+                        if (filterDescriptionInput) {
+                            filterDescriptionInput.addEventListener('input', () => {
+                                clearTimeout(window.chantierDescFilterTimeout);
+                                window.chantierDescFilterTimeout = setTimeout(applyPhotosChantierFilters, 500);
                             });
                         }
 
@@ -876,7 +898,7 @@
                         document.body.appendChild(modal);
                     }
 
-                    // Mettre à jour le contenu
+                    // Mettre Ã  jour le contenu
                     updateGalleryContent(chantier);
 
                     // Afficher le modal
@@ -888,8 +910,7 @@
                 let currentGalleryPhotos = [];
                 let currentPhotoIndex = 0;
 
-                // Créer le modal de galerie
-                // Fonction améliorée pour créer le modal de galerie
+                // Créer le modal de galerie - Version simplifiée et efficace
                 function createPhotoGalleryModal() {
                     const modal = document.createElement('div');
                     modal.id = 'photoGalleryModal';
@@ -897,75 +918,63 @@
                     modal.innerHTML = `
         <div class="gallery-overlay" onclick="closePhotoGallery()"></div>
         <div class="gallery-container">
-            <div class="gallery-header">
-                <div class="gallery-info">
-                    <h3 id="galleryTitle"></h3>
-                    <p id="galleryDescription"></p>
-                </div>
-                <button class="gallery-close" onclick="closePhotoGallery()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <button class="gallery-close" onclick="closePhotoGallery()" title="Fermer (Echap)"></button>
             
-            <div class="gallery-main">
-                <div class="gallery-image-container">
-                    <button class="gallery-nav gallery-prev" onclick="prevPhoto()">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    
-                    <div class="gallery-image-wrapper">
-                        <img id="galleryMainImage" src="" alt="Photo">
-                        <div class="gallery-counter">
-                            <span id="photoCounter"></span>
-                        </div>
+            <button class="gallery-nav gallery-prev" onclick="prevPhoto()" title="Précédent">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="gallery-content">
+                <img id="galleryMainImage" src="" alt="Photo" onclick="event.stopPropagation()">
+                <div class="gallery-info-overlay">
+                    <div class="gallery-counter" id="photoCounter"></div>
+                    <div class="gallery-meta">
+                        <h3 id="galleryTitle"></h3>
+                        <p id="galleryDescription"></p>
                     </div>
-                    
-                    <button class="gallery-nav gallery-next" onclick="nextPhoto()">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                
-                <div class="gallery-thumbnails" id="galleryThumbnails">
-                    <!-- Thumbnails générées dynamiquement -->
                 </div>
             </div>
             
-            <div class="gallery-actions">
-                <button class="gallery-btn" onclick="openPhotoInNewTab()">
-                    <i class="fas fa-external-link-alt"></i>
-                    Ouvrir dans un nouvel onglet
-                </button>
-            </div>
+            <button class="gallery-nav gallery-next" onclick="nextPhoto()" title="Suivant">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     `;
+                    
+                    // Support du clavier
+                    document.addEventListener('keydown', function(e) {
+                        const modal = document.getElementById('photoGalleryModal');
+                        if (modal && modal.classList.contains('active')) {
+                            if (e.key === 'ArrowLeft') prevPhoto();
+                            if (e.key === 'ArrowRight') nextPhoto();
+                            if (e.key === 'Escape') closePhotoGallery();
+                        }
+                    });
+                    
                     return modal;
                 }
 
-                // Fonction améliorée pour mettre à jour l'affichage
-                // Fonction simplifiée pour mettre à jour l'affichage (REMPLACER l'ancienne)
+                // Fonction améliorée pour mettre Ã  jour l'affichage
+                // Mise à jour de l'affichage de la galerie
                 function updateMainImage() {
                     const mainImage = document.getElementById('galleryMainImage');
                     const counter = document.getElementById('photoCounter');
                     const prevBtn = document.querySelector('.gallery-prev');
                     const nextBtn = document.querySelector('.gallery-next');
-                    const container = document.querySelector('.gallery-container');
 
                     if (currentGalleryPhotos[currentPhotoIndex]) {
-                        mainImage.src = currentGalleryPhotos[currentPhotoIndex].url;
+                        const photo = currentGalleryPhotos[currentPhotoIndex];
+                        mainImage.src = photo.url;
                         counter.textContent = `${currentPhotoIndex + 1} / ${currentGalleryPhotos.length}`;
 
-                        // Gérer les boutons de navigation
-                        if (currentGalleryPhotos.length === 1) {
-                            container.classList.add('gallery-single-image');
-                        } else {
-                            container.classList.remove('gallery-single-image');
-                            prevBtn.disabled = false;
-                            nextBtn.disabled = false;
-                        }
+                        // Afficher/masquer les boutons de navigation
+                        const showNav = currentGalleryPhotos.length > 1;
+                        if (prevBtn) prevBtn.style.display = showNav ? 'flex' : 'none';
+                        if (nextBtn) nextBtn.style.display = showNav ? 'flex' : 'none';
                     }
                 }
 
-                // Fonction simplifiée pour la navigation (REMPLACER les anciennes)
+                // Navigation dans la galerie
                 function prevPhoto() {
                     currentPhotoIndex = currentPhotoIndex > 0 ? currentPhotoIndex - 1 : currentGalleryPhotos.length - 1;
                     updateMainImage();
@@ -1018,7 +1027,7 @@
                         // Supprimer le document Firebase
                         await db.collection('photos_chantiers').doc(chantierId).delete();
 
-                        // Mettre à jour les données locales
+                        // Mettre Ã  jour les données locales
                         allPhotosChantiers = allPhotosChantiers.filter(c => c.id !== chantierId);
                         filteredPhotosChantiers = filteredPhotosChantiers.filter(c => c.id !== chantierId);
 
@@ -1055,7 +1064,7 @@
                         }
 
                         if (!chantier.photos || chantier.photos.length === 0) {
-                            showFastNotification('Aucune photo à télécharger', 'warning');
+                            showFastNotification('Aucune photo Ã  télécharger', 'warning');
                             return;
                         }
 
@@ -1124,7 +1133,7 @@
                 }
                 window.downloadSingleChantier = downloadSingleChantier;
 
-                // Mettre à jour le contenu de la galerie
+                // Mettre Ã  jour le contenu de la galerie
                 function updateGalleryContent(chantier) {
                     document.getElementById('galleryTitle').textContent = chantier.chantier || 'Chantier';
                     document.getElementById('galleryDescription').textContent = chantier.description || 'Aucune description';
@@ -1132,7 +1141,7 @@
                     updateMainImage();
                 }
 
-                // Mettre à jour l'image principale
+                // Mettre Ã  jour l'image principale
                 function updateMainImage() {
                     const mainImage = document.getElementById('galleryMainImage');
                     const counter = document.getElementById('photoCounter');
@@ -1213,7 +1222,7 @@
             </script>
 
             <style>
-                /* Modal de galerie améliorée */
+                /* Modal de galerie - Version simplifiée et efficace */
                 .photo-gallery-modal {
                     position: fixed;
                     top: 0;
@@ -1244,81 +1253,50 @@
 
                 .gallery-container {
                     position: relative;
-                    width: 95%;
-                    max-width: 1400px;
-                    height: 90vh;
-                    background: white;
-                    border-radius: 16px;
+                    width: 100%;
+                    height: 100%;
                     display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-                }
-
-                .gallery-header {
-                    display: flex;
-                    justify-content: space-between;
                     align-items: center;
-                    padding: 1.5rem;
-                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
-                    color: white;
-                    flex-shrink: 0;
-                }
-
-                .gallery-info h3 {
-                    margin: 0;
-                    font-size: 1.25rem;
-                    font-weight: 700;
-                }
-
-                .gallery-info p {
-                    margin: 0.25rem 0 0 0;
-                    opacity: 0.9;
-                    font-size: 0.9rem;
+                    justify-content: center;
                 }
 
                 .gallery-close {
-                    background: rgba(255, 255, 255, 0.2);
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
                     border: none;
                     color: white;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 12px;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    font-size: 2rem;
+                    font-weight: 900;
                     transition: all 0.3s ease;
+                    z-index: 1001;
+                    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+                }
+
+                .gallery-close::before {
+                    content: '✕';
+                    display: block;
+                    line-height: 1;
                 }
 
                 .gallery-close:hover {
-                    background: rgba(255, 255, 255, 0.3);
+                    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
                     transform: scale(1.1);
+                    box-shadow: 0 12px 35px rgba(239, 68, 68, 0.7);
                 }
 
-                .gallery-main {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                    min-height: 0;
-                    /* Important pour le flex */
+                .gallery-close:active {
+                    transform: scale(0.95);
                 }
 
-                .gallery-image-container {
-                    flex: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    position: relative;
-                    background: #f8fafc;
-                    padding: 1rem;
-                    /* Padding minimal */
-                    min-height: 0;
-                    overflow: hidden;
-                }
-
-                /* Navigation fixe - par-dessus l'image */
                 .gallery-nav {
                     position: absolute;
                     top: 50%;
@@ -1334,181 +1312,101 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    font-size: 1.5rem;
                     transition: all 0.3s ease;
-                    z-index: 30;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-                    border: 2px solid rgba(255, 255, 255, 0.2);
+                    z-index: 1001;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
                 }
 
                 .gallery-prev {
-                    left: 20px;
+                    left: 30px;
                 }
 
                 .gallery-next {
-                    right: 20px;
+                    right: 30px;
                 }
 
                 .gallery-nav:hover {
                     background: rgba(74, 175, 112, 1);
                     transform: translateY(-50%) scale(1.15);
-                    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
                 }
 
-                .gallery-nav:disabled {
-                    opacity: 0.3;
-                    cursor: not-allowed;
-                    transform: translateY(-50%) scale(0.9);
-                }
-
-                .gallery-nav:disabled:hover {
-                    transform: translateY(-50%) scale(0.9);
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-                }
-
-                /* Conteneur d'image maximisé */
-                .gallery-image-wrapper {
-                    width: 100%;
-                    height: 100%;
+                .gallery-content {
+                    position: relative;
+                    width: 90%;
+                    height: 90%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    position: relative;
-                    /* Utilise tout l'espace disponible */
                 }
 
-                .gallery-image-wrapper img {
+                .gallery-content img {
                     max-width: 100%;
                     max-height: 100%;
                     width: auto;
                     height: auto;
                     object-fit: contain;
                     border-radius: 8px;
-                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-                    transition: all 0.3s ease;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
                 }
 
-                /* Compteur toujours visible */
-                .gallery-counter {
+                .gallery-info-overlay {
                     position: absolute;
-                    top: 20px;
+                    bottom: 20px;
+                    left: 20px;
                     right: 20px;
                     background: rgba(0, 0, 0, 0.8);
+                    backdrop-filter: blur(10px);
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
                     color: white;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .gallery-counter {
+                    background: rgba(74, 175, 112, 0.9);
                     padding: 0.5rem 1rem;
                     border-radius: 25px;
-                    font-weight: 600;
+                    font-weight: 700;
+                    font-size: 1rem;
+                    white-space: nowrap;
+                }
+
+                .gallery-meta {
+                    flex: 1;
+                }
+
+                .gallery-meta h3 {
+                    margin: 0;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    margin-bottom: 0.25rem;
+                }
+
+                .gallery-meta p {
+                    margin: 0;
                     font-size: 0.9rem;
-                    z-index: 10;
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                }
-
-                /* Miniatures en bas */
-                .gallery-thumbnails {
-                    display: flex;
-                    gap: 0.5rem;
-                    padding: 1rem;
-                    overflow-x: auto;
-                    background: #f1f5f9;
-                    border-top: 1px solid #e2e8f0;
-                    flex-shrink: 0;
-                    max-height: 120px;
-                }
-
-                .gallery-thumbnails::-webkit-scrollbar {
-                    height: 6px;
-                }
-
-                .gallery-thumbnails::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                    border-radius: 10px;
-                }
-
-                .gallery-thumbnails::-webkit-scrollbar-thumb {
-                    background: #888;
-                    border-radius: 10px;
-                }
-
-                .gallery-thumbnail {
-                    flex-shrink: 0;
-                    width: 80px;
-                    height: 80px;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    cursor: pointer;
-                    border: 3px solid transparent;
-                    transition: all 0.3s ease;
-                }
-
-                .gallery-thumbnail.active {
-                    border-color: #4aaf70;
-                    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.4);
-                }
-
-                .gallery-thumbnail img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-
-                .gallery-thumbnail:hover {
-                    transform: scale(1.05);
-                    border-color: #4aaf70;
-                }
-
-                /* Actions en bas */
-                .gallery-actions {
-                    display: flex;
-                    gap: 1rem;
-                    padding: 1rem 1.5rem;
-                    background: #f8fafc;
-                    border-top: 1px solid #e2e8f0;
-                    flex-shrink: 0;
-                }
-
-                .gallery-btn {
-                    background: linear-gradient(135deg, #6366f1, #4f46e5);
-                    color: white;
-                    border: none;
-                    padding: 0.75rem 1.5rem;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    transition: all 0.3s ease;
-                }
-
-                .gallery-btn:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-                }
-
-                /* Image unique - masquer les miniatures */
-                .gallery-single-image .gallery-thumbnails {
-                    display: none;
-                }
-
-                .gallery-single-image .gallery-nav {
-                    display: none;
+                    opacity: 0.9;
                 }
 
                 /* Responsive */
                 @media (max-width: 768px) {
-                    .gallery-container {
-                        width: 100%;
-                        height: 100vh;
-                        border-radius: 0;
-                    }
-
-                    .gallery-image-container {
-                        padding: 1rem 60px;
+                    .gallery-close {
+                        top: 15px;
+                        right: 15px;
+                        width: 50px;
+                        height: 50px;
+                        font-size: 1.8rem;
+                        border-radius: 10px;
                     }
 
                     .gallery-nav {
                         width: 50px;
                         height: 50px;
+                        font-size: 1.2rem;
                     }
 
                     .gallery-prev {
@@ -1519,32 +1417,31 @@
                         right: 10px;
                     }
 
-                    .gallery-actions {
+                    .gallery-content {
+                        width: 95%;
+                        height: 85%;
+                    }
+
+                    .gallery-info-overlay {
                         flex-direction: column;
+                        align-items: flex-start;
+                        bottom: 10px;
+                        left: 10px;
+                        right: 10px;
+                        padding: 0.75rem 1rem;
                     }
 
                     .gallery-counter {
-                        top: 10px;
-                        right: 10px;
-                        font-size: 0.8rem;
+                        font-size: 0.9rem;
                         padding: 0.4rem 0.8rem;
                     }
 
-                    .gallery-thumbnail {
-                        width: 60px;
-                        height: 60px;
-                    }
-                }
-
-                /* Mode portrait pour très hautes images */
-                @media (orientation: portrait) and (max-width: 768px) {
-                    .gallery-image-container {
-                        padding: 1rem 50px;
+                    .gallery-meta h3 {
+                        font-size: 1rem;
                     }
 
-                    .gallery-nav {
-                        width: 45px;
-                        height: 45px;
+                    .gallery-meta p {
+                        font-size: 0.85rem;
                     }
                 }
 
@@ -1657,7 +1554,6 @@
                 }
 
                 .gallery-close {
-                    background: rgba(255, 255, 255, 0.2);
                     border: none;
                     color: white;
                     width: 40px;
@@ -2054,7 +1950,7 @@
         // Clé pour localStorage
         const DASHBOARD_AUTH_KEY = 'propre_eco_dashboard_auth_v1';
 
-        // État d'authentification global
+        // Ã‰tat d'authentification global
         window.isAuthenticated = false;
 
         // Variables globales pour les données
@@ -2280,7 +2176,7 @@ if (data.images && data.images.length) {
                 // Supprimer le document Firebase
                 await db.collection('signalements').doc(signalementId).delete();
 
-                // Mettre à jour les données locales
+                // Mettre Ã  jour les données locales
                 allSignalements = allSignalements.filter(s => s.id !== signalementId);
                 filteredSignalements = filteredSignalements.filter(s => s.id !== signalementId);
 
@@ -2526,7 +2422,7 @@ if (data.images && data.images.length) {
                 document.body.appendChild(modal);
             }
 
-            // Mettre à jour le contenu
+            // Mettre Ã  jour le contenu
             updateGalleryContentSignalement(signalement);
 
             // Afficher le modal
@@ -2550,7 +2446,7 @@ if (data.images && data.images.length) {
                 document.body.appendChild(modal);
             }
 
-            // Mettre à jour le contenu
+            // Mettre Ã  jour le contenu
             updateGalleryContentFeuille(feuille);
 
             // Afficher le modal
@@ -2558,7 +2454,7 @@ if (data.images && data.images.length) {
             setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        // Mettre à jour le contenu pour les signalements
+        // Mettre Ã  jour le contenu pour les signalements
         function updateGalleryContentSignalement(signalement) {
             document.getElementById('galleryTitle').textContent = `Signalement - ${signalement.copro || 'Copropriété'}`;
             document.getElementById('galleryDescription').textContent = signalement.description || 'Aucune description';
@@ -2566,7 +2462,7 @@ if (data.images && data.images.length) {
             updateMainImage();
         }
 
-        // Mettre à jour le contenu pour les feuilles
+        // Mettre Ã  jour le contenu pour les feuilles
         function updateGalleryContentFeuille(feuille) {
             document.getElementById('galleryTitle').textContent = `Feuille de passage - ${feuille.copro || 'Copropriété'}`;
             document.getElementById('galleryDescription').textContent = `Agent: ${feuille.agent || 'Non spécifié'}`;
@@ -2672,7 +2568,7 @@ if (data.images && data.images.length) {
         }
 
         // =============================
-        //  NOTIFICATION BADGE (TEMPS RÉEL)
+        //  NOTIFICATION BADGE (TEMPS RÃ‰EL)
         // =============================
         class NotificationService {
             constructor() {
@@ -2782,7 +2678,7 @@ if (data.images && data.images.length) {
         }
 
         // =============================
-        //  ZIP TÉLÉCHARGEMENT & SUPPRESSION
+        //  ZIP TÃ‰LÃ‰CHARGEMENT & SUPPRESSION
         // =============================
         async function downloadAllFeuilles() {
             const downloadBtn = document.getElementById('downloadAllFeuilles');
@@ -2800,7 +2696,7 @@ if (data.images && data.images.length) {
                 const feuilles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 if (feuilles.length === 0) {
-                    showFastNotification('Aucune feuille à télécharger', 'warning');
+                    showFastNotification('Aucune feuille Ã  télécharger', 'warning');
                     return;
                 }
 
@@ -2870,15 +2766,15 @@ if (data.images && data.images.length) {
                 const count = countSnapshot.size;
 
                 if (count === 0) {
-                    showFastNotification('Aucune feuille à supprimer', 'warning');
+                    showFastNotification('Aucune feuille Ã  supprimer', 'warning');
                     return;
                 }
 
-                if (!confirm(`⚠️ ATTENTION ⚠️\n\nVous allez supprimer définitivement ${count} feuilles de passage.\n\nCette action supprimera :\n• Toutes les images sur ImgBB\n• Toutes les données sur Firebase\n\nCette action est IRRÉVERSIBLE !\n\nContinuer ?`)) {
+                if (!confirm(`âš ï¸ ATTENTION âš ï¸\n\nVous allez supprimer définitivement ${count} feuilles de passage.\n\nCette action supprimera :\nâ€¢ Toutes les images sur ImgBB\nâ€¢ Toutes les données sur Firebase\n\nCette action est IRRÃ‰VERSIBLE !\n\nContinuer ?`)) {
                     return;
                 }
 
-                if (!confirm(`Dernière confirmation !\n\nÊtes-vous absolument certain de vouloir supprimer ${count} feuilles définitivement ?`)) {
+                if (!confirm(`Dernière confirmation !\n\nÃŠtes-vous absolument certain de vouloir supprimer ${count} feuilles définitivement ?`)) {
                     return;
                 }
 
@@ -3040,8 +2936,8 @@ if (data.images && data.images.length) {
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('✅ Service Worker enregistré', reg))
-                .catch(err => console.error('❌ Erreur Service Worker', err));
+                .then(reg => console.log('âœ… Service Worker enregistré', reg))
+                .catch(err => console.error('âŒ Erreur Service Worker', err));
         }
     </script>
 
