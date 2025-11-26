@@ -443,7 +443,7 @@
                                     <th><i class="fas fa-user"></i> Employé</th>
                                     <th><i class="fas fa-calendar-week"></i> Semaines</th>
                                     <th><i class="fas fa-clock"></i> Total heures</th>
-                                    <th><i class="fas fa-road"></i> Kilomètres <span title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période" style="cursor: help; opacity: 0.7; font-size: 0.85rem;">ℹ️</span></th>
+                                    <th><i class="fas fa-road"></i> Kilomètres <span title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période" style="cursor: help; opacity: 0.7; font-size: 0.85rem;"></span></th>
                                     <th><i class="fas fa-hard-hat"></i> Chantiers</th>
                                     <th><i class="fas fa-cogs"></i> Actions</th>
                                 </tr>
@@ -2121,7 +2121,7 @@
             </style>
 
             <!-- Section Agenda des travaux  -->
-            <section class="card">
+            <!-- <section class="card">
                 <header class="card-header">
                     <div>
                         <h2 class="card-title">
@@ -2138,10 +2138,7 @@
                             <i class="fas fa-plus"></i>
                             Ajouter un travail
                         </button>
-                        <!-- <button class="btn btn-agenda" onclick="openGoogleCalendar()">
-                            <i class="fas fa-external-link-alt"></i>
-                            Ouvrir dans Google
-                        </button> -->
+                      
                     </div>
                 </header>
 
@@ -2150,7 +2147,7 @@
                         src="https://calendar.google.com/calendar/embed?src=dylan.propre.eco%40gmail.com&ctz=Europe%2FParis"
                         style="border: 0; width: 100%; height: 600px;" frameborder="0" scrolling="no"></iframe>
                 </div>
-            </section>
+            </section>  -->
         </div>
     </div>
 
@@ -3337,7 +3334,7 @@ if (data.images && data.images.length) {
                                             <tr style="background: #f0fdf4;">
                                                 <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Jour</th>
                                                 <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Heures</th>
-                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Commentaires</th>
+                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Détails</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -3504,7 +3501,7 @@ if (data.images && data.images.length) {
 
         function openEmployeePage(employeeId) {
             const password = prompt('🔒 Mot de passe admin requis pour accéder à la page de l\'employé :');
-            const ADMIN_PASSWORD = '1974'; // À changer selon vos besoins
+            const ADMIN_PASSWORD = '110389'; // À changer selon vos besoins
             
             if (password === ADMIN_PASSWORD) {
                 window.open(`heures.html?employee=${employeeId}`, '_blank');
