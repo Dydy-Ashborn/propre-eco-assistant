@@ -278,9 +278,7 @@
         }
 
         .table-wrapper {
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1.5rem
         }
 
         table {
@@ -607,32 +605,30 @@
             }
 
             th {
-                padding: .75rem .5rem;
-                font-size: .85rem
+                padding: .5rem .3rem;
+                font-size: .75rem
             }
 
             td {
-                padding: .75rem .5rem
+                padding: .5rem .3rem
             }
 
             .table-input {
-                font-size: .95rem;
-                padding: .65rem;
-                min-height: 44px;
+                font-size: .8rem;
+                padding: .35rem
             }
 
             textarea.table-input {
-                min-height: 60px;
-                font-size: .95rem;
+                min-height: 45px
             }
 
             .total-row td {
-                font-size: 1rem;
-                padding: .9rem .5rem
+                font-size: .9rem;
+                padding: .6rem .3rem
             }
 
             .total-value {
-                font-size: 1.1rem
+                font-size: 1rem
             }
 
             .section-actions {
@@ -642,9 +638,7 @@
             .btn {
                 width: 100%;
                 justify-content: center;
-                font-size: 1.05rem;
-                padding: 1rem 1.5rem;
-                min-height: 48px;
+                font-size: .95rem
             }
 
             .notification {
@@ -667,8 +661,19 @@
                 background: #f9fafb
             }
 
-            /* Mode carte pour le tableau des projets en mobile */
+            /* Styles responsive pour le tableau de saisie des chantiers */
             #projectsTable {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #projectsTable thead,
+            #projectsTable tbody,
+            #projectsTable tfoot,
+            #projectsTable tr,
+            #projectsTable th,
+            #projectsTable td {
                 display: block;
             }
 
@@ -676,25 +681,24 @@
                 display: none;
             }
 
-            #projectsTable tbody {
-                display: block;
-            }
-
             #projectsTable tbody tr {
-                display: block;
                 margin-bottom: 1.5rem;
-                border: 2px solid var(--border);
+                border: 2px solid var(--primary);
                 border-radius: 12px;
                 padding: 1rem;
-                background: #fff;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             }
 
             #projectsTable tbody td {
-                display: block;
-                padding: 0.75rem 0;
-                border: none;
+                padding: 0.75rem 0 !important;
+                border-bottom: 1px solid #e5e7eb;
                 text-align: left !important;
+            }
+
+            #projectsTable tbody td:last-child {
+                border-bottom: none;
+                text-align: center !important;
             }
 
             #projectsTable tbody td::before {
@@ -706,13 +710,6 @@
                 font-size: 0.9rem;
             }
 
-            #projectsTable tbody td:last-child {
-                text-align: center !important;
-                padding-top: 1rem;
-                margin-top: 0.5rem;
-                border-top: 1px solid var(--border);
-            }
-
             #projectsTable tbody td:last-child::before {
                 display: none;
             }
@@ -722,12 +719,106 @@
             }
 
             #projectsTable tfoot tr {
-                display: block;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                background: var(--primary-light);
+                border-radius: 8px;
+                margin-top: 1rem;
             }
 
             #projectsTable tfoot td {
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            #projectsTable .table-input {
+                width: 100%;
+            }
+
+            #projectsTable .btn-danger {
+                width: 100%;
+                padding: 0.75rem 1rem;
+            }
+
+            /* Styles responsive pour le tableau d'affichage des chantiers enregistrés */
+            #savedProjectsTable {
                 display: block;
-                text-align: center !important;
+                overflow-x: visible;
+            }
+
+            #savedProjectsTable thead {
+                display: none;
+            }
+
+            #savedProjectsTable tbody {
+                display: block;
+            }
+
+            #savedProjectsTable tbody tr {
+                display: block;
+                margin-bottom: 1.5rem;
+                border: 2px solid var(--primary);
+                border-radius: 12px;
+                padding: 1rem;
+                background: white !important;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            #savedProjectsTable tbody td {
+                display: block;
+                padding: 0.75rem 0 !important;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left !important;
+            }
+
+            #savedProjectsTable tbody td:last-child {
+                border-bottom: none;
+                padding-top: 1rem !important;
+            }
+
+            #savedProjectsTable tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--primary-dark);
+                font-size: 0.9rem;
+                display: block;
+                margin-bottom: 0.25rem;
+            }
+
+            #savedProjectsTable tbody td:nth-child(6)::before {
+                content: "Actions";
+            }
+
+            #savedProjectsTable tbody td:nth-child(6) {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            #savedProjectsTable tbody td:nth-child(6) button {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            #savedProjectsTable tfoot {
+                display: block;
+            }
+
+            #savedProjectsTable tfoot tr {
+                display: flex;
+                justify-content: space-between;
+                padding: 1rem;
+                background: var(--primary-light) !important;
+                border-radius: 8px;
+            }
+
+            #savedProjectsTable tfoot td {
+                border: none !important;
+                padding: 0 !important;
             }
         }
 
@@ -752,35 +843,32 @@
             }
 
             th {
-                padding: .65rem .4rem;
-                font-size: .8rem
+                padding: .4rem .2rem;
+                font-size: .7rem
             }
 
             td {
-                padding: .65rem .4rem
+                padding: .4rem .2rem
             }
 
             .table-input {
-                font-size: .9rem;
-                padding: .6rem;
-                min-height: 44px;
+                font-size: .75rem;
+                padding: .3rem
             }
 
             textarea.table-input {
-                min-height: 55px;
-                font-size: .9rem;
+                min-height: 40px;
+                font-size: .75rem
             }
 
             .btn {
-                padding: .95rem 1.25rem;
-                font-size: 1rem;
-                min-height: 48px;
+                padding: .65rem 1rem;
+                font-size: .9rem
             }
 
             .btn-small {
-                padding: .75rem 1rem;
-                font-size: .95rem;
-                min-height: 44px;
+                padding: .5rem .75rem;
+                font-size: .85rem
             }
         }
     </style>
@@ -821,29 +909,19 @@
     <div class="container">
    
 
-        <div class="user-info" style="margin-bottom: 2rem; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="user-avatar" id="userAvatar">?</div>
-                <span id="userName">Employé</span>
-            </div>
-            <button id="logoutBtn" onclick="logoutSession()" style="display: none; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion auto
-            </button>
+        <div class="user-info" style="margin-bottom: 2rem; justify-content: center;">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <span id="userName">Employé</span>
         </div>
 
         <div class="section-card">
             <div class="section-header">
                 <div class="section-icon"><i class="fas fa-calendar-week"></i></div>
                 <h2 class="section-title">Heures de la semaine</h2>
-            </div>
-            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
-                <strong style="color: #92400e;">Pensez à cliquer sur Enregistrer !</strong>
+                <p>Pensez a cliquer sur Enregistrer ! </p>
             </div>
             <div class="week-selector"><label for="weekInput" style="font-weight:600"><i class="fas fa-calendar"></i>
-                    Semaine :</label><input type="week" id="weekInput" class="week-input"><button
-                    class="btn btn-secondary btn-small" onclick="loadWeekData()"><i
-                        class="fas fa-sync"></i>Charger</button></div>
+                    Semaine :</label><input type="week" id="weekInput" class="week-input"></div>
             <div class="table-wrapper">
                 <table id="weeklyTable">
                     <thead>
@@ -923,6 +1001,16 @@
                 <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
                 <strong style="color: #92400e;">Pensez à cliquer sur Enregistrer !</strong>
             </div>
+            
+            <!-- Bouton pour afficher le formulaire -->
+            <div style="text-align: center; margin-bottom: 1rem;" id="showFormBtn">
+                <button class="btn btn-secondary" onclick="showProjectForm()">
+                    <i class="fas fa-plus"></i> Ajouter un chantier
+                </button>
+            </div>
+            
+            <!-- Formulaire de saisie (masqué par défaut) -->
+            <div id="projectFormContainer" style="display: none;">
             <div class="table-wrapper">
                 <table id="projectsTable">
                     <thead>
@@ -948,9 +1036,39 @@
             <div class="section-actions"><button class="btn btn-secondary" onclick="addProjectRow()"><i
                         class="fas fa-plus"></i>Ajouter</button><button class="btn" onclick="saveProjectsData()"
                     id="saveProjectsBtn"><i class="fas fa-save"></i>Enregistrer</button></div>
+            </div>
+            
+            <!-- Tableau d'affichage des chantiers enregistrés -->
+            <div id="savedProjectsDisplay" style="margin-top: 2rem; display: none;">
+                <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem; border-radius: 12px 12px 0 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-list-check"></i>
+                    <h3 style="margin: 0; font-size: 1.1rem;">Chantiers enregistrés cette semaine</h3>
+                </div>
+                <div style="background: white; border: 2px solid var(--primary); border-top: none; border-radius: 0 0 12px 12px; padding: 1.5rem;">
+                    <table id="savedProjectsTable" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--primary-light);">
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Date</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Chantier</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Nb employés</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Équipe</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Total</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="savedProjectsBody"></tbody>
+                        <tfoot>
+                            <tr style="background: var(--primary-light); font-weight: 700;">
+                                <td colspan="5" style="padding: 1rem 0.75rem; border-top: 2px solid var(--primary);">TOTAL</td>
+                                <td id="savedProjectsTotal" style="padding: 1rem 0.75rem; border-top: 2px solid var(--primary); color: var(--primary-dark); font-size: 1.1rem;">0h</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    <footer class="app-footer">Developed with <span style="color:#ff6b6b">❤️</span> by Ashborn</footer>
+    <footer class="app-footer">Developed with <span style="color:#ff6b6b">â¤ï¸</span> by Ashborn</footer>
     <script>
         // Menu toggle
         document.addEventListener('DOMContentLoaded', function () {
@@ -976,7 +1094,7 @@
         try { 
             firebase.initializeApp(firebaseConfig); 
             db = firebase.firestore(); 
-            console.log('✅ Firestore initialisé') 
+            console.log('âœ… Firestore initialisé') 
         } catch (error) { 
             console.error('âŒ Erreur:', error); 
             showNotification('Erreur de connexion', 'error') 
@@ -996,7 +1114,6 @@
             currentEmployeeName = employeeNames[currentEmployeeId] || 'Employé'; 
             document.getElementById('userName').textContent = currentEmployeeName; 
             document.getElementById('userAvatar').textContent = getInitials(currentEmployeeName); 
-            document.getElementById('pageSubtitle').textContent = `Bienvenue ${currentEmployeeName}`; 
             
             // Vérifier si l'utilisateur a une session sauvegardée et afficher le bouton de déconnexion
             checkAndShowLogoutButton();
@@ -1005,10 +1122,34 @@
             const weekInput = document.getElementById('weekInput'); 
             weekInput.value = getWeekString(today); 
             currentWeek = weekInput.value; 
-            loadWeekData(); 
+            
+            // Charger automatiquement les données de la semaine
+            loadWeekDataAuto(); 
             loadProjectsData(); 
+            
+            // Ajouter un listener pour charger automatiquement quand on change la semaine
+            weekInput.addEventListener('change', function() {
+                currentWeek = this.value;
+                loadWeekDataAuto();
+            });
+            
+            // Validation et calcul pour les inputs d'heures
             document.querySelectorAll('#weeklyTable .hours').forEach(input => { 
-                input.addEventListener('input', calculateWeeklyTotal) 
+                input.addEventListener('input', calculateWeeklyTotal);
+                
+                // Valider que c'est un multiple de 0.25
+                input.addEventListener('blur', function() {
+                    const value = parseFloat(this.value);
+                    if (!isNaN(value)) {
+                        // Arrondir au multiple de 0.25 le plus proche
+                        const rounded = Math.round(value * 4) / 4;
+                        if (rounded !== value) {
+                            this.value = rounded;
+                            calculateWeeklyTotal();
+                            showNotification(`Valeur arrondie à ${rounded}h (multiples de 0.25 uniquement)`, 'info');
+                        }
+                    }
+                });
             }) 
         }); 
         
@@ -1054,7 +1195,7 @@
                     window.location.href = 'pointeuse.html';
                 }, 1500);
             }
-        } 
+        }
         
         function getInitials(name) { 
             return name.split(' ').map(n => n[0]).join('').toUpperCase() 
@@ -1100,12 +1241,19 @@
                 if (value && value.toUpperCase() !== 'R') { 
                     const hours = parseFloat(value); 
                     if (!isNaN(hours)) { 
-                        total += hours 
+                        // Arrondir à 2 décimales pour éviter les erreurs de précision JavaScript
+                        total += Math.round(hours * 100) / 100;
                     } 
                 } 
             }); 
-            document.getElementById('totalWeeklyHours').textContent = total.toFixed(1) + 'h'; 
-            return total 
+            // Arrondir le total final et formater proprement
+            const roundedTotal = Math.round(total * 100) / 100;
+            // Afficher avec 2 décimales si nécessaire, sinon avec 1
+            const displayTotal = roundedTotal % 1 === 0 ? roundedTotal.toFixed(0) : 
+                                 (roundedTotal * 4) % 1 === 0 ? roundedTotal.toFixed(2) : 
+                                 roundedTotal.toFixed(1);
+            document.getElementById('totalWeeklyHours').textContent = displayTotal + 'h'; 
+            return roundedTotal;
         } 
         
         async function loadWeekData() { 
@@ -1147,6 +1295,48 @@
                 showLoading(false) 
             } 
         } 
+
+        async function loadWeekDataAuto() {
+            if (!currentWeek) {
+                return;
+            }
+            showLoading(true);
+            try {
+                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+                const doc = await docRef.get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.days) {
+                        data.days.forEach((dayData, index) => {
+                            const rows = document.querySelectorAll('#weeklyTable tbody tr');
+                            if (rows[index]) {
+                                rows[index].querySelector('.hours').value = dayData.hours || '';
+                                rows[index].querySelector('textarea').value = dayData.comments || '';
+                            }
+                        });
+                    }
+                    document.getElementById('kilometrage').value = data.kilometrage || '';
+                    
+                    // Charger les chantiers spécifiques de cette semaine
+                    if (data.projects && data.projects.length > 0) {
+                        displaySavedProjects(data.projects);
+                    } else {
+                        hideSavedProjectsDisplay();
+                    }
+                } else {
+                    // Aucune donnée pour cette semaine, réinitialiser les champs
+                    document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = '');
+                    document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = '');
+                    document.getElementById('kilometrage').value = '';
+                    hideSavedProjectsDisplay();
+                }
+                calculateWeeklyTotal();
+            } catch (error) {
+                console.error('Erreur:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
         
         async function saveWeeklyData() { 
             if (!currentWeek) { 
@@ -1220,21 +1410,65 @@
         } 
         
         async function saveProjectsData() { 
-            const data = []; 
+            const newData = []; 
             const rows = document.querySelectorAll('#projectsTableBody tr'); 
             rows.forEach(row => { 
                 const projectData = { date: row.querySelector('[data-field="date"]').value, name: row.querySelector('[data-field="name"]').value, employees: row.querySelector('[data-field="employees"]').value, team: row.querySelector('[data-field="team"]').value, totalHours: row.querySelector('[data-field="totalHours"]').value }; 
                 if (projectData.date || projectData.name || projectData.employees) { 
-                    data.push(projectData) 
+                    newData.push(projectData) 
                 } 
             }); 
+            
+            if (newData.length === 0) {
+                showNotification('Aucun chantier à enregistrer', 'warning');
+                return;
+            }
+            
+            // Vérifier qu'une semaine est sélectionnée
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                showNotification('Veuillez sélectionner une semaine', 'warning');
+                return;
+            }
+            
             showLoading(true); 
             const saveBtn = document.getElementById('saveProjectsBtn'); 
             saveBtn.disabled = true; 
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...'; 
             try { 
-                await db.collection('employees').doc(currentEmployeeId).collection('projects').doc('data').set({ data: data, lastUpdate: firebase.firestore.FieldValue.serverTimestamp() }); 
-                showNotification('Chantiers enregistrés!', 'success') 
+                // Sauvegarder les chantiers dans la semaine en cours
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                const weekDoc = await weekRef.get();
+                
+                let existingProjects = [];
+                if (weekDoc.exists && weekDoc.data().projects) {
+                    existingProjects = weekDoc.data().projects;
+                }
+                
+                // Ajouter les nouveaux chantiers aux existants
+                const allProjects = [...existingProjects, ...newData];
+                
+                // Mettre à jour la semaine avec les chantiers
+                if (weekDoc.exists) {
+                    await weekRef.update({ 
+                        projects: allProjects,
+                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
+                    });
+                } else {
+                    await weekRef.set({ 
+                        projects: allProjects,
+                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
+                    });
+                }
+                
+                showNotification('Chantiers enregistrés pour la semaine ' + selectedWeek + '!', 'success');
+                displaySavedProjects(allProjects);
+                // Vider le tableau de saisie
+                document.getElementById('projectsTableBody').innerHTML = '';
+                addProjectRow();
+                calculateProjectsTotal();
+                // Masquer le formulaire
+                hideProjectForm();
             } catch (error) { 
                 console.error('Erreur:', error); 
                 showNotification('Erreur lors de l\'enregistrement', 'error') 
@@ -1246,36 +1480,174 @@
         } 
         
         async function loadProjectsData() { 
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                hideSavedProjectsDisplay();
+                return;
+            }
+            
             showLoading(true); 
             try { 
-                const docRef = db.collection('employees').doc(currentEmployeeId).collection('projects').doc('data'); 
-                const doc = await docRef.get(); 
-                document.getElementById('projectsTableBody').innerHTML = ''; 
-                if (doc.exists) { 
-                    const projectsData = doc.data(); 
-                    if (projectsData.data && projectsData.data.length > 0) { 
-                        projectsData.data.forEach(projectData => { 
-                            addProjectRow(); 
-                            const lastRow = document.querySelector('#projectsTableBody tr:last-child'); 
-                            lastRow.querySelector('[data-field="date"]').value = projectData.date || ''; 
-                            lastRow.querySelector('[data-field="name"]').value = projectData.name || ''; 
-                            lastRow.querySelector('[data-field="employees"]').value = projectData.employees || ''; 
-                            lastRow.querySelector('[data-field="team"]').value = projectData.team || ''; 
-                            lastRow.querySelector('[data-field="totalHours"]').value = projectData.totalHours || '' 
-                        }) 
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek); 
+                const weekDoc = await weekRef.get(); 
+                if (weekDoc.exists && weekDoc.data().projects) { 
+                    const projects = weekDoc.data().projects;
+                    if (projects.length > 0) { 
+                        displaySavedProjects(projects);
                     } else { 
-                        addProjectRow() 
+                        hideSavedProjectsDisplay();
                     } 
                 } else { 
-                    addProjectRow() 
+                    hideSavedProjectsDisplay();
                 } 
-                calculateProjectsTotal() 
+                // Toujours avoir une ligne vide pour saisie
+                document.getElementById('projectsTableBody').innerHTML = '';
+                addProjectRow();
+                calculateProjectsTotal();
             } catch (error) { 
                 console.error('Erreur:', error); 
-                addProjectRow() 
+                hideSavedProjectsDisplay();
+                document.getElementById('projectsTableBody').innerHTML = '';
+                addProjectRow();
             } finally { 
                 showLoading(false) 
             } 
+        }
+
+        function displaySavedProjects(projectsData) {
+            const display = document.getElementById('savedProjectsDisplay');
+            const tbody = document.getElementById('savedProjectsBody');
+            const totalCell = document.getElementById('savedProjectsTotal');
+            
+            if (!projectsData || projectsData.length === 0) {
+                display.style.display = 'none';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            let total = 0;
+            
+            projectsData.forEach((project, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #e5e7eb';
+                if (index % 2 === 0) row.style.background = '#f8fafc';
+                
+                const date = new Date(project.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+                const totalNum = parseFloat(project.totalHours?.replace('h', '').replace(',', '.')) || 0;
+                total += totalNum;
+                
+                row.innerHTML = `
+                    <td data-label="Date" style="padding: 0.75rem;">${date}</td>
+                    <td data-label="Chantier" style="padding: 0.75rem;"><strong>${project.name || '-'}</strong></td>
+                    <td data-label="Nb employés" style="padding: 0.75rem;">${project.employees || '-'}</td>
+                    <td data-label="Équipe" style="padding: 0.75rem;">${project.team || '-'}</td>
+                    <td data-label="Total" style="padding: 0.75rem;"><strong>${project.totalHours || '0h'}</strong></td>
+                    <td data-label="Actions" style="padding: 0.75rem;">
+                        <button onclick="editProject(${index})" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem; font-size: 0.85rem;">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button>
+                        <button onclick="deleteProject(${index})" style="background: #ef4444; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            totalCell.textContent = total.toFixed(1) + 'h';
+            display.style.display = 'block';
+        }
+
+        function hideSavedProjectsDisplay() {
+            document.getElementById('savedProjectsDisplay').style.display = 'none';
+        }
+
+        function showProjectForm() {
+            document.getElementById('projectFormContainer').style.display = 'block';
+            document.getElementById('showFormBtn').style.display = 'none';
+        }
+
+        function hideProjectForm() {
+            document.getElementById('projectFormContainer').style.display = 'none';
+            document.getElementById('showFormBtn').style.display = 'block';
+        }
+
+        async function editProject(index) {
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                showNotification('Veuillez sélectionner une semaine', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                const weekDoc = await weekRef.get();
+                
+                if (weekDoc.exists && weekDoc.data().projects) {
+                    const projects = weekDoc.data().projects;
+                    const project = projects[index];
+                    
+                    // Afficher le formulaire
+                    showProjectForm();
+                    
+                    // Remplir le formulaire avec les données du chantier
+                    const tbody = document.getElementById('projectsTableBody');
+                    tbody.innerHTML = '';
+                    addProjectRow();
+                    
+                    const row = tbody.querySelector('tr');
+                    row.querySelector('[data-field="date"]').value = project.date || '';
+                    row.querySelector('[data-field="name"]').value = project.name || '';
+                    row.querySelector('[data-field="employees"]').value = project.employees || '';
+                    row.querySelector('[data-field="team"]').value = project.team || '';
+                    row.querySelector('[data-field="totalHours"]').value = project.totalHours || '';
+                    
+                    // Supprimer le chantier de la liste (il sera réenregistré avec les modifs)
+                    projects.splice(index, 1);
+                    await weekRef.update({ projects: projects });
+                    displaySavedProjects(projects);
+                    
+                    calculateProjectsTotal();
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('Erreur lors du chargement', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteProject(index) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce chantier ?')) {
+                return;
+            }
+            
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                showNotification('Veuillez sélectionner une semaine', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                const weekDoc = await weekRef.get();
+                
+                if (weekDoc.exists && weekDoc.data().projects) {
+                    const projects = weekDoc.data().projects;
+                    projects.splice(index, 1);
+                    
+                    await weekRef.update({ projects: projects });
+                    showNotification('Chantier supprimé !', 'success');
+                    displaySavedProjects(projects);
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('Erreur lors de la suppression', 'error');
+            } finally {
+                showLoading(false);
+            }
         }
     </script>
     <script>
