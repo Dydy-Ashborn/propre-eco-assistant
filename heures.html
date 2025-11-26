@@ -936,41 +936,41 @@
                             <td><strong>Lun</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Mar</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Mer</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Jeu</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Ven</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Sam</strong></td>
                             <td><input type="text" class="table-input hours" placeholder="0 = Repos"></td>
-                            <td><textarea class="table-input" placeholder="CP = Congés payés "></textarea></td>
+                            <td><textarea class="table-input" placeholder="CP = Congés payés / AT = Arrêt de Travail"></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Dim</strong></td>
                             <td><input type="text" class="table-input hours" placeholder="0 = Repos"></td>
-                            <td><textarea class="table-input" placeholder="CP = Congés payés "></textarea></td>
+                            <td><textarea class="table-input" placeholder="CP = Congés payés / AT = Arrêt de Travail""></textarea></td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -1381,7 +1381,7 @@
             const tbody = document.getElementById('projectsTableBody'); 
             const row = document.createElement('tr'); 
             row.dataset.rowId = projectRowCounter++; 
-            row.innerHTML = `<td data-label="Date"><input type="date" class="table-input" data-field="date"></td><td data-label="Chantier"><input type="text" class="table-input" data-field="name" placeholder="Nom"></td><td data-label="Nombre d'employés"><input type="number" class="table-input" data-field="employees" min="1" placeholder="1"></td><td data-label="Equipe"><input type="text" class="table-input" data-field="team" placeholder="Equipe"></td><td data-label="Total"><input type="text" class="table-input" data-field="totalHours" placeholder="Total" style="font-weight:700;text-align:center"></td><td style="text-align:center;padding:.2rem"><button class="btn btn-danger" onclick="removeProjectRow(this)" style="padding:.5rem 1rem;font-size:.85rem;min-height:44px"><i class="fas fa-trash"></i> Supprimer</button></td>`; 
+            row.innerHTML = `<td data-label="Date"><input type="date" class="table-input" data-field="date"></td><td data-label="Chantier"><input type="text" class="table-input" data-field="name" placeholder="Nom"></td><td data-label="Nombre d'employés"><input type="number" class="table-input" data-field="employees" min="1" placeholder="1"></td><td data-label="Equipe"><input type="text" class="table-input" data-field="team" placeholder="Equipe"></td><td data-label="Total"><input type="text" class="table-input" data-field="totalHours" placeholder="Temps que tu as passé toi sur le chantier" style="font-weight:700;text-align:center"></td><td style="text-align:center;padding:.2rem"><button class="btn btn-danger" onclick="removeProjectRow(this)" style="padding:.5rem 1rem;font-size:.85rem;min-height:44px"><i class="fas fa-trash"></i> Supprimer</button></td>`; 
             tbody.appendChild(row); 
             row.querySelector('[data-field="totalHours"]').addEventListener('input', calculateProjectsTotal);
         } 
