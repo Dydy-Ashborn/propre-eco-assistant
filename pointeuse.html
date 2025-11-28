@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Pointeuse - Propre Eco</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="img/logo.png" />
     <link rel="apple-touch-icon" href="img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +20,7 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
@@ -347,6 +348,7 @@
             gap: 0.75rem;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         /* Boutons modernes */
@@ -355,7 +357,7 @@
             color: white;
             border: none;
             border-radius: var(--radius);
-            padding: 0.75rem 1.5rem;
+            padding: 0.65rem 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -365,6 +367,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             position: relative;
             overflow: hidden;
+            font-size: 0.9rem;
         }
 
         .access-btn::before {
@@ -385,6 +388,15 @@
         .access-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .access-btn.secondary {
+            background: linear-gradient(135deg, var(--accent), #7c3aed);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .access-btn.secondary:hover {
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
 
         .fav-btn {
@@ -642,80 +654,39 @@
                 justify-content: center;
             }
         }
-
-        .notif-badge {
-            background: var(--secondary);
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            margin-left: 0.25rem;
-            animation: pulse 2s infinite;
-            min-width: 1.5rem;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .notif-badge.loading {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
     </style>
 </head>
 
 <body>
     <header class="header">
-    <div class="header-content">
-      <a href="index.html" class="logo">
-        <img src="img/logo.png" width="60px" alt="">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="img/logo.png" width="60px" alt="">
+                Propre Eco Assistant
+            </a>
 
-        Propre Eco Assistant
-      </a>
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
 
-
-      <button class="nav-toggle" aria-label="Menu">
-        <i class="fas fa-bars"></i>
-      </button>
-
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-          <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
-          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
     <div class="container">
         <!-- Header de bienvenue -->
         <div class="welcome-header">
             <h1>Pointeuse</h1>
-            <p>Sélectionnez votre profil et accédez à votre Google sheets</p>
+            <p>Sélectionnez votre profil pour accéder à vos feuilles d'heures</p>
         </div>
 
         <!-- Grille des employés -->
@@ -729,7 +700,7 @@
                 <i class="fas fa-lock"></i>
                 <h3 class="modal-title" id="modalTitle">Code d'accès</h3>
             </div>
-            <input type="password" id="codeInput" class="code-input" placeholder="••••" maxlength="4">
+            <input type="password" id="codeInput" class="code-input" placeholder="â€¢â€¢â€¢â€¢" maxlength="4">
             <div class="modal-buttons">
                 <button id="cancelBtn" class="access-btn btn-cancel">
                     <i class="fas fa-times"></i>
@@ -750,22 +721,28 @@
     <script>
         // Variables globales
         const FAVORITE_KEY = "favoriteEmployee";
+        const SAVED_SESSION_KEY = "savedEmployeeSession";
         let currentEmployee = null;
+        let currentAction = null; // 'sheet' ou 'hours'
 
         const employees = [
-            { name: "Dylan", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412" },
-            { name: "Océane", sheet: "https://docs.google.com/spreadsheets/d/1sHQFYH586g2PPFY8cTANA6kqSP_vyfBREMk5lGfDbeA/edit?usp=sharing", code: "2103" },
-            { name: "Samuel", sheet: "https://docs.google.com/spreadsheets/d/1ZrJ3V-m8WIOZFgZ0Cta8PPYWjRNUKW1oY1zCZ_GLDxg/edit?usp=sharing", code: "1202" },
-            { name: "Jérémie", sheet: "https://docs.google.com/spreadsheets/d/1x-8swb0QjQ2pbZUlzm5YGErUl951-35zgCsT46D0jTA/edit?usp=sharing", code: "1810" },
-            { name: "Carlos", sheet: "https://docs.google.com/spreadsheets/d/1m8jp4xT1N5Bg-PmnyXGNSNtbMoo5FByK3p3fua6loSA/edit?usp=sharing", code: "1234" },
-            { name: "Sandra", sheet: "https://docs.google.com/spreadsheets/d/1_Scic1PPbfk7MEbcSiJvLKzEuJA0iMUTl6763SBh3lA/edit?usp=sharing", code: "sp12" },
-            { name: "Manon", sheet: "https://docs.google.com/spreadsheets/d/1_bYkzAZXtjDl9r7I7zdNr0kqYcdlQ9HZP9dl5AHLZSI/edit?usp=sharing", code: "1306" },
-            { name: "Stéphane", sheet: "https://docs.google.com/spreadsheets/d/1TEOI2z5j4dqBrC9aEkNoLvJzUs3ssgZJaX-a0t8wW6c/edit?usp=sharing", code: "1272" },
-            { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/1bL8XVwxaTP0GU7GAXJV5n0ooTiL2AcEUNdE2i4H6uFI/edit?usp=sharing", code: "3636" },
-            { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/1TfmZmRjhqZ09d8aiIjFtudszg2kyQnIktvTWIr-KpZc/edit?usp=sharing", code: "2604" },
-            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1234" }];
+            { name: "Dylan", sheet: "https://docs.google.com/spreadsheets/d/19b3P7ZG2ZsCREH2r2x-sAFRjCcwHW553_aCVzxFcDIY/edit?gid=0#gid=0", code: "1412", id: "dylan" },
+            { name: "Océane", sheet: "https://docs.google.com/spreadsheets/d/1sHQFYH586g2PPFY8cTANA6kqSP_vyfBREMk5lGfDbeA/edit?usp=sharing", code: "2103", id: "oceane" },
+            { name: "Samuel", sheet: "https://docs.google.com/spreadsheets/d/1ZrJ3V-m8WIOZFgZ0Cta8PPYWjRNUKW1oY1zCZ_GLDxg/edit?usp=sharing", code: "1202", id: "samuel" },
+            { name: "Jérémie", sheet: "https://docs.google.com/spreadsheets/d/1x-8swb0QjQ2pbZUlzm5YGErUl951-35zgCsT46D0jTA/edit?usp=sharing", code: "1810", id: "jeremie" },
+            { name: "Carlos", sheet: "https://docs.google.com/spreadsheets/d/1m8jp4xT1N5Bg-PmnyXGNSNtbMoo5FByK3p3fua6loSA/edit?usp=sharing", code: "1234", id: "carlos" },
+            { name: "Sandra", sheet: "https://docs.google.com/spreadsheets/d/1_Scic1PPbfk7MEbcSiJvLKzEuJA0iMUTl6763SBh3lA/edit?usp=sharing", code: "sp12", id: "sandra" },
+            { name: "Manon", sheet: "https://docs.google.com/spreadsheets/d/1_bYkzAZXtjDl9r7I7zdNr0kqYcdlQ9HZP9dl5AHLZSI/edit?usp=sharing", code: "1306", id: "manon" },
+            { name: "Stéphane", sheet: "https://docs.google.com/spreadsheets/d/1TEOI2z5j4dqBrC9aEkNoLvJzUs3ssgZJaX-a0t8wW6c/edit?usp=sharing", code: "1272", id: "stephane" },
+            { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/1bL8XVwxaTP0GU7GAXJV5n0ooTiL2AcEUNdE2i4H6uFI/edit?usp=sharing", code: "3636", id: "isabelle" },
+            { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/1TfmZmRjhqZ09d8aiIjFtudszg2kyQnIktvTWIr-KpZc/edit?usp=sharing", code: "2604", id: "caroline" },
+            { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1234", id: "nadjet" },
+           { name: "Rémy", sheet: "", code: "1234", id: "remy" }
 
-        // Éléments DOM
+
+        ];
+
+        // Ã‰léments DOM
         const container = document.getElementById('employeeList');
         const modal = document.getElementById('codeModal');
         const codeInput = document.getElementById('codeInput');
@@ -788,9 +765,44 @@
                 });
             });
 
+            // Vérifier si une session est sauvegardée
+            checkSavedSession();
+
             // Initialisation
             loadEmployees();
         });
+
+        // Vérifier et rediriger automatiquement si session sauvegardée
+        function checkSavedSession() {
+            const savedSession = localStorage.getItem(SAVED_SESSION_KEY);
+            
+            if (savedSession) {
+                try {
+                    const sessionData = JSON.parse(savedSession);
+                    const { employeeId, employeeName, timestamp } = sessionData;
+                    
+                    // Vérifier que la session n'est pas trop ancienne (30 jours)
+                    const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+                    const isSessionValid = (Date.now() - timestamp) < thirtyDaysInMs;
+                    
+                    if (isSessionValid && employeeId) {
+                        // Afficher un message de chargement
+                        showNotification(`Connexion automatique en cours pour ${employeeName}...`, 'info');
+                        
+                        // Rediriger vers la page heures après un court délai
+                        setTimeout(() => {
+                            window.location.href = `heures.html?employee=${employeeId}`;
+                        }, 800);
+                    } else {
+                        // Session expirée, la supprimer
+                        localStorage.removeItem(SAVED_SESSION_KEY);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la lecture de la session:', error);
+                    localStorage.removeItem(SAVED_SESSION_KEY);
+                }
+            }
+        }
 
         // Génération des initiales
         function getInitials(name) {
@@ -824,9 +836,11 @@
                     </div>
                     <div class="employee-name">${emp.name}</div>
                     <div class="btn-group">
-                        <button class="access-btn" onclick="openAccessModal('${emp.name}')">
+                      
+
+                        <button class="access-btn secondary" onclick="openAccessModal('${emp.name}', 'hours')">
                             <i class="fas fa-clock"></i>
-                            Accéder
+                            Mes heures
                         </button>
                         <button class="fav-btn ${emp.name === favoriteName ? 'active' : ''}" 
                                 onclick="toggleFavorite('${emp.name}')">
@@ -840,9 +854,13 @@
         }
 
         // Ouvrir la modale d'accès
-        window.openAccessModal = function (employeeName) {
+        window.openAccessModal = function (employeeName, action) {
             currentEmployee = employees.find(emp => emp.name === employeeName);
-            modalTitle.textContent = `Code d'accès - ${employeeName}`;
+            currentAction = action;
+
+            const actionText = action === 'sheet' ? "" : 'Feuille d\'heures';
+            modalTitle.textContent = `Code d'accès - ${employeeName} (${actionText})`;
+
             modal.style.display = 'block';
             codeInput.focus();
         };
@@ -889,8 +907,30 @@
             setTimeout(() => {
                 if (enteredCode === currentEmployee.code) {
                     showNotification(`Accès autorisé pour ${currentEmployee.name}`, 'success');
-                    window.open(currentEmployee.sheet, '_blank');
-                    closeModal();
+
+                    // Vérifier si cet employé est en favori
+                    const favoriteName = localStorage.getItem(FAVORITE_KEY);
+                    const isFavorite = favoriteName === currentEmployee.name;
+
+                    // Si c'est un favori, sauvegarder la session
+                    if (isFavorite && currentAction === 'hours') {
+                        const sessionData = {
+                            employeeId: currentEmployee.id,
+                            employeeName: currentEmployee.name,
+                            timestamp: Date.now()
+                        };
+                        localStorage.setItem(SAVED_SESSION_KEY, JSON.stringify(sessionData));
+                        showNotification('Session sauvegardée ! Connexion automatique activée', 'success');
+                    }
+
+                    if (currentAction === 'sheet') {
+                        // Ouvrir Google Sheets
+                        window.open(currentEmployee.sheet, '_blank');
+                        closeModal();
+                    } else if (currentAction === 'hours') {
+                        // Rediriger vers la page heures avec l'ID employé
+                        window.location.href = `heures.html?employee=${currentEmployee.id}`;
+                    }
                 } else {
                     showNotification('Code incorrect', 'error');
                     codeInput.value = '';
@@ -912,6 +952,7 @@
             modal.style.display = 'none';
             codeInput.value = '';
             currentEmployee = null;
+            currentAction = null;
             confirmBtn.innerHTML = '<i class="fas fa-unlock"></i> Valider';
             confirmBtn.disabled = false;
         }
@@ -975,14 +1016,13 @@
         document.head.appendChild(additionalStyles);
     </script>
     <script type="module" src="badge.js"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
-  }
-</script>
-
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('âœ… Service Worker enregistré', reg))
+                .catch(err => console.error('âŒ Erreur Service Worker', err));
+        }
+    </script>
 </body>
 
 </html>

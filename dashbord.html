@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Tableau de bord - Propre Eco</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="img/logo.png" />
     <link rel="apple-touch-icon" href="img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +20,7 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -194,12 +195,9 @@
                     </div>
                 </header>
 
-                <div class="alert">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Pensez à télécharger et supprimer toutes les photos une fois par mois.</span>
-                </div>
+             
 
-                <!-- FILTRES MAINTENANT À L'INTÉRIEUR DE LA CARD -->
+                <!-- FILTRES MAINTENANT Ã€ L'INTÃ‰RIEUR DE LA CARD -->
                 <div class="filters-container">
                     <div class="filter-group">
                         <label for="filterName" class="filter-label">
@@ -285,10 +283,7 @@
                             Tout supprimer
                         </button>
                     </div>
-                    <div class="alert">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Pensez à télécharger et supprimer toutes les photos une fois par mois.</span>
-                    </div>
+                 
                 </header>
 
                 <!-- Filtres pour photos chantiers -->
@@ -299,6 +294,14 @@
                             Filtrer par chantier
                         </label>
                         <input type="text" id="filterChantierNom" class="filter-input" placeholder="Nom du chantier...">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterChantierDescription" class="filter-label">
+                            <i class="fas fa-comment-alt"></i>
+                            Filtrer par description
+                        </label>
+                        <input type="text" id="filterChantierDescription" class="filter-input" placeholder="Description...">
                     </div>
 
                     <div class="filter-group">
@@ -355,6 +358,109 @@
                 <div id="photosChantierPaginationControls" style="text-align:center; margin-top:1rem;"></div>
             </section>
 
+            <!-- Section Relevé d'heures des employés -->
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2 class="card-title">
+                            <i class="fas fa-clock"></i>
+                            Relevé d'heures des employés
+                        </h2>
+                        <p class="card-subtitle">
+                            <i class="fas fa-calendar-week"></i>
+                            Suivi des heures travaillées par semaine
+                        </p>
+                    </div>
+                </header>
+
+                <!-- Filtres pour le relevé d'heures -->
+                <div class="filters-container" id="heuresFilters">
+                    <div class="filter-group">
+                        <label for="filterWeekStart" class="filter-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Semaine de début
+                        </label>
+                        <input type="week" id="filterWeekStart" class="filter-input">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterWeekEnd" class="filter-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Semaine de fin
+                        </label>
+                        <input type="week" id="filterWeekEnd" class="filter-input">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterEmployee" class="filter-label">
+                            <i class="fas fa-user"></i>
+                            Filtrer par employé
+                        </label>
+                        <select id="filterEmployee" class="filter-input">
+                            <option value="">Tous les employés</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-buttons">
+                            <button id="applyHeuresFilters" class="filter-btn filter-btn-primary">
+                                <i class="fas fa-search"></i> Rechercher
+                            </button>
+                            <button id="clearHeuresFilters" class="filter-btn filter-btn-secondary">
+                                <i class="fas fa-times"></i> Effacer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistiques globales -->
+                <div class="stats-container" id="heuresStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #059669;">
+                            <i class="fas fa-clock"></i> <span id="totalHours">0</span>h
+                        </div>
+                        <div style="color: #047857; font-size: 0.9rem; margin-top: 0.25rem;">Total heures</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #0284c7;">
+                            <i class="fas fa-road"></i> <span id="totalKm">0</span> km
+                        </div>
+                        <div style="color: #0369a1; font-size: 0.9rem; margin-top: 0.25rem;">Total kilomètres</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #7c3aed;">
+                            <i class="fas fa-hard-hat"></i> <span id="totalChantiers">0</span>
+                        </div>
+                        <div style="color: #6d28d9; font-size: 0.9rem; margin-top: 0.25rem;">Chantiers spécifiques</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-scroll">
+                        <table id="heuresTable">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-user"></i> Employé</th>
+                                    <th><i class="fas fa-calendar-week"></i> Semaines</th>
+                                    <th><i class="fas fa-clock"></i> Total heures</th>
+                                    <th><i class="fas fa-road"></i> Kilomètres <span title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période" style="cursor: help; opacity: 0.7; font-size: 0.85rem;"></span></th>
+                                    <th><i class="fas fa-hard-hat"></i> Chantiers</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="heuresBody">
+                                <tr>
+                                    <td colspan="6" class="loading">
+                                        <i class="fas fa-spinner"></i>
+                                        Chargement des heures...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <script>
                 // Variables globales pour les photos des chantiers
                 let allPhotosChantiers = [];
@@ -363,7 +469,7 @@
                 const photosChantierPerPage = 10;
 
                 // =============================
-                //  PHOTOS DES CHANTIERS SPÉCIFIQUES
+                //  PHOTOS DES CHANTIERS SPÃ‰CIFIQUES
                 // =============================
                 async function loadPhotosChantierWithPagination() {
                     const tbody = document.getElementById('photosChantierBody');
@@ -429,11 +535,16 @@
                 <td><strong>${data.agent || 'Non spécifié'}</strong></td>
                 <td class="photos-cell">${photosHTML}</td>
                 <td>${date}</td>
-                <td>
-                    <button class="btn-delete-single" onclick="deleteSingleChantier('${data.id}')" title="Supprimer ce chantier">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
+               <td>
+    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+        <button class="btn-download-single" onclick="downloadSingleChantier('${data.id}')" title="Télécharger ce chantier">
+            <i class="fas fa-download"></i>
+        </button>
+        <button class="btn-delete-single" onclick="deleteSingleChantier('${data.id}')" title="Supprimer ce chantier">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</td>
             </tr>
         `;
                     });
@@ -447,13 +558,18 @@
     const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
     if (totalPages <= 1) return;
 
-    const paginationWrapper = document.createElement('div');
-    paginationWrapper.className = 'pagination-wrapper';
+    container.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    `;
 
-    // Bouton Précédent
+    // Bouton précédent
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'btn btn-pagination';
+    prevBtn.className = 'pagination-arrow';
     prevBtn.disabled = currentPhotosChantierPage === 1;
     prevBtn.addEventListener('click', () => {
         if (currentPhotosChantierPage > 1) {
@@ -462,39 +578,33 @@
             setupPhotosChantierPagination();
         }
     });
-    paginationWrapper.appendChild(prevBtn);
+    container.appendChild(prevBtn);
 
-    // Calcul des pages à afficher
-    let startPage = Math.max(1, currentPhotosChantierPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-    
-    if (endPage - startPage < 4) {
-        startPage = Math.max(1, endPage - 4);
+    // Afficher 5 pages maximum
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPhotosChantierPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
     }
 
-    // Afficher les numéros de page
     for (let i = startPage; i <= endPage; i++) {
         const btn = document.createElement('button');
         btn.textContent = i;
-        btn.className = 'btn btn-pagination';
-        if (i === currentPhotosChantierPage) {
-            btn.classList.add('active');
-        }
-
+        btn.className = i === currentPhotosChantierPage ? 'pagination-number active' : 'pagination-number';
         btn.addEventListener('click', () => {
             currentPhotosChantierPage = i;
             renderPhotosChantierPage();
             setupPhotosChantierPagination();
         });
-
-        paginationWrapper.appendChild(btn);
+        container.appendChild(btn);
     }
 
-   
-    // Bouton Suivant
+    // Bouton suivant
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'btn btn-pagination';
+    nextBtn.className = 'pagination-arrow';
     nextBtn.disabled = currentPhotosChantierPage === totalPages;
     nextBtn.addEventListener('click', () => {
         if (currentPhotosChantierPage < totalPages) {
@@ -503,12 +613,11 @@
             setupPhotosChantierPagination();
         }
     });
-    paginationWrapper.appendChild(nextBtn);
-
-    container.appendChild(paginationWrapper);
+    container.appendChild(nextBtn);
 }
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
+                    const descriptionFilter = document.getElementById('filterChantierDescription')?.value.trim().toLowerCase() || '';
                     const agentFilter = document.getElementById('filterChantierAgent')?.value.trim().toLowerCase() || '';
                     const dateFilter = document.getElementById('filterChantierDate')?.value || '';
 
@@ -516,6 +625,9 @@
                         let match = true;
                         if (chantierFilter) {
                             match = match && (item.chantier || '').toLowerCase().includes(chantierFilter);
+                        }
+                        if (descriptionFilter) {
+                            match = match && (item.description || '').toLowerCase().includes(descriptionFilter);
                         }
                         if (agentFilter) {
                             match = match && (item.agent || '').toLowerCase().includes(agentFilter);
@@ -533,17 +645,24 @@
                     renderPhotosChantierPage();
                     setupPhotosChantierPagination();
 
-                    if (chantierFilter || agentFilter || dateFilter) {
-                        showFastNotification(`Filtre appliqué : ${chantierFilter ? 'Chantier: ' + chantierFilter : ''} ${agentFilter ? 'Agent: ' + agentFilter : ''} ${dateFilter ? 'Date: ' + dateFilter : ''}`, 'info', 3000);
+                    if (chantierFilter || descriptionFilter || agentFilter || dateFilter) {
+                        const filterParts = [];
+                        if (chantierFilter) filterParts.push('Chantier: ' + chantierFilter);
+                        if (descriptionFilter) filterParts.push('Description: ' + descriptionFilter);
+                        if (agentFilter) filterParts.push('Agent: ' + agentFilter);
+                        if (dateFilter) filterParts.push('Date: ' + dateFilter);
+                        showFastNotification(`Filtre appliqué : ${filterParts.join(' | ')}`, 'info', 3000);
                     }
                 }
 
                 function clearPhotosChantierFilters() {
                     const filterChantier = document.getElementById('filterChantierNom');
+                    const filterDescription = document.getElementById('filterChantierDescription');
                     const filterAgent = document.getElementById('filterChantierAgent');
                     const filterDate = document.getElementById('filterChantierDate');
 
                     if (filterChantier) filterChantier.value = '';
+                    if (filterDescription) filterDescription.value = '';
                     if (filterAgent) filterAgent.value = '';
                     if (filterDate) filterDate.value = '';
 
@@ -555,7 +674,7 @@
                 }
 
                 // =============================
-                //  TÉLÉCHARGEMENT ET SUPPRESSION DES PHOTOS CHANTIERS
+                //  TÃ‰LÃ‰CHARGEMENT ET SUPPRESSION DES PHOTOS CHANTIERS
                 // =============================
                 async function downloadAllPhotosChantiers() {
                     const downloadBtn = document.getElementById('downloadAllPhotosChantiers');
@@ -573,7 +692,7 @@
                         const photosData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                         if (photosData.length === 0) {
-                            showFastNotification('Aucune photo de chantier à télécharger', 'warning');
+                            showFastNotification('Aucune photo de chantier Ã  télécharger', 'warning');
                             return;
                         }
 
@@ -680,7 +799,7 @@
                                     zip.file(filename, blob);
                                     successful++;
 
-                                    console.log(`✓ Photo ${successful} ajoutée: ${filename}`);
+                                    console.log(`âœ“ Photo ${successful} ajoutée: ${filename}`);
 
                                 } catch (imageError) {
                                     const errorMsg = `Photo ${i + 1} du chantier ${chantierName}: ${imageError.message}`;
@@ -688,7 +807,7 @@
                                     errors.push(errorMsg);
                                 }
 
-                                // Mettre à jour l'affichage
+                                // Mettre Ã  jour l'affichage
                                 downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${processed}/${totalPhotos}`;
                             }
                         }
@@ -738,23 +857,19 @@
                         const count = countSnapshot.size;
 
                         if (count === 0) {
-                            showFastNotification('Aucune photo de chantier à supprimer', 'warning');
+                            showFastNotification('Aucune photo de chantier Ã  supprimer', 'warning');
                             return;
                         }
 
-                        if (!confirm(`⚠️ ATTENTION ⚠️\n\nVous allez supprimer définitivement ${count} séries de photos de chantiers spécifiques.\n\nCette action supprimera :\n• Toutes les images sur ImgBB\n• Toutes les données sur Firebase\n\nCette action est IRRÉVERSIBLE !\n\nContinuer ?`)) {
+                        if (!confirm(`âš ï¸ ATTENTION âš ï¸\n\nVous allez supprimer définitivement ${count} séries de photos de chantiers spécifiques.\n\nCette action supprimera :\nâ€¢ Toutes les images sur ImgBB\nâ€¢ Toutes les données sur Firebase\n\nCette action est IRRÃ‰VERSIBLE !\n\nContinuer ?`)) {
                             return;
                         }
 
-                        if (!confirm(`Dernière confirmation !\n\nÊtes-vous absolument certain de vouloir supprimer ${count} séries de photos de chantiers définitivement ?`)) {
+                        if (!confirm(`Dernière confirmation !\n\nÃŠtes-vous absolument certain de vouloir supprimer ${count} séries de photos de chantiers définitivement ?`)) {
                             return;
                         }
 
-                        const confirmation = prompt('Tapez "SUPPRIMER" pour confirmer la suppression définitive :');
-                        if (confirmation !== 'SUPPRIMER') {
-                            showFastNotification('Suppression annulée', 'warning');
-                            return;
-                        }
+
 
                         const deleteBtn = document.getElementById('deleteAllPhotosChantiers');
                         if (!deleteBtn) return;
@@ -828,6 +943,7 @@
                     // Configuration des filtres photos chantiers après un délai
                     setTimeout(() => {
                         const filterChantierInput = document.getElementById('filterChantierNom');
+                        const filterDescriptionInput = document.getElementById('filterChantierDescription');
                         const filterAgentInput = document.getElementById('filterChantierAgent');
                         const filterDateInput = document.getElementById('filterChantierDate');
                         const clearFiltersBtn = document.getElementById('clearChantierFilters');
@@ -836,6 +952,13 @@
                             filterChantierInput.addEventListener('input', () => {
                                 clearTimeout(window.chantierFilterTimeout);
                                 window.chantierFilterTimeout = setTimeout(applyPhotosChantierFilters, 500);
+                            });
+                        }
+
+                        if (filterDescriptionInput) {
+                            filterDescriptionInput.addEventListener('input', () => {
+                                clearTimeout(window.chantierDescFilterTimeout);
+                                window.chantierDescFilterTimeout = setTimeout(applyPhotosChantierFilters, 500);
                             });
                         }
 
@@ -883,7 +1006,7 @@
                         document.body.appendChild(modal);
                     }
 
-                    // Mettre à jour le contenu
+                    // Mettre Ã  jour le contenu
                     updateGalleryContent(chantier);
 
                     // Afficher le modal
@@ -948,8 +1071,8 @@
                     return modal;
                 }
 
-                // Fonction améliorée pour mettre à jour l'affichage
-                // Fonction simplifiée pour mettre à jour l'affichage (REMPLACER l'ancienne)
+                // Fonction améliorée pour mettre Ã  jour l'affichage
+                // Fonction simplifiée pour mettre Ã  jour l'affichage (REMPLACER l'ancienne)
                 function updateMainImage() {
                     const mainImage = document.getElementById('galleryMainImage');
                     const counter = document.getElementById('photoCounter');
@@ -1025,7 +1148,7 @@
                         // Supprimer le document Firebase
                         await db.collection('photos_chantiers').doc(chantierId).delete();
 
-                        // Mettre à jour les données locales
+                        // Mettre Ã  jour les données locales
                         allPhotosChantiers = allPhotosChantiers.filter(c => c.id !== chantierId);
                         filteredPhotosChantiers = filteredPhotosChantiers.filter(c => c.id !== chantierId);
 
@@ -1041,7 +1164,97 @@
                     }
                 }
 
-                // Mettre à jour le contenu de la galerie
+                async function downloadSingleChantier(chantierId) {
+                    try {
+                        const chantier = allPhotosChantiers.find(c => c.id === chantierId);
+                        if (!chantier) {
+                            showFastNotification('Chantier introuvable', 'error');
+                            return;
+                        }
+
+                        const chantierName = (chantier.chantier || 'chantier_inconnu').replace(/[^a-zA-Z0-9\s]/g, '_');
+                        const agentName = (chantier.agent || 'agent_inconnu').replace(/[^a-zA-Z0-9\s]/g, '_');
+
+                        let dateFormatted = 'date_inconnue';
+                        if (chantier.createdAt && chantier.createdAt.toDate) {
+                            const dateObj = chantier.createdAt.toDate();
+                            const day = String(dateObj.getDate()).padStart(2, '0');
+                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const year = dateObj.getFullYear();
+                            dateFormatted = `${day}-${month}-${year}`;
+                        }
+
+                        if (!chantier.photos || chantier.photos.length === 0) {
+                            showFastNotification('Aucune photo Ã  télécharger', 'warning');
+                            return;
+                        }
+
+                        showFastNotification(`Téléchargement de ${chantier.photos.length} photo(s)...`, 'info', 2000);
+
+                        // Si une seule photo, téléchargement direct
+                        if (chantier.photos.length === 1) {
+                            const photo = chantier.photos[0];
+                            const response = await fetch(photo.url);
+                            const blob = await response.blob();
+
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            const extension = photo.url.split('.').pop().split('?')[0] || 'jpg';
+                            a.download = `${dateFormatted}_${chantierName}_${agentName}.${extension}`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+
+                            showFastNotification('Photo téléchargée', 'success');
+                        } else {
+                            // Plusieurs photos : créer un ZIP
+                            const zip = new JSZip();
+                            const folderName = `${dateFormatted}_${chantierName}_${agentName}`;
+
+                            for (let i = 0; i < chantier.photos.length; i++) {
+                                const photo = chantier.photos[i];
+                                try {
+                                    const response = await fetch(photo.url);
+                                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                                    const blob = await response.blob();
+                                    const extension = photo.url.split('.').pop().split('?')[0] || 'jpg';
+                                    const filename = `photo_${i + 1}.${extension}`;
+
+                                    zip.file(`${folderName}/${filename}`, blob);
+                                } catch (error) {
+                                    console.error(`Erreur photo ${i + 1}:`, error);
+                                }
+                            }
+
+                            const zipBlob = await zip.generateAsync({
+                                type: "blob",
+                                compression: "DEFLATE",
+                                compressionOptions: { level: 6 }
+                            });
+
+                            const url = window.URL.createObjectURL(zipBlob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${folderName}.zip`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+
+                            showFastNotification(`${chantier.photos.length} photos téléchargées`, 'success');
+                        }
+
+                    } catch (error) {
+                        console.error('Erreur téléchargement chantier:', error);
+                        showFastNotification('Erreur lors du téléchargement', 'error');
+                    }
+                }
+                window.downloadSingleChantier = downloadSingleChantier;
+
+                // Mettre Ã  jour le contenu de la galerie
                 function updateGalleryContent(chantier) {
                     document.getElementById('galleryTitle').textContent = chantier.chantier || 'Chantier';
                     document.getElementById('galleryDescription').textContent = chantier.description || 'Aucune description';
@@ -1049,7 +1262,7 @@
                     updateMainImage();
                 }
 
-                // Mettre à jour l'image principale
+                // Mettre Ã  jour l'image principale
                 function updateMainImage() {
                     const mainImage = document.getElementById('galleryMainImage');
                     const counter = document.getElementById('photoCounter');
@@ -1680,6 +1893,26 @@
                     font-size: 0.8rem;
                 }
 
+                .btn-download-single {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+                    color: white;
+                    border: none;
+                    padding: 0.5rem;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    font-size: 0.8rem;
+                }
+
+                .btn-download-single:hover {
+                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+                }
+
                 .btn-delete-single:hover {
                     background: #dc2626;
                     transform: translateY(-1px);
@@ -1818,10 +2051,77 @@
                         height: 50px;
                     }
                 }
+                /* Nouvelle pagination avec flèches */
+.pagination-arrow {
+    background: white;
+    border: 2px solid #e5e7eb;
+    color: #6b7280;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.pagination-arrow:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+    border-color: #4aaf70;
+    transform: scale(1.05);
+}
+
+.pagination-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-number {
+    background: white;
+    border: 2px solid #e5e7eb;
+    color: #374151;
+    min-width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0 0.75rem;
+}
+
+.pagination-number:hover {
+    background: #f3f4f6;
+    border-color: #4aaf70;
+    transform: translateY(-2px);
+}
+
+.pagination-number.active {
+    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    color: white;
+    border-color: #4aaf70;
+    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.3);
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination-arrow,
+    .pagination-number {
+        min-width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}
             </style>
 
             <!-- Section Agenda des travaux  -->
-            <section class="card">
+            <!-- <section class="card">
                 <header class="card-header">
                     <div>
                         <h2 class="card-title">
@@ -1838,10 +2138,7 @@
                             <i class="fas fa-plus"></i>
                             Ajouter un travail
                         </button>
-                        <!-- <button class="btn btn-agenda" onclick="openGoogleCalendar()">
-                            <i class="fas fa-external-link-alt"></i>
-                            Ouvrir dans Google
-                        </button> -->
+                      
                     </div>
                 </header>
 
@@ -1850,7 +2147,7 @@
                         src="https://calendar.google.com/calendar/embed?src=dylan.propre.eco%40gmail.com&ctz=Europe%2FParis"
                         style="border: 0; width: 100%; height: 600px;" frameborder="0" scrolling="no"></iframe>
                 </div>
-            </section>
+            </section>  -->
         </div>
     </div>
 
@@ -1884,7 +2181,7 @@
         // Clé pour localStorage
         const DASHBOARD_AUTH_KEY = 'propre_eco_dashboard_auth_v1';
 
-        // État d'authentification global
+        // Ã‰tat d'authentification global
         window.isAuthenticated = false;
 
         // Variables globales pour les données
@@ -2036,33 +2333,19 @@
 
             pageItems.forEach(data => {
                 let imgHTML = '';
-                if (data.images && data.images.length) {
-                    // Afficher seulement les 3 premières images en miniature
-                    const displayImages = data.images.slice(0, 3);
-                    imgHTML = displayImages.map((img, index) =>
-                        `<img src="${img.url}" class="thumb" alt="Image signalement ${index + 1}" 
-         onclick="openSignalementGallery('${data.id}', ${index})" loading="lazy">`
-                    ).join('');
+if (data.images && data.images.length) {
+    // Afficher seulement la première photo avec bulle si plus d'une
+    const firstImage = data.images[0];
+    imgHTML = `<img src="${firstImage.url}" class="thumb" alt="Image signalement" 
+                 onclick="openSignalementGallery('${data.id}', 0)" loading="lazy">`;
 
-                    // Bouton pour voir toutes les images si plus de 3
-                    if (data.images.length > 3) {
-                        imgHTML += `
-            <button class="view-all-photos-btn" onclick="openSignalementGallery('${data.id}', 0)">
-                <i class="fas fa-images"></i>
-                Voir les ${data.images.length} images
-            </button>
-        `;
-                    } else if (data.images.length > 1) {
-                        imgHTML += `
-            <button class="view-all-photos-btn" onclick="openSignalementGallery('${data.id}', 0)">
-                <i class="fas fa-expand"></i>
-                Voir en grand
-            </button>
-        `;
-                    }
-                } else {
-                    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
-                }
+    // Ajouter une bulle avec le nombre si plus d'une photo
+    if (data.images.length > 1) {
+        imgHTML += `<span class="photo-count">+${data.images.length - 1}</span>`;
+    }
+} else {
+    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
+}
 
                 const date = data.createdAt && data.createdAt.toDate ?
                     data.createdAt.toDate().toLocaleString('fr-FR', {
@@ -2124,7 +2407,7 @@
                 // Supprimer le document Firebase
                 await db.collection('signalements').doc(signalementId).delete();
 
-                // Mettre à jour les données locales
+                // Mettre Ã  jour les données locales
                 allSignalements = allSignalements.filter(s => s.id !== signalementId);
                 filteredSignalements = filteredSignalements.filter(s => s.id !== signalementId);
 
@@ -2151,14 +2434,19 @@
     const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
     if (totalPages <= 1) return;
 
-    // Conteneur pour les contrôles
-    const paginationWrapper = document.createElement('div');
-    paginationWrapper.className = 'pagination-wrapper';
+    // Style du conteneur
+    container.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    `;
 
-    // Bouton Précédent
+    // Bouton précédent
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'btn btn-pagination';
+    prevBtn.className = 'pagination-arrow';
     prevBtn.disabled = currentSignalementPage === 1;
     prevBtn.addEventListener('click', () => {
         if (currentSignalementPage > 1) {
@@ -2167,40 +2455,33 @@
             setupSignalementsPagination();
         }
     });
-    paginationWrapper.appendChild(prevBtn);
+    container.appendChild(prevBtn);
 
-    // Calcul des pages à afficher
-    let startPage = Math.max(1, currentSignalementPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-    
-    // Ajuster si on est proche de la fin
-    if (endPage - startPage < 4) {
-        startPage = Math.max(1, endPage - 4);
+    // Afficher 5 pages maximum
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentSignalementPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
     }
 
-    // Afficher les numéros de page
     for (let i = startPage; i <= endPage; i++) {
         const btn = document.createElement('button');
         btn.textContent = i;
-        btn.className = 'btn btn-pagination';
-        if (i === currentSignalementPage) {
-            btn.classList.add('active');
-        }
-
+        btn.className = i === currentSignalementPage ? 'pagination-number active' : 'pagination-number';
         btn.addEventListener('click', () => {
             currentSignalementPage = i;
             renderSignalementsPage();
             setupSignalementsPagination();
         });
-
-        paginationWrapper.appendChild(btn);
+        container.appendChild(btn);
     }
 
-    
-    // Bouton Suivant
+    // Bouton suivant
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'btn btn-pagination';
+    nextBtn.className = 'pagination-arrow';
     nextBtn.disabled = currentSignalementPage === totalPages;
     nextBtn.addEventListener('click', () => {
         if (currentSignalementPage < totalPages) {
@@ -2209,9 +2490,7 @@
             setupSignalementsPagination();
         }
     });
-    paginationWrapper.appendChild(nextBtn);
-
-    container.appendChild(paginationWrapper);
+    container.appendChild(nextBtn);
 }
         function applySignalementsFilters() {
             const coproFilter = document.getElementById('filterCopro')?.value.trim().toLowerCase() || '';
@@ -2374,7 +2653,7 @@
                 document.body.appendChild(modal);
             }
 
-            // Mettre à jour le contenu
+            // Mettre Ã  jour le contenu
             updateGalleryContentSignalement(signalement);
 
             // Afficher le modal
@@ -2398,7 +2677,7 @@
                 document.body.appendChild(modal);
             }
 
-            // Mettre à jour le contenu
+            // Mettre Ã  jour le contenu
             updateGalleryContentFeuille(feuille);
 
             // Afficher le modal
@@ -2406,7 +2685,7 @@
             setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        // Mettre à jour le contenu pour les signalements
+        // Mettre Ã  jour le contenu pour les signalements
         function updateGalleryContentSignalement(signalement) {
             document.getElementById('galleryTitle').textContent = `Signalement - ${signalement.copro || 'Copropriété'}`;
             document.getElementById('galleryDescription').textContent = signalement.description || 'Aucune description';
@@ -2414,7 +2693,7 @@
             updateMainImage();
         }
 
-        // Mettre à jour le contenu pour les feuilles
+        // Mettre Ã  jour le contenu pour les feuilles
         function updateGalleryContentFeuille(feuille) {
             document.getElementById('galleryTitle').textContent = `Feuille de passage - ${feuille.copro || 'Copropriété'}`;
             document.getElementById('galleryDescription').textContent = `Agent: ${feuille.agent || 'Non spécifié'}`;
@@ -2426,7 +2705,7 @@
         // Rendre les fonctions globales
         window.openSignalementGallery = openSignalementGallery;
         window.openFeuilleGallery = openFeuilleGallery;
-       function setupPaginationControls() {
+        function setupPaginationControls() {
     const existing = document.getElementById("paginationControls");
     if (existing) existing.remove();
 
@@ -2435,15 +2714,18 @@
 
     const container = document.createElement("div");
     container.id = "paginationControls";
-    container.className = "pagination-container";
+    container.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    `;
 
-    const paginationWrapper = document.createElement('div');
-    paginationWrapper.className = 'pagination-wrapper';
-
-    // Bouton Précédent
+    // Bouton précédent
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'btn btn-pagination';
+    prevBtn.className = 'pagination-arrow';
     prevBtn.disabled = currentPage === 1;
     prevBtn.addEventListener('click', () => {
         if (currentPage > 1) {
@@ -2452,40 +2734,33 @@
             setupPaginationControls();
         }
     });
-    paginationWrapper.appendChild(prevBtn);
+    container.appendChild(prevBtn);
 
-    // Calcul des pages à afficher
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-    
-    if (endPage - startPage < 4) {
-        startPage = Math.max(1, endPage - 4);
+    // Afficher 5 pages maximum
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
     }
 
-    // Afficher les numéros de page
     for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement("button");
+        const btn = document.createElement('button');
         btn.textContent = i;
-        btn.className = "btn btn-pagination";
-        if (i === currentPage) {
-            btn.classList.add('active');
-        }
-
-        btn.addEventListener("click", () => {
+        btn.className = i === currentPage ? 'pagination-number active' : 'pagination-number';
+        btn.addEventListener('click', () => {
             currentPage = i;
             renderFeuillesPage();
             setupPaginationControls();
         });
-
-        paginationWrapper.appendChild(btn);
+        container.appendChild(btn);
     }
 
-   
-
-    // Bouton Suivant
+    // Bouton suivant
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'btn btn-pagination';
+    nextBtn.className = 'pagination-arrow';
     nextBtn.disabled = currentPage === totalPages;
     nextBtn.addEventListener('click', () => {
         if (currentPage < totalPages) {
@@ -2494,9 +2769,7 @@
             setupPaginationControls();
         }
     });
-    paginationWrapper.appendChild(nextBtn);
-
-    container.appendChild(paginationWrapper);
+    container.appendChild(nextBtn);
 
     const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
     if (tableContainer) {
@@ -2526,7 +2799,7 @@
         }
 
         // =============================
-        //  NOTIFICATION BADGE (TEMPS RÉEL)
+        //  NOTIFICATION BADGE (TEMPS RÃ‰EL)
         // =============================
         class NotificationService {
             constructor() {
@@ -2636,7 +2909,7 @@
         }
 
         // =============================
-        //  ZIP TÉLÉCHARGEMENT & SUPPRESSION
+        //  ZIP TÃ‰LÃ‰CHARGEMENT & SUPPRESSION
         // =============================
         async function downloadAllFeuilles() {
             const downloadBtn = document.getElementById('downloadAllFeuilles');
@@ -2654,7 +2927,7 @@
                 const feuilles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 if (feuilles.length === 0) {
-                    showFastNotification('Aucune feuille à télécharger', 'warning');
+                    showFastNotification('Aucune feuille Ã  télécharger', 'warning');
                     return;
                 }
 
@@ -2724,23 +2997,19 @@
                 const count = countSnapshot.size;
 
                 if (count === 0) {
-                    showFastNotification('Aucune feuille à supprimer', 'warning');
+                    showFastNotification('Aucune feuille Ã  supprimer', 'warning');
                     return;
                 }
 
-                if (!confirm(`⚠️ ATTENTION ⚠️\n\nVous allez supprimer définitivement ${count} feuilles de passage.\n\nCette action supprimera :\n• Toutes les images sur ImgBB\n• Toutes les données sur Firebase\n\nCette action est IRRÉVERSIBLE !\n\nContinuer ?`)) {
+                if (!confirm(`âš ï¸ ATTENTION âš ï¸\n\nVous allez supprimer définitivement ${count} feuilles de passage.\n\nCette action supprimera :\nâ€¢ Toutes les images sur ImgBB\nâ€¢ Toutes les données sur Firebase\n\nCette action est IRRÃ‰VERSIBLE !\n\nContinuer ?`)) {
                     return;
                 }
 
-                if (!confirm(`Dernière confirmation !\n\nÊtes-vous absolument certain de vouloir supprimer ${count} feuilles définitivement ?`)) {
+                if (!confirm(`Dernière confirmation !\n\nÃŠtes-vous absolument certain de vouloir supprimer ${count} feuilles définitivement ?`)) {
                     return;
                 }
 
-                const confirmation = prompt('Tapez "SUPPRIMER" pour confirmer la suppression définitive :');
-                if (confirmation !== 'SUPPRIMER') {
-                    showFastNotification('Suppression annulée', 'warning');
-                    return;
-                }
+
 
                 const deleteBtn = document.getElementById('deleteAllFeuilles');
                 if (!deleteBtn) return;
@@ -2804,6 +3073,489 @@
         }
 
         // =============================
+        //  RELEVÉ D'HEURES DES EMPLOYÉS
+        // =============================
+        const employeeNames = {
+            'dylan': 'Dylan',
+            'oceane': 'Océane',
+            'samuel': 'Samuel',
+            'jeremie': 'Jérémie',
+            'carlos': 'Carlos',
+            'sandra': 'Sandra',
+            'manon': 'Manon',
+            'stephane': 'Stéphane',
+            'isabelle': 'Isabelle',
+            'caroline': 'Caroline',
+            'nadjet': 'Nadjet',
+            'remy': 'Rémy'
+        };
+
+        async function loadHeuresData() {
+            console.log('🔍 Début loadHeuresData');
+            const tbody = document.getElementById('heuresBody');
+            const weekStart = document.getElementById('filterWeekStart').value;
+            const weekEnd = document.getElementById('filterWeekEnd').value;
+            const selectedEmployee = document.getElementById('filterEmployee').value;
+
+            console.log('📅 Semaine début:', weekStart);
+            console.log('📅 Semaine fin:', weekEnd);
+            console.log('👤 Employé sélectionné:', selectedEmployee);
+
+            if (!weekStart || !weekEnd) {
+                console.log('⚠️ Dates manquantes');
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #6b7280;"><i class="fas fa-info-circle"></i> Veuillez sélectionner une période (semaine de début et de fin)</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner"></i> Chargement des heures...</td></tr>';
+
+            try {
+                console.log('🔥 Firebase db:', typeof db);
+                const employeeIds = selectedEmployee ? [selectedEmployee] : Object.keys(employeeNames);
+                console.log('👥 Employés à charger:', employeeIds);
+                const weeksToLoad = getWeeksBetween(weekStart, weekEnd);
+                console.log('📆 Semaines à charger:', weeksToLoad);
+                
+                let totalHoursGlobal = 0;
+                let totalKmGlobal = 0;
+                let totalChantiersGlobal = 0;
+                
+                const employeeData = [];
+
+                // Charger tous les employés en parallèle pour optimiser
+                const employeePromises = employeeIds.map(async (employeeId) => {
+                    console.log(`📊 Chargement employé: ${employeeId}`);
+                    let employeeTotalHours = 0;
+                    let employeeTotalKm = 0;
+                    let employeeTotalChantiers = 0;
+                    const weekDetails = [];
+
+                    // Charger toutes les semaines en parallèle
+                    const weekPromises = weeksToLoad.map(async (week) => {
+                        const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
+                        
+                        if (weekDoc.exists) {
+                            console.log(`  ✅ Données trouvées pour ${employeeId} - ${week}`);
+                            const data = weekDoc.data();
+                            let weekHours = 0;
+                            
+                            if (data.days) {
+                                data.days.forEach(day => {
+                                    const hours = parseFloat(day.hours) || 0;
+                                    // Arrondir chaque valeur pour éviter les erreurs de précision
+                                    weekHours += Math.round(hours * 100) / 100;
+                                });
+                            }
+                            
+                            // Arrondir le total de la semaine
+                            weekHours = Math.round(weekHours * 100) / 100;
+                            
+                            const km = parseFloat(data.kilometrage) || 0;
+                            
+                            return {
+                                week: week,
+                                hours: weekHours,
+                                km: km,
+                                days: data.days || [],
+                                weekData: data // Conserver toutes les données de la semaine (incluant projects)
+                            };
+                        }
+                        return null;
+                    });
+
+                    // Attendre toutes les semaines
+                    const weekResults = await Promise.all(weekPromises);
+
+                    // Traiter les résultats
+                    const validWeeks = weekResults.filter(r => r && r.km > 0);
+                    
+                    // Calculer les KM : différence entre le plus ancien et le plus récent
+                    if (validWeeks.length > 0) {
+                        // Trier par semaine pour avoir le bon ordre
+                        validWeeks.sort((a, b) => a.week.localeCompare(b.week));
+                        const firstKm = validWeeks[0].km;
+                        const lastKm = validWeeks[validWeeks.length - 1].km;
+                        employeeTotalKm = Math.max(0, lastKm - firstKm); // Éviter les valeurs négatives
+                    }
+                    
+                    // Calculer les heures et compter les chantiers
+                    weekResults.forEach(result => {
+                        if (result) {
+                            employeeTotalHours += result.hours;
+                            weekDetails.push(result);
+                            // Compter les chantiers de cette semaine
+                            if (result.weekData && result.weekData.projects) {
+                                employeeTotalChantiers += result.weekData.projects.length;
+                            }
+                        }
+                    });
+
+                    if (employeeTotalHours > 0 || employeeTotalKm > 0 || employeeTotalChantiers > 0) {
+                        return {
+                            id: employeeId,
+                            name: employeeNames[employeeId],
+                            totalHours: employeeTotalHours,
+                            totalKm: employeeTotalKm,
+                            totalChantiers: employeeTotalChantiers,
+                            weeks: weekDetails
+                        };
+                    }
+                    return null;
+                });
+
+                // Attendre tous les employés
+                const results = await Promise.all(employeePromises);
+                
+                // Filtrer les résultats null et calculer les totaux
+                results.forEach(result => {
+                    if (result) {
+                        employeeData.push(result);
+                        totalHoursGlobal += result.totalHours;
+                        totalKmGlobal += result.totalKm;
+                        totalChantiersGlobal += result.totalChantiers;
+                    }
+                });
+
+                console.log('📈 Données chargées:', employeeData);
+                console.log('⏰ Total heures global:', totalHoursGlobal);
+
+                // Arrondir le total global
+                totalHoursGlobal = Math.round(totalHoursGlobal * 100) / 100;
+
+                // Mettre à jour les statistiques globales avec formatage adapté
+                const displayHours = totalHoursGlobal % 1 === 0 ? totalHoursGlobal.toFixed(0) : 
+                                    (totalHoursGlobal * 4) % 1 === 0 ? totalHoursGlobal.toFixed(2) : 
+                                    totalHoursGlobal.toFixed(1);
+                document.getElementById('totalHours').textContent = displayHours;
+                document.getElementById('totalKm').textContent = totalKmGlobal;
+                document.getElementById('totalChantiers').textContent = totalChantiersGlobal;
+
+                // Afficher les données
+                if (employeeData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #6b7280;"><i class="fas fa-info-circle"></i> Aucune donnée pour cette période</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = employeeData.map(emp => `
+                    <tr>
+                        <td><strong>${emp.name}</strong></td>
+                        <td>${weeksToLoad.length} semaine(s)</td>
+                        <td><strong style="color: #059669;">${emp.totalHours % 1 === 0 ? emp.totalHours.toFixed(0) : (emp.totalHours * 4) % 1 === 0 ? emp.totalHours.toFixed(2) : emp.totalHours.toFixed(1)}h</strong></td>
+                        <td>${emp.totalKm} km</td>
+                        <td>${emp.totalChantiers} chantier(s)</td>
+                        <td style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <button class="action-btn" onclick="viewEmployeeDetails('${emp.id}', '${weekStart}', '${weekEnd}')" title="Voir les détails" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(59, 130, 246, 0.3)'">
+                                <i class="fas fa-eye"></i> Détails
+                            </button>
+                            <button class="action-btn" onclick="openEmployeePage('${emp.id}')" title="Voir la page complète" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.3)'">
+                                <i class="fas fa-external-link-alt"></i> Ouvrir
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('Erreur chargement heures:', error);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Erreur lors du chargement</td></tr>';
+            }
+        }
+
+        function getWeeksBetween(weekStart, weekEnd) {
+            const weeks = [];
+            const [startYear, startWeek] = weekStart.split('-W').map(Number);
+            const [endYear, endWeek] = weekEnd.split('-W').map(Number);
+            
+            for (let year = startYear; year <= endYear; year++) {
+                const startW = (year === startYear) ? startWeek : 1;
+                const endW = (year === endYear) ? endWeek : 52;
+                
+                for (let week = startW; week <= endW; week++) {
+                    weeks.push(`${year}-W${week.toString().padStart(2, '0')}`);
+                }
+            }
+            
+            return weeks;
+        }
+
+        async function viewEmployeeDetails(employeeId, weekStart, weekEnd) {
+            const weeksToLoad = getWeeksBetween(weekStart, weekEnd);
+            const employeeName = employeeNames[employeeId];
+            
+            // Afficher d'abord la modal avec le spinner
+            const loadingHTML = `
+                <div id="detailsModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;" onclick="this.remove()">
+                    <div style="background: white; border-radius: 16px; max-width: 900px; width: 100%; margin: auto; max-height: calc(100vh - 2rem); display: flex; flex-direction: column;" onclick="event.stopPropagation()">
+                        <div style="position: sticky; top: 0; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1.5rem; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; z-index: 1; flex-shrink: 0;">
+                            <div>
+                                <h2 style="margin: 0; font-size: 1.5rem;"><i class="fas fa-user-clock"></i> ${employeeName}</h2>
+                                <p style="margin: 0.25rem 0 0 0; opacity: 0.9;">Détails des heures - Semaines ${weekStart.replace('W', 'S')} à ${weekEnd.replace('W', 'S')}</p>
+                            </div>
+                            <button onclick="this.closest('div[style*=fixed]').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div id="modalContent" style="padding: 2rem; overflow-y: auto; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 300px;">
+                            <div style="text-align: center;">
+                                <div style="width: 60px; height: 60px; border: 4px solid #e5e7eb; border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                                <p style="color: #6b7280; font-size: 1rem; margin: 0;">Chargement des détails...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        to { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', loadingHTML);
+            const modal = document.getElementById('detailsModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            let detailsHTML = '';
+
+            try {
+                for (const week of weeksToLoad) {
+                    const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
+                    
+                    if (weekDoc.exists) {
+                        const data = weekDoc.data();
+                        let weekTotal = 0;
+                        
+                        detailsHTML += `
+                            <div style="margin-bottom: 2rem; border: 2px solid #10b981; border-radius: 12px; overflow: hidden;">
+                                <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; font-weight: 600;">
+                                    <i class="fas fa-calendar-week"></i> Semaine ${week.replace('W', 'S')}
+                                </div>
+                                <div style="padding: 1rem;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: #f0fdf4;">
+                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Jour</th>
+                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Heures</th>
+                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Détails</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                        `;
+                        
+                        if (data.days) {
+                            data.days.forEach((day, index) => {
+                                const hours = parseFloat(day.hours) || 0;
+                                // Arrondir chaque valeur pour éviter les erreurs de précision
+                                weekTotal += Math.round(hours * 100) / 100;
+                                const bgColor = index % 2 === 0 ? '#ffffff' : '#f9fafb';
+                                detailsHTML += `
+                                    <tr style="background: ${bgColor};">
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${day.day}</strong></td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong style="color: #059669;">${day.hours || '-'}</strong></td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${day.comments || '-'}</td>
+                                    </tr>
+                                `;
+                            });
+                        }
+                        
+                        // Arrondir le total final
+                        weekTotal = Math.round(weekTotal * 100) / 100;
+                        const displayWeekTotal = weekTotal % 1 === 0 ? weekTotal.toFixed(0) : 
+                                                (weekTotal * 4) % 1 === 0 ? weekTotal.toFixed(2) : 
+                                                weekTotal.toFixed(1);
+                        
+                        detailsHTML += `
+                                        </tbody>
+                                        <tfoot>
+                                            <tr style="background: #dcfce7; font-weight: 700;">
+                                                <td style="padding: 1rem;">TOTAL</td>
+                                                <td style="padding: 1rem; color: #059669;">${displayWeekTotal}h</td>
+                                                <td style="padding: 1rem;">Kilomètres: ${data.kilometrage || 0} km</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Calculer et afficher le récapitulatif des KM
+                const weekDocuments = await Promise.all(
+                    weeksToLoad.map(week => 
+                        db.collection('employees').doc(employeeId).collection('weeks').doc(week).get()
+                    )
+                );
+                
+                const kmData = weekDocuments
+                    .filter(doc => doc.exists && doc.data().kilometrage)
+                    .map((doc, index) => ({
+                        week: weeksToLoad[index],
+                        km: parseFloat(doc.data().kilometrage) || 0
+                    }))
+                    .filter(d => d.km > 0)
+                    .sort((a, b) => a.week.localeCompare(b.week));
+
+                if (kmData.length > 0) {
+                    const firstKm = kmData[0];
+                    const lastKm = kmData[kmData.length - 1];
+                    const totalKmPeriod = Math.max(0, lastKm.km - firstKm.km);
+                    
+                    detailsHTML += `
+                        <div style="margin-top: 2rem; border: 2px solid #0284c7; border-radius: 12px; overflow: hidden;">
+                            <div style="background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 1rem; font-weight: 600;">
+                                <i class="fas fa-road"></i> Récapitulatif Kilomètres
+                            </div>
+                            <div style="padding: 1.5rem; background: #f0f9ff;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                    <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #0284c7;">
+                                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Début (${firstKm.week.replace('W', 'S')})</div>
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: #0284c7;">${firstKm.km.toLocaleString()} km</div>
+                                    </div>
+                                    <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #0284c7;">
+                                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Fin (${lastKm.week.replace('W', 'S')})</div>
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: #0284c7;">${lastKm.km.toLocaleString()} km</div>
+                                    </div>
+                                    <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #059669;">
+                                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Parcourus</div>
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: #059669;">${totalKmPeriod.toLocaleString()} km</div>
+                                    </div>
+                                </div>
+                                <div style="background: rgba(59, 130, 246, 0.1); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; color: #1e40af;">
+                                    <i class="fas fa-info-circle"></i> Calcul : Kilométrage de fin - Kilométrage de début
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Récupérer tous les chantiers de toutes les semaines
+                const allProjects = [];
+                for (const week of weeksToLoad) {
+                    const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
+                    if (weekDoc.exists && weekDoc.data().projects) {
+                        const projects = weekDoc.data().projects;
+                        projects.forEach(project => {
+                            allProjects.push({
+                                ...project,
+                                week: week // Ajouter l'info de la semaine
+                            });
+                        });
+                    }
+                }
+                
+                if (allProjects.length > 0) {
+                    detailsHTML += `
+                        <div style="margin-top: 2rem; border: 2px solid #7c3aed; border-radius: 12px; overflow: hidden;">
+                            <div style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 1rem; font-weight: 600;">
+                                <i class="fas fa-hard-hat"></i> Chantiers spécifiques (${allProjects.length})
+                            </div>
+                            <div style="padding: 1rem;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: #f5f3ff;">
+                                            <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #7c3aed;">Semaine</th>
+                                            <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #7c3aed;">Date</th>
+                                            <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #7c3aed;">Chantier</th>
+                                            <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #7c3aed;">Équipe</th>
+                                            <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #7c3aed;">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                    `;
+                    
+                    allProjects.forEach((project, index) => {
+                        const bgColor = index % 2 === 0 ? '#ffffff' : '#f9fafb';
+                        const date = project.date ? new Date(project.date).toLocaleDateString('fr-FR') : '-';
+                        detailsHTML += `
+                            <tr style="background: ${bgColor};">
+                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.week.replace('W', 'S')}</strong></td>
+                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${date}</td>
+                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.name || '-'}</strong></td>
+                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${project.team || '-'}</td>
+                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong style="color: #7c3aed;">${project.totalHours || '-'}</strong></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    detailsHTML += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Erreur chargement détails:', error);
+                detailsHTML = '<div style="text-align: center; padding: 3rem;"><p style="color: #ef4444; font-size: 1.1rem;"><i class="fas fa-exclamation-triangle"></i> Erreur lors du chargement des détails</p><p style="color: #6b7280; margin-top: 0.5rem;">Veuillez réessayer</p></div>';
+            }
+
+            // Remplacer le spinner par le contenu
+            if (modalContent) {
+                modalContent.style.display = 'block';
+                modalContent.style.alignItems = 'flex-start';
+                modalContent.style.justifyContent = 'flex-start';
+                modalContent.style.minHeight = 'auto';
+                modalContent.innerHTML = detailsHTML;
+            }
+        }
+
+        function openEmployeePage(employeeId) {
+            const password = prompt('🔒 Mot de passe admin requis pour accéder à la page de l\'employé :');
+            const ADMIN_PASSWORD = '110389'; // À changer selon vos besoins
+            
+            if (password === ADMIN_PASSWORD) {
+                window.open(`heures.html?employee=${employeeId}`, '_blank');
+            } else if (password !== null) {
+                showFastNotification('Mot de passe incorrect', 'error');
+            }
+        }
+
+        function initHeuresFilters() {
+            // Remplir le select des employés
+            const select = document.getElementById('filterEmployee');
+            Object.entries(employeeNames).forEach(([id, name]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+
+            // Définir les semaines par défaut (4 dernières semaines)
+            const today = new Date();
+            const currentWeek = getWeekString(today);
+            const fourWeeksAgo = getWeekString(new Date(today.getTime() - 28 * 24 * 60 * 60 * 1000));
+            
+            document.getElementById('filterWeekEnd').value = currentWeek;
+            document.getElementById('filterWeekStart').value = fourWeeksAgo;
+
+            // Charger automatiquement
+            loadHeuresData();
+
+            // Événements
+            document.getElementById('applyHeuresFilters').addEventListener('click', loadHeuresData);
+            document.getElementById('clearHeuresFilters').addEventListener('click', () => {
+                document.getElementById('filterWeekStart').value = fourWeeksAgo;
+                document.getElementById('filterWeekEnd').value = currentWeek;
+                document.getElementById('filterEmployee').value = '';
+                loadHeuresData();
+            });
+        }
+
+        function getWeekString(date) {
+            const year = date.getFullYear();
+            const weekNum = getWeekNumber(date);
+            return `${year}-W${weekNum.toString().padStart(2, '0')}`;
+        }
+
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        // =============================
         //  INIT & LISTENERS
         // =============================
         function checkSavedAuth() {
@@ -2822,6 +3574,7 @@
                 loadSignalementsWithPagination();
                 loadFeuillesWithPagination();
                 loadPhotosChantierWithPagination();
+                initHeuresFilters();
             }
         }
 
@@ -2896,12 +3649,12 @@
         });
     </script>
     <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
-  }
-</script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('âœ… Service Worker enregistré', reg))
+                .catch(err => console.error('âŒ Erreur Service Worker', err));
+        }
+    </script>
 
 </body>
 

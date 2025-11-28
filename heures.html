@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Mes heures - Propre Eco</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="icon" type="image/png" href="img/logo.png" />
+    <link rel="apple-touch-icon" href="img/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- PWA Métadonnées -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Propre Eco">
+    <meta name="theme-color" content="#10B981">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #f59e0b;
+            --accent: #8b5cf6;
+            --background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --radius: 16px;
+            --transition: all .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column
+        }
+
+        .header {
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, .2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none
+        }
+
+        .logo i {
+            background: var(--primary);
+            padding: .5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, .3)
+        }
+
+        .nav-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.5rem;
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, .1);
+            backdrop-filter: blur(10px);
+            padding: .75rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .2);
+            color: #fff;
+            font-weight: 600
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, .3)
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem
+        }
+
+        .page-header h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: .5rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, .3)
+        }
+
+        .page-header p {
+            color: rgba(255, 255, 255, .9);
+            font-size: 1.1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, .3)
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, .95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);
+            border: 1px solid rgba(255, 255, 255, .3);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+            animation: shimmer 2s ease-in-out infinite
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                opacity: .5
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border)
+        }
+
+        .section-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, .3)
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .week-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap
+        }
+
+        .week-input {
+            flex: 1;
+            min-width: 200px;
+            padding: .75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: var(--transition)
+        }
+
+        .week-input:focus {
+            outline: 0;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, .1)
+        }
+
+        .table-wrapper {
+            margin-bottom: 1.5rem
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: var(--radius);
+            overflow: hidden
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff
+        }
+
+        thead th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+            color: #fff !important
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: .9rem
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition)
+        }
+
+        tbody tr:hover {
+            background: #f8fafc
+        }
+
+        td {
+            padding: .75rem 1rem
+        }
+
+        .table-input {
+            width: 100%;
+            padding: .5rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: .95rem;
+            transition: var(--transition);
+            font-family: inherit
+        }
+
+        .table-input:focus {
+            outline: 0;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, .1)
+        }
+
+        .table-input.hours {
+            text-align: center;
+            font-weight: 600
+        }
+
+        textarea.table-input {
+            resize: vertical;
+            min-height: 60px
+        }
+
+        .total-row {
+            background: var(--primary-light) !important;
+            font-weight: 700
+        }
+
+        .total-row td {
+            padding: 1rem;
+            font-size: 1.1rem
+        }
+
+        .total-value {
+            color: var(--primary-dark);
+            font-size: 1.2rem
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            padding: .75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, .3);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, .4)
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #d97706);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, .3)
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(245, 158, 11, .4)
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, .3)
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, .4)
+        }
+
+        .btn-small {
+            padding: .5rem 1rem;
+            font-size: .9rem
+        }
+
+        .btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem
+        }
+
+        .app-footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, .8);
+            font-size: .9rem;
+            background: rgba(255, 255, 255, .05);
+            backdrop-filter: blur(10px);
+            margin-top: auto
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, .8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px)
+        }
+
+        .loading-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25)
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
+            z-index: 1001;
+            font-weight: 600;
+            animation: slideInRight .3s ease-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .2);
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0
+            }
+        }
+
+        /* MOBILE RESPONSIVE - PAS DE SCROLL HORIZONTAL */
+        @media (max-width:768px) {
+            .header {
+                padding: 1rem
+            }
+
+            .header-content {
+                align-items: stretch
+            }
+
+            .logo {
+                font-size: 1.25rem;
+                justify-content: center
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .nav-menu a {
+                color: var(--text);
+                background: rgba(16, 185, 129, 0.1);
+                border-color: var(--border);
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 .5rem
+            }
+
+            .page-header h1 {
+                font-size: 2rem
+            }
+
+            .page-header p {
+                font-size: 1rem
+            }
+
+            .section-card {
+                padding: 1.5rem 1rem
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: .75rem
+            }
+
+            .section-title {
+                font-size: 1.25rem
+            }
+
+            .week-selector {
+                flex-direction: column;
+                align-items: stretch
+            }
+
+            .week-selector label {
+                text-align: center
+            }
+
+            .week-input {
+                min-width: 100%
+            }
+
+            table {
+                font-size: .8rem
+            }
+
+            th {
+                padding: .5rem .3rem;
+                font-size: .75rem
+            }
+
+            td {
+                padding: .5rem .3rem
+            }
+
+            .table-input {
+                font-size: .8rem;
+                padding: .35rem
+            }
+
+            textarea.table-input {
+                min-height: 45px
+            }
+
+            .total-row td {
+                font-size: .9rem;
+                padding: .6rem .3rem
+            }
+
+            .total-value {
+                font-size: 1rem
+            }
+
+            .section-actions {
+                flex-direction: column
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                font-size: .95rem
+            }
+
+            .notification {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
+                max-width: none
+            }
+
+            .loading-content {
+                padding: 1.5rem;
+                margin: 0 1rem
+            }
+
+
+            #weeklyTable tbody td:nth-child(3) {
+                display: block;
+                padding: .5rem;
+                border-top: 1px solid #e5e7eb;
+                background: #f9fafb
+            }
+
+            /* Styles responsive pour le tableau de saisie des chantiers */
+            #projectsTable {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #projectsTable thead,
+            #projectsTable tbody,
+            #projectsTable tfoot,
+            #projectsTable tr,
+            #projectsTable th,
+            #projectsTable td {
+                display: block;
+            }
+
+            #projectsTable thead {
+                display: none;
+            }
+
+            #projectsTable tbody tr {
+                margin-bottom: 1.5rem;
+                border: 2px solid var(--primary);
+                border-radius: 12px;
+                padding: 1rem;
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            #projectsTable tbody td {
+                padding: 0.75rem 0 !important;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left !important;
+            }
+
+            #projectsTable tbody td:last-child {
+                border-bottom: none;
+                text-align: center !important;
+            }
+
+            #projectsTable tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--primary-dark);
+                display: block;
+                margin-bottom: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            #projectsTable tbody td:last-child::before {
+                display: none;
+            }
+
+            #projectsTable tfoot {
+                display: block;
+            }
+
+            #projectsTable tfoot tr {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                background: var(--primary-light);
+                border-radius: 8px;
+                margin-top: 1rem;
+            }
+
+            #projectsTable tfoot td {
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            #projectsTable .table-input {
+                width: 100%;
+            }
+
+            #projectsTable .btn-danger {
+                width: 100%;
+                padding: 0.75rem 1rem;
+            }
+
+            /* Styles responsive pour le tableau d'affichage des chantiers enregistrés */
+            #savedProjectsTable {
+                display: block;
+                overflow-x: visible;
+            }
+
+            #savedProjectsTable thead {
+                display: none;
+            }
+
+            #savedProjectsTable tbody {
+                display: block;
+            }
+
+            #savedProjectsTable tbody tr {
+                display: block;
+                margin-bottom: 1.5rem;
+                border: 2px solid var(--primary);
+                border-radius: 12px;
+                padding: 1rem;
+                background: white !important;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            #savedProjectsTable tbody td {
+                display: block;
+                padding: 0.75rem 0 !important;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left !important;
+            }
+
+            #savedProjectsTable tbody td:last-child {
+                border-bottom: none;
+                padding-top: 1rem !important;
+            }
+
+            #savedProjectsTable tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--primary-dark);
+                font-size: 0.9rem;
+                display: block;
+                margin-bottom: 0.25rem;
+            }
+
+            #savedProjectsTable tbody td:nth-child(6)::before {
+                content: "Actions";
+            }
+
+            #savedProjectsTable tbody td:nth-child(6) {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            #savedProjectsTable tbody td:nth-child(6) button {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            #savedProjectsTable tfoot {
+                display: block;
+            }
+
+            #savedProjectsTable tfoot tr {
+                display: flex;
+                justify-content: space-between;
+                padding: 1rem;
+                background: var(--primary-light) !important;
+                border-radius: 8px;
+            }
+
+            #savedProjectsTable tfoot td {
+                border: none !important;
+                padding: 0 !important;
+            }
+        }
+
+        @media (max-width:480px) {
+            .page-header h1 {
+                font-size: 1.75rem
+            }
+
+            .section-card {
+                padding: 1rem .5rem;
+                border-radius: 12px
+            }
+
+            .section-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem
+            }
+
+            table {
+                font-size: .75rem
+            }
+
+            th {
+                padding: .4rem .2rem;
+                font-size: .7rem
+            }
+
+            td {
+                padding: .4rem .2rem
+            }
+
+            .table-input {
+                font-size: .75rem;
+                padding: .3rem
+            }
+
+            textarea.table-input {
+                min-height: 40px;
+                font-size: .75rem
+            }
+
+            .btn {
+                padding: .65rem 1rem;
+                font-size: .9rem
+            }
+
+            .btn-small {
+                padding: .5rem .75rem;
+                font-size: .85rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="img/logo.png" width="60px" alt="">
+                Propre Eco Assistant
+            </a>
+
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display:none">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Chargement...</p>
+        </div>
+    </div>
+
+    <div class="container">
+   
+
+        <div class="user-info" style="margin-bottom: 2rem; justify-content: center;">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <span id="userName">Employé</span>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon"><i class="fas fa-calendar-week"></i></div>
+                <h2 class="section-title">Heures de la semaine</h2>
+                <p>Pensez a cliquer sur Enregistrer ! </p>
+            </div>
+            <div class="week-selector"><label for="weekInput" style="font-weight:600"><i class="fas fa-calendar"></i>
+                    Semaine :</label><input type="week" id="weekInput" class="week-input"></div>
+            <div class="table-wrapper">
+                <table id="weeklyTable">
+                    <thead>
+                        <tr>
+                            <th>Jour</th>
+                            <th>Heures</th>
+                            <th>Détails</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Lun</strong></td>
+                            <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
+                                    placeholder="0"></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mar</strong></td>
+                            <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
+                                    placeholder="0"></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mer</strong></td>
+                            <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
+                                    placeholder="0"></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Jeu</strong></td>
+                            <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
+                                    placeholder="0"></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ven</strong></td>
+                            <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
+                                    placeholder="0"></td>
+                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sam</strong></td>
+                            <td><input type="text" class="table-input hours" placeholder="0 = Repos"></td>
+                            <td><textarea class="table-input" placeholder="CP = Congés payés / AT = Arrêt de Travail"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dim</strong></td>
+                            <td><input type="text" class="table-input hours" placeholder="0 = Repos"></td>
+                            <td><textarea class="table-input" placeholder="CP = Congés payés / AT = Arrêt de Travail""></textarea></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td><strong>TOTAL</strong></td>
+                            <td class="total-value" id="totalWeeklyHours">0h</td>
+                            <td></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3" style="padding:.5rem"><label
+                                    style="margin-right:.5rem;font-size:.9rem"><strong>KM :</strong></label><input
+                                    type="number" class="table-input" id="kilometrage" min="0" placeholder="Kilomètres"
+                                    style="max-width:120px;display:inline-block"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="section-actions"><button class="btn" onclick="saveWeeklyData()" id="saveWeeklyBtn"><i
+                        class="fas fa-save"></i>Enregistrer</button><button class="btn btn-secondary"
+                    onclick="resetWeeklyData()"><i class="fas fa-redo"></i>Réinitialiser</button></div>
+        </div>
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon"><i class="fas fa-hard-hat"></i></div>
+                <h2 class="section-title">Chantiers spécifique</h2>
+            </div>
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                <strong style="color: #92400e;">Pensez à cliquer sur Enregistrer !</strong>
+            </div>
+            
+            <!-- Bouton pour afficher le formulaire -->
+            <div style="text-align: center; margin-bottom: 1rem;" id="showFormBtn">
+                <button class="btn btn-secondary" onclick="showProjectForm()">
+                    <i class="fas fa-plus"></i> Ajouter un chantier
+                </button>
+            </div>
+            
+            <!-- Formulaire de saisie (masqué par défaut) -->
+            <div id="projectFormContainer" style="display: none;">
+            <div class="table-wrapper">
+                <table id="projectsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Chantier</th>
+                            <th>Nombre d'employés</th>
+                            <th>Equipe</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTableBody"></tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="4"><strong>TOTAL</strong></td>
+                            <td class="total-value" id="totalProjectsHours">0h</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="section-actions"><button class="btn btn-secondary" onclick="addProjectRow()"><i
+                        class="fas fa-plus"></i>Ajouter</button><button class="btn" onclick="saveProjectsData()"
+                    id="saveProjectsBtn"><i class="fas fa-save"></i>Enregistrer</button></div>
+            </div>
+            
+            <!-- Tableau d'affichage des chantiers enregistrés -->
+            <div id="savedProjectsDisplay" style="margin-top: 2rem; display: none;">
+                <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem; border-radius: 12px 12px 0 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-list-check"></i>
+                    <h3 style="margin: 0; font-size: 1.1rem;">Chantiers enregistrés cette semaine</h3>
+                </div>
+                <div style="background: white; border: 2px solid var(--primary); border-top: none; border-radius: 0 0 12px 12px; padding: 1.5rem;">
+                    <table id="savedProjectsTable" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--primary-light);">
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Date</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Chantier</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Nb employés</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Équipe</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Total</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--primary);">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="savedProjectsBody"></tbody>
+                        <tfoot>
+                            <tr style="background: var(--primary-light); font-weight: 700;">
+                                <td colspan="5" style="padding: 1rem 0.75rem; border-top: 2px solid var(--primary);">TOTAL</td>
+                                <td id="savedProjectsTotal" style="padding: 1rem 0.75rem; border-top: 2px solid var(--primary); color: var(--primary-dark); font-size: 1.1rem;">0h</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="app-footer">Developed with <span style="color:#ff6b6b">â¤ï¸</span> by Ashborn</footer>
+    <script>
+        // Menu toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.querySelector('.nav-toggle');
+            const menu = document.querySelector('.nav-menu');
+
+            if (toggleButton && menu) {
+                toggleButton.addEventListener('click', () => {
+                    menu.classList.toggle('open');
+                });
+
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menu.classList.remove('open');
+                    });
+                });
+            }
+        });
+
+        // Firebase et fonctionnalités existantes
+        const firebaseConfig = { apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y", authDomain: "copro-256d7.firebaseapp.com", projectId: "copro-256d7", storageBucket: "copro-256d7.appspot.com", messagingSenderId: "665588381388", appId: "1:665588381388:web:a0567533ff1a62407db469", measurementId: "G-Y7YNZDDCTD" }; 
+        let db; 
+        try { 
+            firebase.initializeApp(firebaseConfig); 
+            db = firebase.firestore(); 
+            console.log('âœ… Firestore initialisé') 
+        } catch (error) { 
+            console.error('âŒ Erreur:', error); 
+            showNotification('Erreur de connexion', 'error') 
+        } 
+        
+        let currentEmployeeId = null, currentEmployeeName = null, currentWeek = null, projectRowCounter = 0; 
+        const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy' }; 
+        
+        document.addEventListener('DOMContentLoaded', function () { 
+            const urlParams = new URLSearchParams(window.location.search); 
+            currentEmployeeId = urlParams.get('employee'); 
+            if (!currentEmployeeId) { 
+                showNotification('Employé non identifié', 'error'); 
+                setTimeout(() => window.location.href = 'pointeuse.html', 2000); 
+                return 
+            } 
+            currentEmployeeName = employeeNames[currentEmployeeId] || 'Employé'; 
+            document.getElementById('userName').textContent = currentEmployeeName; 
+            document.getElementById('userAvatar').textContent = getInitials(currentEmployeeName); 
+            
+            // Vérifier si l'utilisateur a une session sauvegardée et afficher le bouton de déconnexion
+            checkAndShowLogoutButton();
+            
+            const today = new Date(); 
+            const weekInput = document.getElementById('weekInput'); 
+            weekInput.value = getWeekString(today); 
+            currentWeek = weekInput.value; 
+            
+            // Charger automatiquement les données de la semaine
+            loadWeekDataAuto(); 
+            loadProjectsData(); 
+            
+            // Ajouter un listener pour charger automatiquement quand on change la semaine
+            weekInput.addEventListener('change', function() {
+                currentWeek = this.value;
+                loadWeekDataAuto();
+            });
+            
+            // Validation et calcul pour les inputs d'heures
+            document.querySelectorAll('#weeklyTable .hours').forEach(input => { 
+                input.addEventListener('input', calculateWeeklyTotal);
+                
+                // Valider que c'est un multiple de 0.25
+                input.addEventListener('blur', function() {
+                    const value = parseFloat(this.value);
+                    if (!isNaN(value)) {
+                        // Arrondir au multiple de 0.25 le plus proche
+                        const rounded = Math.round(value * 4) / 4;
+                        if (rounded !== value) {
+                            this.value = rounded;
+                            calculateWeeklyTotal();
+                            showNotification(`Valeur arrondie à ${rounded}h (multiples de 0.25 uniquement)`, 'info');
+                        }
+                    }
+                });
+            }) 
+        }); 
+        
+        // Vérifier si une session est sauvegardée pour cet employé
+        function checkAndShowLogoutButton() {
+            const SAVED_SESSION_KEY = "savedEmployeeSession";
+            const savedSession = localStorage.getItem(SAVED_SESSION_KEY);
+            
+            if (savedSession) {
+                try {
+                    const sessionData = JSON.parse(savedSession);
+                    // Si la session correspond à l'employé actuel, afficher le bouton
+                    if (sessionData.employeeId === currentEmployeeId) {
+                        const logoutBtn = document.getElementById('logoutBtn');
+                        if (logoutBtn) {
+                            logoutBtn.style.display = 'flex';
+                            logoutBtn.style.alignItems = 'center';
+                            logoutBtn.style.gap = '0.5rem';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erreur lecture session:', error);
+                }
+            }
+        }
+        
+        // Fonction de déconnexion
+        function logoutSession() {
+            const SAVED_SESSION_KEY = "savedEmployeeSession";
+            
+            if (confirm('Êtes-vous sûr de vouloir désactiver la connexion automatique ?')) {
+                localStorage.removeItem(SAVED_SESSION_KEY);
+                showNotification('Connexion automatique désactivée', 'success');
+                
+                // Masquer le bouton
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.style.display = 'none';
+                }
+                
+                // Rediriger vers la pointeuse après 1.5 secondes
+                setTimeout(() => {
+                    window.location.href = 'pointeuse.html';
+                }, 1500);
+            }
+        }
+        
+        function getInitials(name) { 
+            return name.split(' ').map(n => n[0]).join('').toUpperCase() 
+        } 
+        
+        function getWeekString(date) { 
+            const year = date.getFullYear(); 
+            const weekNum = getWeekNumber(date); 
+            return `${year}-W${weekNum.toString().padStart(2, '0')}` 
+        } 
+        
+        function getWeekNumber(date) { 
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())); 
+            const dayNum = d.getUTCDay() || 7; 
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum); 
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); 
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7) 
+        } 
+        
+        function showLoading(show = true) { 
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none' 
+        } 
+        
+        function showNotification(message, type = 'info') { 
+            const notification = document.createElement('div'); 
+            notification.className = 'notification'; 
+            const icons = { success: 'fas fa-check-circle', warning: 'fas fa-exclamation-triangle', error: 'fas fa-times-circle', info: 'fas fa-info-circle' }; 
+            const colors = { success: 'linear-gradient(135deg, #10b981, #059669)', warning: 'linear-gradient(135deg, #f59e0b, #d97706)', error: 'linear-gradient(135deg, #ef4444, #dc2626)', info: 'linear-gradient(135deg, #3b82f6, #2563eb)' }; 
+            notification.style.background = colors[type] || colors.info; 
+            notification.innerHTML = `<i class="${icons[type] || icons.info}"></i><span>${message}</span>`; 
+            document.body.appendChild(notification); 
+            setTimeout(() => { 
+                notification.style.animation = 'slideOutRight 0.3s ease-out forwards'; 
+                setTimeout(() => notification.remove(), 300) 
+            }, 3000) 
+        } 
+        
+        function calculateWeeklyTotal() { 
+            const hoursInputs = document.querySelectorAll('#weeklyTable .hours'); 
+            let total = 0; 
+            hoursInputs.forEach(input => { 
+                const value = input.value.trim(); 
+                if (value && value.toUpperCase() !== 'R') { 
+                    const hours = parseFloat(value); 
+                    if (!isNaN(hours)) { 
+                        // Arrondir à 2 décimales pour éviter les erreurs de précision JavaScript
+                        total += Math.round(hours * 100) / 100;
+                    } 
+                } 
+            }); 
+            // Arrondir le total final et formater proprement
+            const roundedTotal = Math.round(total * 100) / 100;
+            // Afficher avec 2 décimales si nécessaire, sinon avec 1
+            const displayTotal = roundedTotal % 1 === 0 ? roundedTotal.toFixed(0) : 
+                                 (roundedTotal * 4) % 1 === 0 ? roundedTotal.toFixed(2) : 
+                                 roundedTotal.toFixed(1);
+            document.getElementById('totalWeeklyHours').textContent = displayTotal + 'h'; 
+            return roundedTotal;
+        } 
+        
+        async function loadWeekData() { 
+            const selectedWeek = document.getElementById('weekInput').value; 
+            if (!selectedWeek) { 
+                showNotification('Sélectionnez une semaine', 'warning'); 
+                return 
+            } 
+            currentWeek = selectedWeek; 
+            showLoading(true); 
+            try { 
+                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek); 
+                const doc = await docRef.get(); 
+                if (doc.exists) { 
+                    const data = doc.data(); 
+                    if (data.days) { 
+                        data.days.forEach((dayData, index) => { 
+                            const rows = document.querySelectorAll('#weeklyTable tbody tr'); 
+                            if (rows[index]) { 
+                                rows[index].querySelector('.hours').value = dayData.hours || ''; 
+                                rows[index].querySelector('textarea').value = dayData.comments || '' 
+                            } 
+                        }) 
+                    } 
+                    document.getElementById('kilometrage').value = data.kilometrage || ''; 
+                    calculateWeeklyTotal(); 
+                    showNotification('Données chargées', 'success') 
+                } else { 
+                    document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = ''); 
+                    document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = ''); 
+                    document.getElementById('kilometrage').value = ''; 
+                    calculateWeeklyTotal(); 
+                    showNotification('Aucune donnée pour cette semaine', 'info') 
+                } 
+            } catch (error) { 
+                console.error('Erreur:', error); 
+                showNotification('Erreur lors du chargement', 'error') 
+            } finally { 
+                showLoading(false) 
+            } 
+        } 
+
+        async function loadWeekDataAuto() {
+            if (!currentWeek) {
+                return;
+            }
+            showLoading(true);
+            try {
+                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+                const doc = await docRef.get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.days) {
+                        data.days.forEach((dayData, index) => {
+                            const rows = document.querySelectorAll('#weeklyTable tbody tr');
+                            if (rows[index]) {
+                                rows[index].querySelector('.hours').value = dayData.hours || '';
+                                rows[index].querySelector('textarea').value = dayData.comments || '';
+                            }
+                        });
+                    }
+                    document.getElementById('kilometrage').value = data.kilometrage || '';
+                    
+                    // Charger les chantiers spécifiques de cette semaine
+                    if (data.projects && data.projects.length > 0) {
+                        displaySavedProjects(data.projects);
+                    } else {
+                        hideSavedProjectsDisplay();
+                    }
+                } else {
+                    // Aucune donnée pour cette semaine, réinitialiser les champs
+                    document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = '');
+                    document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = '');
+                    document.getElementById('kilometrage').value = '';
+                    hideSavedProjectsDisplay();
+                }
+                calculateWeeklyTotal();
+            } catch (error) {
+                console.error('Erreur:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function saveWeeklyData() { 
+            if (!currentWeek) { 
+                showNotification('Sélectionnez une semaine', 'warning'); 
+                return 
+            } 
+            const data = { days: [], kilometrage: document.getElementById('kilometrage').value, lastUpdate: firebase.firestore.FieldValue.serverTimestamp() }; 
+            document.querySelectorAll('#weeklyTable tbody tr').forEach((row, index) => { 
+                const day = row.querySelector('td strong').textContent; 
+                const hours = row.querySelector('.hours').value; 
+                const comments = row.querySelector('textarea').value; 
+                data.days.push({ day: day, hours: hours, comments: comments }) 
+            }); 
+            showLoading(true); 
+            const saveBtn = document.getElementById('saveWeeklyBtn'); 
+            saveBtn.disabled = true; 
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...'; 
+            try { 
+                await db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek).set(data); 
+                showNotification('Données enregistrées!', 'success') 
+            } catch (error) { 
+                console.error('Erreur:', error); 
+                showNotification('Erreur lors de l\'enregistrement', 'error') 
+            } finally { 
+                showLoading(false); 
+                saveBtn.disabled = false; 
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer' 
+            } 
+        } 
+        
+        function resetWeeklyData() { 
+            if (confirm('Effacer toutes les données?')) { 
+                document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = ''); 
+                document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = ''); 
+                document.getElementById('kilometrage').value = ''; 
+                calculateWeeklyTotal(); 
+                showNotification('Données réinitialisées', 'info') 
+            } 
+        } 
+        
+        function addProjectRow() { 
+            const tbody = document.getElementById('projectsTableBody'); 
+            const row = document.createElement('tr'); 
+            row.dataset.rowId = projectRowCounter++; 
+            row.innerHTML = `<td data-label="Date"><input type="date" class="table-input" data-field="date"></td><td data-label="Chantier"><input type="text" class="table-input" data-field="name" placeholder="Nom"></td><td data-label="Nombre d'employés"><input type="number" class="table-input" data-field="employees" min="1" placeholder="1"></td><td data-label="Equipe"><input type="text" class="table-input" data-field="team" placeholder="Equipe"></td><td data-label="Total"><input type="text" class="table-input" data-field="totalHours" placeholder="Temps que tu as passé toi sur le chantier" style="font-weight:700;text-align:center"></td><td style="text-align:center;padding:.2rem"><button class="btn btn-danger" onclick="removeProjectRow(this)" style="padding:.5rem 1rem;font-size:.85rem;min-height:44px"><i class="fas fa-trash"></i> Supprimer</button></td>`; 
+            tbody.appendChild(row); 
+            row.querySelector('[data-field="totalHours"]').addEventListener('input', calculateProjectsTotal);
+        } 
+        
+        function calculateProjectsTotal() { 
+            const rows = document.querySelectorAll('#projectsTableBody tr'); 
+            let grandTotal = 0; 
+            rows.forEach(row => { 
+                const totalText = row.querySelector('[data-field="totalHours"]').value; 
+                if (totalText) { 
+                    const total = parseFloat(totalText.replace('h', '').replace(',', '.').trim()); 
+                    if (!isNaN(total)) { 
+                        grandTotal += total 
+                    } 
+                } 
+            }); 
+            document.getElementById('totalProjectsHours').textContent = grandTotal.toFixed(1) + 'h' 
+        } 
+        
+        function removeProjectRow(button) { 
+            if (confirm('Supprimer ce chantier?')) { 
+                button.closest('tr').remove(); 
+                calculateProjectsTotal(); 
+                showNotification('Chantier supprimé', 'info') 
+            } 
+        } 
+        
+        async function saveProjectsData() { 
+            const newData = []; 
+            const rows = document.querySelectorAll('#projectsTableBody tr'); 
+            rows.forEach(row => { 
+                const projectData = { date: row.querySelector('[data-field="date"]').value, name: row.querySelector('[data-field="name"]').value, employees: row.querySelector('[data-field="employees"]').value, team: row.querySelector('[data-field="team"]').value, totalHours: row.querySelector('[data-field="totalHours"]').value }; 
+                if (projectData.date || projectData.name || projectData.employees) { 
+                    newData.push(projectData) 
+                } 
+            }); 
+            
+            if (newData.length === 0) {
+                showNotification('Aucun chantier à enregistrer', 'warning');
+                return;
+            }
+            
+            // Vérifier qu'une semaine est sélectionnée
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                showNotification('Veuillez sélectionner une semaine', 'warning');
+                return;
+            }
+            
+            showLoading(true); 
+            const saveBtn = document.getElementById('saveProjectsBtn'); 
+            saveBtn.disabled = true; 
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...'; 
+            try { 
+                // Sauvegarder les chantiers dans la semaine en cours
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                const weekDoc = await weekRef.get();
+                
+                let existingProjects = [];
+                if (weekDoc.exists && weekDoc.data().projects) {
+                    existingProjects = weekDoc.data().projects;
+                }
+                
+                // Ajouter les nouveaux chantiers aux existants
+                const allProjects = [...existingProjects, ...newData];
+                
+                // Mettre à jour la semaine avec les chantiers
+                if (weekDoc.exists) {
+                    await weekRef.update({ 
+                        projects: allProjects,
+                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
+                    });
+                } else {
+                    await weekRef.set({ 
+                        projects: allProjects,
+                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
+                    });
+                }
+                
+                showNotification('Chantiers enregistrés pour la semaine ' + selectedWeek + '!', 'success');
+                displaySavedProjects(allProjects);
+                // Vider le tableau de saisie
+                document.getElementById('projectsTableBody').innerHTML = '';
+                addProjectRow();
+                calculateProjectsTotal();
+                // Masquer le formulaire
+                hideProjectForm();
+            } catch (error) { 
+                console.error('Erreur:', error); 
+                showNotification('Erreur lors de l\'enregistrement', 'error') 
+            } finally { 
+                showLoading(false); 
+                saveBtn.disabled = false; 
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer' 
+            } 
+        } 
+        
+        async function loadProjectsData() { 
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                hideSavedProjectsDisplay();
+                return;
+            }
+            
+            showLoading(true); 
+            try { 
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek); 
+                const weekDoc = await weekRef.get(); 
+                if (weekDoc.exists && weekDoc.data().projects) { 
+                    const projects = weekDoc.data().projects;
+                    if (projects.length > 0) { 
+                        displaySavedProjects(projects);
+                    } else { 
+                        hideSavedProjectsDisplay();
+                    } 
+                } else { 
+                    hideSavedProjectsDisplay();
+                } 
+                // Toujours avoir une ligne vide pour saisie
+                document.getElementById('projectsTableBody').innerHTML = '';
+                addProjectRow();
+                calculateProjectsTotal();
+            } catch (error) { 
+                console.error('Erreur:', error); 
+                hideSavedProjectsDisplay();
+                document.getElementById('projectsTableBody').innerHTML = '';
+                addProjectRow();
+            } finally { 
+                showLoading(false) 
+            } 
+        }
+
+        function displaySavedProjects(projectsData) {
+            const display = document.getElementById('savedProjectsDisplay');
+            const tbody = document.getElementById('savedProjectsBody');
+            const totalCell = document.getElementById('savedProjectsTotal');
+            
+            if (!projectsData || projectsData.length === 0) {
+                display.style.display = 'none';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            let total = 0;
+            
+            projectsData.forEach((project, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #e5e7eb';
+                if (index % 2 === 0) row.style.background = '#f8fafc';
+                
+                const date = new Date(project.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+                const totalNum = parseFloat(project.totalHours?.replace('h', '').replace(',', '.')) || 0;
+                total += totalNum;
+                
+                row.innerHTML = `
+                    <td data-label="Date" style="padding: 0.75rem;">${date}</td>
+                    <td data-label="Chantier" style="padding: 0.75rem;"><strong>${project.name || '-'}</strong></td>
+                    <td data-label="Nb employés" style="padding: 0.75rem;">${project.employees || '-'}</td>
+                    <td data-label="Équipe" style="padding: 0.75rem;">${project.team || '-'}</td>
+                    <td data-label="Total" style="padding: 0.75rem;"><strong>${project.totalHours || '0h'}</strong></td>
+                    <td data-label="Actions" style="padding: 0.75rem;">
+                        <button onclick="editProject(${index})" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem; font-size: 0.85rem;">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button>
+                        <button onclick="deleteProject(${index})" style="background: #ef4444; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            totalCell.textContent = total.toFixed(1) + 'h';
+            display.style.display = 'block';
+        }
+
+        function hideSavedProjectsDisplay() {
+            document.getElementById('savedProjectsDisplay').style.display = 'none';
+        }
+
+        function showProjectForm() {
+            document.getElementById('projectFormContainer').style.display = 'block';
+            document.getElementById('showFormBtn').style.display = 'none';
+        }
+
+        function hideProjectForm() {
+            document.getElementById('projectFormContainer').style.display = 'none';
+            document.getElementById('showFormBtn').style.display = 'block';
+        }
+
+        async function editProject(index) {
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                showNotification('Veuillez sélectionner une semaine', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                const weekDoc = await weekRef.get();
+                
+                if (weekDoc.exists && weekDoc.data().projects) {
+                    const projects = weekDoc.data().projects;
+                    const project = projects[index];
+                    
+                    // Afficher le formulaire
+                    showProjectForm();
+                    
+                    // Remplir le formulaire avec les données du chantier
+                    const tbody = document.getElementById('projectsTableBody');
+                    tbody.innerHTML = '';
+                    addProjectRow();
+                    
+                    const row = tbody.querySelector('tr');
+                    row.querySelector('[data-field="date"]').value = project.date || '';
+                    row.querySelector('[data-field="name"]').value = project.name || '';
+                    row.querySelector('[data-field="employees"]').value = project.employees || '';
+                    row.querySelector('[data-field="team"]').value = project.team || '';
+                    row.querySelector('[data-field="totalHours"]').value = project.totalHours || '';
+                    
+                    // Supprimer le chantier de la liste (il sera réenregistré avec les modifs)
+                    projects.splice(index, 1);
+                    await weekRef.update({ projects: projects });
+                    displaySavedProjects(projects);
+                    
+                    calculateProjectsTotal();
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('Erreur lors du chargement', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteProject(index) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce chantier ?')) {
+                return;
+            }
+            
+            const selectedWeek = document.getElementById('weekInput').value;
+            if (!selectedWeek) {
+                showNotification('Veuillez sélectionner une semaine', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                const weekDoc = await weekRef.get();
+                
+                if (weekDoc.exists && weekDoc.data().projects) {
+                    const projects = weekDoc.data().projects;
+                    projects.splice(index, 1);
+                    
+                    await weekRef.update({ projects: projects });
+                    showNotification('Chantier supprimé !', 'success');
+                    displaySavedProjects(projects);
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('Erreur lors de la suppression', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('âœ… Service Worker enregistré', reg))
+                .catch(err => console.error('âŒ Erreur Service Worker', err));
+        }
+    </script>
+</body>
+
+</html>

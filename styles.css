@@ -264,12 +264,12 @@ body {
 /* Dashboard container */
 .dashboard-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     gap: 2rem;
 }
 
 /* Cards avec glassmorphism moderne */
 .card {
+        margin-bottom: 1rem;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-radius: var(--radius);
