@@ -443,7 +443,7 @@
                                     <th><i class="fas fa-user"></i> Employé</th>
                                     <th><i class="fas fa-calendar-week"></i> Semaines</th>
                                     <th><i class="fas fa-clock"></i> Total heures</th>
-                                    <th><i class="fas fa-road"></i> Kilomètres <span title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période" style="cursor: help; opacity: 0.7; font-size: 0.85rem;"></span></th>
+                                    <th><i class="fas fa-road"></i> Kilomètres <span title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période" style="cursor: help; opacity: 0.7; font-size: 0.85rem;">ℹ️</span></th>
                                     <th><i class="fas fa-hard-hat"></i> Chantiers</th>
                                     <th><i class="fas fa-cogs"></i> Actions</th>
                                 </tr>
@@ -2001,6 +2001,63 @@
                         font-size: 0.7rem;
                         padding: 0.4rem 0.6rem;
                     }
+
+                    /* Tables responsive dans la modal */
+                    .modal-responsive-table {
+                        display: block;
+                        overflow-x: auto;
+                    }
+
+                    .modal-responsive-table thead {
+                        display: none;
+                    }
+
+                    .modal-responsive-table tbody {
+                        display: block;
+                    }
+
+                    .modal-responsive-table tr {
+                        display: block;
+                        margin-bottom: 1rem;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 8px;
+                        padding: 0.75rem;
+                        background: white !important;
+                    }
+
+                    .modal-responsive-table td {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 0.5rem 0 !important;
+                        border: none !important;
+                        text-align: right;
+                    }
+
+                    .modal-responsive-table td::before {
+                        content: attr(data-label);
+                        font-weight: 700;
+                        color: #374151;
+                        text-align: left;
+                        margin-right: 1rem;
+                    }
+
+                    .modal-responsive-table tfoot tr {
+                        display: flex;
+                        justify-content: space-between;
+                        background: #dcfce7 !important;
+                        padding: 1rem !important;
+                        border-radius: 8px;
+                        margin-top: 0.5rem;
+                    }
+
+                    .modal-responsive-table tfoot td {
+                        display: inline-block;
+                        padding: 0 !important;
+                    }
+
+                    .modal-responsive-table tfoot td::before {
+                        display: none;
+                    }
                 }
             </style>
 
@@ -2121,7 +2178,7 @@
             </style>
 
             <!-- Section Agenda des travaux  -->
-            <!-- <section class="card">
+            <section class="card">
                 <header class="card-header">
                     <div>
                         <h2 class="card-title">
@@ -2138,7 +2195,10 @@
                             <i class="fas fa-plus"></i>
                             Ajouter un travail
                         </button>
-                      
+                        <!-- <button class="btn btn-agenda" onclick="openGoogleCalendar()">
+                            <i class="fas fa-external-link-alt"></i>
+                            Ouvrir dans Google
+                        </button> -->
                     </div>
                 </header>
 
@@ -2147,7 +2207,7 @@
                         src="https://calendar.google.com/calendar/embed?src=dylan.propre.eco%40gmail.com&ctz=Europe%2FParis"
                         style="border: 0; width: 100%; height: 600px;" frameborder="0" scrolling="no"></iframe>
                 </div>
-            </section>  -->
+            </section>
         </div>
     </div>
 
@@ -3329,12 +3389,12 @@ if (data.images && data.images.length) {
                                     <i class="fas fa-calendar-week"></i> Semaine ${week.replace('W', 'S')}
                                 </div>
                                 <div style="padding: 1rem;">
-                                    <table style="width: 100%; border-collapse: collapse;">
+                                    <table class="modal-responsive-table" style="width: 100%; border-collapse: collapse;">
                                         <thead>
                                             <tr style="background: #f0fdf4;">
                                                 <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Jour</th>
                                                 <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Heures</th>
-                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Détails</th>
+                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Commentaires</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -3348,9 +3408,9 @@ if (data.images && data.images.length) {
                                 const bgColor = index % 2 === 0 ? '#ffffff' : '#f9fafb';
                                 detailsHTML += `
                                     <tr style="background: ${bgColor};">
-                                        <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${day.day}</strong></td>
-                                        <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong style="color: #059669;">${day.hours || '-'}</strong></td>
-                                        <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${day.comments || '-'}</td>
+                                        <td data-label="Jour" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${day.day}</strong></td>
+                                        <td data-label="Heures" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong style="color: #059669;">${day.hours || '-'}</strong></td>
+                                        <td data-label="Commentaires" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${day.comments || '-'}</td>
                                     </tr>
                                 `;
                             });
@@ -3449,7 +3509,7 @@ if (data.images && data.images.length) {
                                 <i class="fas fa-hard-hat"></i> Chantiers spécifiques (${allProjects.length})
                             </div>
                             <div style="padding: 1rem;">
-                                <table style="width: 100%; border-collapse: collapse;">
+                                <table class="modal-responsive-table" style="width: 100%; border-collapse: collapse;">
                                     <thead>
                                         <tr style="background: #f5f3ff;">
                                             <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #7c3aed;">Semaine</th>
@@ -3467,11 +3527,11 @@ if (data.images && data.images.length) {
                         const date = project.date ? new Date(project.date).toLocaleDateString('fr-FR') : '-';
                         detailsHTML += `
                             <tr style="background: ${bgColor};">
-                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.week.replace('W', 'S')}</strong></td>
-                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${date}</td>
-                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.name || '-'}</strong></td>
-                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${project.team || '-'}</td>
-                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong style="color: #7c3aed;">${project.totalHours || '-'}</strong></td>
+                                <td data-label="Semaine" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.week.replace('W', 'S')}</strong></td>
+                                <td data-label="Date" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${date}</td>
+                                <td data-label="Chantier" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.name || '-'}</strong></td>
+                                <td data-label="Équipe" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${project.team || '-'}</td>
+                                <td data-label="Total" style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong style="color: #7c3aed;">${project.totalHours || '-'}</strong></td>
                             </tr>
                         `;
                     });
@@ -3501,7 +3561,7 @@ if (data.images && data.images.length) {
 
         function openEmployeePage(employeeId) {
             const password = prompt('🔒 Mot de passe admin requis pour accéder à la page de l\'employé :');
-            const ADMIN_PASSWORD = '110389'; // À changer selon vos besoins
+            const ADMIN_PASSWORD = '1974'; // À changer selon vos besoins
             
             if (password === ADMIN_PASSWORD) {
                 window.open(`heures.html?employee=${employeeId}`, '_blank');
@@ -3520,13 +3580,12 @@ if (data.images && data.images.length) {
                 select.appendChild(option);
             });
 
-            // Définir les semaines par défaut (4 dernières semaines)
+            // Définir la semaine actuelle par défaut (début et fin identiques)
             const today = new Date();
             const currentWeek = getWeekString(today);
-            const fourWeeksAgo = getWeekString(new Date(today.getTime() - 28 * 24 * 60 * 60 * 1000));
             
+            document.getElementById('filterWeekStart').value = currentWeek;
             document.getElementById('filterWeekEnd').value = currentWeek;
-            document.getElementById('filterWeekStart').value = fourWeeksAgo;
 
             // Charger automatiquement
             loadHeuresData();
@@ -3534,7 +3593,7 @@ if (data.images && data.images.length) {
             // Événements
             document.getElementById('applyHeuresFilters').addEventListener('click', loadHeuresData);
             document.getElementById('clearHeuresFilters').addEventListener('click', () => {
-                document.getElementById('filterWeekStart').value = fourWeeksAgo;
+                document.getElementById('filterWeekStart').value = currentWeek;
                 document.getElementById('filterWeekEnd').value = currentWeek;
                 document.getElementById('filterEmployee').value = '';
                 loadHeuresData();
