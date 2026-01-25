@@ -77,7 +77,6 @@
         <!-- Section Dashboard -->
         <div class="dashboard-container" id="dashboard" style="display: none;     margin-top: 1rem;">
 
-
             <!-- Derniers signalements -->
             <section class="card">
                 <header class="card-header">
@@ -155,6 +154,78 @@
                 </div>
                 <div id="signalementsPaginationControls" style="text-align:center; margin-top:1rem;"></div>
 
+
+            </section>
+
+            <!-- Tableau Consommables -->
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2 class="card-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Fournitures consommables
+                        </h2>
+                        <p class="card-subtitle">
+                            <i class="fas fa-clock"></i>
+                            Suivi des consommables et facturation
+                        </p>
+                    </div>
+                </header>
+
+                <div class="table-container">
+                    <!-- FILTRES POUR CONSOMMABLES -->
+                    <div class="filters-container" id="consommablesFilters">
+                        <div class="filter-group">
+                            <label for="filterConsommableCopro" class="filter-label">
+                                <i class="fas fa-building"></i>
+                                Filtrer par copropriété
+                            </label>
+                            <input type="text" id="filterConsommableCopro" class="filter-input" placeholder="Nom de la copropriété...">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterConsommableDate" class="filter-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Filtrer par date
+                            </label>
+                            <input type="date" id="filterConsommableDate" class="filter-input">
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-buttons">
+                                <button id="clearConsommableFilters" class="filter-btn filter-btn-secondary">
+                                    <i class="fas fa-times"></i> Effacer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                    <th><i class="fas fa-building"></i> Copropriété</th>
+                                    <th><i class="fas fa-lightbulb"></i> Consommable</th>
+                                    <th><i class="fas fa-hashtag"></i> Quantité</th>
+                                    <th><i class="fas fa-user"></i> Employé</th>
+                                    <th><i class="fas fa-images"></i> Photo</th>
+                                    <th><i class="fas fa-file-invoice-dollar"></i> Statut</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="consommablesBody">
+                                <tr>
+                                    <td colspan="8" class="loading">
+                                        <i class="fas fa-spinner"></i>
+                                        Chargement des consommables...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="consommablesPaginationControls" style="text-align:center; margin-top:1rem;"></div>
             </section>
 
 
@@ -197,7 +268,7 @@
 
              
 
-                <!-- FILTRES MAINTENANT Ã€ L'INTÃ‰RIEUR DE LA CARD -->
+                <!-- FILTRES MAINTENANT Ãƒâ‚¬ L'INTÃƒâ€°RIEUR DE LA CARD -->
                 <div class="filters-container">
                     <div class="filter-group">
                         <label for="filterName" class="filter-label">
@@ -294,14 +365,6 @@
                             Filtrer par chantier
                         </label>
                         <input type="text" id="filterChantierNom" class="filter-input" placeholder="Nom du chantier...">
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="filterChantierDescription" class="filter-label">
-                            <i class="fas fa-comment-alt"></i>
-                            Filtrer par description
-                        </label>
-                        <input type="text" id="filterChantierDescription" class="filter-input" placeholder="Description...">
                     </div>
 
                     <div class="filter-group">
@@ -469,7 +532,7 @@
                 const photosChantierPerPage = 10;
 
                 // =============================
-                //  PHOTOS DES CHANTIERS SPÃ‰CIFIQUES
+                //  PHOTOS DES CHANTIERS SPÃƒâ€°CIFIQUES
                 // =============================
                 async function loadPhotosChantierWithPagination() {
                     const tbody = document.getElementById('photosChantierBody');
@@ -617,7 +680,6 @@
 }
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
-                    const descriptionFilter = document.getElementById('filterChantierDescription')?.value.trim().toLowerCase() || '';
                     const agentFilter = document.getElementById('filterChantierAgent')?.value.trim().toLowerCase() || '';
                     const dateFilter = document.getElementById('filterChantierDate')?.value || '';
 
@@ -625,9 +687,6 @@
                         let match = true;
                         if (chantierFilter) {
                             match = match && (item.chantier || '').toLowerCase().includes(chantierFilter);
-                        }
-                        if (descriptionFilter) {
-                            match = match && (item.description || '').toLowerCase().includes(descriptionFilter);
                         }
                         if (agentFilter) {
                             match = match && (item.agent || '').toLowerCase().includes(agentFilter);
@@ -645,24 +704,17 @@
                     renderPhotosChantierPage();
                     setupPhotosChantierPagination();
 
-                    if (chantierFilter || descriptionFilter || agentFilter || dateFilter) {
-                        const filterParts = [];
-                        if (chantierFilter) filterParts.push('Chantier: ' + chantierFilter);
-                        if (descriptionFilter) filterParts.push('Description: ' + descriptionFilter);
-                        if (agentFilter) filterParts.push('Agent: ' + agentFilter);
-                        if (dateFilter) filterParts.push('Date: ' + dateFilter);
-                        showFastNotification(`Filtre appliqué : ${filterParts.join(' | ')}`, 'info', 3000);
+                    if (chantierFilter || agentFilter || dateFilter) {
+                        showFastNotification(`Filtre appliqué : ${chantierFilter ? 'Chantier: ' + chantierFilter : ''} ${agentFilter ? 'Agent: ' + agentFilter : ''} ${dateFilter ? 'Date: ' + dateFilter : ''}`, 'info', 3000);
                     }
                 }
 
                 function clearPhotosChantierFilters() {
                     const filterChantier = document.getElementById('filterChantierNom');
-                    const filterDescription = document.getElementById('filterChantierDescription');
                     const filterAgent = document.getElementById('filterChantierAgent');
                     const filterDate = document.getElementById('filterChantierDate');
 
                     if (filterChantier) filterChantier.value = '';
-                    if (filterDescription) filterDescription.value = '';
                     if (filterAgent) filterAgent.value = '';
                     if (filterDate) filterDate.value = '';
 
@@ -674,7 +726,7 @@
                 }
 
                 // =============================
-                //  TÃ‰LÃ‰CHARGEMENT ET SUPPRESSION DES PHOTOS CHANTIERS
+                //  TÃƒâ€°LÃƒâ€°CHARGEMENT ET SUPPRESSION DES PHOTOS CHANTIERS
                 // =============================
                 async function downloadAllPhotosChantiers() {
                     const downloadBtn = document.getElementById('downloadAllPhotosChantiers');
@@ -692,7 +744,7 @@
                         const photosData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                         if (photosData.length === 0) {
-                            showFastNotification('Aucune photo de chantier Ã  télécharger', 'warning');
+                            showFastNotification('Aucune photo de chantier ÃƒÂ  télécharger', 'warning');
                             return;
                         }
 
@@ -799,7 +851,7 @@
                                     zip.file(filename, blob);
                                     successful++;
 
-                                    console.log(`âœ“ Photo ${successful} ajoutée: ${filename}`);
+                                    console.log(`âÅ“â€œ Photo ${successful} ajoutée: ${filename}`);
 
                                 } catch (imageError) {
                                     const errorMsg = `Photo ${i + 1} du chantier ${chantierName}: ${imageError.message}`;
@@ -807,13 +859,13 @@
                                     errors.push(errorMsg);
                                 }
 
-                                // Mettre Ã  jour l'affichage
+                                // Mettre ÃƒÂ  jour l'affichage
                                 downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${processed}/${totalPhotos}`;
                             }
                         }
 
                         if (successful === 0) {
-                            throw new Error(`Aucune photo n'a pu être téléchargée. Erreurs: ${errors.slice(0, 3).join(', ')}${errors.length > 3 ? '...' : ''}`);
+                            throw new Error(`Aucune photo n'a pu Être téléchargée. Erreurs: ${errors.slice(0, 3).join(', ')}${errors.length > 3 ? '...' : ''}`);
                         }
 
                         downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération ZIP...';
@@ -857,15 +909,15 @@
                         const count = countSnapshot.size;
 
                         if (count === 0) {
-                            showFastNotification('Aucune photo de chantier Ã  supprimer', 'warning');
+                            showFastNotification('Aucune photo de chantier ÃƒÂ  supprimer', 'warning');
                             return;
                         }
 
-                        if (!confirm(`âš ï¸ ATTENTION âš ï¸\n\nVous allez supprimer définitivement ${count} séries de photos de chantiers spécifiques.\n\nCette action supprimera :\nâ€¢ Toutes les images sur ImgBB\nâ€¢ Toutes les données sur Firebase\n\nCette action est IRRÃ‰VERSIBLE !\n\nContinuer ?`)) {
+                        if (!confirm(`âÅ¡Â ïÂ¸Â ATTENTION âÅ¡Â ïÂ¸Â\n\nVous allez supprimer définitivement ${count} séries de photos de chantiers spécifiques.\n\nCette action supprimera :\nââ‚¬Â¢ Toutes les images sur ImgBB\nââ‚¬Â¢ Toutes les données sur Firebase\n\nCette action est IRRÃƒâ€°VERSIBLE !\n\nContinuer ?`)) {
                             return;
                         }
 
-                        if (!confirm(`Dernière confirmation !\n\nÃŠtes-vous absolument certain de vouloir supprimer ${count} séries de photos de chantiers définitivement ?`)) {
+                        if (!confirm(`Dernière confirmation !\n\nÃƒÅ tes-vous absolument certain de vouloir supprimer ${count} séries de photos de chantiers définitivement ?`)) {
                             return;
                         }
 
@@ -943,7 +995,6 @@
                     // Configuration des filtres photos chantiers après un délai
                     setTimeout(() => {
                         const filterChantierInput = document.getElementById('filterChantierNom');
-                        const filterDescriptionInput = document.getElementById('filterChantierDescription');
                         const filterAgentInput = document.getElementById('filterChantierAgent');
                         const filterDateInput = document.getElementById('filterChantierDate');
                         const clearFiltersBtn = document.getElementById('clearChantierFilters');
@@ -952,13 +1003,6 @@
                             filterChantierInput.addEventListener('input', () => {
                                 clearTimeout(window.chantierFilterTimeout);
                                 window.chantierFilterTimeout = setTimeout(applyPhotosChantierFilters, 500);
-                            });
-                        }
-
-                        if (filterDescriptionInput) {
-                            filterDescriptionInput.addEventListener('input', () => {
-                                clearTimeout(window.chantierDescFilterTimeout);
-                                window.chantierDescFilterTimeout = setTimeout(applyPhotosChantierFilters, 500);
                             });
                         }
 
@@ -1006,7 +1050,7 @@
                         document.body.appendChild(modal);
                     }
 
-                    // Mettre Ã  jour le contenu
+                    // Mettre ÃƒÂ  jour le contenu
                     updateGalleryContent(chantier);
 
                     // Afficher le modal
@@ -1071,8 +1115,8 @@
                     return modal;
                 }
 
-                // Fonction améliorée pour mettre Ã  jour l'affichage
-                // Fonction simplifiée pour mettre Ã  jour l'affichage (REMPLACER l'ancienne)
+                // Fonction améliorée pour mettre ÃƒÂ  jour l'affichage
+                // Fonction simplifiée pour mettre ÃƒÂ  jour l'affichage (REMPLACER l'ancienne)
                 function updateMainImage() {
                     const mainImage = document.getElementById('galleryMainImage');
                     const counter = document.getElementById('photoCounter');
@@ -1148,7 +1192,7 @@
                         // Supprimer le document Firebase
                         await db.collection('photos_chantiers').doc(chantierId).delete();
 
-                        // Mettre Ã  jour les données locales
+                        // Mettre ÃƒÂ  jour les données locales
                         allPhotosChantiers = allPhotosChantiers.filter(c => c.id !== chantierId);
                         filteredPhotosChantiers = filteredPhotosChantiers.filter(c => c.id !== chantierId);
 
@@ -1185,7 +1229,7 @@
                         }
 
                         if (!chantier.photos || chantier.photos.length === 0) {
-                            showFastNotification('Aucune photo Ã  télécharger', 'warning');
+                            showFastNotification('Aucune photo ÃƒÂ  télécharger', 'warning');
                             return;
                         }
 
@@ -1254,7 +1298,7 @@
                 }
                 window.downloadSingleChantier = downloadSingleChantier;
 
-                // Mettre Ã  jour le contenu de la galerie
+                // Mettre ÃƒÂ  jour le contenu de la galerie
                 function updateGalleryContent(chantier) {
                     document.getElementById('galleryTitle').textContent = chantier.chantier || 'Chantier';
                     document.getElementById('galleryDescription').textContent = chantier.description || 'Aucune description';
@@ -1262,7 +1306,7 @@
                     updateMainImage();
                 }
 
-                // Mettre Ã  jour l'image principale
+                // Mettre ÃƒÂ  jour l'image principale
                 function updateMainImage() {
                     const mainImage = document.getElementById('galleryMainImage');
                     const counter = document.getElementById('photoCounter');
@@ -2002,6 +2046,55 @@
                         padding: 0.4rem 0.6rem;
                     }
                 }
+
+/* Style pour le statut de facturation */
+.facture-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.facture-badge.facture {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.facture-badge.non-facture {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
+.btn-facture {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.btn-facture:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-facture:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
             </style>
 
             <style>
@@ -2118,10 +2211,59 @@
         font-size: 0.9rem;
     }
 }
+
+/* Style pour le statut de facturation */
+.facture-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.facture-badge.facture {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.facture-badge.non-facture {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
+.btn-facture {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.btn-facture:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-facture:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
             </style>
 
             <!-- Section Agenda des travaux  -->
-            <!-- <section class="card">
+            <section class="card">
                 <header class="card-header">
                     <div>
                         <h2 class="card-title">
@@ -2138,7 +2280,10 @@
                             <i class="fas fa-plus"></i>
                             Ajouter un travail
                         </button>
-                      
+                        <!-- <button class="btn btn-agenda" onclick="openGoogleCalendar()">
+                            <i class="fas fa-external-link-alt"></i>
+                            Ouvrir dans Google
+                        </button> -->
                     </div>
                 </header>
 
@@ -2147,7 +2292,7 @@
                         src="https://calendar.google.com/calendar/embed?src=dylan.propre.eco%40gmail.com&ctz=Europe%2FParis"
                         style="border: 0; width: 100%; height: 600px;" frameborder="0" scrolling="no"></iframe>
                 </div>
-            </section>  -->
+            </section>
         </div>
     </div>
 
@@ -2181,7 +2326,7 @@
         // Clé pour localStorage
         const DASHBOARD_AUTH_KEY = 'propre_eco_dashboard_auth_v1';
 
-        // Ã‰tat d'authentification global
+        // Ãƒâ€°tat d'authentification global
         window.isAuthenticated = false;
 
         // Variables globales pour les données
@@ -2189,6 +2334,12 @@
         let allSignalements = [];
         let filteredFeuilles = [];
         let filteredSignalements = [];
+        
+        // Variables consommables
+        let allConsommables = [];
+        let filteredConsommables = [];
+        let currentConsommablePage = 1;
+        const consommablesPerPage = 10;
 
         // Variables de pagination
         let currentPage = 1;
@@ -2279,7 +2430,9 @@
                     // Charger les données avec pagination
                     loadSignalementsWithPagination();
                     loadFeuillesWithPagination();
-                    loadPhotosChantierWithPagination(); // AJOUTER cette ligne
+                    loadPhotosChantierWithPagination();
+                    loadConsommablesWithPagination();
+
                 }, 700);
             } else {
                 showStatus('Code de sécurité incorrect', 'error');
@@ -2407,7 +2560,7 @@ if (data.images && data.images.length) {
                 // Supprimer le document Firebase
                 await db.collection('signalements').doc(signalementId).delete();
 
-                // Mettre Ã  jour les données locales
+                // Mettre ÃƒÂ  jour les données locales
                 allSignalements = allSignalements.filter(s => s.id !== signalementId);
                 filteredSignalements = filteredSignalements.filter(s => s.id !== signalementId);
 
@@ -2653,7 +2806,7 @@ if (data.images && data.images.length) {
                 document.body.appendChild(modal);
             }
 
-            // Mettre Ã  jour le contenu
+            // Mettre ÃƒÂ  jour le contenu
             updateGalleryContentSignalement(signalement);
 
             // Afficher le modal
@@ -2677,7 +2830,7 @@ if (data.images && data.images.length) {
                 document.body.appendChild(modal);
             }
 
-            // Mettre Ã  jour le contenu
+            // Mettre ÃƒÂ  jour le contenu
             updateGalleryContentFeuille(feuille);
 
             // Afficher le modal
@@ -2685,7 +2838,7 @@ if (data.images && data.images.length) {
             setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        // Mettre Ã  jour le contenu pour les signalements
+        // Mettre ÃƒÂ  jour le contenu pour les signalements
         function updateGalleryContentSignalement(signalement) {
             document.getElementById('galleryTitle').textContent = `Signalement - ${signalement.copro || 'Copropriété'}`;
             document.getElementById('galleryDescription').textContent = signalement.description || 'Aucune description';
@@ -2693,7 +2846,7 @@ if (data.images && data.images.length) {
             updateMainImage();
         }
 
-        // Mettre Ã  jour le contenu pour les feuilles
+        // Mettre ÃƒÂ  jour le contenu pour les feuilles
         function updateGalleryContentFeuille(feuille) {
             document.getElementById('galleryTitle').textContent = `Feuille de passage - ${feuille.copro || 'Copropriété'}`;
             document.getElementById('galleryDescription').textContent = `Agent: ${feuille.agent || 'Non spécifié'}`;
@@ -2799,7 +2952,7 @@ if (data.images && data.images.length) {
         }
 
         // =============================
-        //  NOTIFICATION BADGE (TEMPS RÃ‰EL)
+        //  NOTIFICATION BADGE (TEMPS RÃƒâ€°EL)
         // =============================
         class NotificationService {
             constructor() {
@@ -2909,7 +3062,7 @@ if (data.images && data.images.length) {
         }
 
         // =============================
-        //  ZIP TÃ‰LÃ‰CHARGEMENT & SUPPRESSION
+        //  ZIP TÃƒâ€°LÃƒâ€°CHARGEMENT & SUPPRESSION
         // =============================
         async function downloadAllFeuilles() {
             const downloadBtn = document.getElementById('downloadAllFeuilles');
@@ -2927,7 +3080,7 @@ if (data.images && data.images.length) {
                 const feuilles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 if (feuilles.length === 0) {
-                    showFastNotification('Aucune feuille Ã  télécharger', 'warning');
+                    showFastNotification('Aucune feuille ÃƒÂ  télécharger', 'warning');
                     return;
                 }
 
@@ -2997,15 +3150,15 @@ if (data.images && data.images.length) {
                 const count = countSnapshot.size;
 
                 if (count === 0) {
-                    showFastNotification('Aucune feuille Ã  supprimer', 'warning');
+                    showFastNotification('Aucune feuille ÃƒÂ  supprimer', 'warning');
                     return;
                 }
 
-                if (!confirm(`âš ï¸ ATTENTION âš ï¸\n\nVous allez supprimer définitivement ${count} feuilles de passage.\n\nCette action supprimera :\nâ€¢ Toutes les images sur ImgBB\nâ€¢ Toutes les données sur Firebase\n\nCette action est IRRÃ‰VERSIBLE !\n\nContinuer ?`)) {
+                if (!confirm(`âÅ¡Â ïÂ¸Â ATTENTION âÅ¡Â ïÂ¸Â\n\nVous allez supprimer définitivement ${count} feuilles de passage.\n\nCette action supprimera :\nââ‚¬Â¢ Toutes les images sur ImgBB\nââ‚¬Â¢ Toutes les données sur Firebase\n\nCette action est IRRÃƒâ€°VERSIBLE !\n\nContinuer ?`)) {
                     return;
                 }
 
-                if (!confirm(`Dernière confirmation !\n\nÃŠtes-vous absolument certain de vouloir supprimer ${count} feuilles définitivement ?`)) {
+                if (!confirm(`Dernière confirmation !\n\nÃƒÅ tes-vous absolument certain de vouloir supprimer ${count} feuilles définitivement ?`)) {
                     return;
                 }
 
@@ -3090,8 +3243,8 @@ if (data.images && data.images.length) {
             'remy': 'Rémy'
         };
 
-        async function loadHeuresData() {
-            console.log('🔍 Début loadHeuresData');
+      async function loadHeuresData() {
+            console.log('🔄 Début loadHeuresData');
             const tbody = document.getElementById('heuresBody');
             const weekStart = document.getElementById('filterWeekStart').value;
             const weekEnd = document.getElementById('filterWeekEnd').value;
@@ -3152,12 +3305,15 @@ if (data.images && data.images.length) {
                             
                             const km = parseFloat(data.kilometrage) || 0;
                             
+                            // ✅ CORRECTION : Compter les chantiers spécifiques de cette semaine
+                            const projectsCount = data.projects ? data.projects.length : 0;
+                            
                             return {
                                 week: week,
                                 hours: weekHours,
                                 km: km,
                                 days: data.days || [],
-                                weekData: data // Conserver toutes les données de la semaine (incluant projects)
+                                projectsCount: projectsCount
                             };
                         }
                         return null;
@@ -3178,15 +3334,12 @@ if (data.images && data.images.length) {
                         employeeTotalKm = Math.max(0, lastKm - firstKm); // Éviter les valeurs négatives
                     }
                     
-                    // Calculer les heures et compter les chantiers
+                    // ✅ CORRECTION : Calculer les heures ET les chantiers
                     weekResults.forEach(result => {
                         if (result) {
                             employeeTotalHours += result.hours;
+                            employeeTotalChantiers += result.projectsCount || 0;
                             weekDetails.push(result);
-                            // Compter les chantiers de cette semaine
-                            if (result.weekData && result.weekData.projects) {
-                                employeeTotalChantiers += result.weekData.projects.length;
-                            }
                         }
                     });
 
@@ -3216,7 +3369,7 @@ if (data.images && data.images.length) {
                     }
                 });
 
-                console.log('📈 Données chargées:', employeeData);
+                console.log('📊 Données chargées:', employeeData);
                 console.log('⏰ Total heures global:', totalHoursGlobal);
 
                 // Arrondir le total global
@@ -3259,7 +3412,6 @@ if (data.images && data.images.length) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Erreur lors du chargement</td></tr>';
             }
         }
-
         function getWeeksBetween(weekStart, weekEnd) {
             const weeks = [];
             const [startYear, startWeek] = weekStart.split('-W').map(Number);
@@ -3306,7 +3458,56 @@ if (data.images && data.images.length) {
                     @keyframes spin {
                         to { transform: rotate(360deg); }
                     }
-                </style>
+    
+/* Style pour le statut de facturation */
+.facture-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.facture-badge.facture {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.facture-badge.non-facture {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
+.btn-facture {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.btn-facture:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-facture:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+            </style>
             `;
             
             document.body.insertAdjacentHTML('beforeend', loadingHTML);
@@ -3316,6 +3517,9 @@ if (data.images && data.images.length) {
             let detailsHTML = '';
 
             try {
+                // ✅ CORRECTION : Collecter tous les chantiers de toutes les semaines
+                const allProjects = [];
+                
                 for (const week of weeksToLoad) {
                     const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
                     
@@ -3334,7 +3538,7 @@ if (data.images && data.images.length) {
                                             <tr style="background: #f0fdf4;">
                                                 <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Jour</th>
                                                 <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Heures</th>
-                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Détails</th>
+                                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981;">Commentaires</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -3375,6 +3579,16 @@ if (data.images && data.images.length) {
                                 </div>
                             </div>
                         `;
+                        
+                        // ✅ CORRECTION : Collecter les chantiers de cette semaine
+                        if (data.projects && data.projects.length > 0) {
+                            data.projects.forEach(project => {
+                                allProjects.push({
+                                    ...project,
+                                    week: week
+                                });
+                            });
+                        }
                     }
                 }
 
@@ -3427,21 +3641,7 @@ if (data.images && data.images.length) {
                     `;
                 }
 
-                // Récupérer tous les chantiers de toutes les semaines
-                const allProjects = [];
-                for (const week of weeksToLoad) {
-                    const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
-                    if (weekDoc.exists && weekDoc.data().projects) {
-                        const projects = weekDoc.data().projects;
-                        projects.forEach(project => {
-                            allProjects.push({
-                                ...project,
-                                week: week // Ajouter l'info de la semaine
-                            });
-                        });
-                    }
-                }
-                
+                // ✅ CORRECTION : Afficher les chantiers spécifiques collectés depuis les semaines
                 if (allProjects.length > 0) {
                     detailsHTML += `
                         <div style="margin-top: 2rem; border: 2px solid #7c3aed; border-radius: 12px; overflow: hidden;">
@@ -3467,7 +3667,7 @@ if (data.images && data.images.length) {
                         const date = project.date ? new Date(project.date).toLocaleDateString('fr-FR') : '-';
                         detailsHTML += `
                             <tr style="background: ${bgColor};">
-                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.week.replace('W', 'S')}</strong></td>
+                                <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><span style="background: #7c3aed; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">${project.week.replace('W', 'S')}</span></td>
                                 <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${date}</td>
                                 <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;"><strong>${project.name || '-'}</strong></td>
                                 <td style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb;">${project.team || '-'}</td>
@@ -3498,9 +3698,8 @@ if (data.images && data.images.length) {
                 modalContent.innerHTML = detailsHTML;
             }
         }
-
         function openEmployeePage(employeeId) {
-            const password = prompt('🔒 Mot de passe admin requis pour accéder à la page de l\'employé :');
+            const password = prompt('ðŸ”’ Mot de passe admin requis pour accéder Ã  la page de l\'employé :');
             const ADMIN_PASSWORD = '110389'; // À changer selon vos besoins
             
             if (password === ADMIN_PASSWORD) {
@@ -3510,7 +3709,7 @@ if (data.images && data.images.length) {
             }
         }
 
-        function initHeuresFilters() {
+       function initHeuresFilters() {
             // Remplir le select des employés
             const select = document.getElementById('filterEmployee');
             Object.entries(employeeNames).forEach(([id, name]) => {
@@ -3520,13 +3719,12 @@ if (data.images && data.images.length) {
                 select.appendChild(option);
             });
 
-            // Définir les semaines par défaut (4 dernières semaines)
+            // ✅ CORRECTION : Définir la semaine en cours pour début ET fin
             const today = new Date();
             const currentWeek = getWeekString(today);
-            const fourWeeksAgo = getWeekString(new Date(today.getTime() - 28 * 24 * 60 * 60 * 1000));
             
             document.getElementById('filterWeekEnd').value = currentWeek;
-            document.getElementById('filterWeekStart').value = fourWeeksAgo;
+            document.getElementById('filterWeekStart').value = currentWeek; // ← Changé : semaine en cours au lieu de 4 semaines en arrière
 
             // Charger automatiquement
             loadHeuresData();
@@ -3534,13 +3732,12 @@ if (data.images && data.images.length) {
             // Événements
             document.getElementById('applyHeuresFilters').addEventListener('click', loadHeuresData);
             document.getElementById('clearHeuresFilters').addEventListener('click', () => {
-                document.getElementById('filterWeekStart').value = fourWeeksAgo;
+                document.getElementById('filterWeekStart').value = currentWeek;
                 document.getElementById('filterWeekEnd').value = currentWeek;
                 document.getElementById('filterEmployee').value = '';
                 loadHeuresData();
             });
         }
-
         function getWeekString(date) {
             const year = date.getFullYear();
             const weekNum = getWeekNumber(date);
@@ -3651,11 +3848,170 @@ if (data.images && data.images.length) {
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('âœ… Service Worker enregistré', reg))
-                .catch(err => console.error('âŒ Erreur Service Worker', err));
+                .then(reg => console.log('âÅ“â€¦ Service Worker enregistré', reg))
+                .catch(err => console.error('âÂÅ’ Erreur Service Worker', err));
         }
+
+
+        // =============================
+        //  CONSOMMABLES
+        // =============================
+        async function loadConsommablesWithPagination() {
+            const tbody = document.getElementById('consommablesBody');
+            try {
+                // Charger seulement les 50 derniers pour économiser les lectures
+                const snapshot = await db.collection('consommables').orderBy('createdAt', 'desc').limit(50).get();
+                allConsommables = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                filteredConsommables = [...allConsommables];
+                if (allConsommables.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#6b7280;"><i class="fas fa-inbox"></i> Aucun consommable trouvé</td></tr>`;
+                    document.getElementById("consommablesPaginationControls").innerHTML = '';
+                    return;
+                }
+                currentConsommablePage = 1;
+                renderConsommablesPage();
+                setupConsommablesPagination();
+            } catch (error) {
+                console.error('Erreur chargement consommables:', error);
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Erreur de chargement</td></tr>`;
+            }
+        }
+
+        function renderConsommablesPage() {
+            const tbody = document.getElementById('consommablesBody');
+            tbody.innerHTML = '';
+            const startIndex = (currentConsommablePage - 1) * consommablesPerPage;
+            const pageItems = filteredConsommables.slice(startIndex, startIndex + consommablesPerPage);
+            pageItems.forEach(data => {
+                const date = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'Date inconnue';
+                let imgHTML = '';
+                if (data.images && data.images.length) {
+                    const firstImage = data.images[0];
+                    imgHTML = `<a href="${firstImage.url}" target="_blank" class="thumb" style="display: inline-block;"><img src="${firstImage.url}" class="thumb" alt="Photo consommable" loading="lazy"></a>`;
+                } else {
+                    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune photo</span>';
+                }
+                const factureHTML = data.facture ? `<span class="facture-badge facture"><i class="fas fa-check-circle"></i> Facturé</span>` : `<span class="facture-badge non-facture"><i class="fas fa-clock"></i> À facturer</span>`;
+                const btnFactureHTML = data.facture ? `<button class="btn-facture" disabled title="Déjà facturé"><i class="fas fa-check"></i> Facturé</button>` : `<button class="btn-facture" onclick="marquerFacture('${data.id}')" title="Marquer comme facturé"><i class="fas fa-file-invoice-dollar"></i> Facturer</button>`;
+                tbody.innerHTML += `<tr><td>${date}</td><td><strong>${data.copro || 'Non spécifiée'}</strong></td><td><strong>${data.type || 'Non spécifié'}</strong></td><td><strong>${data.quantite || '0'}</strong></td><td><strong>${data.employee || 'Non spécifié'}</strong></td><td>${imgHTML}</td><td>${factureHTML}</td><td style="display: flex; gap: 0.5rem; align-items: center;">${btnFactureHTML}<button class="btn-delete-single" onclick="deleteSingleConsommable('${data.id}')" title="Supprimer"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+        }
+
+        async function marquerFacture(consommableId) {
+            try {
+                const consommable = allConsommables.find(c => c.id === consommableId);
+                if (!consommable) { showFastNotification('Consommable introuvable', 'error'); return; }
+                if (!confirm(`Marquer "${consommable.type}" (${consommable.copro}) comme facturé ?`)) return;
+                showFastNotification('Mise à jour en cours...', 'info', 2000);
+                await db.collection('consommables').doc(consommableId).update({facture: true});
+                const index = allConsommables.findIndex(c => c.id === consommableId);
+                if (index !== -1) allConsommables[index].facture = true;
+                const filteredIndex = filteredConsommables.findIndex(c => c.id === consommableId);
+                if (filteredIndex !== -1) filteredConsommables[filteredIndex].facture = true;
+                renderConsommablesPage();
+                showFastNotification(`"${consommable.type}" marqué comme facturé`, 'success', 3000);
+            } catch (error) {
+                console.error('Erreur marquage facturation:', error);
+                showFastNotification('Erreur lors du marquage', 'error');
+            }
+        }
+        window.marquerFacture = marquerFacture;
+
+        async function deleteSingleConsommable(consommableId) {
+            try {
+                const consommable = allConsommables.find(c => c.id === consommableId);
+                if (!consommable) { showFastNotification('Consommable introuvable', 'error'); return; }
+                const imageCount = consommable.images ? consommable.images.length : 0;
+                if (!confirm(`Supprimer "${consommable.type}" de ${consommable.copro} avec ${imageCount} photo${imageCount > 1 ? 's' : ''} ?\n\nCette action est irréversible !`)) return;
+                showFastNotification('Suppression en cours...', 'info', 2000);
+                let deletedImages = 0;
+                if (consommable.images && consommable.images.length > 0) {
+                    for (const image of consommable.images) {
+                        if (image.deleteUrl) {
+                            try { const response = await fetch(image.deleteUrl); if (response.ok) deletedImages++; } catch (imgError) { console.error(`Erreur suppression ImgBB ${image.url}:`, imgError); }
+                        }
+                    }
+                }
+                await db.collection('consommables').doc(consommableId).delete();
+                allConsommables = allConsommables.filter(c => c.id !== consommableId);
+                filteredConsommables = filteredConsommables.filter(c => c.id !== consommableId);
+                renderConsommablesPage();
+                setupConsommablesPagination();
+                showFastNotification(`Consommable "${consommable.type}" supprimé avec ${deletedImages} photo${deletedImages > 1 ? 's' : ''}`, 'success', 4000);
+            } catch (error) {
+                console.error('Erreur suppression consommable:', error);
+                showFastNotification('Erreur lors de la suppression du consommable', 'error');
+            }
+        }
+        window.deleteSingleConsommable = deleteSingleConsommable;
+
+        function setupConsommablesPagination() {
+            const container = document.getElementById('consommablesPaginationControls');
+            if (!container) return;
+            container.innerHTML = '';
+            const totalPages = Math.ceil(filteredConsommables.length / consommablesPerPage);
+            if (totalPages <= 1) return;
+            container.style.cssText = `display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1rem;`;
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.className = 'pagination-arrow';
+            prevBtn.disabled = currentConsommablePage === 1;
+            prevBtn.addEventListener('click', () => { if (currentConsommablePage > 1) { currentConsommablePage--; renderConsommablesPage(); setupConsommablesPagination(); } });
+            container.appendChild(prevBtn);
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentConsommablePage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage + 1 < maxVisible) startPage = Math.max(1, endPage - maxVisible + 1);
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentConsommablePage ? 'pagination-number active' : 'pagination-number';
+                btn.addEventListener('click', () => { currentConsommablePage = i; renderConsommablesPage(); setupConsommablesPagination(); });
+                container.appendChild(btn);
+            }
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.className = 'pagination-arrow';
+            nextBtn.disabled = currentConsommablePage === totalPages;
+            nextBtn.addEventListener('click', () => { if (currentConsommablePage < totalPages) { currentConsommablePage++; renderConsommablesPage(); setupConsommablesPagination(); } });
+            container.appendChild(nextBtn);
+        }
+
+        function applyConsommablesFilters() {
+            const coproFilter = document.getElementById('filterConsommableCopro')?.value.trim().toLowerCase() || '';
+            const dateFilter = document.getElementById('filterConsommableDate')?.value || '';
+            filteredConsommables = allConsommables.filter(item => {
+                let match = true;
+                if (coproFilter) match = match && (item.copro || '').toLowerCase().includes(coproFilter);
+                if (dateFilter) { if (!item.createdAt) return false; const itemDate = item.createdAt.toDate ? item.createdAt.toDate() : new Date(item.createdAt); const filterDate = new Date(dateFilter); match = match && (itemDate.toDateString() === filterDate.toDateString()); }
+                return match;
+            });
+            currentConsommablePage = 1;
+            renderConsommablesPage();
+            setupConsommablesPagination();
+            if (coproFilter || dateFilter) showFastNotification(`Filtre appliqué : ${coproFilter ? 'Copro: ' + coproFilter : ''} ${dateFilter ? 'Date: ' + dateFilter : ''}`, 'info', 3000);
+        }
+
+        function clearConsommablesFilters() {
+            const filterCopro = document.getElementById('filterConsommableCopro');
+            const filterDate = document.getElementById('filterConsommableDate');
+            if (filterCopro) filterCopro.value = '';
+            if (filterDate) filterDate.value = '';
+            filteredConsommables = [...allConsommables];
+            currentConsommablePage = 1;
+            renderConsommablesPage();
+            setupConsommablesPagination();
+            showFastNotification('Filtres effacés', 'info', 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                const filterCoproInput = document.getElementById('filterConsommableCopro');
+                const filterDateInput = document.getElementById('filterConsommableDate');
+                const clearFiltersBtn = document.getElementById('clearConsommableFilters');
+                if (filterCoproInput) filterCoproInput.addEventListener('input', () => { clearTimeout(window.consommableFilterTimeout); window.consommableFilterTimeout = setTimeout(applyConsommablesFilters, 500); });
+                if (filterDateInput) filterDateInput.addEventListener('change', applyConsommablesFilters);
+                if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearConsommablesFilters);
+            }, 500);
+        });
     </script>
-
-</body>
-
-</html>

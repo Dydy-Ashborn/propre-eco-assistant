@@ -807,6 +807,18 @@
 
             <div class="card-content">
                 <form id="report-form" class="form">
+                    <!-- Type de signalement -->
+                    <div class="form-group">
+                        <label for="type-signalement" class="form-label">
+                            <i class="fas fa-clipboard-list"></i>
+                            Type de signalement
+                        </label>
+                        <select id="type-signalement" class="form-input" required>
+                            <option value="probleme">Problème</option>
+                            <option value="consommable">Consommable</option>
+                        </select>
+                    </div>
+
                     <!-- Copropriété -->
                     <div class="form-group">
                         <label for="copro-input" class="form-label">
@@ -817,20 +829,44 @@
                             required />
                     </div>
 
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label for="desc-input" class="form-label">
-                            <i class="fas fa-comment-alt"></i>
-                            Description du problème
-                        </label>
+                    <!-- Champs PROBLEME (visibles par défaut) -->
+                    <div id="probleme-fields">
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="desc-input" class="form-label">
+                                <i class="fas fa-comment-alt"></i>
+                                Description du problème
+                            </label>
 
-                        <div class="alert">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>Merci de renseigner le numéro de batiment si la copropriété en comporte
-                                plusieurs.</span>
+                            <div class="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Merci de renseigner le numéro de batiment si la copropriété en comporte
+                                    plusieurs.</span>
+                            </div>
+                            <textarea id="desc-input" class="form-input form-textarea"
+                                placeholder="Décrivez le problème rencontré en détail..." required></textarea>
                         </div>
-                        <textarea id="desc-input" class="form-input form-textarea"
-                            placeholder="Décrivez le problème rencontré en détail..." required></textarea>
+                    </div>
+
+                    <!-- Champs CONSOMMABLE (cachés par défaut) -->
+                    <div id="consommable-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="consommable-type" class="form-label">
+                                <i class="fas fa-lightbulb"></i>
+                                Type de consommable
+                            </label>
+                            <input type="text" id="consommable-type" class="form-input" 
+                                placeholder="Ex: Ampoule LED, Pile AAA, Produit d'entretien..." />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="consommable-quantite" class="form-label">
+                                <i class="fas fa-hashtag"></i>
+                                Quantité
+                            </label>
+                            <input type="number" id="consommable-quantite" class="form-input" 
+                                placeholder="Nombre" min="1" value="1" />
+                        </div>
                     </div>
 
                     <!-- Employé -->
@@ -871,9 +907,9 @@
         </div>
     </div>
 
-    <footer class="app-footer">
-        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
-    </footer>
+     <footer class="app-footer">
+    Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+  </footer>
 
     <script type="module">
 
@@ -1075,7 +1111,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
         imagesInput.addEventListener('change', async function (e) {
             const files = Array.from(e.target.files);
 
-            // Limiter à 3 images
+            // Limiter Ã  3 images
             if (files.length > 3) {
                 showStatus('Vous ne pouvez sélectionner que 3 images maximum', 'error');
                 return;
@@ -1140,7 +1176,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                             <i class="fas fa-chart-line"></i>
                             <span>
                                 <strong>Compression totale :</strong> 
-                                ${(totalOriginal / 1024).toFixed(1)} KB → ${(totalCompressed / 1024).toFixed(1)} KB 
+                                ${(totalOriginal / 1024).toFixed(1)} KB â†’ ${(totalCompressed / 1024).toFixed(1)} KB 
                                 (-${totalRatio}%)
                             </span>
                         `;
@@ -1162,7 +1198,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                 imagePreview.innerHTML = '';
             }
 
-            // Mettre à jour l'input file
+            // Mettre Ã  jour l'input file
             const dt = new DataTransfer();
             selectedFiles.forEach(file => dt.items.add(file));
             imagesInput.files = dt.files;
@@ -1191,23 +1227,64 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
             }
         }
 
+        // Gestion du changement de type de signalement
+        const typeSignalement = document.getElementById('type-signalement');
+        const problemeFields = document.getElementById('probleme-fields');
+        const consommableFields = document.getElementById('consommable-fields');
+        const descInput = document.getElementById('desc-input');
+        const consommableType = document.getElementById('consommable-type');
+        const consommableQuantite = document.getElementById('consommable-quantite');
+
+        typeSignalement.addEventListener('change', function() {
+            if (this.value === 'consommable') {
+                // Afficher champs consommables
+                problemeFields.style.display = 'none';
+                consommableFields.style.display = 'block';
+                
+                // Rendre les champs requis/non-requis
+                descInput.removeAttribute('required');
+                consommableType.setAttribute('required', 'required');
+                consommableQuantite.setAttribute('required', 'required');
+            } else {
+                // Afficher champs problème
+                problemeFields.style.display = 'block';
+                consommableFields.style.display = 'none';
+                
+                // Rendre les champs requis/non-requis
+                descInput.setAttribute('required', 'required');
+                consommableType.removeAttribute('required');
+                consommableQuantite.removeAttribute('required');
+            }
+        });
+
         // Soumission du formulaire
         // Soumission du formulaire
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const copro = document.getElementById('copro-input').value.trim();
-            const description = document.getElementById('desc-input').value.trim();
             const employee = document.getElementById('signature-input').value.trim();
+            const typeSignal = document.getElementById('type-signalement').value;
 
             // Sauvegarder la signature si ce n'est pas déjà fait
             if (employee) {
                 localStorage.setItem('agent-signature', employee);
             }
 
-            if (!copro || !description || !employee) {
-                showStatus('Veuillez remplir tous les champs obligatoires', 'error');
-                return;
+            // Validation selon le type
+            if (typeSignal === 'probleme') {
+                const description = document.getElementById('desc-input').value.trim();
+                if (!copro || !description || !employee) {
+                    showStatus('Veuillez remplir tous les champs obligatoires', 'error');
+                    return;
+                }
+            } else if (typeSignal === 'consommable') {
+                const consomType = document.getElementById('consommable-type').value.trim();
+                const consomQuantite = document.getElementById('consommable-quantite').value.trim();
+                if (!copro || !consomType || !consomQuantite || !employee) {
+                    showStatus('Veuillez remplir tous les champs obligatoires', 'error');
+                    return;
+                }
             }
 
             showStatus("Envoi du signalement en cours...", "loading");
@@ -1233,36 +1310,74 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
 
                 showStatus("Enregistrement du signalement...", "loading");
 
-                // Enregistrer dans Firebase
-                await addDoc(collection(db, "signalements"), {
-                    copro,
-                    description,
-                    employee,
-                    images, // tableau [{url, deleteUrl}]
-                    createdAt: new Date()
-                });
+                // Enregistrer selon le type
+                if (typeSignal === 'probleme') {
+                    const description = document.getElementById('desc-input').value.trim();
+                    
+                    // Enregistrer dans Firebase
+                    await addDoc(collection(db, "signalements"), {
+                        copro,
+                        description,
+                        employee,
+                        images,
+                        createdAt: new Date()
+                    });
 
-                // Envoi notification ntfy
-                let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
+                    // Envoi notification ntfy
+                    let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
 
-                if (notif == false) {
-                    // Ajouter l'URL de la première image si disponible
-                    if (images.length > 0 && images[0].url) {
-                        message += `\n📸 ${images[0].url}`;
+                    if (notif == false) {
+                        if (images.length > 0 && images[0].url) {
+                            message += `\n📸 ${images[0].url}`;
+                        }
+
+                        try {
+                            await fetch("https://ntfy.sh/signalement-propre-eco", {
+                                method: "POST",
+                                body: message
+                            });
+                        } catch (ntfyError) {
+                            console.error("Erreur notification ntfy:", ntfyError);
+                        }
                     }
 
-                    try {
-                        await fetch("https://ntfy.sh/signalement-propre-eco", {
-                            method: "POST",
-                            body: message
-                        });
-                    } catch (ntfyError) {
-                        console.error("Erreur notification ntfy:", ntfyError);
+                } else if (typeSignal === 'consommable') {
+                    const consomType = document.getElementById('consommable-type').value.trim();
+                    const consomQuantite = parseInt(document.getElementById('consommable-quantite').value);
+                    
+                    // Enregistrer dans Firebase
+                    await addDoc(collection(db, "consommables"), {
+                        copro,
+                        type: consomType,
+                        quantite: consomQuantite,
+                        employee,
+                        images,
+                        facture: false,
+                        createdAt: new Date()
+                    });
+
+                    // Envoi notification ntfy
+                    let message = `📦 Consommable utilisé par ${employee} sur ${copro}\n${consomType} (x${consomQuantite})`;
+
+                    if (notif == false) {
+                        if (images.length > 0 && images[0].url) {
+                            message += `\n📸 ${images[0].url}`;
+                        }
+
+                        try {
+                            await fetch("https://ntfy.sh/signalement-propre-eco", {
+                                method: "POST",
+                                body: message
+                            });
+                        } catch (ntfyError) {
+                            console.error("Erreur notification ntfy:", ntfyError);
+                        }
                     }
                 }
 
                 showStatus("✅ Signalement envoyé avec succès !", "success");
 
+                // Réinitialiser le formulaire
                 // Réinitialiser le formulaire
                 form.reset();
                 selectedFiles = [];
@@ -1274,9 +1389,17 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                     signatureInput.value = savedSignature;
                 }
 
+                // Remettre sur "problème" par défaut
+                typeSignalement.value = 'probleme';
+                problemeFields.style.display = 'block';
+                consommableFields.style.display = 'none';
+                descInput.setAttribute('required', 'required');
+                consommableType.removeAttribute('required');
+                consommableQuantite.removeAttribute('required');
+
             } catch (err) {
                 console.error("Erreur:", err);
-                showStatus(`❌ Erreur lors de l'envoi : ${err.message}`, "error");
+                showStatus(`âŒ Erreur lors de l'envoi : ${err.message}`, "error");
             }
         });
 
@@ -1303,8 +1426,8 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
     <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
+      .then(reg => console.log('âœ… Service Worker enregistré', reg))
+      .catch(err => console.error('âŒ Erreur Service Worker', err));
   }
 </script>
 

@@ -915,10 +915,9 @@
         </div>
 
         <div class="section-card">
-            <div class="section-header">
-                <div class="section-icon"><i class="fas fa-calendar-week"></i></div>
-                <h2 class="section-title">Heures de la semaine</h2>
-                <p>Pensez a cliquer sur Enregistrer ! </p>
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                <strong style="color: #92400e;">Pensez à cliquer sur Enregistrer !</strong>
             </div>
             <div class="week-selector"><label for="weekInput" style="font-weight:600"><i class="fas fa-calendar"></i>
                     Semaine :</label><input type="week" id="weekInput" class="week-input"></div>
@@ -928,7 +927,7 @@
                         <tr>
                             <th>Jour</th>
                             <th>Heures</th>
-                            <th>Détails</th>
+                            <th>Commentaires</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -936,41 +935,41 @@
                             <td><strong>Lun</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Mar</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Mer</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Jeu</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Ven</strong></td>
                             <td><input type="number" class="table-input hours" min="0" max="24" step="0.25"
                                     placeholder="0"></td>
-                            <td><textarea class="table-input" placeholder="Copropriétés..."></textarea></td>
+                            <td><textarea class="table-input" placeholder="Commentaires..."></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Sam</strong></td>
                             <td><input type="text" class="table-input hours" placeholder="0 = Repos"></td>
-                            <td><textarea class="table-input" placeholder="CP = Congés payés / AT = Arrêt de Travail"></textarea></td>
+                            <td><textarea class="table-input" placeholder="CP = Congés payés "></textarea></td>
                         </tr>
                         <tr>
                             <td><strong>Dim</strong></td>
                             <td><input type="text" class="table-input hours" placeholder="0 = Repos"></td>
-                            <td><textarea class="table-input" placeholder="CP = Congés payés / AT = Arrêt de Travail""></textarea></td>
+                            <td><textarea class="table-input" placeholder="CP = Congés payés "></textarea></td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -1068,8 +1067,9 @@
             </div>
         </div>
     </div>
-    <footer class="app-footer">Developed with <span style="color:#ff6b6b">â¤ï¸</span> by Ashborn</footer>
-    <script>
+  <footer class="app-footer">
+    Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+  </footer>    <script>
         // Menu toggle
         document.addEventListener('DOMContentLoaded', function () {
             const toggleButton = document.querySelector('.nav-toggle');
@@ -1094,9 +1094,9 @@
         try { 
             firebase.initializeApp(firebaseConfig); 
             db = firebase.firestore(); 
-            console.log('âœ… Firestore initialisé') 
+            console.log('✅ Firestore initialisé') 
         } catch (error) { 
-            console.error('âŒ Erreur:', error); 
+            console.error('❌ Erreur:', error); 
             showNotification('Erreur de connexion', 'error') 
         } 
         
@@ -1338,6 +1338,7 @@
             }
         }
         
+        // ✅ CORRECTION 1 : Ajouter { merge: true } pour ne pas écraser les chantiers
         async function saveWeeklyData() { 
             if (!currentWeek) { 
                 showNotification('Sélectionnez une semaine', 'warning'); 
@@ -1355,7 +1356,8 @@
             saveBtn.disabled = true; 
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...'; 
             try { 
-                await db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek).set(data); 
+                // ✅ CORRECTION : Utiliser merge: true pour ne pas écraser les chantiers spécifiques
+                await db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek).set(data, { merge: true }); 
                 showNotification('Données enregistrées!', 'success') 
             } catch (error) { 
                 console.error('Erreur:', error); 
@@ -1381,7 +1383,7 @@
             const tbody = document.getElementById('projectsTableBody'); 
             const row = document.createElement('tr'); 
             row.dataset.rowId = projectRowCounter++; 
-            row.innerHTML = `<td data-label="Date"><input type="date" class="table-input" data-field="date"></td><td data-label="Chantier"><input type="text" class="table-input" data-field="name" placeholder="Nom"></td><td data-label="Nombre d'employés"><input type="number" class="table-input" data-field="employees" min="1" placeholder="1"></td><td data-label="Equipe"><input type="text" class="table-input" data-field="team" placeholder="Equipe"></td><td data-label="Total"><input type="text" class="table-input" data-field="totalHours" placeholder="Temps que tu as passé toi sur le chantier" style="font-weight:700;text-align:center"></td><td style="text-align:center;padding:.2rem"><button class="btn btn-danger" onclick="removeProjectRow(this)" style="padding:.5rem 1rem;font-size:.85rem;min-height:44px"><i class="fas fa-trash"></i> Supprimer</button></td>`; 
+            row.innerHTML = `<td data-label="Date"><input type="date" class="table-input" data-field="date"></td><td data-label="Chantier"><input type="text" class="table-input" data-field="name" placeholder="Nom"></td><td data-label="Nombre d'employés"><input type="number" class="table-input" data-field="employees" min="1" placeholder="1"></td><td data-label="Equipe"><input type="text" class="table-input" data-field="team" placeholder="Equipe"></td><td data-label="Total"><input type="text" class="table-input" data-field="totalHours" placeholder="Total" style="font-weight:700;text-align:center"></td><td style="text-align:center;padding:.2rem"><button class="btn btn-danger" onclick="removeProjectRow(this)" style="padding:.5rem 1rem;font-size:.85rem;min-height:44px"><i class="fas fa-trash"></i> Supprimer</button></td>`; 
             tbody.appendChild(row); 
             row.querySelector('[data-field="totalHours"]').addEventListener('input', calculateProjectsTotal);
         } 
@@ -1394,11 +1396,18 @@
                 if (totalText) { 
                     const total = parseFloat(totalText.replace('h', '').replace(',', '.').trim()); 
                     if (!isNaN(total)) { 
-                        grandTotal += total 
+                        // Arrondir chaque valeur à 2 décimales pour éviter les erreurs de précision
+                        grandTotal += Math.round(total * 100) / 100;
                     } 
                 } 
             }); 
-            document.getElementById('totalProjectsHours').textContent = grandTotal.toFixed(1) + 'h' 
+            // Arrondir le total final
+            const roundedTotal = Math.round(grandTotal * 100) / 100;
+            // Affichage intelligent
+            const displayTotal = roundedTotal % 1 === 0 ? roundedTotal.toFixed(0) : 
+                                 (roundedTotal * 4) % 1 === 0 ? roundedTotal.toFixed(2) : 
+                                 roundedTotal.toFixed(1);
+            document.getElementById('totalProjectsHours').textContent = displayTotal + 'h';
         } 
         
         function removeProjectRow(button) { 
@@ -1409,12 +1418,20 @@
             } 
         } 
         
+        // ✅ CORRECTION 2 : Améliorer la validation et utiliser merge: true
         async function saveProjectsData() { 
             const newData = []; 
             const rows = document.querySelectorAll('#projectsTableBody tr'); 
             rows.forEach(row => { 
-                const projectData = { date: row.querySelector('[data-field="date"]').value, name: row.querySelector('[data-field="name"]').value, employees: row.querySelector('[data-field="employees"]').value, team: row.querySelector('[data-field="team"]').value, totalHours: row.querySelector('[data-field="totalHours"]').value }; 
-                if (projectData.date || projectData.name || projectData.employees) { 
+                const projectData = { 
+                    date: row.querySelector('[data-field="date"]').value, 
+                    name: row.querySelector('[data-field="name"]').value.trim(), 
+                    employees: row.querySelector('[data-field="employees"]').value.trim(), 
+                    team: row.querySelector('[data-field="team"]').value.trim(), 
+                    totalHours: row.querySelector('[data-field="totalHours"]').value.trim() 
+                }; 
+                // ✅ CORRECTION : Vérifier que le nom n'est pas vide
+                if (projectData.name && projectData.name !== '') { 
                     newData.push(projectData) 
                 } 
             }); 
@@ -1445,21 +1462,22 @@
                     existingProjects = weekDoc.data().projects;
                 }
                 
-                // Ajouter les nouveaux chantiers aux existants
-                const allProjects = [...existingProjects, ...newData];
-                
-                // Mettre à jour la semaine avec les chantiers
-                if (weekDoc.exists) {
-                    await weekRef.update({ 
-                        projects: allProjects,
-                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
-                    });
+                // Si on est en mode édition, remplacer le chantier à l'index stocké
+                let allProjects;
+                if (typeof window.editingProjectIndex !== 'undefined') {
+                    existingProjects[window.editingProjectIndex] = newData[0];
+                    delete window.editingProjectIndex;
+                    allProjects = existingProjects;
                 } else {
-                    await weekRef.set({ 
-                        projects: allProjects,
-                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
-                    });
+                    // Sinon, ajouter les nouveaux chantiers aux existants
+                    allProjects = [...existingProjects, ...newData];
                 }
+                
+                // ✅ CORRECTION : Toujours utiliser merge: true
+                await weekRef.set({ 
+                    projects: allProjects,
+                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
+                }, { merge: true });
                 
                 showNotification('Chantiers enregistrés pour la semaine ' + selectedWeek + '!', 'success');
                 displaySavedProjects(allProjects);
@@ -1572,6 +1590,7 @@
             document.getElementById('showFormBtn').style.display = 'block';
         }
 
+        // ✅ CORRECTION 3 : Ne pas supprimer immédiatement le chantier lors de l'édition
         async function editProject(index) {
             const selectedWeek = document.getElementById('weekInput').value;
             if (!selectedWeek) {
@@ -1588,6 +1607,9 @@
                     const projects = weekDoc.data().projects;
                     const project = projects[index];
                     
+                    // ✅ CORRECTION : Stocker l'index pour la sauvegarde ultérieure au lieu de supprimer
+                    window.editingProjectIndex = index;
+                    
                     // Afficher le formulaire
                     showProjectForm();
                     
@@ -1602,11 +1624,6 @@
                     row.querySelector('[data-field="employees"]').value = project.employees || '';
                     row.querySelector('[data-field="team"]').value = project.team || '';
                     row.querySelector('[data-field="totalHours"]').value = project.totalHours || '';
-                    
-                    // Supprimer le chantier de la liste (il sera réenregistré avec les modifs)
-                    projects.splice(index, 1);
-                    await weekRef.update({ projects: projects });
-                    displaySavedProjects(projects);
                     
                     calculateProjectsTotal();
                 }
@@ -1638,7 +1655,8 @@
                     const projects = weekDoc.data().projects;
                     projects.splice(index, 1);
                     
-                    await weekRef.update({ projects: projects });
+                    // ✅ Utiliser merge: true également ici
+                    await weekRef.set({ projects: projects }, { merge: true });
                     showNotification('Chantier supprimé !', 'success');
                     displaySavedProjects(projects);
                 }
@@ -1653,8 +1671,8 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('âœ… Service Worker enregistré', reg))
-                .catch(err => console.error('âŒ Erreur Service Worker', err));
+                .then(reg => console.log('✅ Service Worker enregistré', reg))
+                .catch(err => console.error('❌ Erreur Service Worker', err));
         }
     </script>
 </body>
