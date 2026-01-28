@@ -180,7 +180,8 @@
                                 <i class="fas fa-building"></i>
                                 Filtrer par copropriété
                             </label>
-                            <input type="text" id="filterConsommableCopro" class="filter-input" placeholder="Nom de la copropriété...">
+                            <input type="text" id="filterConsommableCopro" class="filter-input"
+                                placeholder="Nom de la copropriété...">
                         </div>
 
                         <div class="filter-group">
@@ -266,7 +267,7 @@
                     </div>
                 </header>
 
-             
+
 
                 <!-- FILTRES MAINTENANT Ãƒâ‚¬ L'INTÃƒâ€°RIEUR DE LA CARD -->
                 <div class="filters-container">
@@ -354,7 +355,7 @@
                             Tout supprimer
                         </button>
                     </div>
-                 
+
                 </header>
 
                 <!-- Filtres pour photos chantiers -->
@@ -477,7 +478,8 @@
                 </div>
 
                 <!-- Statistiques globales -->
-                <div class="stats-container" id="heuresStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px;">
+                <div class="stats-container" id="heuresStats"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px;">
                     <div style="text-align: center;">
                         <div style="font-size: 2rem; font-weight: 700; color: #059669;">
                             <i class="fas fa-clock"></i> <span id="totalHours">0</span>h
@@ -506,7 +508,9 @@
                                     <th><i class="fas fa-user"></i> Employé</th>
                                     <th><i class="fas fa-calendar-week"></i> Semaines</th>
                                     <th><i class="fas fa-clock"></i> Total heures</th>
-                                    <th><i class="fas fa-road"></i> Kilomètres <span title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période" style="cursor: help; opacity: 0.7; font-size: 0.85rem;"></span></th>
+                                    <th><i class="fas fa-road"></i> Kilomètres <span
+                                            title="KM parcourus = différence entre le kilométrage du premier et dernier lundi de la période"
+                                            style="cursor: help; opacity: 0.7; font-size: 0.85rem;"></span></th>
                                     <th><i class="fas fa-hard-hat"></i> Chantiers</th>
                                     <th><i class="fas fa-cogs"></i> Actions</th>
                                 </tr>
@@ -613,15 +617,15 @@
                     });
                 }
                 function setupPhotosChantierPagination() {
-    const container = document.getElementById('photosChantierPaginationControls');
-    if (!container) return;
+                    const container = document.getElementById('photosChantierPaginationControls');
+                    if (!container) return;
 
-    container.innerHTML = '';
+                    container.innerHTML = '';
 
-    const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
-    if (totalPages <= 1) return;
+                    const totalPages = Math.ceil(filteredPhotosChantiers.length / photosChantierPerPage);
+                    if (totalPages <= 1) return;
 
-    container.style.cssText = `
+                    container.style.cssText = `
         display: flex;
         align-items: center;
         justify-content: center;
@@ -629,55 +633,55 @@
         margin-top: 1rem;
     `;
 
-    // Bouton précédent
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'pagination-arrow';
-    prevBtn.disabled = currentPhotosChantierPage === 1;
-    prevBtn.addEventListener('click', () => {
-        if (currentPhotosChantierPage > 1) {
-            currentPhotosChantierPage--;
-            renderPhotosChantierPage();
-            setupPhotosChantierPagination();
-        }
-    });
-    container.appendChild(prevBtn);
+                    // Bouton précédent
+                    const prevBtn = document.createElement('button');
+                    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    prevBtn.className = 'pagination-arrow';
+                    prevBtn.disabled = currentPhotosChantierPage === 1;
+                    prevBtn.addEventListener('click', () => {
+                        if (currentPhotosChantierPage > 1) {
+                            currentPhotosChantierPage--;
+                            renderPhotosChantierPage();
+                            setupPhotosChantierPagination();
+                        }
+                    });
+                    container.appendChild(prevBtn);
 
-    // Afficher 5 pages maximum
-    const maxVisible = 5;
-    let startPage = Math.max(1, currentPhotosChantierPage - Math.floor(maxVisible / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                    // Afficher 5 pages maximum
+                    const maxVisible = 5;
+                    let startPage = Math.max(1, currentPhotosChantierPage - Math.floor(maxVisible / 2));
+                    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
-    if (endPage - startPage + 1 < maxVisible) {
-        startPage = Math.max(1, endPage - maxVisible + 1);
-    }
+                    if (endPage - startPage + 1 < maxVisible) {
+                        startPage = Math.max(1, endPage - maxVisible + 1);
+                    }
 
-    for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = i === currentPhotosChantierPage ? 'pagination-number active' : 'pagination-number';
-        btn.addEventListener('click', () => {
-            currentPhotosChantierPage = i;
-            renderPhotosChantierPage();
-            setupPhotosChantierPagination();
-        });
-        container.appendChild(btn);
-    }
+                    for (let i = startPage; i <= endPage; i++) {
+                        const btn = document.createElement('button');
+                        btn.textContent = i;
+                        btn.className = i === currentPhotosChantierPage ? 'pagination-number active' : 'pagination-number';
+                        btn.addEventListener('click', () => {
+                            currentPhotosChantierPage = i;
+                            renderPhotosChantierPage();
+                            setupPhotosChantierPagination();
+                        });
+                        container.appendChild(btn);
+                    }
 
-    // Bouton suivant
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'pagination-arrow';
-    nextBtn.disabled = currentPhotosChantierPage === totalPages;
-    nextBtn.addEventListener('click', () => {
-        if (currentPhotosChantierPage < totalPages) {
-            currentPhotosChantierPage++;
-            renderPhotosChantierPage();
-            setupPhotosChantierPagination();
-        }
-    });
-    container.appendChild(nextBtn);
-}
+                    // Bouton suivant
+                    const nextBtn = document.createElement('button');
+                    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    nextBtn.className = 'pagination-arrow';
+                    nextBtn.disabled = currentPhotosChantierPage === totalPages;
+                    nextBtn.addEventListener('click', () => {
+                        if (currentPhotosChantierPage < totalPages) {
+                            currentPhotosChantierPage++;
+                            renderPhotosChantierPage();
+                            setupPhotosChantierPagination();
+                        }
+                    });
+                    container.appendChild(nextBtn);
+                }
                 function applyPhotosChantierFilters() {
                     const chantierFilter = document.getElementById('filterChantierNom')?.value.trim().toLowerCase() || '';
                     const agentFilter = document.getElementById('filterChantierAgent')?.value.trim().toLowerCase() || '';
@@ -2047,54 +2051,54 @@
                     }
                 }
 
-/* Style pour le statut de facturation */
-.facture-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
+                /* Style pour le statut de facturation */
+                .facture-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                }
 
-.facture-badge.facture {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    color: #065f46;
-    border: 1px solid #10b981;
-}
+                .facture-badge.facture {
+                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                    color: #065f46;
+                    border: 1px solid #10b981;
+                }
 
-.facture-badge.non-facture {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    color: #92400e;
-    border: 1px solid #f59e0b;
-}
+                .facture-badge.non-facture {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                    color: #92400e;
+                    border: 1px solid #f59e0b;
+                }
 
-.btn-facture {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
+                .btn-facture {
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 0.5rem 1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                }
 
-.btn-facture:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
+                .btn-facture:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                }
 
-.btn-facture:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
+                .btn-facture:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    transform: none;
+                }
             </style>
 
             <style>
@@ -2144,155 +2148,128 @@
                         height: 50px;
                     }
                 }
+
                 /* Nouvelle pagination avec flèches */
-.pagination-arrow {
-    background: white;
-    border: 2px solid #e5e7eb;
-    color: #6b7280;
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-}
+                .pagination-arrow {
+                    background: white;
+                    border: 2px solid #e5e7eb;
+                    color: #6b7280;
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    font-size: 1rem;
+                }
 
-.pagination-arrow:hover:not(:disabled) {
-    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
-    color: white;
-    border-color: #4aaf70;
-    transform: scale(1.05);
-}
+                .pagination-arrow:hover:not(:disabled) {
+                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+                    color: white;
+                    border-color: #4aaf70;
+                    transform: scale(1.05);
+                }
 
-.pagination-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
+                .pagination-arrow:disabled {
+                    opacity: 0.3;
+                    cursor: not-allowed;
+                }
 
-.pagination-number {
-    background: white;
-    border: 2px solid #e5e7eb;
-    color: #374151;
-    min-width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 0 0.75rem;
-}
+                .pagination-number {
+                    background: white;
+                    border: 2px solid #e5e7eb;
+                    color: #374151;
+                    min-width: 48px;
+                    height: 48px;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    font-weight: 600;
+                    font-size: 1rem;
+                    padding: 0 0.75rem;
+                }
 
-.pagination-number:hover {
-    background: #f3f4f6;
-    border-color: #4aaf70;
-    transform: translateY(-2px);
-}
+                .pagination-number:hover {
+                    background: #f3f4f6;
+                    border-color: #4aaf70;
+                    transform: translateY(-2px);
+                }
 
-.pagination-number.active {
-    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
-    color: white;
-    border-color: #4aaf70;
-    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.3);
-}
+                .pagination-number.active {
+                    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+                    color: white;
+                    border-color: #4aaf70;
+                    box-shadow: 0 4px 12px rgba(74, 175, 112, 0.3);
+                }
 
-/* Responsive pagination */
-@media (max-width: 768px) {
-    .pagination-arrow,
-    .pagination-number {
-        min-width: 40px;
-        height: 40px;
-        font-size: 0.9rem;
-    }
-}
+                /* Responsive pagination */
+                @media (max-width: 768px) {
 
-/* Style pour le statut de facturation */
-.facture-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
+                    .pagination-arrow,
+                    .pagination-number {
+                        min-width: 40px;
+                        height: 40px;
+                        font-size: 0.9rem;
+                    }
+                }
 
-.facture-badge.facture {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    color: #065f46;
-    border: 1px solid #10b981;
-}
+                /* Style pour le statut de facturation */
+                .facture-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                }
 
-.facture-badge.non-facture {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    color: #92400e;
-    border: 1px solid #f59e0b;
-}
+                .facture-badge.facture {
+                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                    color: #065f46;
+                    border: 1px solid #10b981;
+                }
 
-.btn-facture {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
+                .facture-badge.non-facture {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                    color: #92400e;
+                    border: 1px solid #f59e0b;
+                }
 
-.btn-facture:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
+                .btn-facture {
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 0.5rem 1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                }
 
-.btn-facture:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
+                .btn-facture:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                }
+
+                .btn-facture:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    transform: none;
+                }
             </style>
 
             <!-- Section Agenda des travaux  -->
-            <section class="card">
-                <header class="card-header">
-                    <div>
-                        <h2 class="card-title">
-                            <i class="fas fa-calendar-alt"></i>
-                            Agenda des travaux
-                        </h2>
-                        <p class="card-subtitle">
-                            <i class="fas fa-tasks"></i>
-                            Planification des prochains travaux
-                        </p>
-                    </div>
-                    <div class="card-buttons" style="margin: auto;">
-                        <button class="btn btn-primary" onclick="addGoogleEvent()" style="margin-bottom:1rem">
-                            <i class="fas fa-plus"></i>
-                            Ajouter un travail
-                        </button>
-                        <!-- <button class="btn btn-agenda" onclick="openGoogleCalendar()">
-                            <i class="fas fa-external-link-alt"></i>
-                            Ouvrir dans Google
-                        </button> -->
-                    </div>
-                </header>
-
-                <div class="google-calendar-container">
-                    <iframe
-                        src="https://calendar.google.com/calendar/embed?src=dylan.propre.eco%40gmail.com&ctz=Europe%2FParis"
-                        style="border: 0; width: 100%; height: 600px;" frameborder="0" scrolling="no"></iframe>
-                </div>
-            </section>
+            
         </div>
     </div>
 
@@ -2334,7 +2311,7 @@
         let allSignalements = [];
         let filteredFeuilles = [];
         let filteredSignalements = [];
-        
+
         // Variables consommables
         let allConsommables = [];
         let filteredConsommables = [];
@@ -2431,7 +2408,6 @@
                     loadSignalementsWithPagination();
                     loadFeuillesWithPagination();
                     loadPhotosChantierWithPagination();
-                    loadConsommablesWithPagination();
 
                 }, 700);
             } else {
@@ -2486,19 +2462,19 @@
 
             pageItems.forEach(data => {
                 let imgHTML = '';
-if (data.images && data.images.length) {
-    // Afficher seulement la première photo avec bulle si plus d'une
-    const firstImage = data.images[0];
-    imgHTML = `<img src="${firstImage.url}" class="thumb" alt="Image signalement" 
+                if (data.images && data.images.length) {
+                    // Afficher seulement la première photo avec bulle si plus d'une
+                    const firstImage = data.images[0];
+                    imgHTML = `<img src="${firstImage.url}" class="thumb" alt="Image signalement" 
                  onclick="openSignalementGallery('${data.id}', 0)" loading="lazy">`;
 
-    // Ajouter une bulle avec le nombre si plus d'une photo
-    if (data.images.length > 1) {
-        imgHTML += `<span class="photo-count">+${data.images.length - 1}</span>`;
-    }
-} else {
-    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
-}
+                    // Ajouter une bulle avec le nombre si plus d'une photo
+                    if (data.images.length > 1) {
+                        imgHTML += `<span class="photo-count">+${data.images.length - 1}</span>`;
+                    }
+                } else {
+                    imgHTML = '<span style="color: #6b7280; font-style: italic;">Aucune image</span>';
+                }
 
                 const date = data.createdAt && data.createdAt.toDate ?
                     data.createdAt.toDate().toLocaleString('fr-FR', {
@@ -2579,16 +2555,16 @@ if (data.images && data.images.length) {
         // Rendre la fonction globale
         window.deleteSingleSignalement = deleteSingleSignalement;
         function setupSignalementsPagination() {
-    const container = document.getElementById('signalementsPaginationControls');
-    if (!container) return;
+            const container = document.getElementById('signalementsPaginationControls');
+            if (!container) return;
 
-    container.innerHTML = '';
+            container.innerHTML = '';
 
-    const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
-    if (totalPages <= 1) return;
+            const totalPages = Math.ceil(filteredSignalements.length / signalementsPerPage);
+            if (totalPages <= 1) return;
 
-    // Style du conteneur
-    container.style.cssText = `
+            // Style du conteneur
+            container.style.cssText = `
         display: flex;
         align-items: center;
         justify-content: center;
@@ -2596,55 +2572,55 @@ if (data.images && data.images.length) {
         margin-top: 1rem;
     `;
 
-    // Bouton précédent
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'pagination-arrow';
-    prevBtn.disabled = currentSignalementPage === 1;
-    prevBtn.addEventListener('click', () => {
-        if (currentSignalementPage > 1) {
-            currentSignalementPage--;
-            renderSignalementsPage();
-            setupSignalementsPagination();
+            // Bouton précédent
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.className = 'pagination-arrow';
+            prevBtn.disabled = currentSignalementPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentSignalementPage > 1) {
+                    currentSignalementPage--;
+                    renderSignalementsPage();
+                    setupSignalementsPagination();
+                }
+            });
+            container.appendChild(prevBtn);
+
+            // Afficher 5 pages maximum
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentSignalementPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage + 1 < maxVisible) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentSignalementPage ? 'pagination-number active' : 'pagination-number';
+                btn.addEventListener('click', () => {
+                    currentSignalementPage = i;
+                    renderSignalementsPage();
+                    setupSignalementsPagination();
+                });
+                container.appendChild(btn);
+            }
+
+            // Bouton suivant
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.className = 'pagination-arrow';
+            nextBtn.disabled = currentSignalementPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentSignalementPage < totalPages) {
+                    currentSignalementPage++;
+                    renderSignalementsPage();
+                    setupSignalementsPagination();
+                }
+            });
+            container.appendChild(nextBtn);
         }
-    });
-    container.appendChild(prevBtn);
-
-    // Afficher 5 pages maximum
-    const maxVisible = 5;
-    let startPage = Math.max(1, currentSignalementPage - Math.floor(maxVisible / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-
-    if (endPage - startPage + 1 < maxVisible) {
-        startPage = Math.max(1, endPage - maxVisible + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = i === currentSignalementPage ? 'pagination-number active' : 'pagination-number';
-        btn.addEventListener('click', () => {
-            currentSignalementPage = i;
-            renderSignalementsPage();
-            setupSignalementsPagination();
-        });
-        container.appendChild(btn);
-    }
-
-    // Bouton suivant
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'pagination-arrow';
-    nextBtn.disabled = currentSignalementPage === totalPages;
-    nextBtn.addEventListener('click', () => {
-        if (currentSignalementPage < totalPages) {
-            currentSignalementPage++;
-            renderSignalementsPage();
-            setupSignalementsPagination();
-        }
-    });
-    container.appendChild(nextBtn);
-}
         function applySignalementsFilters() {
             const coproFilter = document.getElementById('filterCopro')?.value.trim().toLowerCase() || '';
             const dateFilter = document.getElementById('filterSignalDate')?.value || '';
@@ -2859,15 +2835,15 @@ if (data.images && data.images.length) {
         window.openSignalementGallery = openSignalementGallery;
         window.openFeuilleGallery = openFeuilleGallery;
         function setupPaginationControls() {
-    const existing = document.getElementById("paginationControls");
-    if (existing) existing.remove();
+            const existing = document.getElementById("paginationControls");
+            if (existing) existing.remove();
 
-    const totalPages = Math.ceil(filteredFeuilles.length / itemsPerPage);
-    if (totalPages <= 1) return;
+            const totalPages = Math.ceil(filteredFeuilles.length / itemsPerPage);
+            if (totalPages <= 1) return;
 
-    const container = document.createElement("div");
-    container.id = "paginationControls";
-    container.style.cssText = `
+            const container = document.createElement("div");
+            container.id = "paginationControls";
+            container.style.cssText = `
         display: flex;
         align-items: center;
         justify-content: center;
@@ -2875,60 +2851,60 @@ if (data.images && data.images.length) {
         margin-top: 1rem;
     `;
 
-    // Bouton précédent
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.className = 'pagination-arrow';
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderFeuillesPage();
-            setupPaginationControls();
+            // Bouton précédent
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.className = 'pagination-arrow';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderFeuillesPage();
+                    setupPaginationControls();
+                }
+            });
+            container.appendChild(prevBtn);
+
+            // Afficher 5 pages maximum
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage + 1 < maxVisible) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentPage ? 'pagination-number active' : 'pagination-number';
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderFeuillesPage();
+                    setupPaginationControls();
+                });
+                container.appendChild(btn);
+            }
+
+            // Bouton suivant
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.className = 'pagination-arrow';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderFeuillesPage();
+                    setupPaginationControls();
+                }
+            });
+            container.appendChild(nextBtn);
+
+            const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
+            if (tableContainer) {
+                tableContainer.after(container);
+            }
         }
-    });
-    container.appendChild(prevBtn);
-
-    // Afficher 5 pages maximum
-    const maxVisible = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-
-    if (endPage - startPage + 1 < maxVisible) {
-        startPage = Math.max(1, endPage - maxVisible + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = i === currentPage ? 'pagination-number active' : 'pagination-number';
-        btn.addEventListener('click', () => {
-            currentPage = i;
-            renderFeuillesPage();
-            setupPaginationControls();
-        });
-        container.appendChild(btn);
-    }
-
-    // Bouton suivant
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.className = 'pagination-arrow';
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderFeuillesPage();
-            setupPaginationControls();
-        }
-    });
-    container.appendChild(nextBtn);
-
-    const tableContainer = document.querySelector("#feuillesBody")?.closest(".table-container");
-    if (tableContainer) {
-        tableContainer.after(container);
-    }
-}
         function applyFeuillesFilters() {
             const nameFilter = document.getElementById('filterName')?.value.trim() || '';
             const dateFilter = document.getElementById('filterDate')?.value || '';
@@ -3243,7 +3219,7 @@ if (data.images && data.images.length) {
             'remy': 'Rémy'
         };
 
-      async function loadHeuresData() {
+        async function loadHeuresData() {
             console.log('🔄 Début loadHeuresData');
             const tbody = document.getElementById('heuresBody');
             const weekStart = document.getElementById('filterWeekStart').value;
@@ -3268,11 +3244,11 @@ if (data.images && data.images.length) {
                 console.log('👥 Employés à charger:', employeeIds);
                 const weeksToLoad = getWeeksBetween(weekStart, weekEnd);
                 console.log('📆 Semaines à charger:', weeksToLoad);
-                
+
                 let totalHoursGlobal = 0;
                 let totalKmGlobal = 0;
                 let totalChantiersGlobal = 0;
-                
+
                 const employeeData = [];
 
                 // Charger tous les employés en parallèle pour optimiser
@@ -3286,12 +3262,12 @@ if (data.images && data.images.length) {
                     // Charger toutes les semaines en parallèle
                     const weekPromises = weeksToLoad.map(async (week) => {
                         const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
-                        
+
                         if (weekDoc.exists) {
                             console.log(`  ✅ Données trouvées pour ${employeeId} - ${week}`);
                             const data = weekDoc.data();
                             let weekHours = 0;
-                            
+
                             if (data.days) {
                                 data.days.forEach(day => {
                                     const hours = parseFloat(day.hours) || 0;
@@ -3299,15 +3275,15 @@ if (data.images && data.images.length) {
                                     weekHours += Math.round(hours * 100) / 100;
                                 });
                             }
-                            
+
                             // Arrondir le total de la semaine
                             weekHours = Math.round(weekHours * 100) / 100;
-                            
+
                             const km = parseFloat(data.kilometrage) || 0;
-                            
+
                             // ✅ CORRECTION : Compter les chantiers spécifiques de cette semaine
                             const projectsCount = data.projects ? data.projects.length : 0;
-                            
+
                             return {
                                 week: week,
                                 hours: weekHours,
@@ -3324,7 +3300,7 @@ if (data.images && data.images.length) {
 
                     // Traiter les résultats
                     const validWeeks = weekResults.filter(r => r && r.km > 0);
-                    
+
                     // Calculer les KM : différence entre le plus ancien et le plus récent
                     if (validWeeks.length > 0) {
                         // Trier par semaine pour avoir le bon ordre
@@ -3333,7 +3309,7 @@ if (data.images && data.images.length) {
                         const lastKm = validWeeks[validWeeks.length - 1].km;
                         employeeTotalKm = Math.max(0, lastKm - firstKm); // Éviter les valeurs négatives
                     }
-                    
+
                     // ✅ CORRECTION : Calculer les heures ET les chantiers
                     weekResults.forEach(result => {
                         if (result) {
@@ -3358,7 +3334,7 @@ if (data.images && data.images.length) {
 
                 // Attendre tous les employés
                 const results = await Promise.all(employeePromises);
-                
+
                 // Filtrer les résultats null et calculer les totaux
                 results.forEach(result => {
                     if (result) {
@@ -3376,9 +3352,9 @@ if (data.images && data.images.length) {
                 totalHoursGlobal = Math.round(totalHoursGlobal * 100) / 100;
 
                 // Mettre à jour les statistiques globales avec formatage adapté
-                const displayHours = totalHoursGlobal % 1 === 0 ? totalHoursGlobal.toFixed(0) : 
-                                    (totalHoursGlobal * 4) % 1 === 0 ? totalHoursGlobal.toFixed(2) : 
-                                    totalHoursGlobal.toFixed(1);
+                const displayHours = totalHoursGlobal % 1 === 0 ? totalHoursGlobal.toFixed(0) :
+                    (totalHoursGlobal * 4) % 1 === 0 ? totalHoursGlobal.toFixed(2) :
+                        totalHoursGlobal.toFixed(1);
                 document.getElementById('totalHours').textContent = displayHours;
                 document.getElementById('totalKm').textContent = totalKmGlobal;
                 document.getElementById('totalChantiers').textContent = totalChantiersGlobal;
@@ -3416,23 +3392,23 @@ if (data.images && data.images.length) {
             const weeks = [];
             const [startYear, startWeek] = weekStart.split('-W').map(Number);
             const [endYear, endWeek] = weekEnd.split('-W').map(Number);
-            
+
             for (let year = startYear; year <= endYear; year++) {
                 const startW = (year === startYear) ? startWeek : 1;
                 const endW = (year === endYear) ? endWeek : 52;
-                
+
                 for (let week = startW; week <= endW; week++) {
                     weeks.push(`${year}-W${week.toString().padStart(2, '0')}`);
                 }
             }
-            
+
             return weeks;
         }
 
         async function viewEmployeeDetails(employeeId, weekStart, weekEnd) {
             const weeksToLoad = getWeeksBetween(weekStart, weekEnd);
             const employeeName = employeeNames[employeeId];
-            
+
             // Afficher d'abord la modal avec le spinner
             const loadingHTML = `
                 <div id="detailsModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;" onclick="this.remove()">
@@ -3509,24 +3485,24 @@ if (data.images && data.images.length) {
 }
             </style>
             `;
-            
+
             document.body.insertAdjacentHTML('beforeend', loadingHTML);
             const modal = document.getElementById('detailsModal');
             const modalContent = document.getElementById('modalContent');
-            
+
             let detailsHTML = '';
 
             try {
                 // ✅ CORRECTION : Collecter tous les chantiers de toutes les semaines
                 const allProjects = [];
-                
+
                 for (const week of weeksToLoad) {
                     const weekDoc = await db.collection('employees').doc(employeeId).collection('weeks').doc(week).get();
-                    
+
                     if (weekDoc.exists) {
                         const data = weekDoc.data();
                         let weekTotal = 0;
-                        
+
                         detailsHTML += `
                             <div style="margin-bottom: 2rem; border: 2px solid #10b981; border-radius: 12px; overflow: hidden;">
                                 <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; font-weight: 600;">
@@ -3543,7 +3519,7 @@ if (data.images && data.images.length) {
                                         </thead>
                                         <tbody>
                         `;
-                        
+
                         if (data.days) {
                             data.days.forEach((day, index) => {
                                 const hours = parseFloat(day.hours) || 0;
@@ -3559,13 +3535,13 @@ if (data.images && data.images.length) {
                                 `;
                             });
                         }
-                        
+
                         // Arrondir le total final
                         weekTotal = Math.round(weekTotal * 100) / 100;
-                        const displayWeekTotal = weekTotal % 1 === 0 ? weekTotal.toFixed(0) : 
-                                                (weekTotal * 4) % 1 === 0 ? weekTotal.toFixed(2) : 
-                                                weekTotal.toFixed(1);
-                        
+                        const displayWeekTotal = weekTotal % 1 === 0 ? weekTotal.toFixed(0) :
+                            (weekTotal * 4) % 1 === 0 ? weekTotal.toFixed(2) :
+                                weekTotal.toFixed(1);
+
                         detailsHTML += `
                                         </tbody>
                                         <tfoot>
@@ -3579,7 +3555,7 @@ if (data.images && data.images.length) {
                                 </div>
                             </div>
                         `;
-                        
+
                         // ✅ CORRECTION : Collecter les chantiers de cette semaine
                         if (data.projects && data.projects.length > 0) {
                             data.projects.forEach(project => {
@@ -3594,11 +3570,11 @@ if (data.images && data.images.length) {
 
                 // Calculer et afficher le récapitulatif des KM
                 const weekDocuments = await Promise.all(
-                    weeksToLoad.map(week => 
+                    weeksToLoad.map(week =>
                         db.collection('employees').doc(employeeId).collection('weeks').doc(week).get()
                     )
                 );
-                
+
                 const kmData = weekDocuments
                     .filter(doc => doc.exists && doc.data().kilometrage)
                     .map((doc, index) => ({
@@ -3612,7 +3588,7 @@ if (data.images && data.images.length) {
                     const firstKm = kmData[0];
                     const lastKm = kmData[kmData.length - 1];
                     const totalKmPeriod = Math.max(0, lastKm.km - firstKm.km);
-                    
+
                     detailsHTML += `
                         <div style="margin-top: 2rem; border: 2px solid #0284c7; border-radius: 12px; overflow: hidden;">
                             <div style="background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 1rem; font-weight: 600;">
@@ -3661,7 +3637,7 @@ if (data.images && data.images.length) {
                                     </thead>
                                     <tbody>
                     `;
-                    
+
                     allProjects.forEach((project, index) => {
                         const bgColor = index % 2 === 0 ? '#ffffff' : '#f9fafb';
                         const date = project.date ? new Date(project.date).toLocaleDateString('fr-FR') : '-';
@@ -3675,7 +3651,7 @@ if (data.images && data.images.length) {
                             </tr>
                         `;
                     });
-                    
+
                     detailsHTML += `
                                     </tbody>
                                 </table>
@@ -3701,7 +3677,7 @@ if (data.images && data.images.length) {
         function openEmployeePage(employeeId) {
             const password = prompt('ðŸ”’ Mot de passe admin requis pour accéder Ã  la page de l\'employé :');
             const ADMIN_PASSWORD = '110389'; // À changer selon vos besoins
-            
+
             if (password === ADMIN_PASSWORD) {
                 window.open(`heures.html?employee=${employeeId}`, '_blank');
             } else if (password !== null) {
@@ -3709,7 +3685,7 @@ if (data.images && data.images.length) {
             }
         }
 
-       function initHeuresFilters() {
+        function initHeuresFilters() {
             // Remplir le select des employés
             const select = document.getElementById('filterEmployee');
             Object.entries(employeeNames).forEach(([id, name]) => {
@@ -3722,7 +3698,7 @@ if (data.images && data.images.length) {
             // ✅ CORRECTION : Définir la semaine en cours pour début ET fin
             const today = new Date();
             const currentWeek = getWeekString(today);
-            
+
             document.getElementById('filterWeekEnd').value = currentWeek;
             document.getElementById('filterWeekStart').value = currentWeek; // ← Changé : semaine en cours au lieu de 4 semaines en arrière
 
@@ -3771,6 +3747,7 @@ if (data.images && data.images.length) {
                 loadSignalementsWithPagination();
                 loadFeuillesWithPagination();
                 loadPhotosChantierWithPagination();
+                loadConsommablesWithPagination();
                 initHeuresFilters();
             }
         }
@@ -3883,7 +3860,7 @@ if (data.images && data.images.length) {
             const startIndex = (currentConsommablePage - 1) * consommablesPerPage;
             const pageItems = filteredConsommables.slice(startIndex, startIndex + consommablesPerPage);
             pageItems.forEach(data => {
-                const date = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'Date inconnue';
+                const date = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Date inconnue';
                 let imgHTML = '';
                 if (data.images && data.images.length) {
                     const firstImage = data.images[0];
@@ -3893,7 +3870,7 @@ if (data.images && data.images.length) {
                 }
                 const factureHTML = data.facture ? `<span class="facture-badge facture"><i class="fas fa-check-circle"></i> Facturé</span>` : `<span class="facture-badge non-facture"><i class="fas fa-clock"></i> À facturer</span>`;
                 const btnFactureHTML = data.facture ? `<button class="btn-facture" disabled title="Déjà facturé"><i class="fas fa-check"></i> Facturé</button>` : `<button class="btn-facture" onclick="marquerFacture('${data.id}')" title="Marquer comme facturé"><i class="fas fa-file-invoice-dollar"></i> Facturer</button>`;
-                tbody.innerHTML += `<tr><td>${date}</td><td><strong>${data.copro || 'Non spécifiée'}</strong></td><td><strong>${data.type || 'Non spécifié'}</strong></td><td><strong>${data.quantite || '0'}</strong></td><td><strong>${data.employee || 'Non spécifié'}</strong></td><td>${imgHTML}</td><td>${factureHTML}</td><td style="display: flex; gap: 0.5rem; align-items: center;">${btnFactureHTML}<button class="btn-delete-single" onclick="deleteSingleConsommable('${data.id}')" title="Supprimer"><i class="fas fa-trash"></i></button></td></tr>`;
+                tbody.innerHTML += `<tr><td>${date}</td><td><strong>${data.copro || 'Non spécifiée'}</strong></td><td>${data.type || 'Non spécifié'}</td><td><strong>${data.quantite || '0'}</strong></td><td><strong>${data.employee || 'Non spécifié'}</strong></td><td>${imgHTML}</td><td>${factureHTML}</td><td style="display: flex; gap: 0.5rem; align-items: center;">${btnFactureHTML}<button class="btn-delete-single" onclick="deleteSingleConsommable('${data.id}')" title="Supprimer"><i class="fas fa-trash"></i></button></td></tr>`;
             });
         }
 
@@ -3903,7 +3880,7 @@ if (data.images && data.images.length) {
                 if (!consommable) { showFastNotification('Consommable introuvable', 'error'); return; }
                 if (!confirm(`Marquer "${consommable.type}" (${consommable.copro}) comme facturé ?`)) return;
                 showFastNotification('Mise à jour en cours...', 'info', 2000);
-                await db.collection('consommables').doc(consommableId).update({facture: true});
+                await db.collection('consommables').doc(consommableId).update({ facture: true });
                 const index = allConsommables.findIndex(c => c.id === consommableId);
                 if (index !== -1) allConsommables[index].facture = true;
                 const filteredIndex = filteredConsommables.findIndex(c => c.id === consommableId);
