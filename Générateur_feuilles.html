@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Générateur de Dates avec Récurrence</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="img/logo.png" />
     <link rel="apple-touch-icon" href="img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +20,7 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -363,6 +364,10 @@
 
         /* STYLES D'IMPRESSION OPTIMISÉS */
         @media print {
+            .schedule-info[data-empty="true"] {
+                display: none !important;
+            }
+
             * {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -549,6 +554,28 @@
                 page-break-inside: avoid;
                 page-break-after: auto;
             }
+
+            .print-header {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                border-bottom: 3px solid #6b0094;
+                background: white;
+                margin-bottom: 15px;
+                page-break-inside: avoid;
+                position: running(header);
+                /* Pour répéter l'en-tête */
+            }
+
+            @page {
+                margin: 1cm;
+                size: A4;
+
+                @top-center {
+                    content: element(header);
+                }
+            }
         }
 
         @media (max-width: 768px) {
@@ -716,13 +743,13 @@
                     </div>
                     <div class="control-group">
                         <label for="taskFrequency1">⏰ Fréquence :</label>
-                       <select id="taskFrequency1">
-    <option value="">Aucune récurrence</option>
-    <option value="first">Premier passage de chaque mois</option>
-    <option value="last">Dernier passage de chaque mois</option>
-    <option value="every2">1 passage sur 2</option>
-    <option value="weekly3times">3 fois par semaine</option>
-</select>
+                        <select id="taskFrequency1">
+                            <option value="">Aucune récurrence</option>
+                            <option value="first">Premier passage de chaque mois</option>
+                            <option value="last">Dernier passage de chaque mois</option>
+                            <option value="every2">1 passage sur 2</option>
+                            <option value="weekly3times">3 fois par semaine</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -736,13 +763,13 @@
                     </div>
                     <div class="control-group">
                         <label for="taskFrequency2">⏰ Fréquence :</label>
-                       <select id="taskFrequency2">
-    <option value="">Aucune récurrence</option>
-    <option value="first">Premier passage de chaque mois</option>
-    <option value="last">Dernier passage de chaque mois</option>
-    <option value="every2">1 passage sur 2</option>
-    <option value="weekly3times">3 fois par semaine</option>
-</select>
+                        <select id="taskFrequency2">
+                            <option value="">Aucune récurrence</option>
+                            <option value="first">Premier passage de chaque mois</option>
+                            <option value="last">Dernier passage de chaque mois</option>
+                            <option value="every2">1 passage sur 2</option>
+                            <option value="weekly3times">3 fois par semaine</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -757,8 +784,7 @@
         </div>
 
 
-
-        <div class="schedule-info">
+        <div class="schedule-info" id="scheduleInfo">
             <div class="editable-info" onclick="editInfoCell(this, 'info1')"><strong></strong></div>
             <div class="editable-info" onclick="editInfoCell(this, 'info2')"><strong></strong></div>
         </div>
@@ -776,8 +802,8 @@
     <script>
         let generatedData = [];
         let scheduleInfo = {
-            info1: 'Mardi Vendredi : 2*/Semaine du 15/12 au 15/04 et du 01/07 au 31/08',
-            info2: 'MARDI : 1*/Semaine HORS SAISON'
+            info1: '',
+            info2: ''
         };
 
         // Gestion de l'affichage des champs selon le type de récurrence
@@ -829,7 +855,15 @@
                 if (newValue) {
                     cell.innerHTML = `<strong>${newValue}</strong>`;
                 } else {
-                    cell.innerHTML = '<strong>Cliquez pour ajouter du texte...</strong>';
+                    cell.innerHTML = '<strong></strong>';
+                }
+
+                // Afficher/masquer le carré jaune à l'impression seulement
+                const scheduleInfoDiv = document.getElementById('scheduleInfo');
+                if (scheduleInfo.info1 || scheduleInfo.info2) {
+                    scheduleInfoDiv.removeAttribute('data-empty');
+                } else {
+                    scheduleInfoDiv.setAttribute('data-empty', 'true');
                 }
             }
 
@@ -842,7 +876,6 @@
                 }
             });
         }
-
         function isFirstDayOfMonth(date) {
             return date.getDate() === 1;
         }
@@ -1012,48 +1045,48 @@
             // Déterminer premiers/derniers passages
             const { firstPassages, lastPassages } = findFirstLastPassages(dates);
 
-           // Construire données avec 2 blocs de tâches
-for (let i = 0; i < dates.length; i++) {
-    let taches = [];
+            // Construire données avec 2 blocs de tâches
+            for (let i = 0; i < dates.length; i++) {
+                let taches = [];
 
-    // Bloc 1
-    if (taskName1 && taskFrequency1) {
-        if (taskFrequency1 === 'first' && firstPassages.has(i)) {
-            taches.push(taskName1);
-        }
-        if (taskFrequency1 === 'last' && lastPassages.has(i)) {
-            taches.push(taskName1);
-        }
-        if (taskFrequency1 === 'every2' && i % 2 === 0) {
-            taches.push(taskName1);
-        }
-        if (taskFrequency1 === 'weekly3times' && i % 7 < 3) {
-            taches.push(taskName1);
-        }
-    }
+                // Bloc 1
+                if (taskName1 && taskFrequency1) {
+                    if (taskFrequency1 === 'first' && firstPassages.has(i)) {
+                        taches.push(taskName1);
+                    }
+                    if (taskFrequency1 === 'last' && lastPassages.has(i)) {
+                        taches.push(taskName1);
+                    }
+                    if (taskFrequency1 === 'every2' && i % 2 === 0) {
+                        taches.push(taskName1);
+                    }
+                    if (taskFrequency1 === 'weekly3times' && i % 7 < 3) {
+                        taches.push(taskName1);
+                    }
+                }
 
-    // Bloc 2
-    if (taskName2 && taskFrequency2) {
-        if (taskFrequency2 === 'first' && firstPassages.has(i)) {
-            taches.push(taskName2);
-        }
-        if (taskFrequency2 === 'last' && lastPassages.has(i)) {
-            taches.push(taskName2);
-        }
-        if (taskFrequency2 === 'every2' && i % 2 === 0) {
-            taches.push(taskName2);
-        }
-        if (taskFrequency2 === 'weekly3times' && i % 7 < 3) {
-            taches.push(taskName2);
-        }
-    }
+                // Bloc 2
+                if (taskName2 && taskFrequency2) {
+                    if (taskFrequency2 === 'first' && firstPassages.has(i)) {
+                        taches.push(taskName2);
+                    }
+                    if (taskFrequency2 === 'last' && lastPassages.has(i)) {
+                        taches.push(taskName2);
+                    }
+                    if (taskFrequency2 === 'every2' && i % 2 === 0) {
+                        taches.push(taskName2);
+                    }
+                    if (taskFrequency2 === 'weekly3times' && i % 7 < 3) {
+                        taches.push(taskName2);
+                    }
+                }
 
-    generatedData.push({
-        date: formatDate(dates[i]),
-        intervenant: '',
-        taches: taches.join(', ')
-    });
-}
+                generatedData.push({
+                    date: formatDate(dates[i]),
+                    intervenant: '',
+                    taches: taches.join(', ')
+                });
+            }
             renderTable(title);
             document.getElementById('emptyState').style.display = 'none';
         }
@@ -1063,7 +1096,7 @@ for (let i = 0; i < dates.length; i++) {
             document.getElementById('printTitle').innerHTML = `${title} <br>Fiche d\'entretien`;
 
             generatedData = [];
-            
+
             // Générer des lignes vides
             for (let i = 0; i < numberOfRows; i++) {
                 generatedData.push({
@@ -1102,7 +1135,7 @@ for (let i = 0; i < dates.length; i++) {
             generatedData.forEach((row, index) => {
                 const dateClass = row.date ? 'date-cell' : 'empty-date-cell';
                 const dateContent = row.date || '';
-                
+
                 html += `
                     <tr>
                         <td class="line-number">${index + 1}</td>
@@ -1151,9 +1184,18 @@ for (let i = 0; i < dates.length; i++) {
                 return;
             }
 
+            const scheduleInfoDiv = document.querySelector('.schedule-info');
+
+            // Si les deux sont vides, ajoute un attribut data
+            if ((!scheduleInfo.info1 || scheduleInfo.info1.trim() === '') &&
+                (!scheduleInfo.info2 || scheduleInfo.info2.trim() === '')) {
+                scheduleInfoDiv.setAttribute('data-empty', 'true');
+            } else {
+                scheduleInfoDiv.removeAttribute('data-empty');
+            }
+
             window.print();
         }
-
         function clearTable() {
             if (confirm('🗑️ Êtes-vous sûr de vouloir effacer tout le planning ?')) {
                 generatedData = [];
@@ -1316,13 +1358,13 @@ for (let i = 0; i < dates.length; i++) {
             document.getElementById('startDate').value = today.toISOString().split('T')[0];
         });
     </script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
-  }
-</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('✅ Service Worker enregistré', reg))
+                .catch(err => console.error('❌ Erreur Service Worker', err));
+        }
+    </script>
 
 </body>
 
