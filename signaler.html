@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Signaler un problème - Propre Eco</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="img/logo.png" />
     <link rel="apple-touch-icon" href="img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,9 +20,10 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="announcements.css">
     <style>
         .signature-controls {
             display: flex;
@@ -770,30 +772,31 @@
 
 <body>
     <header class="header">
-    <div class="header-content">
-      <a href="index.html" class="logo">
-        <img src="img/logo.png" width="60px" alt="">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="img/logo.png" width="60px" alt="">
 
-        Propre Eco Assistant
-      </a>
+                Propre Eco Assistant
+            </a>
 
 
-      <button class="nav-toggle" aria-label="Menu">
-        <i class="fas fa-bars"></i>
-      </button>
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
 
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-          <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-          <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-          <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
-          <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-          <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="devis.html"><i class="fas fa-file-invoice"></i> Devis</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
     <div class="container">
         <div class="main-card">
@@ -855,7 +858,7 @@
                                 <i class="fas fa-lightbulb"></i>
                                 Type de consommable
                             </label>
-                            <input type="text" id="consommable-type" class="form-input" 
+                            <input type="text" id="consommable-type" class="form-input"
                                 placeholder="Ex: Ampoule LED, Pile AAA, Produit d'entretien..." />
                         </div>
 
@@ -864,8 +867,8 @@
                                 <i class="fas fa-hashtag"></i>
                                 Quantité
                             </label>
-                            <input type="number" id="consommable-quantite" class="form-input" 
-                                placeholder="Nombre" min="1" value="1" />
+                            <input type="number" id="consommable-quantite" class="form-input" placeholder="Nombre"
+                                min="1" value="1" />
                         </div>
                     </div>
 
@@ -907,9 +910,9 @@
         </div>
     </div>
 
-     <footer class="app-footer">
-    Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
-  </footer>
+    <footer class="app-footer">
+        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+    </footer>
 
     <script type="module">
 
@@ -989,77 +992,77 @@
         let compressedFiles = [];
 
         // Fonction de compression intelligente d'image
-       // Fonction de compression intelligente d'image AMÉLIORÉE
-async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) {
-    // Augmenter la taille max et la qualité de base
-    
-    if ('createImageBitmap' in window) {
-        try {
-            const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-            const { blob } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
-                const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
-                canvas.width = w;
-                canvas.height = h;
-                ctx.drawImage(bitmap, 0, 0, w, h);
-            }, quality);
+        // Fonction de compression intelligente d'image AMÉLIORÉE
+        async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) {
+            // Augmenter la taille max et la qualité de base
 
-            // Seulement si l'image est VRAIMENT trop lourde (+ de 500KB), réduire la qualité
-            if (blob.size > 500 * 1024) {
-                const { blob: blob2 } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
-                    const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
-                    canvas.width = w;
-                    canvas.height = h;
-                    ctx.drawImage(bitmap, 0, 0, w, h);
-                }, 0.65); // Qualité moins agressive
-                return { blob: blob2 };
-            }
-            return { blob };
-        } catch (error) {
-            console.error('Erreur createImageBitmap:', error);
-        }
-    }
-
-    // Fallback avec Image classique
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = async () => {
-            try {
-                const { blob } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
-                    const { w, h } = fit(img.width, img.height, maxW, maxH);
-                    canvas.width = w;
-                    canvas.height = h;
-                    
-                    // Améliorer la qualité de rendu
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    
-                    ctx.drawImage(img, 0, 0, w, h);
-                }, quality);
-
-                // Seulement si l'image est VRAIMENT trop lourde
-                if (blob.size > 500 * 1024) {
-                    const { blob: blob2 } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
-                        const { w, h } = fit(img.width, img.height, maxW, maxH);
+            if ('createImageBitmap' in window) {
+                try {
+                    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+                    const { blob } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
+                        const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
                         canvas.width = w;
                         canvas.height = h;
-                        
-                        ctx.imageSmoothingEnabled = true;
-                        ctx.imageSmoothingQuality = 'high';
-                        
-                        ctx.drawImage(img, 0, 0, w, h);
-                    }, 0.65);
-                    resolve({ blob: blob2 });
-                } else {
-                    resolve({ blob });
+                        ctx.drawImage(bitmap, 0, 0, w, h);
+                    }, quality);
+
+                    // Seulement si l'image est VRAIMENT trop lourde (+ de 500KB), réduire la qualité
+                    if (blob.size > 500 * 1024) {
+                        const { blob: blob2 } = await drawToCanvas(bitmap.width, bitmap.height, (canvas, ctx) => {
+                            const { w, h } = fit(bitmap.width, bitmap.height, maxW, maxH);
+                            canvas.width = w;
+                            canvas.height = h;
+                            ctx.drawImage(bitmap, 0, 0, w, h);
+                        }, 0.65); // Qualité moins agressive
+                        return { blob: blob2 };
+                    }
+                    return { blob };
+                } catch (error) {
+                    console.error('Erreur createImageBitmap:', error);
                 }
-            } catch (error) {
-                reject(error);
             }
-        };
-        img.onerror = () => reject(new Error('Impossible de charger l\'image'));
-        img.src = URL.createObjectURL(file);
-    });
-}
+
+            // Fallback avec Image classique
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = async () => {
+                    try {
+                        const { blob } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
+                            const { w, h } = fit(img.width, img.height, maxW, maxH);
+                            canvas.width = w;
+                            canvas.height = h;
+
+                            // Améliorer la qualité de rendu
+                            ctx.imageSmoothingEnabled = true;
+                            ctx.imageSmoothingQuality = 'high';
+
+                            ctx.drawImage(img, 0, 0, w, h);
+                        }, quality);
+
+                        // Seulement si l'image est VRAIMENT trop lourde
+                        if (blob.size > 500 * 1024) {
+                            const { blob: blob2 } = await drawToCanvas(img.width, img.height, (canvas, ctx) => {
+                                const { w, h } = fit(img.width, img.height, maxW, maxH);
+                                canvas.width = w;
+                                canvas.height = h;
+
+                                ctx.imageSmoothingEnabled = true;
+                                ctx.imageSmoothingQuality = 'high';
+
+                                ctx.drawImage(img, 0, 0, w, h);
+                            }, 0.65);
+                            resolve({ blob: blob2 });
+                        } else {
+                            resolve({ blob });
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                img.onerror = () => reject(new Error('Impossible de charger l\'image'));
+                img.src = URL.createObjectURL(file);
+            });
+        }
         function fit(w, h, maxW, maxH) {
             let rw = w, rh = h;
             if (rw > rh && rw > maxW) {
@@ -1235,12 +1238,12 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
         const consommableType = document.getElementById('consommable-type');
         const consommableQuantite = document.getElementById('consommable-quantite');
 
-        typeSignalement.addEventListener('change', function() {
+        typeSignalement.addEventListener('change', function () {
             if (this.value === 'consommable') {
                 // Afficher champs consommables
                 problemeFields.style.display = 'none';
                 consommableFields.style.display = 'block';
-                
+
                 // Rendre les champs requis/non-requis
                 descInput.removeAttribute('required');
                 consommableType.setAttribute('required', 'required');
@@ -1249,7 +1252,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                 // Afficher champs problème
                 problemeFields.style.display = 'block';
                 consommableFields.style.display = 'none';
-                
+
                 // Rendre les champs requis/non-requis
                 descInput.setAttribute('required', 'required');
                 consommableType.removeAttribute('required');
@@ -1313,7 +1316,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                 // Enregistrer selon le type
                 if (typeSignal === 'probleme') {
                     const description = document.getElementById('desc-input').value.trim();
-                    
+
                     // Enregistrer dans Firebase
                     await addDoc(collection(db, "signalements"), {
                         copro,
@@ -1344,7 +1347,7 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
                 } else if (typeSignal === 'consommable') {
                     const consomType = document.getElementById('consommable-type').value.trim();
                     const consomQuantite = parseInt(document.getElementById('consommable-quantite').value);
-                    
+
                     // Enregistrer dans Firebase
                     await addDoc(collection(db, "consommables"), {
                         copro,
@@ -1424,13 +1427,19 @@ async function compressImageSmart(file, maxW = 1200, maxH = 900, quality = 0.8) 
         });
     </script>
     <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('âœ… Service Worker enregistré', reg))
-      .catch(err => console.error('âŒ Erreur Service Worker', err));
-  }
-</script>
-
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('âœ… Service Worker enregistré', reg))
+                .catch(err => console.error('âŒ Erreur Service Worker', err));
+        }
+    </script>
+    <script src="announcements.js"></script>
+    <script>
+        // Vérifier et afficher les annonces au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            AnnouncementSystem.showPopupIfNeeded();
+        });
+    </script>
 </body>
 
 </html>

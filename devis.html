@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Créer un devis - Propre Eco</title>
+    
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="apple-touch-icon" href="img/logo.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#10B981">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="announcements.css">
+    
+    <style>
+        .devis-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .devis-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .devis-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .devis-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .devis-form {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .form-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-field label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-field input[type="number"],
+        .form-field input[type="text"],
+        .form-field textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #f3f4f6;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .photo-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .upload-btn input[type="file"] {
+            display: none;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f3f4f6;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-item .remove-photo {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .photo-item .remove-photo:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .submit-section {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .success-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .devis-form {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .devis-header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="img/logo.png" width="60px" alt="">
+
+                Propre Eco Assistant
+            </a>
+
+
+            <button class="nav-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
+                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
+                    <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
+                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="devis.html"><i class="fas fa-file-invoice"></i> Devis</a></li>
+                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+ 
+
+    <div class="devis-container">
+        <div class="devis-header">
+            <h1><i class="fas fa-file-invoice-dollar"></i> Créer un devis</h1>
+            <p>Remplissez les informations pour créer un nouveau devis</p>
+        </div>
+
+        <form class="devis-form" id="devisForm">
+            <!-- Titre du devis -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Titre du devis
+                </h2>
+                <div class="form-field">
+                    <label for="titre">Titre / Référence *</label>
+                    <input type="text" id="titre" required placeholder="Ex: Nettoyage Copropriété Les Jardins - Janvier 2026">
+                </div>
+            </div>
+
+            <!-- Vitres -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Vitres
+                </h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="nbVitres">Nombre de vitres</label>
+                        <input type="number" id="nbVitres" min="0" value="0">
+                    </div>
+                    <div class="form-field">
+                        <label for="nbBaiesVitrees">Nombre de baies vitrées</label>
+                        <input type="number" id="nbBaiesVitrees" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>
+                        <input type="checkbox" id="vitresHautes" onchange="toggleVitresHautesPhotos()">
+                        Présence de vitres hautes
+                    </label>
+                </div>
+                <div class="form-field photo-upload" id="vitresHautesPhotos" style="display: none;">
+                    <label>Photos des vitres hautes</label>
+                    <label class="upload-btn">
+                        <i class="fas fa-camera"></i>
+                        Ajouter des photos
+                        <input type="file" accept="image/*" multiple onchange="handlePhotoUpload(event, 'vitresHautes')">
+                    </label>
+                    <div class="photo-preview" id="preview-vitresHautes"></div>
+                </div>
+            </div>
+
+            <!-- Chambres -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Chambres
+                </h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="nbChambresAvecPlacard">Chambres avec placard</label>
+                        <input type="number" id="nbChambresAvecPlacard" min="0" value="0">
+                    </div>
+                    <div class="form-field">
+                        <label for="nbChambresSansPlacard">Chambres sans placard</label>
+                        <input type="number" id="nbChambresSansPlacard" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salles de bain -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Salles de bain
+                </h2>
+                <div class="form-field">
+                    <label>Type de salles de bain</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sdbGrandeDouche">
+                            <label for="sdbGrandeDouche">Grande salle de bain avec douche</label>
+                            <input type="number" id="nbSdbGrandeDouche" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sdbGrandeBaignoire">
+                            <label for="sdbGrandeBaignoire">Grande salle de bain avec baignoire</label>
+                            <input type="number" id="nbSdbGrandeBaignoire" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sdbPetiteDouche">
+                            <label for="sdbPetiteDouche">Petite salle de bain avec douche</label>
+                            <input type="number" id="nbSdbPetiteDouche" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sdbPetiteBaignoire">
+                            <label for="sdbPetiteBaignoire">Petite salle de bain avec baignoire</label>
+                            <input type="number" id="nbSdbPetiteBaignoire" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pièces annexes -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Pièces annexes
+                </h2>
+                <div class="form-field">
+                    <label>Sélectionnez les pièces annexes</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sauna">
+                            <label for="sauna">Sauna</label>
+                            <input type="number" id="nbSauna" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="buanderie">
+                            <label for="buanderie">Buanderie</label>
+                            <input type="number" id="nbBuanderie" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="localTech">
+                            <label for="localTech">Local technique</label>
+                            <input type="number" id="nbLocalTech" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bureau">
+                            <label for="bureau">Bureau</label>
+                            <input type="number" id="nbBureau" min="0" value="0" style="width: 80px; margin-left: auto;">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="autre">
+                            <label for="autre">Autre (préciser)</label>
+                            <input type="text" id="autreDetail" placeholder="Précisez..." style="width: 150px; margin-left: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photos cuisine & séjour -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Photos des pièces principales
+                </h2>
+                <div class="form-field photo-upload">
+                    <label>Photos de la cuisine</label>
+                    <label class="upload-btn">
+                        <i class="fas fa-camera"></i>
+                        Ajouter des photos
+                        <input type="file" accept="image/*" multiple onchange="handlePhotoUpload(event, 'cuisine')">
+                    </label>
+                    <div class="photo-preview" id="preview-cuisine"></div>
+                </div>
+                <div class="form-field photo-upload">
+                    <label>Photos du séjour</label>
+                    <label class="upload-btn">
+                        <i class="fas fa-camera"></i>
+                        Ajouter des photos
+                        <input type="file" accept="image/*" multiple onchange="handlePhotoUpload(event, 'sejour')">
+                    </label>
+                    <div class="photo-preview" id="preview-sejour"></div>
+                </div>
+            </div>
+
+            <!-- Balcon/Terrasse -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Extérieur
+                </h2>
+                <div class="form-field">
+                    <label>
+                        <input type="checkbox" id="balcon">
+                        Balcon
+                    </label>
+                </div>
+                <div class="form-field">
+                    <label>
+                        <input type="checkbox" id="terrasse">
+                        Terrasse
+                    </label>
+                </div>
+            </div>
+
+            <!-- Commentaires -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Notes et informations complémentaires
+                </h2>
+                <div class="form-field">
+                    <label for="commentaires">Commentaires</label>
+                    <textarea id="commentaires" rows="4" placeholder="Ajoutez toute information utile..."></textarea>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-section">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    Créer le devis
+                </button>
+            </div>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <h3><i class="fas fa-check-circle"></i> Devis créé !</h3>
+            <p>Le devis a été créé avec succès. Vous pouvez le retrouver dans le tableau de bord.</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="announcements.js"></script>
+    
+    <script>
+        // Navigation mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.getElementById('navToggle');
+            const navMenu = document.getElementById('navMenu');
+
+            if (navToggle && navMenu) {
+                navToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('open');
+                });
+
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navMenu.classList.remove('open');
+                    });
+                });
+            }
+
+            // Afficher les annonces
+            AnnouncementSystem.showPopupIfNeeded();
+        });
+
+        // Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.appspot.com",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469"
+        };
+
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch (error) {
+            console.error('Erreur Firebase:', error);
+        }
+
+        // Gestion des photos
+        const photoData = {
+            vitresHautes: [],
+            cuisine: [],
+            sejour: []
+        };
+
+        function toggleVitresHautesPhotos() {
+            const checkbox = document.getElementById('vitresHautes');
+            const photosDiv = document.getElementById('vitresHautesPhotos');
+            photosDiv.style.display = checkbox.checked ? 'block' : 'none';
+        }
+
+        function handlePhotoUpload(event, category) {
+            const files = Array.from(event.target.files);
+            
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoData[category].push({
+                        data: e.target.result,
+                        name: file.name
+                    });
+                    displayPhotos(category);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function displayPhotos(category) {
+            const preview = document.getElementById(`preview-${category}`);
+            preview.innerHTML = photoData[category].map((photo, index) => `
+                <div class="photo-item">
+                    <img src="${photo.data}" alt="${photo.name}">
+                    <button type="button" class="remove-photo" onclick="removePhoto('${category}', ${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removePhoto(category, index) {
+            photoData[category].splice(index, 1);
+            displayPhotos(category);
+        }
+
+        // Soumission du formulaire
+        document.getElementById('devisForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création en cours...';
+            submitBtn.disabled = true;
+
+            const devisData = {
+                // Titre
+                titre: document.getElementById('titre').value,
+
+                // Vitres
+                nbVitres: parseInt(document.getElementById('nbVitres').value) || 0,
+                nbBaiesVitrees: parseInt(document.getElementById('nbBaiesVitrees').value) || 0,
+                vitresHautes: document.getElementById('vitresHautes').checked,
+                photosVitresHautes: photoData.vitresHautes,
+
+                // Chambres
+                nbChambresAvecPlacard: parseInt(document.getElementById('nbChambresAvecPlacard').value) || 0,
+                nbChambresSansPlacard: parseInt(document.getElementById('nbChambresSansPlacard').value) || 0,
+
+                // Salles de bain
+                sallesDeBain: {
+                    grandeDouche: parseInt(document.getElementById('nbSdbGrandeDouche').value) || 0,
+                    grandeBaignoire: parseInt(document.getElementById('nbSdbGrandeBaignoire').value) || 0,
+                    petiteDouche: parseInt(document.getElementById('nbSdbPetiteDouche').value) || 0,
+                    petiteBaignoire: parseInt(document.getElementById('nbSdbPetiteBaignoire').value) || 0
+                },
+
+                // Pièces annexes
+                piecesAnnexes: {
+                    sauna: parseInt(document.getElementById('nbSauna').value) || 0,
+                    buanderie: parseInt(document.getElementById('nbBuanderie').value) || 0,
+                    localTech: parseInt(document.getElementById('nbLocalTech').value) || 0,
+                    bureau: parseInt(document.getElementById('nbBureau').value) || 0,
+                    autre: document.getElementById('autreDetail').value || ''
+                },
+
+                // Photos
+                photosCuisine: photoData.cuisine,
+                photosSejour: photoData.sejour,
+
+                // Extérieur
+                balcon: document.getElementById('balcon').checked,
+                terrasse: document.getElementById('terrasse').checked,
+
+                // Commentaires
+                commentaires: document.getElementById('commentaires').value,
+
+                // Métadonnées
+                status: 'en_attente',
+                dateCreation: new Date().toISOString(),
+                chiffrage: null
+            };
+
+            try {
+                await db.collection('devis').add(devisData);
+                
+                // Afficher le message de succès
+                document.querySelector('.devis-form').style.display = 'none';
+                document.getElementById('successMessage').classList.add('show');
+
+                // Réinitialiser après 3 secondes
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue. Veuillez réessayer.');
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Créer le devis';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

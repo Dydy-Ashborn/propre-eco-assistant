@@ -269,7 +269,7 @@ body {
 
 /* Cards avec glassmorphism moderne */
 .card {
-        margin-bottom: 1rem;
+    margin-bottom: 1rem;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-radius: var(--radius);
@@ -287,9 +287,17 @@ body {
     box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
 }
 
-.card:nth-child(1) { animation-delay: 0.1s; }
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.3s;
+}
 
 .card-header {
     display: flex;
@@ -398,7 +406,7 @@ body {
 }
 
 .btn-small:hover {
-    
+
     border-color: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
@@ -940,14 +948,27 @@ tr:hover {
 
 /* Animations */
 @keyframes gentlePulse {
-    0% { transform: translateY(-2px) scale(1); }
-    50% { transform: translateY(-2px) scale(1.15); }
-    100% { transform: translateY(-2px) scale(1); }
+    0% {
+        transform: translateY(-2px) scale(1);
+    }
+
+    50% {
+        transform: translateY(-2px) scale(1.15);
+    }
+
+    100% {
+        transform: translateY(-2px) scale(1);
+    }
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes slideDown {
@@ -955,6 +976,7 @@ tr:hover {
         opacity: 0;
         transform: translateY(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -973,6 +995,7 @@ tr:hover {
         transform: translateY(-20px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -984,6 +1007,7 @@ tr:hover {
         opacity: 0;
         transform: translateX(100%);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -995,6 +1019,7 @@ tr:hover {
         opacity: 1;
         transform: translateX(0);
     }
+
     to {
         opacity: 0;
         transform: translateX(100%);
@@ -1002,14 +1027,36 @@ tr:hover {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Responsive design */
@@ -1093,7 +1140,8 @@ tr:hover {
         min-width: 500px;
     }
 
-    th, td {
+    th,
+    td {
         padding: 0.75rem 0.5rem;
         font-size: 0.85rem;
     }
@@ -1144,7 +1192,8 @@ tr:hover {
         font-size: 1.1rem;
     }
 
-    th, td {
+    th,
+    td {
         padding: 0.5rem;
         font-size: 0.8rem;
     }
@@ -1162,6 +1211,7 @@ tr:hover {
         min-height: 50px;
     }
 }
+
 /* ===== PAGINATION AMÉLIORÉE ===== */
 .pagination-container,
 #signalementsPaginationControls,
@@ -1235,7 +1285,8 @@ tr:hover {
 .table-scroll {
     width: 100%;
     overflow-x: auto;
-    overflow-y: visible; /* Suppression du scroll vertical */
+    overflow-y: visible;
+    /* Suppression du scroll vertical */
 }
 
 table {
@@ -1316,7 +1367,8 @@ table tbody tr:hover {
     }
 
     table th i {
-        display: none; /* Masquer les icônes sur mobile */
+        display: none;
+        /* Masquer les icônes sur mobile */
     }
 
     .thumb {
@@ -1383,7 +1435,164 @@ table tbody tr:hover {
         height: 35px;
     }
 }
+
 .pagination-wrapper {
     display: flex;
     margin: auto;
-    }
+}
+
+/* Styles pour la gestion des annonces dans le dashboard */
+.announcement-form {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.employee-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.employee-checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: normal;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.announcements-list {
+    display: grid;
+    gap: 16px;
+}
+
+.announcement-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.announcement-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.announcement-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.announcement-card-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.announcement-card-message {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.announcement-card-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.target-badge {
+    background: #e7f3ff;
+    color: #0066cc;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.target-badge.all {
+    background: #d4edda;
+    color: #155724;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}

@@ -22,6 +22,7 @@
     <meta name="format-detection" content="telephone=no">
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="announcements.css">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -1675,6 +1676,13 @@
                 .catch(err => console.error('❌ Erreur Service Worker', err));
         }
     </script>
+    <script src="announcements.js"></script>
+<script>
+    // Vérifier et afficher les annonces au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+        AnnouncementSystem.showPopupIfNeeded();
+    });
+</script>
 </body>
 
 </html>

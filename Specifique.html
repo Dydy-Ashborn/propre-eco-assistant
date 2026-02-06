@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Envoyer des photos - Propre Eco</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="img/logo.png" />
     <link rel="apple-touch-icon" href="img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,9 +20,10 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="announcements.css">
     <style>
         /* Styles pour la preview améliorée */
         .image-preview {
@@ -956,6 +958,7 @@
                     <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
                     <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
                     <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="devis.html"><i class="fas fa-file-invoice"></i> Devis</a></li>
                     <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
                 </ul>
             </nav>
@@ -1654,13 +1657,19 @@
         });
     </script>
     <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
-  }
-</script>
-
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('✅ Service Worker enregistré', reg))
+                .catch(err => console.error('❌ Erreur Service Worker', err));
+        }
+    </script>
+    <script src="announcements.js"></script>
+    <script>
+        // Vérifier et afficher les annonces au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            AnnouncementSystem.showPopupIfNeeded();
+        });
+    </script>
 </body>
 
 </html>

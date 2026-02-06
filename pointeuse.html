@@ -23,6 +23,7 @@
 
     <!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="announcements.css">
     <link rel="stylesheet" href="styles.css" />
     <style>
         .nav-toggle {
@@ -676,6 +677,7 @@
                     <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
                     <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
                     <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
+                    <li><a href="devis.html"><i class="fas fa-file-invoice"></i> Devis</a></li>
                     <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
                 </ul>
             </nav>
@@ -737,7 +739,7 @@
             { name: "Isabelle", sheet: "https://docs.google.com/spreadsheets/d/1bL8XVwxaTP0GU7GAXJV5n0ooTiL2AcEUNdE2i4H6uFI/edit?usp=sharing", code: "3636", id: "isabelle" },
             { name: "Caroline", sheet: "https://docs.google.com/spreadsheets/d/1TfmZmRjhqZ09d8aiIjFtudszg2kyQnIktvTWIr-KpZc/edit?usp=sharing", code: "2604", id: "caroline" },
             { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1234", id: "nadjet" },
-           { name: "Rémy", sheet: "", code: "1234", id: "remy" }
+            { name: "Rémy", sheet: "", code: "1234", id: "remy" }
 
 
         ];
@@ -775,20 +777,20 @@
         // Vérifier et rediriger automatiquement si session sauvegardée
         function checkSavedSession() {
             const savedSession = localStorage.getItem(SAVED_SESSION_KEY);
-            
+
             if (savedSession) {
                 try {
                     const sessionData = JSON.parse(savedSession);
                     const { employeeId, employeeName, timestamp } = sessionData;
-                    
+
                     // Vérifier que la session n'est pas trop ancienne (30 jours)
                     const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
                     const isSessionValid = (Date.now() - timestamp) < thirtyDaysInMs;
-                    
+
                     if (isSessionValid && employeeId) {
                         // Afficher un message de chargement
                         showNotification(`Connexion automatique en cours pour ${employeeName}...`, 'info');
-                        
+
                         // Rediriger vers la page heures après un court délai
                         setTimeout(() => {
                             window.location.href = `heures.html?employee=${employeeId}`;
@@ -1022,6 +1024,13 @@
                 .then(reg => console.log('âœ… Service Worker enregistré', reg))
                 .catch(err => console.error('âŒ Erreur Service Worker', err));
         }
+    </script>
+    <script src="announcements.js"></script>
+    <script>
+        // Vérifier et afficher les annonces au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            AnnouncementSystem.showPopupIfNeeded();
+        });
     </script>
 </body>
 
