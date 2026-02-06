@@ -2773,12 +2773,38 @@
                 }
             </style>
 
-<<<<<<< HEAD
 
-=======
->>>>>>> caeeb9a6c26cb56d3ca64a0155e4b9e4605fc96a
             <!-- Section Agenda des travaux  -->
-            
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2 class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Agenda des travaux
+                        </h2>
+                        <p class="card-subtitle">
+                            <i class="fas fa-tasks"></i>
+                            Planification des prochains travaux
+                        </p>
+                    </div>
+                    <div class="card-buttons" style="margin: auto;">
+                        <button class="btn btn-primary" onclick="addGoogleEvent()" style="margin-bottom:1rem">
+                            <i class="fas fa-plus"></i>
+                            Ajouter un travail
+                        </button>
+                        <!-- <button class="btn btn-agenda" onclick="openGoogleCalendar()">
+                            <i class="fas fa-external-link-alt"></i>
+                            Ouvrir dans Google
+                        </button> -->
+                    </div>
+                </header>
+
+                <div class="google-calendar-container">
+                    <iframe
+                        src="https://calendar.google.com/calendar/embed?src=dylan.propre.eco%40gmail.com&ctz=Europe%2FParis"
+                        style="border: 0; width: 100%; height: 600px;" frameborder="0" scrolling="no"></iframe>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -2917,6 +2943,7 @@
                     loadSignalementsWithPagination();
                     loadFeuillesWithPagination();
                     loadPhotosChantierWithPagination();
+                    loadConsommablesWithPagination();
 
                 }, 700);
             } else {
@@ -4256,7 +4283,6 @@
                 loadSignalementsWithPagination();
                 loadFeuillesWithPagination();
                 loadPhotosChantierWithPagination();
-                loadConsommablesWithPagination();
                 initHeuresFilters();
             }
         }
@@ -4379,7 +4405,7 @@
                 }
                 const factureHTML = data.facture ? `<span class="facture-badge facture"><i class="fas fa-check-circle"></i> Facturé</span>` : `<span class="facture-badge non-facture"><i class="fas fa-clock"></i> À facturer</span>`;
                 const btnFactureHTML = data.facture ? `<button class="btn-facture" disabled title="Déjà facturé"><i class="fas fa-check"></i> Facturé</button>` : `<button class="btn-facture" onclick="marquerFacture('${data.id}')" title="Marquer comme facturé"><i class="fas fa-file-invoice-dollar"></i> Facturer</button>`;
-                tbody.innerHTML += `<tr><td>${date}</td><td><strong>${data.copro || 'Non spécifiée'}</strong></td><td>${data.type || 'Non spécifié'}</td><td><strong>${data.quantite || '0'}</strong></td><td><strong>${data.employee || 'Non spécifié'}</strong></td><td>${imgHTML}</td><td>${factureHTML}</td><td style="display: flex; gap: 0.5rem; align-items: center;">${btnFactureHTML}<button class="btn-delete-single" onclick="deleteSingleConsommable('${data.id}')" title="Supprimer"><i class="fas fa-trash"></i></button></td></tr>`;
+                tbody.innerHTML += `<tr><td>${date}</td><td><strong>${data.copro || 'Non spécifiée'}</strong></td><td><strong>${data.type || 'Non spécifié'}</strong></td><td><strong>${data.quantite || '0'}</strong></td><td><strong>${data.employee || 'Non spécifié'}</strong></td><td>${imgHTML}</td><td>${factureHTML}</td><td style="display: flex; gap: 0.5rem; align-items: center;">${btnFactureHTML}<button class="btn-delete-single" onclick="deleteSingleConsommable('${data.id}')" title="Supprimer"><i class="fas fa-trash"></i></button></td></tr>`;
             });
         }
 
@@ -4500,8 +4526,6 @@
                 if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearConsommablesFilters);
             }, 500);
         });
-<<<<<<< HEAD
-<<<<<<< HEAD
     </script>
     <script src="announcements.js"></script>
     <script>
@@ -5098,396 +5122,8 @@
             }, 500);
         });
     </script>
-    <script src="update-modal.js"></script>
+    
 
 </body>
 
-=======
-=======
->>>>>>> caeeb9a6c26cb56d3ca64a0155e4b9e4605fc96a
-
-        
-    </script>
-    <!-- Modal de mise à jour -->
-    <div id="updateModal" class="update-modal">
-        <div class="update-modal-content">
-            <div class="update-modal-header">
-                <div class="update-icon">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                <h2>Nouvelles fonctionnalités !</h2>
-                <button class="update-modal-close" id="closeUpdateModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="update-modal-body">
-                <!-- VERSION ET DATE - Facile à modifier -->
-                <div class="update-version">
-                    <span class="version-badge">v2.1.0</span>
-                    <span class="version-date">Janvier 2026</span>
-                </div>
-
-                <!-- LISTE DES NOUVEAUTÉS - Facile à modifier -->
-                <div class="update-features">
-                    <div class="update-feature">
-                        <div class="feature-icon feature-new">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="feature-content">
-                            <h3>Gestion des consommables</h3>
-                            <p>Suivez et facturez facilement tous vos consommables avec photos</p>
-                        </div>
-                    </div>
-
-                    <div class="update-feature">
-                        <div class="feature-icon feature-improved">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <div class="feature-content">
-                            <h3>Performances améliorées</h3>
-                            <p>Chargement plus rapide et interface plus fluide</p>
-                        </div>
-                    </div>
-
-                    <div class="update-feature">
-                        <div class="feature-icon feature-fixed">
-                            <i class="fas fa-wrench"></i>
-                        </div>
-                        <div class="feature-content">
-                            <h3>Corrections de bugs</h3>
-                            <p>Résolution de problèmes mineurs pour une meilleure expérience</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="update-modal-footer">
-                <button class="update-modal-btn" id="confirmUpdateModal">
-                    <i class="fas fa-check"></i>
-                    J'ai compris
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        /* Modal de mise à jour */
-        .update-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .update-modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .update-modal-content {
-            background: white;
-            border-radius: 24px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .update-modal-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 24px 24px 0 0;
-            position: relative;
-            text-align: center;
-        }
-
-        .update-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            margin-bottom: 1rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .update-icon i {
-            font-size: 2.5rem;
-        }
-
-        .update-modal-header h2 {
-            margin: 0;
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .update-modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .update-modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .update-modal-body {
-            padding: 2rem;
-        }
-
-        .update-version {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .version-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.875rem;
-        }
-
-        .version-date {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .update-features {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .update-feature {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-        }
-
-        .feature-icon {
-            flex-shrink: 0;
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            color: white;
-        }
-
-        .feature-icon.feature-new {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-
-        .feature-icon.feature-improved {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        }
-
-        .feature-icon.feature-fixed {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        }
-
-        .feature-content h3 {
-            margin: 0 0 0.25rem 0;
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .feature-content p {
-            margin: 0;
-            color: var(--text-light);
-            font-size: 0.9375rem;
-            line-height: 1.5;
-        }
-
-        .update-modal-footer {
-            padding: 1.5rem 2rem 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .update-modal-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .update-modal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .update-modal-btn:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 640px) {
-            .update-modal-content {
-                border-radius: 16px;
-            }
-
-            .update-modal-header {
-                padding: 1.5rem;
-                border-radius: 16px 16px 0 0;
-            }
-
-            .update-icon {
-                width: 60px;
-                height: 60px;
-            }
-
-            .update-icon i {
-                font-size: 2rem;
-            }
-
-            .update-modal-header h2 {
-                font-size: 1.5rem;
-            }
-
-            .update-modal-body {
-                padding: 1.5rem;
-            }
-
-            .update-feature {
-                gap: 0.75rem;
-            }
-
-            .feature-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-
-            .feature-content h3 {
-                font-size: 1rem;
-            }
-
-            .feature-content p {
-                font-size: 0.875rem;
-            }
-        }
-    </style>
-
-    <script>
-        // Gestion de la modal de mise à jour
-        (function() {
-            const MODAL_VERSION = 'update_v2.1.0'; // ⚠️ CHANGE CETTE VALEUR pour réafficher la modal
-            const modal = document.getElementById('updateModal');
-            const closeBtn = document.getElementById('closeUpdateModal');
-            const confirmBtn = document.getElementById('confirmUpdateModal');
-
-            function showUpdateModal() {
-                modal.classList.add('show');
-            }
-
-            function hideUpdateModal() {
-                modal.classList.remove('show');
-                localStorage.setItem(MODAL_VERSION, 'seen');
-            }
-
-            // Vérifier si la modal a déjà été vue
-            if (!localStorage.getItem(MODAL_VERSION)) {
-                // Attendre que le dashboard soit débloqué avant d'afficher la modal
-                const checkDashboard = setInterval(() => {
-                    const dashboard = document.getElementById('dashboard');
-                    if (dashboard && dashboard.style.display !== 'none') {
-                        clearInterval(checkDashboard);
-                        setTimeout(showUpdateModal, 500);
-                    }
-                }, 100);
-            }
-
-            // Event listeners
-            closeBtn.addEventListener('click', hideUpdateModal);
-            confirmBtn.addEventListener('click', hideUpdateModal);
-
-            // Fermer en cliquant sur le fond
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    hideUpdateModal();
-                }
-            });
-
-            // Fermer avec Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('show')) {
-                    hideUpdateModal();
-                }
-            });
-        })();
-    </script>
-
-
-    </body>
-<<<<<<< HEAD
->>>>>>> caeeb9a6c26cb56d3ca64a0155e4b9e4605fc96a
-=======
->>>>>>> caeeb9a6c26cb56d3ca64a0155e4b9e4605fc96a
 </html>
