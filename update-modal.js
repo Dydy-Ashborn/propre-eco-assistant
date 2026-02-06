@@ -1,6 +1,6 @@
 // Système de modal de mise à jour
 const UpdateModal = {
-    MODAL_VERSION: 'update_v2.0.0', // ⚠️ CHANGE pour réafficher
+    MODAL_VERSION: 'update_v2.2.0', // ⚠️ CHANGE pour réafficher
 
     init() {
         // Créer la modal si elle n'existe pas déjà
