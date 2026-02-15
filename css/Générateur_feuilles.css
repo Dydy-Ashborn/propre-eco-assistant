@@ -34,6 +34,7 @@
             text-align: center;
             padding: 30px;
         }
+        
 
         .header h1 {
             font-size: 2.5rem;
@@ -606,3 +607,18 @@
             transform: translateX(-5px);
         }
 
+/* Style pour le titre de la page (ne pas confondre avec header navbar) */
+.page-title {
+    background: linear-gradient(135deg, #10b981, #059669);
+    padding: 30px;
+    border-radius: 20px 20px 0 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-title h1 {
+    color: white;
+    font-size: 2em;
+    margin: 0;
+}
+        

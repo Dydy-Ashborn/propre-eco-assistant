@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />    <title>Générateur de Dates avec Récurrence</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Générateur de Dates avec Récurrence</title>
     
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="../img/logo.png" />
     <link rel="apple-touch-icon" href="../img/logo.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/logo.png" />
     <link rel="manifest" href="../manifest.json">
     
     <!-- PWA Métadonnées -->
@@ -19,16 +19,15 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     
-   <!-- Scripts et styles -->
+    <!-- Styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/Générateur_feuilles.css">
     <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/modals.css">
     <link rel="stylesheet" href="../css/navbar.css">
-    
-    
 </head>
 
 <body>
@@ -120,7 +119,7 @@
             <div style="width:180px;"></div>
         </div>
 
-        <div class="header">
+        <div class="page-title">
             <h1>📅 Générateur de feuilles d'entretien </h1>
         </div>
 
@@ -818,6 +817,7 @@ for (let i = 0; i < dates.length; i++) {
             document.getElementById('startDate').value = today.toISOString().split('T')[0];
         });
     </script>
+    <script src="../js/Générateur_feuilles.js"></script>
   <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
