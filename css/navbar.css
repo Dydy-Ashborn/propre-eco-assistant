@@ -4,7 +4,6 @@
     background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1rem 2rem;
-    margin-top: 20px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -303,5 +302,10 @@
     
     .hamburger-btn span {
         width: 20px;
+    }
+}
+@media (max-width: 768px) {
+    .header {
+        margin-top: 20px;
     }
 }
