@@ -19,14 +19,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
 
-    <!-- Scripts et styles -->
+<!-- Scripts et styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index-specific.css">
     <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/Feuilles.css">
     <link rel="stylesheet" href="../css/modals.css">
     <link rel="stylesheet" href="../css/navbar.css">
-    <link rel="stylesheet" href="../css/Feuilles.css">
 
 
    
@@ -234,9 +234,11 @@
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Script principal -->
     <script src="../js/Feuilles.js"></script>
- 
 
+    <!-- Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('../service-worker.js')
@@ -244,25 +246,20 @@
                 .catch(err => console.log('❌ Erreur Service Worker', err));
         }
     </script>
-    <script type="module" src="../js/announcements.js"></script>
-    <script>
-        // Vérifier et afficher les annonces au chargement
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof initAnnouncementsPanel === 'function') {
-                initAnnouncementsPanel();
-            }
-        });
-    </script>
+    
+    <!-- Annonces -->
     <script type="module" src="../js/announcements.js"></script>
 
     <footer class="app-footer">
         Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
     </footer>
+    
+    <!-- Navigation -->
     <script type="module">
-    import { initNavigation, setActiveNavItem } from '../js/navbar.js';
-    initNavigation();
-    setActiveNavItem('Feuilles.html'); 
-</script>
+        import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+        initNavigation();
+        setActiveNavItem('Feuilles.html'); 
+    </script>
 </body>
 
 </html>
