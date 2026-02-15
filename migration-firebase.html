@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Firebase</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { margin-bottom: 30px; color: #333; }
+        .step {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 15px 0 8px;
+            color: #555;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover:not(:disabled) { background: #45a049; }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .danger { background: #f44336 !important; }
+        .danger:hover { background: #da190b !important; }
+        .log {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .log div { margin: 5px 0; }
+        .success { color: #4CAF50 !important; }
+        .error { color: #ff5252 !important; }
+        .warning { color: #ff9800 !important; }
+        .info { color: #00bcd4 !important; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+            background: #ff9800;
+            color: white;
+        }
+        .badge.ok {
+            background: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Migration Firebase - Coproprietes</h1>
+        
+        <div class="step">
+            <h3>Etape 1 : Charger les fichiers</h3>
+            <label>
+                CSV des coproprietes
+                <span id="csvBadge" class="badge">En attente</span>
+            </label>
+            <input type="file" id="csvFile" accept=".csv">
+            
+            <label>
+                procedures.json
+                <span id="jsonBadge" class="badge">En attente</span>
+            </label>
+            <input type="file" id="jsonFile" accept=".json">
+        </div>
+
+        <div class="step">
+            <h3>Etape 2 : Migration</h3>
+            <button id="migrateBtn" disabled>🚀 Lancer la migration</button>
+            <button id="clearBtn" class="danger">🗑️ Vider Firebase</button>
+        </div>
+
+        <div class="log" id="log"></div>
+    </div>
+
+    <script type="module">
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+            authDomain: "copro-256d7.firebaseapp.com",
+            projectId: "copro-256d7",
+            storageBucket: "copro-256d7.firebasestorage.app",
+            messagingSenderId: "665588381388",
+            appId: "1:665588381388:web:a0567533ff1a62407db469"
+        };
+
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getFirestore, collection, doc, setDoc, getDocs, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let csvData = [];
+        let proceduresData = {};
+
+        const log = (msg, type = 'info') => {
+            const logDiv = document.getElementById('log');
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logDiv.appendChild(div);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+
+        // Fonction pour nettoyer les codes
+        function cleanCode(code) {
+            if (!code || code.trim() === '') {
+                return null;
+            }
+            
+            return code
+                .replace(/[\/\\]/g, '-')           // Remplacer / et \ par -
+                .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')  // Enlever emojis
+                .replace(/🔑|🔒/g, '')              // Enlever clés et cadenas
+                .replace(/\s+/g, '_')              // Remplacer espaces par _
+                .replace(/[^\w-]/g, '')            // Garder uniquement lettres, chiffres, _ et -
+                .replace(/_+/g, '_')               // Fusionner _ multiples
+                .replace(/-+/g, '-')               // Fusionner - multiples
+                .replace(/^[-_]+|[-_]+$/g, '')     // Enlever - et _ au début/fin
+                .substring(0, 100);                // Limiter à 100 caractères
+        }
+
+        log('Script charge - En attente des fichiers', 'info');
+
+        // CSV
+        document.getElementById('csvFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            log(`Lecture CSV: ${file.name}`, 'info');
+
+            const text = await file.text();
+            const lines = text.split('\n').filter(l => l.trim());
+            
+            csvData = lines.slice(1).map((line, idx) => {
+                const [nom, adresse, code] = line.split(',');
+                return { 
+                    nom: nom?.trim(), 
+                    adresse: adresse?.trim(), 
+                    code: code?.trim(),
+                    lineNumber: idx + 2
+                };
+            }).filter(item => item.nom);
+
+            log(`✓ CSV OK: ${csvData.length} copros`, 'success');
+            document.getElementById('csvBadge').textContent = `✓ ${csvData.length}`;
+            document.getElementById('csvBadge').className = 'badge ok';
+            
+            checkReady();
+        });
+
+        // JSON
+        document.getElementById('jsonFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            log(`Lecture JSON: ${file.name}`, 'info');
+
+            const text = await file.text();
+            proceduresData = JSON.parse(text);
+
+            const count = Object.keys(proceduresData).length;
+            log(`✓ JSON OK: ${count} procedures`, 'success');
+            log(`Cles JSON: ${Object.keys(proceduresData).slice(0, 5).join(', ')}...`, 'info');
+            document.getElementById('jsonBadge').textContent = `✓ ${count}`;
+            document.getElementById('jsonBadge').className = 'badge ok';
+            
+            checkReady();
+        });
+
+        function checkReady() {
+            const ready = csvData.length > 0 && Object.keys(proceduresData).length > 0;
+            document.getElementById('migrateBtn').disabled = !ready;
+            if (ready) log('✓ Pret a migrer!', 'success');
+        }
+
+        // Migration
+        document.getElementById('migrateBtn').addEventListener('click', async () => {
+            log('=== DEBUT MIGRATION ===', 'warning');
+            
+            let success = 0;
+            let errors = 0;
+            let noProcedure = 0;
+
+            for (const copro of csvData) {
+                try {
+                    const cleanedCode = cleanCode(copro.code);
+                    
+                    if (!cleanedCode) {
+                        log(`⚠ ${copro.nom} (ligne ${copro.lineNumber}): code vide, utilisation du nom`, 'warning');
+                    }
+
+                    const procedure = proceduresData[copro.nom] || '';
+                    
+                    if (!procedure) {
+                        noProcedure++;
+                        log(`ℹ ${copro.nom}: pas de procedure trouvee`, 'info');
+                    }
+
+                    const docData = {
+                        nom: copro.nom,
+                        adresse: copro.adresse,
+                        code: copro.code,  // Code original
+                        codeClean: cleanedCode,  // Code nettoyé
+                        procedures: procedure,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    const docId = cleanedCode || copro.nom.replace(/\s+/g, '_').toLowerCase();
+                    await setDoc(doc(db, 'coproprietes', docId), docData);
+                    
+                    if (procedure) {
+                        log(`✓ ${copro.nom} (${docId}) [AVEC procedures]`, 'success');
+                    } else {
+                        log(`✓ ${copro.nom} (${docId}) [sans procedures]`, 'success');
+                    }
+                    success++;
+                } catch (err) {
+                    log(`✗ ${copro.nom}: ${err.message}`, 'error');
+                    errors++;
+                }
+            }
+
+            log(`=== FIN ===`, 'warning');
+            log(`${success} reussies, ${errors} erreurs`, success > 0 ? 'success' : 'error');
+            log(`${success - noProcedure} avec procedures, ${noProcedure} sans`, 'info');
+        });
+
+        // Vider
+        document.getElementById('clearBtn').addEventListener('click', async () => {
+            if (!confirm('SUPPRIMER TOUT ?')) return;
+
+            log('=== SUPPRESSION ===', 'error');
+            const snap = await getDocs(collection(db, 'coproprietes'));
+            
+            for (const d of snap.docs) {
+                await deleteDoc(doc(db, 'coproprietes', d.id));
+                log(`✗ ${d.id}`, 'warning');
+            }
+
+            log(`=== ${snap.size} supprimes ===`, 'error');
+        });
+
+        // Test connexion
+        try {
+            const test = await getDocs(collection(db, 'coproprietes'));
+            log(`✓ Firebase OK (${test.size} docs existants)`, 'success');
+        } catch (err) {
+            log(`✗ Firebase erreur: ${err.message}`, 'error');
+        }
+    </script>
+</body>
+</html>

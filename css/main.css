@@ -1,0 +1,16 @@
+/* Import de tous les styles dans le bon ordre */
+
+/* 1. Variables */
+@import 'variables.css';
+
+/* 2. Base et reset */
+@import 'base.css';
+
+/* 3. Composants */
+@import 'components.css';
+
+/* 4. Modals */
+@import 'modals.css';
+
+/* 5. Responsive */
+@import 'responsive.css';

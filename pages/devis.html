@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nouveau Devis - Propre Eco</title>
+
+    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="apple-touch-icon" href="../img/logo.png">
+    <link rel="manifest" href="../manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#10B981">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/devis.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/modals.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <button class="hamburger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <a href="../index.html" class="logo">
+                <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
+                Propre Eco Assistant
+            </a>
+
+            <div class="header-spacer"></div>
+        </div>
+    </header>
+
+    <div class="sidebar-overlay"></div>
+    <nav class="sidebar-menu">
+        <div class="sidebar-header">
+            <img src="../img/logo.png" width="50px" alt="Logo">
+            <h3>Propre Eco</h3>
+            <button class="sidebar-close" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="menu-section">
+                <span class="menu-section-title">Navigation</span>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="../index.html">
+                            <i class="fas fa-home"></i>
+                            <span>Accueil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="signaler.html">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Signaler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Feuilles.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Feuilles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Specifique.html">
+                            <i class="fas fa-hard-hat"></i>
+                            <span>Specifique</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pointeuse.html">
+                            <i class="fas fa-clock"></i>
+                            <span>Pointeuse</span>
+                        </a>
+                    </li>
+                    <li class="active"> <a href="devis.html">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Devis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="dashbord.html">
+                            <i class="fas fa-columns"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Modal Connexion Devis -->
+    <div id="devisLoginModal" class="login-modal" style="display: flex;">
+        <div class="login-content">
+            <div class="login-header">
+                <i class="fas fa-lock"></i>
+                <h2>Page Devis</h2>
+                <p>Accès restreint - Code requis</p>
+            </div>
+            <form id="devisLoginForm" class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="devisPasswordInput" placeholder="Code d'accès" required autofocus>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Accéder
+                </button>
+                <div id="devisLoginError" class="login-error" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Code d'accès incorrect
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <main id="devisContent" class="container" style="display: none;">
+
+        <form id="devisForm" class="devis-form">
+            <!-- Informations générales -->
+            <div class="form-section">
+                <h2><i class="fas fa-info-circle"></i> Informations générales</h2>
+
+                <div class="form-group">
+                    <label for="nomChantier">Nom du chantier / Adresse *</label>
+                    <input type="text" id="nomChantier" required placeholder="Ex: Chalet La Clusaz">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="typeLogement">Type de logement *</label>
+                        <select id="typeLogement" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="Studio">Studio</option>
+                            <option value="T1">T1</option>
+                            <option value="T2">T2</option>
+                            <option value="T3">T3</option>
+                            <option value="T4">T4</option>
+                            <option value="T5">T5</option>
+                            <option value="T6+">T6+</option>
+                            <option value="Chalet">Chalet</option>
+                            <option value="Maison">Maison</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="surface">Surface approximative (m²)</label>
+                        <input type="number" id="surface" placeholder="Ex: 150">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vitres et fenêtres -->
+            <div class="form-section">
+                <h2><i class="fas fa-window-maximize"></i> Vitres et fenêtres</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vitresStandard">Vitres standard</label>
+                        <input type="number" id="vitresStandard" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="baiesVitrees">Baies vitrées</label>
+                        <input type="number" id="baiesVitrees" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="velux">Vélux</label>
+                        <input type="number" id="velux" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-option">
+                    <label>
+                        <input type="checkbox" id="vitresHautes">
+                        <span>Vitres hautes présentes</span>
+                    </label>
+                </div>
+
+                <div class="grattage-options">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Grattage nécessaire pour :</h4>
+                    <div class="checkbox-grid">
+                        <label class="grattage-option">
+                            <input type="checkbox" id="grattageStandard">
+                            <span>Vitres standard</span>
+                        </label>
+                        <label class="grattage-option">
+                            <input type="checkbox" id="grattageBaies">
+                            <span>Baies vitrées</span>
+                        </label>
+                        <label class="grattage-option">
+                            <input type="checkbox" id="grattageVelux">
+                            <span>Vélux</span>
+                        </label>
+                        <label class="grattage-option">
+                            <input type="checkbox" id="grattageHautes">
+                            <span>Vitres hautes</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="vitresHautesPhotos" class="photo-section" style="display: none;">
+                    <label class="photo-label">
+                        <i class="fas fa-camera"></i> Photos vitres hautes
+                        <input type="file" id="photosVitresHautes" accept="image/*" multiple capture="environment">
+                    </label>
+                    <div id="previewVitresHautes" class="photo-preview"></div>
+                </div>
+            </div>
+
+            <!-- Cuisine -->
+            <div class="form-section">
+                <h2><i class="fas fa-utensils"></i> Cuisine</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petiteCuisine">Petite cuisine</label>
+                        <input type="number" id="petiteCuisine" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grandeCuisine">Grande cuisine</label>
+                        <input type="number" id="grandeCuisine" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+            <!-- Chambres et espaces nuit -->
+            <div class="form-section">
+                <h2><i class="fas fa-bed"></i> Chambres et espaces nuit</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="chambresAvecPlacard">Chambres avec placard</label>
+                        <input type="number" id="chambresAvecPlacard" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chambresSansPlacard">Chambres sans placard</label>
+                        <input type="number" id="chambresSansPlacard" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dortoir">Dortoir avec placards</label>
+                        <input type="number" id="dortoir" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mezzanine">Mezzanine</label>
+                        <input type="number" id="mezzanine" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dressing">Dressing</label>
+                        <input type="number" id="dressing" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salles de bain -->
+            <div class="form-section">
+                <h2><i class="fas fa-bath"></i> Salles de bain et sanitaires</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="grandeSdbDouche">Grande SDB avec douche</label>
+                        <input type="number" id="grandeSdbDouche" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grandeSdbBaignoire">Grande SDB avec baignoire</label>
+                        <input type="number" id="grandeSdbBaignoire" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petiteSdbDouche">Petite SDB avec douche</label>
+                        <input type="number" id="petiteSdbDouche" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petiteSdbBaignoire">Petite SDB avec baignoire</label>
+                        <input type="number" id="petiteSdbBaignoire" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wcLaveMain">WC lave-mains</label>
+                    <input type="number" id="wcLaveMain" min="0" value="0">
+                </div>
+            </div>
+
+
+
+            <!-- Pièces annexes et équipements -->
+            <div class="form-section">
+                <h2><i class="fas fa-door-open"></i> Pièces annexes et équipements</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sauna">Sauna + douche</label>
+                        <input type="number" id="sauna" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="buanderie">Buanderie</label>
+                        <input type="number" id="buanderie" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="localTechnique">Local technique</label>
+                        <input type="number" id="localTechnique" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cellier">Cellier</label>
+                        <input type="number" id="cellier" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bureau">Bureau</label>
+                        <input type="number" id="bureau" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="garage">Garage</label>
+                        <input type="number" id="garage" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="skiroom">Skiroom</label>
+                        <input type="number" id="skiroom" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="salleVideo">Salle vidéo</label>
+                        <input type="number" id="salleVideo" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chaufferie">Chaufferie</label>
+                        <input type="number" id="chaufferie" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="escalier">Escalier</label>
+                        <input type="number" id="escalier" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ascenseur">Ascenseur</label>
+                        <input type="number" id="ascenseur" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="checkbox-grid">
+                    <label>
+                        <input type="checkbox" id="tapisEntree">
+                        <span>Tapis d'entrée</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="aspiVmc">
+                        <span>Aspi trappe VMC</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="rambarde">
+                        <span>Rambarde</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="aspiPoutraison">
+                        <span>Aspiration poutraison + mur</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="autresAnnexes">Autres pièces / équipements</label>
+                    <input type="text" id="autresAnnexes"
+                        placeholder="Ex: Cave, Lingerie... (séparés par des virgules)">
+                </div>
+            </div>
+
+            <!-- Extérieurs -->
+            <div class="form-section">
+                <h2><i class="fas fa-tree"></i> Extérieurs</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="balcon">Balcon</label>
+                        <input type="number" id="balcon" min="0" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="terrasse">Terrasse</label>
+                        <input type="number" id="terrasse" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photos -->
+            <div class="form-section">
+                <h2><i class="fas fa-camera"></i> Photos *</h2>
+
+                <div class="photo-group">
+                    <label class="photo-label">
+                        <i class="fas fa-utensils"></i> Photos cuisine *
+                        <input type="file" id="photosCuisine" accept="image/*" multiple capture="environment" required>
+                    </label>
+                    <div id="previewCuisine" class="photo-preview"></div>
+                </div>
+
+                <div class="photo-group">
+                    <label class="photo-label">
+                        <i class="fas fa-couch"></i> Photos séjour *
+                        <input type="file" id="photosSejour" accept="image/*" multiple capture="environment" required>
+                    </label>
+                    <div id="previewSejour" class="photo-preview"></div>
+                </div>
+            </div>
+
+            <!-- Remarques -->
+            <div class="form-section">
+                <h2><i class="fas fa-comment"></i> Remarques</h2>
+
+                <div class="form-group">
+                    <label for="remarques">Informations supplémentaires</label>
+                    <textarea id="remarques" rows="4" placeholder="État général, particularités, accès..."></textarea>
+                </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='../index.html'">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Envoyer le devis
+                </button>
+            </div>
+
+            <!-- Message de validation -->
+            <div id="status" class="status"></div>
+        </form>
+    </main>
+
+    <!-- Message de statut -->
+    <div id="status" class="status"></div>
+
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-container">
+            <div class="loading-spinner">
+                <div class="spinner-circle"></div>
+                <div class="spinner-circle"></div>
+                <div class="spinner-circle"></div>
+                <div class="loading-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+            </div>
+            <h3 class="loading-title">Envoi en cours...</h3>
+            <p class="loading-message">Nous téléchargeons vos photos et préparons votre devis</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Overlay de succès -->
+    <div id="successOverlay" class="success-overlay" style="display: none;">
+        <div class="success-container">
+            <div class="success-checkmark">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="success-title">Devis envoyé avec succès !</h3>
+            <p class="success-message">Votre devis a été transmis et sauvegardé</p>
+            <div class="success-bar">
+                <div class="success-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/devis.js"></script>
+    <script type="module" src="../js/announcements.js"></script>
+    <script type="module">
+        import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+        initNavigation();
+        setActiveNavItem('devis.html'); 
+    </script>
+</body>
+
+</html>

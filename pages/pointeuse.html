@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Pointeuse - Propre Eco</title>
+
+    <!-- PWA Configuration -->
+    <link rel="icon" type="image/png" href="img/logo.png" />
+    <link rel="apple-touch-icon" href="../img/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/logo.png" />
+    <link rel="manifest" href="../manifest.json">
+
+    <!-- PWA Metadonnees -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Propre Eco">
+    <meta name="theme-color" content="#10B981">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Styles -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/pointeuse.css" />
+    <link rel="stylesheet" href="../css/modals.css" />
+        <link rel="stylesheet" href="../css/variables.css" />
+
+</head>
+
+<body>
+   <header class="header">
+    <div class="header-content">
+        <button class="hamburger-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="index.html" class="logo">
+            <img src="../img/logo.png" width="60px" alt="">
+            Propre Eco Assistant
+        </a>
+
+        <div class="header-spacer"></div>
+    </div>
+</header>
+
+<!-- Menu lateral moderne -->
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-menu">
+    <div class="sidebar-header">
+        <img src="../img/logo.png" width="50px" alt="Logo">
+        <h3>Propre Eco</h3>
+        <button class="sidebar-close" aria-label="Fermer">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-content">
+        <div class="menu-section">
+            <span class="menu-section-title">Navigation</span>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="signaler.html">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Signaler</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Feuilles.html">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Feuilles</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Specifique.html">
+                        <i class="fas fa-hard-hat"></i>
+                        <span>Specifique</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="pointeuse.html">
+                        <i class="fas fa-clock"></i>
+                        <span>Pointeuse</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="devis.html">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Devis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="dashbord.html">
+                        <i class="fas fa-columns"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+  
+</nav>
+
+    <div class="container">
+        <div class="welcome-header">
+            <h1>Pointeuse</h1>
+            <div class="info-badge">
+                <i class="fas fa-star"></i>
+                <span>Astuce : Mettez votre profil en favori pour une connexion automatique</span>
+            </div>
+        </div>
+
+        <div id="employeeList"></div>
+    </div>
+
+    <!-- Modale de saisie de code avec clavier numerique -->
+    <div id="codeModal" class="modal-pin">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="modal-title" id="modalTitle">Code d'acces</h3>
+                <p class="modal-subtitle">Entrez votre code PIN à 4 chiffres</p>
+            </div>
+
+            <div class="pin-display">
+                <div class="pin-dot" data-index="0"></div>
+                <div class="pin-dot" data-index="1"></div>
+                <div class="pin-dot" data-index="2"></div>
+                <div class="pin-dot" data-index="3"></div>
+            </div>
+
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                Code incorrect
+            </div>
+
+            <div class="numeric-keyboard">
+                <button class="num-key" data-num="1">1</button>
+                <button class="num-key" data-num="2">2</button>
+                <button class="num-key" data-num="3">3</button>
+                <button class="num-key" data-num="4">4</button>
+                <button class="num-key" data-num="5">5</button>
+                <button class="num-key" data-num="6">6</button>
+                <button class="num-key" data-num="7">7</button>
+                <button class="num-key" data-num="8">8</button>
+                <button class="num-key" data-num="9">9</button>
+                <button class="num-key special" id="cancelKeyboard">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="num-key" data-num="0">0</button>
+                <button class="num-key special" id="backspaceKey">
+                    <i class="fas fa-backspace"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/pointeuse.js"></script>
+    <script type="module" src="../js/badge.js"></script>
+
+    <script type="module" src="../js/announcements.js"></script>
+    
+</body>
+
+</html>

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Générateur de Dates avec Récurrence</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="icon" type="image/png" href="../img/logo.png" />
+    <link rel="apple-touch-icon" href="../img/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
+    <link rel="manifest" href="../manifest.json">
+    
+    <!-- PWA Métadonnées -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Propre Eco">
+    <meta name="theme-color" content="#10B981">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+   <!-- Scripts et styles -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/Générateur_feuilles.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    
+    
+</head>
+
+<body>
+   <!-- Header -->
+<header class="header">
+    <div class="header-content">
+        <button class="hamburger-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="../index.html" class="logo">
+            <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
+            Propre Eco Assistant
+        </a>
+
+        <div class="header-spacer"></div>
+    </div>
+</header>
+
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-menu">
+    <div class="sidebar-header">
+        <img src="../img/logo.png" width="50px" alt="Logo">
+        <h3>Propre Eco</h3>
+        <button class="sidebar-close" aria-label="Fermer">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-content">
+        <div class="menu-section">
+            <span class="menu-section-title">Navigation</span>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="../index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="signaler.html">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Signaler</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Feuilles.html">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Feuilles</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Specifique.html">
+                        <i class="fas fa-hard-hat"></i>
+                        <span>Specifique</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="pointeuse.html">
+                        <i class="fas fa-clock"></i>
+                        <span>Pointeuse</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="devis.html">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Devis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="dashbord.html">
+                        <i class="fas fa-columns"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container">
+        <div class="print-header">
+            <div class="logo">
+                <img src="../img/logo-propre-eco.png" alt="logo" style="width:200px; height: auto;">
+            </div>
+            <div class="title" id="printTitle">Fiche d'entretien</div>
+            <div style="width:180px;"></div>
+        </div>
+
+        <div class="header">
+            <h1>📅 Générateur de feuilles d'entretien </h1>
+        </div>
+
+        <div class="controls">
+            <div class="info-box">
+                <p>Configurez votre récurrence et générez automatiquement vos dates d'intervention</p>
+            </div>
+
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="startDate">📅 Date de début :</label>
+                    <input type="date" id="startDate" value="2025-09-02">
+                </div>
+
+                <div class="control-group">
+                    <label for="recurrence">🔄 Récurrence :</label>
+                    <select id="recurrence">
+                        <option value="weekly1">1x par semaine</option>
+                        <option value="weekly2">2x par semaine</option>
+                        <option value="biweekly">Tous les 15 jours</option>
+                        <option value="monthly">1x par mois</option>
+                        <option value="weekly3">Toutes les 3 semaines</option>
+                        <option value="fixed">Jour fixe (préciser)</option>
+                        <option value="empty">Tableau vide (sans dates)</option>
+                    </select>
+                </div>
+
+                <div class="control-group" id="dayOfWeekGroup">
+                    <label for="dayOfWeek">📋 Jour de la semaine :</label>
+                    <select id="dayOfWeek">
+                        <option value="1">Lundi</option>
+                        <option value="2" selected>Mardi</option>
+                        <option value="3">Mercredi</option>
+                        <option value="4">Jeudi</option>
+                        <option value="5">Vendredi</option>
+                        <option value="6">Samedi</option>
+                        <option value="0">Dimanche</option>
+                    </select>
+                </div>
+
+                <div class="control-group" id="secondDayGroup" style="display: none;">
+                    <label for="secondDay">📋 2ème jour (2x/sem) :</label>
+                    <select id="secondDay">
+                        <option value="1">Lundi</option>
+                        <option value="2">Mardi</option>
+                        <option value="3">Mercredi</option>
+                        <option value="4">Jeudi</option>
+                        <option value="5" selected>Vendredi</option>
+                        <option value="6">Samedi</option>
+                        <option value="0">Dimanche</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="numberOfDates">🔢 Nombre de lignes :</label>
+                    <input type="number" id="numberOfDates" value="58" min="1" max="100">
+                </div>
+
+                <div class="control-group">
+                    <label for="title">📝 Titre :</label>
+                    <input type="text" id="title" placeholder="Titre">
+                </div>
+            </div>
+
+            <div class="task-recurrence-section" id="taskSection1">
+                <h3>🔧 Récurrence des tâches annexe (Bloc 1)</h3>
+                <div class="task-grid">
+                    <div class="control-group">
+                        <label for="taskName1">📝 Nom de la tâche :</label>
+                        <input type="text" id="taskName1" placeholder="ex: CAVES, ESCALIERS, VITRES...">
+                    </div>
+                    <div class="control-group">
+                        <label for="taskFrequency1">⏰ Fréquence :</label>
+                       <select id="taskFrequency1">
+    <option value="">Aucune récurrence</option>
+    <option value="first">Premier passage de chaque mois</option>
+    <option value="last">Dernier passage de chaque mois</option>
+    <option value="every2">1 passage sur 2</option>
+    <option value="weekly3times">3 fois par semaine</option>
+</select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-recurrence-section" id="taskSection2">
+                <h3>🔧 Récurrence des tâches annexe (Bloc 2)</h3>
+                <div class="task-grid">
+                    <div class="control-group">
+                        <label for="taskName2">📝 Nom de la tâche :</label>
+                        <input type="text" id="taskName2" placeholder="ex: CAVES, ESCALIERS, VITRES...">
+                    </div>
+                    <div class="control-group">
+                        <label for="taskFrequency2">⏰ Fréquence :</label>
+                       <select id="taskFrequency2">
+    <option value="">Aucune récurrence</option>
+    <option value="first">Premier passage de chaque mois</option>
+    <option value="last">Dernier passage de chaque mois</option>
+    <option value="every2">1 passage sur 2</option>
+    <option value="weekly3times">3 fois par semaine</option>
+</select>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="buttons">
+                <button class="btn-primary" onclick="generateDates()">🚀 Générer le Planning</button>
+                <button class="btn-print" onclick="printPlanning()">🖨️ Imprimer</button>
+                <button class="btn-danger" onclick="clearTable()">🗑️ Effacer</button>
+            </div>
+        </div>
+
+
+
+        <div class="schedule-info">
+            <div class="editable-info" onclick="editInfoCell(this, 'info1')"><strong></strong></div>
+            <div class="editable-info" onclick="editInfoCell(this, 'info2')"><strong></strong></div>
+        </div>
+
+        <div class="table-container">
+            <table id="mainTable">
+                <div class="empty-state" id="emptyState">
+                    <h3>📋 Aucun planning généré</h3>
+                    <p>Configurez vos paramètres ci-dessus et cliquez sur "Générer le Planning"</p>
+                </div>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let generatedData = [];
+        let scheduleInfo = {
+            info1: 'Mardi Vendredi : 2*/Semaine du 15/12 au 15/04 et du 01/07 au 31/08',
+            info2: 'MARDI : 1*/Semaine HORS SAISON'
+        };
+
+        // Gestion de l'affichage des champs selon le type de récurrence
+        document.getElementById('recurrence').addEventListener('change', function () {
+            const recurrence = this.value;
+            const secondDayGroup = document.getElementById('secondDayGroup');
+            const dayOfWeekGroup = document.getElementById('dayOfWeekGroup');
+            const startDateGroup = document.querySelector('input[id="startDate"]').parentElement;
+            const taskSection1 = document.getElementById('taskSection1');
+            const taskSection2 = document.getElementById('taskSection2');
+
+            if (recurrence === 'weekly2') {
+                secondDayGroup.style.display = 'block';
+            } else {
+                secondDayGroup.style.display = 'none';
+            }
+
+            // Si mode tableau vide, masquer les options de dates et tâches récurrentes
+            if (recurrence === 'empty') {
+                dayOfWeekGroup.style.display = 'none';
+                startDateGroup.style.display = 'none';
+                taskSection1.style.display = 'none';
+                taskSection2.style.display = 'none';
+                document.querySelector('label[for="numberOfDates"]').textContent = '🔢 Nombre de lignes :';
+            } else {
+                dayOfWeekGroup.style.display = 'block';
+                startDateGroup.style.display = 'block';
+                taskSection1.style.display = 'block';
+                taskSection2.style.display = 'block';
+                document.querySelector('label[for="numberOfDates"]').textContent = '🔢 Nombre de dates :';
+            }
+        });
+
+        function editInfoCell(cell, infoKey) {
+            const currentValue = scheduleInfo[infoKey] || '';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+
+            const originalHTML = cell.innerHTML;
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+
+            function saveValue() {
+                const newValue = input.value.trim();
+                scheduleInfo[infoKey] = newValue;
+                if (newValue) {
+                    cell.innerHTML = `<strong>${newValue}</strong>`;
+                } else {
+                    cell.innerHTML = '<strong>Cliquez pour ajouter du texte...</strong>';
+                }
+            }
+
+            input.addEventListener('blur', saveValue);
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    saveValue();
+                } else if (e.key === 'Escape') {
+                    cell.innerHTML = originalHTML;
+                }
+            });
+        }
+
+        function isFirstDayOfMonth(date) {
+            return date.getDate() === 1;
+        }
+
+        function isLastDayOfMonth(date) {
+            const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            const lastDay = new Date(nextMonth - 1);
+            return date.getDate() === lastDay.getDate();
+        }
+
+        function findFirstLastPassages(dates) {
+            const monthlyPassages = {};
+
+            // Grouper les dates par mois
+            dates.forEach((date, index) => {
+                const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+                if (!monthlyPassages[monthKey]) {
+                    monthlyPassages[monthKey] = [];
+                }
+                monthlyPassages[monthKey].push({ date, index });
+            });
+
+            const firstPassages = new Set();
+            const lastPassages = new Set();
+
+            // Pour chaque mois, identifier le premier et dernier passage
+            Object.values(monthlyPassages).forEach(monthDates => {
+                if (monthDates.length > 0) {
+                    // Trier les dates du mois
+                    monthDates.sort((a, b) => a.date - b.date);
+
+                    // Premier passage du mois
+                    firstPassages.add(monthDates[0].index);
+
+                    // Dernier passage du mois
+                    lastPassages.add(monthDates[monthDates.length - 1].index);
+                }
+            });
+
+            return { firstPassages, lastPassages };
+        }
+
+        function generateDates() {
+            const recurrence = document.getElementById('recurrence').value;
+            const numberOfDates = parseInt(document.getElementById('numberOfDates').value);
+            const title = document.getElementById('title').value;
+
+            // Mode tableau vide
+            if (recurrence === 'empty') {
+                generateEmptyTable(numberOfDates, title);
+                return;
+            }
+
+            // Mode normal avec dates
+            const startDate = new Date(document.getElementById('startDate').value);
+            const dayOfWeek = parseInt(document.getElementById('dayOfWeek').value);
+            const secondDay = parseInt(document.getElementById('secondDay').value);
+
+            // 🔧 Bloc 1
+            const taskName1 = document.getElementById('taskName1').value;
+            const taskFrequency1 = document.getElementById('taskFrequency1').value;
+
+            // 🔧 Bloc 2
+            const taskName2 = document.getElementById('taskName2').value;
+            const taskFrequency2 = document.getElementById('taskFrequency2').value;
+
+            if (isNaN(startDate.getTime())) {
+                alert('⚠️ Veuillez sélectionner une date de début valide');
+                return;
+            }
+
+            // Mettre à jour le titre impression
+            document.getElementById('printTitle').innerHTML = `${title} <br>Fiche d\'entretien`;
+
+            generatedData = [];
+            const dates = [];
+            let currentDate = new Date(startDate);
+
+            // Ajuster la date au bon jour
+            const dayDiff = (dayOfWeek - currentDate.getDay() + 7) % 7;
+            currentDate.setDate(currentDate.getDate() + dayDiff);
+
+            switch (recurrence) {
+                case 'weekly1':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                    break;
+                case 'weekly2':
+                    let count = 0;
+                    while (count < numberOfDates) {
+                        const firstDate = new Date(currentDate);
+                        firstDate.setDate(currentDate.getDate() + (dayOfWeek - currentDate.getDay() + 7) % 7);
+                        dates.push(new Date(firstDate));
+                        count++;
+                        if (count < numberOfDates) {
+                            const secondDate = new Date(currentDate);
+                            secondDate.setDate(currentDate.getDate() + (secondDay - currentDate.getDay() + 7) % 7);
+                            if (secondDate <= firstDate) secondDate.setDate(secondDate.getDate() + 7);
+                            dates.push(new Date(secondDate));
+                            count++;
+                        }
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                    break;
+                case 'biweekly':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 14);
+                    }
+                    break;
+                case 'monthly':
+                    // Jour de la semaine de la date de départ (0=dimanche, 1=lundi, etc.)
+                    let targetDay = startDate.getDay();
+
+                    // Calculer dans quelle semaine du mois se trouve la date de départ
+                    let startWeekOfMonth = Math.ceil(startDate.getDate() / 7) - 1; // 0-indexé
+
+                    for (let i = 0; i < numberOfDates; i++) {
+                        // Créer une date pour le 1er du mois cible
+                        let targetMonth = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+
+                        // Trouver le premier jour de la semaine cible dans ce mois
+                        let daysDiff = (targetDay - targetMonth.getDay() + 7) % 7;
+                        let firstOccurrence = new Date(targetMonth.getFullYear(), targetMonth.getMonth(), 1 + daysDiff);
+
+                        // Ajouter les semaines nécessaires pour atteindre le bon rang
+                        let targetDate = new Date(firstOccurrence.getFullYear(), firstOccurrence.getMonth(),
+                            firstOccurrence.getDate() + (startWeekOfMonth * 7));
+
+                        // Vérifier que la date générée est bien dans le mois voulu
+                        if (targetDate.getMonth() === targetMonth.getMonth()) {
+                            dates.push(targetDate);
+                        } else {
+                            // Si on déborde (ex: 5ème mardi n'existe pas), prendre le dernier du mois
+                            let lastWeek = startWeekOfMonth - 1;
+                            while (lastWeek >= 0) {
+                                let fallbackDate = new Date(firstOccurrence.getFullYear(), firstOccurrence.getMonth(),
+                                    firstOccurrence.getDate() + (lastWeek * 7));
+                                if (fallbackDate.getMonth() === targetMonth.getMonth()) {
+                                    dates.push(fallbackDate);
+                                    break;
+                                }
+                                lastWeek--;
+                            }
+                        }
+                    }
+                    break;
+                case 'weekly3':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 21);
+                    }
+                    break;
+                case 'fixed':
+                    for (let i = 0; i < numberOfDates; i++) {
+                        dates.push(new Date(currentDate));
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                    break;
+            }
+
+            // Trier les dates
+            dates.sort((a, b) => a - b);
+
+            // Déterminer premiers/derniers passages
+            const { firstPassages, lastPassages } = findFirstLastPassages(dates);
+
+           // Construire données avec 2 blocs de tâches
+for (let i = 0; i < dates.length; i++) {
+    let taches = [];
+
+    // Bloc 1
+    if (taskName1 && taskFrequency1) {
+        if (taskFrequency1 === 'first' && firstPassages.has(i)) {
+            taches.push(taskName1);
+        }
+        if (taskFrequency1 === 'last' && lastPassages.has(i)) {
+            taches.push(taskName1);
+        }
+        if (taskFrequency1 === 'every2' && i % 2 === 0) {
+            taches.push(taskName1);
+        }
+        if (taskFrequency1 === 'weekly3times' && i % 7 < 3) {
+            taches.push(taskName1);
+        }
+    }
+
+    // Bloc 2
+    if (taskName2 && taskFrequency2) {
+        if (taskFrequency2 === 'first' && firstPassages.has(i)) {
+            taches.push(taskName2);
+        }
+        if (taskFrequency2 === 'last' && lastPassages.has(i)) {
+            taches.push(taskName2);
+        }
+        if (taskFrequency2 === 'every2' && i % 2 === 0) {
+            taches.push(taskName2);
+        }
+        if (taskFrequency2 === 'weekly3times' && i % 7 < 3) {
+            taches.push(taskName2);
+        }
+    }
+
+    generatedData.push({
+        date: formatDate(dates[i]),
+        intervenant: '',
+        taches: taches.join(', ')
+    });
+}
+            renderTable(title);
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        function generateEmptyTable(numberOfRows, title) {
+            // Mettre à jour le titre impression
+            document.getElementById('printTitle').innerHTML = `${title} <br>Fiche d\'entretien`;
+
+            generatedData = [];
+            
+            // Générer des lignes vides
+            for (let i = 0; i < numberOfRows; i++) {
+                generatedData.push({
+                    date: '',
+                    intervenant: '',
+                    taches: ''
+                });
+            }
+
+            renderTable(title);
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function renderTable(title) {
+            const table = document.getElementById('mainTable');
+
+            let html = `
+                <thead>
+                    <tr>
+                        <th style="width: 8%;">#</th>
+                        <th style="width: 30%;">JOUR DE PASSAGE</th>
+                        <th style="width: 30%;">INTERVENANT</th>
+                        <th style="width: 32%;">TÂCHES ANNEXES</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            generatedData.forEach((row, index) => {
+                const dateClass = row.date ? 'date-cell' : 'empty-date-cell';
+                const dateContent = row.date || '';
+                
+                html += `
+                    <tr>
+                        <td class="line-number">${index + 1}</td>
+                        <td class="${dateClass} editable" onclick="editCell(this, ${index}, 'date')">${dateContent}</td>
+                        <td class="editable" onclick="editCell(this, ${index}, 'intervenant')">${row.intervenant}</td>
+                        <td class="editable" onclick="editCell(this, ${index}, 'taches')">${row.taches}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function editCell(cell, index, field) {
+            const currentValue = generatedData[index][field];
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+            input.style.border = 'none';
+            input.style.background = 'transparent';
+            input.style.width = '100%';
+            input.style.textAlign = 'center';
+            input.style.fontSize = 'inherit';
+
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+
+            function saveValue() {
+                generatedData[index][field] = input.value;
+                cell.innerHTML = input.value;
+            }
+
+            input.addEventListener('blur', saveValue);
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    saveValue();
+                }
+            });
+        }
+
+  function printPlanning() {
+            const mainTable = document.getElementById('mainTable');
+            if (!mainTable || generatedData.length === 0) {
+                alert('🚫 Veuillez d\'abord générer un planning avant d\'imprimer.');
+                return;
+            }
+            
+            // Verifier le contenu REEL des divs editable-info
+            const scheduleInfoDiv = document.querySelector('.schedule-info');
+            const editableInfos = scheduleInfoDiv.querySelectorAll('.editable-info');
+            
+            let hasContent = false;
+            editableInfos.forEach(div => {
+                const text = div.textContent.trim();
+                if (text && text.length > 0) {
+                    hasContent = true;
+                }
+            });
+            
+            // Si aucun contenu, masquer la case jaune
+            if (!hasContent) {
+                scheduleInfoDiv.classList.add('empty');
+            } else {
+                scheduleInfoDiv.classList.remove('empty');
+            }
+
+            window.print();
+            
+            // Retirer la classe apres l'impression
+            setTimeout(() => {
+                scheduleInfoDiv.classList.remove('empty');
+            }, 1000);
+        }
+        function clearTable() {
+            if (confirm('🗑️ Êtes-vous sûr de vouloir effacer tout le planning ?')) {
+                generatedData = [];
+                document.getElementById('mainTable').innerHTML = '';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function exportToExcel() {
+            if (generatedData.length === 0) {
+                alert('⚠️ Aucune donnée à exporter. Générez d\'abord un planning.');
+                return;
+            }
+
+            const title = document.getElementById('title').value;
+
+            // Créer le workbook avec des options avancées
+            const wb = XLSX.utils.book_new();
+
+            // Préparer les données pour Excel avec formatage
+            const wsData = [
+                [''], // Ligne vide pour l'espacement
+                [title.toUpperCase()], // Titre principal
+                ['FICHE D\'ENTRETIEN DES COMMUNS'], // Sous-titre
+                [''], // Ligne vide
+                ['📅 PLANNING D\'INTERVENTION'], // Section planning
+                [scheduleInfo.info1], // Info horaires modifiable 1
+                [scheduleInfo.info2], // Info horaires modifiable 2
+                [''], // Ligne vide
+                ['JOUR DE PASSAGE', 'INTERVENANT', 'TÂCHES ANNEXES'] // En-têtes
+            ];
+
+            // Ajouter les données avec formatage
+            generatedData.forEach((row, index) => {
+                wsData.push([
+                    row.date,
+                    row.intervenant || '',
+                    row.taches || ''
+                ]);
+            });
+
+            // Ajouter lignes de signature
+            wsData.push([''], [''], ['Signature Responsable :', 'Date de contrôle :', '']);
+
+            // Créer la feuille
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+            // Configuration avancée des colonnes
+            ws['!cols'] = [
+                { wch: 18 },  // Date  
+                { wch: 25 },  // Intervenant
+                { wch: 40 }   // Tâches
+            ];
+
+            // Fusionner les cellules pour un meilleur rendu
+            ws['!merges'] = [
+                { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } }, // Titre principal
+                { s: { r: 2, c: 0 }, e: { r: 2, c: 2 } }, // Sous-titre
+                { s: { r: 4, c: 0 }, e: { r: 4, c: 2 } }, // Section planning
+                { s: { r: 5, c: 0 }, e: { r: 5, c: 2 } }, // Info horaires 1
+                { s: { r: 6, c: 0 }, e: { r: 6, c: 2 } }, // Info horaires 2
+                { s: { r: wsData.length - 1, c: 0 }, e: { r: wsData.length - 1, c: 1 } }, // Signature responsable
+                { s: { r: wsData.length - 1, c: 2 }, e: { r: wsData.length - 1, c: 2 } }  // Date contrôle
+            ];
+
+            // Appliquer des styles cellule par cellule
+            const range = XLSX.utils.decode_range(ws['!ref']);
+
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cell_address = XLSX.utils.encode_cell({ c: C, r: R });
+                    if (!ws[cell_address]) ws[cell_address] = { t: 's', v: '' };
+
+                    // Styles par défaut
+                    ws[cell_address].s = {
+                        alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+                        border: {
+                            top: { style: 'thin', color: { rgb: '000000' } },
+                            bottom: { style: 'thin', color: { rgb: '000000' } },
+                            left: { style: 'thin', color: { rgb: '000000' } },
+                            right: { style: 'thin', color: { rgb: '000000' } }
+                        },
+                        font: { name: 'Calibri', sz: 11 }
+                    };
+
+                    // Styles spécifiques par ligne
+                    if (R === 1) { // Titre principal
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 18, bold: true, color: { rgb: '6b0094' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'f0f8ff' } };
+                        ws[cell_address].s.border = {
+                            top: { style: 'thick', color: { rgb: '6b0094' } },
+                            bottom: { style: 'thick', color: { rgb: '6b0094' } },
+                            left: { style: 'thick', color: { rgb: '6b0094' } },
+                            right: { style: 'thick', color: { rgb: '6b0094' } }
+                        };
+                    } else if (R === 2) { // Sous-titre
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 14, bold: true, color: { rgb: '008000' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'f0fff0' } };
+                    } else if (R === 4) { // Section planning
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 12, bold: true, color: { rgb: '000080' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'e6f3ff' } };
+                    } else if (R === 5 || R === 6) { // Infos horaires
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 10, italic: true };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'fffacd' } };
+                    } else if (R === 8) { // En-têtes de colonnes
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'ffffff' } };
+                        ws[cell_address].s.fill = { fgColor: { rgb: '4472c4' } };
+                        ws[cell_address].s.border = {
+                            top: { style: 'thick', color: { rgb: '000000' } },
+                            bottom: { style: 'thick', color: { rgb: '000000' } },
+                            left: { style: 'thick', color: { rgb: '000000' } },
+                            right: { style: 'thick', color: { rgb: '000000' } }
+                        };
+                    } else if (R > 8 && R < wsData.length - 2) { // Lignes de données
+                        if (C === 0) { // Colonne Date
+                            ws[cell_address].s.fill = { fgColor: { rgb: 'fff2cc' } };
+                            ws[cell_address].s.font = { name: 'Calibri', sz: 11, bold: true };
+                        } else { // Colonnes éditables
+                            ws[cell_address].s.fill = { fgColor: { rgb: 'ffffff' } };
+                            if (R % 2 === 0) {
+                                ws[cell_address].s.fill = { fgColor: { rgb: 'f8f9fa' } };
+                            }
+                        }
+                    } else if (R === wsData.length - 1) { // Ligne signature
+                        ws[cell_address].s.font = { name: 'Calibri', sz: 10, bold: true };
+                        ws[cell_address].s.fill = { fgColor: { rgb: 'e8f4fd' } };
+                        ws[cell_address].s.border = {
+                            top: { style: 'thick', color: { rgb: '000000' } },
+                            bottom: { style: 'thick', color: { rgb: '000000' } },
+                            left: { style: 'thick', color: { rgb: '000000' } },
+                            right: { style: 'thick', color: { rgb: '000000' } }
+                        };
+                    }
+                }
+            }
+
+            // Définir la zone d'impression
+            ws['!printHeader'] = 1;
+            ws['!margins'] = { left: 0.7, right: 0.7, top: 0.75, bottom: 0.75, header: 0.3, footer: 0.3 };
+
+            // Ajouter la feuille au workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Planning Entretien");
+
+            // Exporter le fichier
+            const fileName = `PLANNING_ENTRETIEN_${title.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+
+            // Afficher confirmation
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert';
+            alertDiv.innerHTML = `✅ Fichier Excel formaté exporté : ${fileName}`;
+            document.querySelector('.controls').appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 4000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function () {
+            // Définir la date par défaut à aujourd'hui
+            const today = new Date();
+            document.getElementById('startDate').value = today.toISOString().split('T')[0];
+        });
+    </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('✅ Service Worker enregistré', reg))
+      .catch(err => console.error('❌ Erreur Service Worker', err));
+  }
+</script>
+
+    <script type="module" src="../js/announcements.js"></script>
+
+<script>
+    // Vérifier et afficher les annonces au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+        AnnouncementSystem.showPopupIfNeeded();
+    });
+</script>
+<script type="module">
+    import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+    initNavigation();
+    setActiveNavItem('NOM_DU_FICHIER.html'); 
+</script>
+</body>
+
+</html>

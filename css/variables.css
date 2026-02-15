@@ -1,0 +1,58 @@
+:root {
+    /* Couleurs primaires */
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #d1fae5;
+    --secondary: #f59e0b;
+    --secondary-dark: #d97706;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+--gradient-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    
+    /* Couleurs de surface */
+    --surface: #ffffff;
+    --surface-alt: #f8fafc;
+    --background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    
+    /* Couleurs de texte */
+    --text: #1f2937;
+    --text-light: #6b7280;
+    --text-lighter: #9ca3af;
+    
+    /* Bordures */
+    --border: #e5e7eb;
+    --border-light: rgba(255, 255, 255, 0.2);
+    
+    /* Ombres */
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    /* Border radius */
+    --radius: 16px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-full: 50%;
+    
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.2s ease;
+    
+    /* Z-index */
+    --z-dropdown: 100;
+    --z-sticky: 100;
+    --z-modal: 10000;
+    --z-modal-overlay: 9999;
+    --z-tooltip: 10001;
+    
+    /* Espacements */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+}

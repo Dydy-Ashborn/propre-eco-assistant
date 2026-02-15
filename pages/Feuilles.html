@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Feuille de passage Signée - Propre Eco</title>
+
+    <!-- PWA Configuration -->
+    <link rel="icon" type="image/png" href="img/logo.png" />
+    <link rel="apple-touch-icon" href="img/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png" />
+    <link rel="manifest" href="../manifest.json">
+
+    <!-- PWA Métadonnées -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Propre Eco">
+    <meta name="theme-color" content="#10B981">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Scripts et styles -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/index-specific.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/modals.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/Feuilles.css">
+
+
+   
+</head>
+
+<body>
+    <!-- Header -->
+<header class="header">
+    <div class="header-content">
+        <button class="hamburger-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="../index.html" class="logo">
+            <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
+            Propre Eco Assistant
+        </a>
+
+        <div class="header-spacer"></div>
+    </div>
+</header>
+
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-menu">
+    <div class="sidebar-header">
+        <img src="../img/logo.png" width="50px" alt="Logo">
+        <h3>Propre Eco</h3>
+        <button class="sidebar-close" aria-label="Fermer">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-content">
+        <div class="menu-section">
+            <span class="menu-section-title">Navigation</span>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="../index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="signaler.html">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Signaler</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="Feuilles.html">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Feuilles</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Specifique.html">
+                        <i class="fas fa-hard-hat"></i>
+                        <span>Specifique</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="pointeuse.html">
+                        <i class="fas fa-clock"></i>
+                        <span>Pointeuse</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="devis.html">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Devis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="dashbord.html">
+                        <i class="fas fa-columns"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container">
+        <div class="main-card">
+            <div class="card-header">
+                <h1><i class="fas fa-camera"></i> Feuille de passage Signée</h1>
+                <p>Prenez une photo de votre feuille signée pour valider votre passage</p>
+            </div>
+
+            <!-- <div class="alert" style="text-align: center;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Merci de prendre la photo dès votre arrivé sur la copropriété.</span>
+            </div> -->
+
+            <div class="card-content">
+                <!-- Informations sur la propriété -->
+                <div class="property-info">
+                    <h3 id="propertyName">Sélectionnez une copropriété</h3>
+                    <p id="propertyAddress">Adresse non définie</p>
+                    <p><strong>Code :</strong> <span id="propertyCode">N/A</span></p>
+                </div>
+
+                <!-- Section 1: Sélection copropriété -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-building"></i>
+                        Copropriété
+                    </h3>
+                    <div class="search-container">
+                        <input type="text" id="propertySearch" class="modern-search"
+                            placeholder="Rechercher une copropriété.." autocomplete="off" />
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+
+                <!-- Section: Nom de l'agent -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Nom de l'agent
+                    </h3>
+                    <input type="text" id="agentName" class="modern-search" placeholder="Entrez votre prénom..." />
+                </div>
+
+                <!-- Section 2: Confirmation -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-check-circle"></i>
+                        Confirmation
+                    </h3>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="workConfirmation" />
+                        <label for="workConfirmation">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Je certifie procéder au nettoyage de cette copropriété.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 3: Photo -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-camera"></i>
+                        Photo de la feuille signée
+                    </h3>
+                    <div class="photo-section">
+                        <input type="file" id="photoInput" class="photo-input" accept="image/*" capture="environment" />
+                        <button type="button" id="photoBtn" class="btn" disabled>
+                            <i class="fas fa-camera"></i>
+                            Prendre la photo
+                        </button>
+                        <div id="previewContainer" class="preview-container" style="display:none">
+                            <img id="previewImage" class="preview-image" alt="Aperçu" />
+                            <div id="compressionInfo" class="compression-info"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton d'envoi -->
+                <button type="button" id="uploadBtn" class="btn btn-warning btn-full" disabled>
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Envoyer la feuille signée
+                </button>
+
+                <div id="messages"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-container">
+            <div class="loading-spinner">
+                <div class="spinner-circle"></div>
+                <div class="spinner-circle"></div>
+                <div class="spinner-circle"></div>
+                <div class="loading-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+            </div>
+            <h3 class="loading-title">Envoi en cours...</h3>
+            <p class="loading-message">Nous envoyons votre feuille de passage signée</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="successOverlay" class="success-overlay" style="display: none;">
+        <div class="success-container">
+            <div class="success-checkmark">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="success-title">Feuille envoyée !</h3>
+            <p class="success-message-overlay">Votre feuille de passage signée a été enregistrée avec succès.</p>
+            <div class="success-bar">
+                <div class="success-bar-fill"></div>
+            </div>
+            <p class="success-redirect">Le formulaire va se réinitialiser automatiquement...</p>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore-compat.js"></script>
+    <script src="../js/Feuilles.js"></script>
+ 
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('../service-worker.js')
+                .then(() => console.log('✅ Service Worker enregistré'))
+                .catch(err => console.log('❌ Erreur Service Worker', err));
+        }
+    </script>
+    <script type="module" src="../js/announcements.js"></script>
+    <script>
+        // Vérifier et afficher les annonces au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof initAnnouncementsPanel === 'function') {
+                initAnnouncementsPanel();
+            }
+        });
+    </script>
+    <script type="module" src="../js/announcements.js"></script>
+
+    <footer class="app-footer">
+        Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+    </footer>
+    <script type="module">
+    import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+    initNavigation();
+    setActiveNavItem('Feuilles.html'); 
+</script>
+</body>
+
+</html>

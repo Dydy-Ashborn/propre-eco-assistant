@@ -1,0 +1,70 @@
+{
+  "categories": [
+    {
+      "nom": "Chambres et Pièces",
+      "elements": [
+        { "id": "chambre_placard", "nom": "Chambre avec placard", "temps_mn": 30, "taux": 43.4 },
+        { "id": "grande_sdb_dressing", "nom": "Grande salle de bain et dressing", "temps_mn": 120, "taux": 43.4 },
+        { "id": "petite_sdb", "nom": "Petite salle de bain", "temps_mn": 60, "taux": 43.4 },
+        { "id": "dortoir_placards", "nom": "Dortoir avec placards", "temps_mn": 60, "taux": 43.4 },
+        { "id": "mezzanine", "nom": "Mezzanine", "temps_mn": 60, "taux": 43.4 },
+        { "id": "dressing", "nom": "Dressing", "temps_mn": 30, "taux": 43.4 },
+        { "id": "salle_video", "nom": "Salle vidéo", "temps_mn": 30, "taux": 43.4 },
+        { "id": "salle_manger", "nom": "Salle à manger", "temps_mn": 45, "taux": 43.4 },
+        { "id": "salon", "nom": "Salon", "temps_mn": 45, "taux": 43.4 },
+        { "id": "bureau", "nom": "Bureau", "temps_mn": 30, "taux": 43.4 },
+        { "id": "couloir", "nom": "Couloir", "temps_mn": 30, "taux": 43.4 },
+        { "id": "wc_lavemain", "nom": "WC lave main", "temps_mn": 20, "taux": 43.4 }
+      ]
+    },
+    {
+      "nom": "Cuisine et Annexes",
+      "elements": [
+        { "id": "grande_cuisine", "nom": "Grande cuisine", "temps_mn": 60, "taux": 43.4 },
+        { "id": "cellier", "nom": "Cellier", "temps_mn": 60, "taux": 43.4 },
+        { "id": "buanderie", "nom": "Buanderie", "temps_mn": 60, "taux": 43.4 },
+        { "id": "local_tech", "nom": "Local technique", "temps_mn": 30, "taux": 43.4 },
+        { "id": "chaufferie", "nom": "Chaufferie", "temps_mn": 60, "taux": 43.4 }
+      ]
+    },
+    {
+      "nom": "Vitres et Fenêtres",
+      "elements": [
+        { "id": "vitres_fenetres", "nom": "Vitres portes et fenêtres (grattage/face)", "temps_mn": 6, "taux": 43.4 },
+        { "id": "baies_vitrees", "nom": "Baies vitrées (grattage/face)", "temps_mn": 8, "taux": 43.4 },
+        { "id": "vitres_hautes", "nom": "Vitres hautes chiantes (grattage/face)", "temps_mn": 10, "taux": 43.4 },
+        { "id": "velux", "nom": "Vélux", "temps_mn": 10, "taux": 43.4 }
+      ]
+    },
+    {
+      "nom": "Espaces Spéciaux",
+      "elements": [
+        { "id": "sauna_douche", "nom": "Sauna + douche", "temps_mn": 45, "taux": 43.4 },
+        { "id": "skiroom", "nom": "Skiroom", "temps_mn": 60, "taux": 43.4 },
+        { "id": "garage", "nom": "Garage", "temps_mn": 60, "taux": 43.4 },
+        { "id": "annexe_garage", "nom": "Annexe garage", "temps_mn": 45, "taux": 43.4 },
+        { "id": "ascenseur", "nom": "Ascenseur", "temps_mn": 30, "taux": 43.4 }
+      ]
+    },
+    {
+      "nom": "Extérieurs",
+      "elements": [
+        { "id": "terrasse", "nom": "Terrasse", "temps_mn": 60, "taux": 43.4 },
+        { "id": "balcon", "nom": "Balcon", "temps_mn": 30, "taux": 43.4 }
+      ]
+    },
+    {
+      "nom": "Autres",
+      "elements": [
+        { "id": "escalier", "nom": "Escalier", "temps_mn": 15, "taux": 43.4 },
+        { "id": "rambarde", "nom": "Rambarde selon modèle", "temps_mn": 30, "taux": 43.4 },
+        { "id": "aspi_vmc", "nom": "Aspiration trappe VMC", "temps_mn": 20, "taux": 43.4 },
+        { "id": "aspi_poutraison", "nom": "Aspiration poutraison + mur", "temps_mn": 60, "taux": 43.4 },
+        { "id": "tapis_entree", "nom": "Tapis entrée", "temps_mn": 15, "taux": 43.4 },
+        { "id": "protections_achat", "nom": "Protections achat", "temps_mn": 60, "taux": 125 },
+        { "id": "protections_enlevement", "nom": "Protection enlèvement", "temps_mn": 60, "taux": 43.4 },
+        { "id": "trajet", "nom": "Trajet", "temps_mn": 120, "taux": 43.4 }
+      ]
+    }
+  ]
+}
