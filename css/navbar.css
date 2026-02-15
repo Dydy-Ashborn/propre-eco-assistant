@@ -305,7 +305,30 @@
     }
 }
 @media (max-width: 768px) {
+    /* Couvrir toute la zone du haut avec la couleur de la nav */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+        z-index: 99;
+    }
+    
+    /* Descendre le header sans créer d'espace visible */
     .header {
-        margin-top: 20px;
+        padding-top: calc(1rem + 30px);
+    }
+    
+    /* Aligner le contenu du sidebar (logo + texte) */
+    .sidebar-header {
+        padding-top: calc(2rem + 30px);
+    }
+    
+    /* Aligner le bouton X avec le logo/texte */
+    .sidebar-close {
+        top: calc(2.5rem + 30px);
     }
 }
