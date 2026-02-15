@@ -3163,16 +3163,16 @@ function generateChiffrageRows(devis) {
         });
     }
 
-    return items.map(item => `
+  return items.map(item => `
         <tr class="chiffrage-row ${item.grattage ? 'row-grattage' : ''}">
-            <td class="chiffrage-td-label">
+            <td class="chiffrage-td-label" data-label="Élément">
                 ${item.label}
                 ${item.grattage ? '<span class="grattage-badge"><i class="fas fa-exclamation-triangle"></i> Grattage</span>' : ''}
             </td>
-            <td class="chiffrage-td-center"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
-            <td class="chiffrage-td-center"><input type="number" step="1" class="calc-temps chiffrage-input-editable" value="${item.tempsMn}" oninput="calculerTotalDevis()" placeholder="minutes"></td>
-            <td class="chiffrage-td-center"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
-            <td class="chiffrage-td-total"><span class="row-total-val">0.00</span>€</td>
+            <td class="chiffrage-td-center" data-label="Quantité"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
+            <td class="chiffrage-td-center" data-label="Temps (mn)"><input type="number" step="1" class="calc-temps chiffrage-input-editable" value="${item.tempsMn}" oninput="calculerTotalDevis()" placeholder="minutes"></td>
+            <td class="chiffrage-td-center" data-label="Taux (€/h)"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
+            <td class="chiffrage-td-total" data-label="Total"><span class="row-total-val">0.00</span>€</td>
         </tr>
     `).join('');
 }
