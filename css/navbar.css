@@ -4,7 +4,7 @@
     background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1rem 2rem;
-    padding-top: calc(1rem + env(safe-area-inset-top));
+    margin-top: 20px;
     position: sticky;
     top: 0;
     z-index: 100;

@@ -3,7 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />  <title>Gestionnaire de Copropriétés - Propre Eco</title>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Gestionnaire de Copropriétés - Propre Eco</title>
 
   <!-- PWA Configuration -->
   <link rel="icon" type="image/png" href="img/logo.png" />
@@ -32,84 +34,84 @@
 </head>
 
 <body>
- <!-- Header -->
-<header class="header">
+  <!-- Header -->
+  <header class="header">
     <div class="header-content">
-        <button class="hamburger-btn" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+      <button class="hamburger-btn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-        <a href="index.html" class="logo">
-            <img src="img/logo.png" width="60px" alt="Logo Propre Eco">
-            Propre Eco Assistant
-        </a>
+      <a href="index.html" class="logo">
+        <img src="img/logo.png" width="60px" alt="Logo Propre Eco">
+        Propre Eco Assistant
+      </a>
 
-        <div class="header-spacer"></div>
+      <div class="header-spacer"></div>
     </div>
-</header>
+  </header>
 
-<div class="sidebar-overlay"></div>
-<nav class="sidebar-menu">
+  <div class="sidebar-overlay"></div>
+  <nav class="sidebar-menu">
     <div class="sidebar-header">
-        <img src="img/logo.png" width="50px" alt="Logo">
-        <h3>Propre Eco</h3>
-        <button class="sidebar-close" aria-label="Fermer">
-            <i class="fas fa-times"></i>
-        </button>
+      <img src="img/logo.png" width="50px" alt="Logo">
+      <h3>Propre Eco</h3>
+      <button class="sidebar-close" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
     <div class="sidebar-content">
-        <div class="menu-section">
-            <span class="menu-section-title">Navigation</span>
-            <ul class="sidebar-nav">
-                <li class="active">
-                    <a href="index.html">
-                        <i class="fas fa-home"></i>
-                        <span>Accueil</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pages/signaler.html">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Signaler</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pages/Feuilles.html">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Feuilles</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pages/Specifique.html">
-                        <i class="fas fa-hard-hat"></i>
-                        <span>Specifique</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pages/pointeuse.html">
-                        <i class="fas fa-clock"></i>
-                        <span>Pointeuse</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pages/devis.html">
-                        <i class="fas fa-file-invoice"></i>
-                        <span>Devis</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pages/dashbord.html">
-                        <i class="fas fa-columns"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+      <div class="menu-section">
+        <span class="menu-section-title">Navigation</span>
+        <ul class="sidebar-nav">
+          <li class="active">
+            <a href="index.html">
+              <i class="fas fa-home"></i>
+              <span>Accueil</span>
+            </a>
+          </li>
+          <li>
+            <a href="pages/signaler.html">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>Signaler</span>
+            </a>
+          </li>
+          <li>
+            <a href="pages/Feuilles.html">
+              <i class="fas fa-file-alt"></i>
+              <span>Feuilles</span>
+            </a>
+          </li>
+          <li>
+            <a href="pages/Specifique.html">
+              <i class="fas fa-hard-hat"></i>
+              <span>Specifique</span>
+            </a>
+          </li>
+          <li>
+            <a href="pages/pointeuse.html">
+              <i class="fas fa-clock"></i>
+              <span>Pointeuse</span>
+            </a>
+          </li>
+          <li>
+            <a href="pages/devis.html">
+              <i class="fas fa-file-invoice"></i>
+              <span>Devis</span>
+            </a>
+          </li>
+          <li>
+            <a href="pages/dashbord.html">
+              <i class="fas fa-columns"></i>
+              <span>Tableau de bord</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
   <div class="container">
     <!-- Header de bienvenue -->
@@ -144,7 +146,7 @@
         </div>
       </div>
 
-    
+
     </section>
 
     <!-- Section Itinéraire -->
@@ -230,11 +232,11 @@
   </script>
   <script type="module" src="js/firebase-copro.js"></script>
   <script type="module" src="js/announcements.js"></script>
- <script type="module">
+  <script type="module">
     import { initNavigation, setActiveNavItem } from './js/navbar.js';
     initNavigation();
     setActiveNavItem('index.html'); 
-</script>
+  </script>
 </body>
 
 </html>
