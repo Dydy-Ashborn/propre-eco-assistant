@@ -8,13 +8,16 @@ const TEMPS_DEFAUT = {
     'Baies Vitrées': 8,
     'Vitres Hautes': 10,
     'Vélux': 10,
+    'Portes vitrées': 3,
     'Chambres avec placard': 30,
     'Chambres sans placard': 20,
+    'Placards seuls': 10,
     'Grande SDB avec douche': 120,
     'Grande SDB avec baignoire': 120,
     'Grande SDB et dressing': 120,
     'Petite SDB avec douche': 60,
     'Petite SDB avec baignoire': 60,
+    'WC seul': 15,
     'Dortoir avec placards': 60,
     'Mezzanine': 60,
     'Dressing': 30,
@@ -39,7 +42,6 @@ const TEMPS_DEFAUT = {
     'Bureau': 30,
     'Garage': 60
 };
-
 // Configuration
 const PASSWORD = "110389";
 const ITEMS_PER_PAGE = 10;
@@ -3059,22 +3061,32 @@ function generateChiffrageRows(devis) {
             grattage: needsGrattage
         });
     }
-    if (devis.vitres?.hautes) {
-        const needsGrattage = devis.grattage?.hautes;
-        items.push({
-            label: 'Vitres Hautes',
-            nb: 1,
-            tempsMn: TEMPS_DEFAUT['Vitres Hautes'] || 10,
-            taux: 43.40,
-            grattage: needsGrattage
-        });
-    }
     if (devis.vitres?.velux > 0) {
         const needsGrattage = devis.grattage?.velux;
         items.push({
             label: 'Vélux',
             nb: devis.vitres.velux,
             tempsMn: TEMPS_DEFAUT['Vélux'] || 10,
+            taux: 43.40,
+            grattage: needsGrattage
+        });
+    }
+    if (devis.vitres?.portes > 0) {
+        const needsGrattage = devis.grattage?.portes;
+        items.push({
+            label: 'Portes vitrées',
+            nb: devis.vitres.portes,
+            tempsMn: TEMPS_DEFAUT['Portes vitrées'] || 6,
+            taux: 43.40,
+            grattage: needsGrattage
+        });
+    }
+    if (devis.vitres?.hautes) {
+        const needsGrattage = devis.grattage?.hautes;
+        items.push({
+            label: 'Vitres Hautes',
+            nb: 1,
+            tempsMn: TEMPS_DEFAUT['Vitres Hautes'] || 10,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -3095,6 +3107,9 @@ function generateChiffrageRows(devis) {
     if (devis.chambres?.dressing > 0) {
         items.push({ label: 'Dressing', nb: devis.chambres.dressing, tempsMn: TEMPS_DEFAUT['Dressing'] || 30, taux: 43.40 });
     }
+    if (devis.chambres?.placardsSeuls > 0) {
+        items.push({ label: 'Placards seuls', nb: devis.chambres.placardsSeuls, tempsMn: TEMPS_DEFAUT['Placards seuls'] || 15, taux: 43.40 });
+    }
 
     if (devis.sallesDeBain?.grandeSdbDouche > 0) {
         items.push({ label: 'Grande SDB avec douche', nb: devis.sallesDeBain.grandeSdbDouche, tempsMn: TEMPS_DEFAUT['Grande SDB avec douche'] || 120, taux: 43.40 });
@@ -3111,6 +3126,9 @@ function generateChiffrageRows(devis) {
     if (devis.sallesDeBain?.wcLaveMain > 0) {
         items.push({ label: 'WC lave-mains', nb: devis.sallesDeBain.wcLaveMain, tempsMn: TEMPS_DEFAUT['WC lave-mains'] || 20, taux: 43.40 });
     }
+    if (devis.sallesDeBain?.wcSeul > 0) {
+        items.push({ label: 'WC seul', nb: devis.sallesDeBain.wcSeul, tempsMn: TEMPS_DEFAUT['WC seul'] || 15, taux: 43.40 });
+    }
 
     if (devis.cuisine?.petite > 0) {
         items.push({ label: 'Petite cuisine', nb: devis.cuisine.petite, tempsMn: TEMPS_DEFAUT['Petite cuisine'] || 40, taux: 43.40 });
@@ -3119,7 +3137,7 @@ function generateChiffrageRows(devis) {
         items.push({ label: 'Grande cuisine', nb: devis.cuisine.grande, tempsMn: TEMPS_DEFAUT['Grande cuisine'] || 60, taux: 43.40 });
     }
 
-   // Pieces annexes (structure objet)
+    // Pieces annexes (structure objet)
     const annexes = devis.piecesAnnexes || {};
     if (annexes.sauna > 0) items.push({ label: 'Sauna', nb: annexes.sauna, tempsMn: TEMPS_DEFAUT['Sauna'] || 45, taux: 43.40 });
     if (annexes.buanderie > 0) items.push({ label: 'Buanderie', nb: annexes.buanderie, tempsMn: TEMPS_DEFAUT['Buanderie'] || 60, taux: 43.40 });
@@ -3128,13 +3146,13 @@ function generateChiffrageRows(devis) {
     if (annexes.bureau > 0) items.push({ label: 'Bureau', nb: annexes.bureau, tempsMn: TEMPS_DEFAUT['Bureau'] || 30, taux: 43.40 });
     if (annexes.garage > 0) items.push({ label: 'Garage', nb: annexes.garage, tempsMn: TEMPS_DEFAUT['Garage'] || 60, taux: 43.40 });
     if (annexes.skiroom > 0) items.push({ label: 'Skiroom', nb: annexes.skiroom, tempsMn: TEMPS_DEFAUT['Skiroom'] || 60, taux: 43.40 });
-    if (annexes.salleVideo > 0) items.push({ label: 'Salle video', nb: annexes.salleVideo, tempsMn: TEMPS_DEFAUT['Salle video'] || 30, taux: 43.40 });
+    if (annexes.salleVideo > 0) items.push({ label: 'Salle vidéo', nb: annexes.salleVideo, tempsMn: TEMPS_DEFAUT['Salle vidéo'] || 30, taux: 43.40 });
     if (annexes.chaufferie > 0) items.push({ label: 'Chaufferie', nb: annexes.chaufferie, tempsMn: TEMPS_DEFAUT['Chaufferie'] || 60, taux: 43.40 });
     if (annexes.escalier > 0) items.push({ label: 'Escalier', nb: annexes.escalier, tempsMn: TEMPS_DEFAUT['Escalier'] || 15, taux: 43.40 });
     if (annexes.ascenseur > 0) items.push({ label: 'Ascenseur', nb: annexes.ascenseur, tempsMn: TEMPS_DEFAUT['Ascenseur'] || 30, taux: 43.40 });
     
     // Checkboxes annexes
-    if (annexes.tapisEntree) items.push({ label: 'Tapis entree', nb: 1, tempsMn: TEMPS_DEFAUT['Tapis entree'] || 10, taux: 43.40 });
+    if (annexes.tapisEntree) items.push({ label: 'Tapis entrée', nb: 1, tempsMn: TEMPS_DEFAUT['Tapis entrée'] || 10, taux: 43.40 });
     if (annexes.aspiVmc) items.push({ label: 'Aspi trappe VMC', nb: 1, tempsMn: TEMPS_DEFAUT['Aspi trappe VMC'] || 20, taux: 43.40 });
     if (annexes.rambarde) items.push({ label: 'Rambarde', nb: 1, tempsMn: TEMPS_DEFAUT['Rambarde'] || 30, taux: 43.40 });
     if (annexes.aspiPoutraison) items.push({ label: 'Aspiration poutraison + mur', nb: 1, tempsMn: TEMPS_DEFAUT['Aspiration poutraison + mur'] || 60, taux: 43.40 });
@@ -3153,7 +3171,8 @@ function generateChiffrageRows(devis) {
     if (devis.exterieurs?.terrasse > 0) {
         items.push({ label: 'Terrasse', nb: devis.exterieurs.terrasse, tempsMn: TEMPS_DEFAUT['Terrasse'] || 60, taux: 43.40 });
     }
-if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
+
+    if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
         items.forEach(item => {
             const ligneExistante = devis.lignesChiffrage.find(l => {
                 const designationClean = l.designation.replace(/Grattage/g, '').trim();
@@ -3166,7 +3185,7 @@ if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
         });
     }
 
-  return items.map(item => `
+    return items.map(item => `
         <tr class="chiffrage-row ${item.grattage ? 'row-grattage' : ''}">
             <td class="chiffrage-td-label" data-label="Élément">
                 ${item.label}
@@ -3179,6 +3198,7 @@ if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
         </tr>
     `).join('');
 }
+
 
 function formatTempsEnMinutes(heuresDecimales) {
     if (!heuresDecimales || heuresDecimales === 0) return '0mn';

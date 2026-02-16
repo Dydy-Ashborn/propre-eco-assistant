@@ -24,7 +24,7 @@ import { db } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.counter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const inputId = this.dataset.input;
             const action = this.dataset.action;
             const input = document.getElementById(inputId);
@@ -106,7 +106,7 @@ document.getElementById('vitresHautes').addEventListener('change', (e) => {
 setupPhotoPreview('photosCuisine', 'previewCuisine');
 setupPhotoPreview('photosSejour', 'previewSejour');
 setupPhotoPreview('photosVitresHautes', 'previewVitresHautes');
-
+setupPhotoPreview('photosSupplementaires', 'previewSupplementaires');
 // Upload photos
 async function uploadPhotos(files) {
     const IMGBB_API_KEY = '5667189ac916d67ca3e097312dd0443a';
@@ -141,7 +141,6 @@ async function uploadPhotos(files) {
 }
 
 // Submit form
-// Submit form
 document.getElementById('devisForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -158,6 +157,7 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         const vitresStandard = parseInt(document.getElementById('vitresStandard').value) || 0;
         const baiesVitrees = parseInt(document.getElementById('baiesVitrees').value) || 0;
         const velux = parseInt(document.getElementById('velux').value) || 0;
+        const portesVitrees = parseInt(document.getElementById('portesVitrees').value) || 0;
         const vitresHautes = document.getElementById('vitresHautes').checked;
 
         // Cuisine
@@ -170,6 +170,7 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         const dortoir = parseInt(document.getElementById('dortoir').value) || 0;
         const mezzanine = parseInt(document.getElementById('mezzanine').value) || 0;
         const dressing = parseInt(document.getElementById('dressing').value) || 0;
+        const placardsSeuls = parseInt(document.getElementById('placardsSeuls').value) || 0;
 
         // Salles de bain
         const grandeSdbDouche = parseInt(document.getElementById('grandeSdbDouche').value) || 0;
@@ -177,6 +178,7 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         const petiteSdbDouche = parseInt(document.getElementById('petiteSdbDouche').value) || 0;
         const petiteSdbBaignoire = parseInt(document.getElementById('petiteSdbBaignoire').value) || 0;
         const wcLaveMain = parseInt(document.getElementById('wcLaveMain').value) || 0;
+        const wcSeul = parseInt(document.getElementById('wcSeul').value) || 0;
 
         // Pieces annexes
         const sauna = parseInt(document.getElementById('sauna').value) || 0;
@@ -219,6 +221,11 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
             photosVitresHautes = await uploadPhotos(document.getElementById('photosVitresHautes').files);
         }
 
+        let photosSupplementaires = [];
+        if (document.getElementById('photosSupplementaires').files.length > 0) {
+            photosSupplementaires = await uploadPhotos(document.getElementById('photosSupplementaires').files);
+        }
+
         const remarques = document.getElementById('remarques').value;
 
         await addDoc(collection(db, "devis"), {
@@ -229,12 +236,14 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
                 standard: vitresStandard,
                 baies: baiesVitrees,
                 velux: velux,
+                portes: portesVitrees,
                 hautes: vitresHautes
             },
             grattage: {
                 standard: document.getElementById('grattageStandard')?.checked || false,
                 baies: document.getElementById('grattageBaies')?.checked || false,
                 velux: document.getElementById('grattageVelux')?.checked || false,
+                portes: document.getElementById('grattagePortes')?.checked || false,
                 hautes: document.getElementById('grattageHautes')?.checked || false
             },
             cuisine: {
@@ -248,7 +257,8 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
                 dortoir: dortoir,
                 mezzanine: mezzanine,
                 dressing: dressing,
-                total: chambresAvecPlacard + chambresSansPlacard + dortoir + mezzanine + dressing
+                placardsSeuls: placardsSeuls,
+                total: chambresAvecPlacard + chambresSansPlacard + dortoir + mezzanine + dressing + placardsSeuls
             },
             sallesDeBain: {
                 grandeSdbDouche,
@@ -256,7 +266,8 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
                 petiteSdbDouche,
                 petiteSdbBaignoire,
                 wcLaveMain,
-                total: grandeSdbDouche + grandeSdbBaignoire + petiteSdbDouche + petiteSdbBaignoire + wcLaveMain
+                wcSeul,
+                total: grandeSdbDouche + grandeSdbBaignoire + petiteSdbDouche + petiteSdbBaignoire + wcLaveMain + wcSeul
             },
             piecesAnnexes: {
                 sauna,
@@ -283,7 +294,8 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
             photos: {
                 cuisine: photosCuisine,
                 sejour: photosSejour,
-                vitresHautes: photosVitresHautes
+                vitresHautes: photosVitresHautes,
+                supplementaires: photosSupplementaires
             },
             remarques,
             status: 'en_attente',
@@ -291,22 +303,17 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         });
 
         // Afficher le succes
-        showNotification('Devis envoyé avec succès !', 'success');
+        showNotification('Devis envoye avec succes !', 'success');
         // Envoyer notification ntfy
         try {
-            await fetch('https://ntfy.sh/propre-eco-clean', {
-                method: 'POST',
-                body: `Nouveau devis envoyé pour ${nomChantier}`,
-                headers: {
-                    'Title': 'Nouveau devis',
-                    'Priority': 'default',
-                    'Tags': 'clipboard'
-                }
+            const message = `📋 Nouveau devis reçu !\n\n🏠 Chantier : ${nomChantier}\n📍 Type : ${typeLogement}\n📐 Surface : ${surface}m²`;
+            await fetch("https://ntfy.sh/signalement-propre-eco", {
+                method: "POST",
+                body: message
             });
         } catch (ntfyError) {
-            console.error('Erreur notification ntfy:', ntfyError);
+            console.error("Erreur notification ntfy:", ntfyError);
         }
-        
 
         // Rediriger apres 3 secondes
         setTimeout(() => {
