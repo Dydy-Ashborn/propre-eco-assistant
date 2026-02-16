@@ -3153,9 +3153,12 @@ function generateChiffrageRows(devis) {
     if (devis.exterieurs?.terrasse > 0) {
         items.push({ label: 'Terrasse', nb: devis.exterieurs.terrasse, tempsMn: TEMPS_DEFAUT['Terrasse'] || 60, taux: 43.40 });
     }
-    if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
+if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
         items.forEach(item => {
-            const ligneExistante = devis.lignesChiffrage.find(l => l.designation === item.label);
+            const ligneExistante = devis.lignesChiffrage.find(l => {
+                const designationClean = l.designation.replace(/Grattage/g, '').trim();
+                return designationClean === item.label || l.designation === item.label;
+            });
             if (ligneExistante) {
                 item.tempsMn = ligneExistante.tempsUnitaireMn || item.tempsMn;
                 item.taux = ligneExistante.tauxHoraire || 43.40;
