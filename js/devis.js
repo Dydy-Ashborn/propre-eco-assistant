@@ -23,6 +23,24 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
 import { db } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.counter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const inputId = this.dataset.input;
+            const action = this.dataset.action;
+            const input = document.getElementById(inputId);
+            const step = parseFloat(input.step) || 1;
+            const min = parseFloat(input.min) || 0;
+            let currentValue = parseFloat(input.value) || 0;
+
+            if (action === 'increase') {
+                input.value = currentValue + step;
+            } else if (action === 'decrease' && currentValue > min) {
+                input.value = currentValue - step;
+            }
+
+            input.dispatchEvent(new Event('change'));
+        });
+    });
     const toggleButton = document.querySelector('.nav-toggle');
     const menu = document.querySelector('.nav-menu');
 
