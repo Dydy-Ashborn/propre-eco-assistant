@@ -273,7 +273,22 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         });
 
         // Afficher le succes
-        showNotification('Devis envoye avec succes !', 'success');
+        showNotification('Devis envoyé avec succès !', 'success');
+        // Envoyer notification ntfy
+        try {
+            await fetch('https://ntfy.sh/propre-eco-clean', {
+                method: 'POST',
+                body: `Nouveau devis envoyé pour ${nomChantier}`,
+                headers: {
+                    'Title': 'Nouveau devis',
+                    'Priority': 'default',
+                    'Tags': 'clipboard'
+                }
+            });
+        } catch (ntfyError) {
+            console.error('Erreur notification ntfy:', ntfyError);
+        }
+        
 
         // Rediriger apres 3 secondes
         setTimeout(() => {
