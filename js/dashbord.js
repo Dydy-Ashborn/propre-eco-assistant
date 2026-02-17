@@ -3339,6 +3339,9 @@ function openPhotoModal(category, startIndex) {
     const photos = window.currentDevisPhotos[category];
     if (!photos || photos.length === 0) return;
 
+    // Extraire les URLs (compatibilité ancien et nouveau format)
+    const photoUrls = photos.map(photo => typeof photo === 'string' ? photo : photo.url);
+
     const modalHTML = `
         <div id="photoModal" class="photo-modal show">
             <div class="photo-modal-content">
@@ -3346,22 +3349,22 @@ function openPhotoModal(category, startIndex) {
                     <i class="fas fa-times"></i>
                 </button>
                 
-                ${photos.length > 1 ? `
+                ${photoUrls.length > 1 ? `
                     <button class="photo-nav photo-nav-prev" onclick="photoModalPrev()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 ` : ''}
                 
                 <div class="photo-modal-container">
-                    <img id="photoModalImg" src="${photos[startIndex]}" alt="Photo ${startIndex + 1}">
-                    ${photos.length > 1 ? `
+                    <img id="photoModalImg" src="${photoUrls[startIndex]}" alt="Photo ${startIndex + 1}">
+                    ${photoUrls.length > 1 ? `
                         <div class="photo-modal-counter">
-                            <span id="photoModalIndex">${startIndex + 1}</span> / ${photos.length}
+                            <span id="photoModalIndex">${startIndex + 1}</span> / ${photoUrls.length}
                         </div>
                     ` : ''}
                 </div>
                 
-                ${photos.length > 1 ? `
+                ${photoUrls.length > 1 ? `
                     <button class="photo-nav photo-nav-next" onclick="photoModalNext()">
                         <i class="fas fa-chevron-right"></i>
                     </button>
@@ -3371,9 +3374,8 @@ function openPhotoModal(category, startIndex) {
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    window.currentPhotoModalData = { photos, currentIndex: startIndex };
+    window.currentPhotoModalData = { photos: photoUrls, currentIndex: startIndex };
 }
-
 function closePhotoModal() {
     const modal = document.getElementById('photoModal');
     if (modal) {
@@ -3388,8 +3390,11 @@ function photoModalPrev() {
     if (!data) return;
 
     data.currentIndex = (data.currentIndex - 1 + data.photos.length) % data.photos.length;
-    document.getElementById('photoModalImg').src = data.photos[data.currentIndex];
-    document.getElementById('photoModalIndex').textContent = data.currentIndex + 1;
+    const img = document.getElementById('photoModalImg');
+    const counter = document.getElementById('photoModalIndex');
+    
+    if (img) img.src = data.photos[data.currentIndex];
+    if (counter) counter.textContent = data.currentIndex + 1;
 }
 
 function photoModalNext() {
@@ -3397,9 +3402,13 @@ function photoModalNext() {
     if (!data) return;
 
     data.currentIndex = (data.currentIndex + 1) % data.photos.length;
-    document.getElementById('photoModalImg').src = data.photos[data.currentIndex];
-    document.getElementById('photoModalIndex').textContent = data.currentIndex + 1;
+    const img = document.getElementById('photoModalImg');
+    const counter = document.getElementById('photoModalIndex');
+    
+    if (img) img.src = data.photos[data.currentIndex];
+    if (counter) counter.textContent = data.currentIndex + 1;
 }
+
 
 // CRUCIAL : Exposer les fonctions au HTML
 window.openChiffrageModal = openChiffrageModal;
