@@ -2946,21 +2946,21 @@ function generateDevisInfos(devis) {
         </div>`;
     }
 
-    if (vitresHautesPhotos.length > 0) {
-        html += `<div class="devis-photos-section">
-            <h4><i class="fas fa-window-maximize"></i> Photos vitres hautes (${vitresHautesPhotos.length})</h4>
-            <div class="devis-photos-grid">
-                ${vitresHautesPhotos.map((photo, index) => `
-                    <div class="devis-photo-item" onclick="openPhotoModal('vitresHautes', ${index})">
-                        <img src="${photo.url}" alt="Vitres hautes ${index + 1}">
-                        <div class="photo-overlay">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
+  if (vitresHautesPhotos.length > 0) {
+    html += `<div class="devis-photos-section">
+        <h4><i class="fas fa-window-maximize"></i> Photos vitres hautes (${vitresHautesPhotos.length})</h4>
+        <div class="devis-photos-grid">
+            ${vitresHautesPhotos.map((photo, index) => `
+                <div class="devis-photo-item" onclick="openPhotoModal('vitresHautes', ${index})">
+                    <img src="${photo.url}" alt="Vitres hautes ${index + 1}">
+                    <div class="photo-overlay">
+                        <i class="fas fa-search-plus"></i>
                     </div>
-                `).join('')}
-            </div>
-        </div>`;
-    }
+                </div>
+            `).join('')}
+        </div>
+    </div>`;
+}
 
     html += '</div>';
     return html;
