@@ -63,10 +63,21 @@ function setupPhotoPreview(inputId, previewId) {
     const preview = document.getElementById(previewId);
 
     input.addEventListener('change', (e) => {
-        preview.innerHTML = '';
         const files = Array.from(e.target.files);
-
-        files.forEach((file, index) => {
+        const existingFiles = input.dataset.existingFiles ? JSON.parse(input.dataset.existingFiles) : [];
+        
+        // Ajouter les nouveaux fichiers aux existants
+        const dt = new DataTransfer();
+        existingFiles.forEach(file => dt.items.add(file));
+        files.forEach(file => dt.items.add(file));
+        
+        // Stocker tous les fichiers
+        input.dataset.existingFiles = JSON.stringify(Array.from(dt.files));
+        input.files = dt.files;
+        
+        // Afficher toutes les photos
+        preview.innerHTML = '';
+        Array.from(dt.files).forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const div = document.createElement('div');
@@ -87,12 +98,13 @@ function setupPhotoPreview(inputId, previewId) {
 window.removePhoto = function (inputId, index) {
     const input = document.getElementById(inputId);
     const dt = new DataTransfer();
-    const files = Array.from(input.files);
-
-    files.forEach((file, i) => {
+    const existingFiles = input.dataset.existingFiles ? JSON.parse(input.dataset.existingFiles) : [];
+    
+    existingFiles.forEach((file, i) => {
         if (i !== index) dt.items.add(file);
     });
 
+    input.dataset.existingFiles = JSON.stringify(Array.from(dt.files));
     input.files = dt.files;
     input.dispatchEvent(new Event('change'));
 };
