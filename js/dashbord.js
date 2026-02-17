@@ -46,7 +46,7 @@ const TEMPS_DEFAUT = {
 const PASSWORD = "110389";
 const ITEMS_PER_PAGE = 10;
 
-let currentTab = 'feuilles_passage';
+let currentTab = 'overview';
 let currentGalleryPhotos = [];
 let currentPhotoIndex = 0;
 let annoncePhotos = [];
@@ -179,6 +179,9 @@ function switchTab(tab) {
 
 function loadCurrentTab() {
     switch (currentTab) {
+        case 'overview':
+            loadOverview();
+            break;
         case 'feuilles_passage':
             loadFeuillesPassage();
             break;
@@ -205,6 +208,94 @@ function loadCurrentTab() {
             break;
     }
 }
+// ========== VUE D'ENSEMBLE ==========
+async function loadOverview() {
+    showLoading('overview');
+
+    // Date affichée
+    const today = new Date();
+    const dateEl = document.getElementById('overviewDate');
+    if (dateEl) {
+        dateEl.textContent = today.toLocaleDateString('fr-FR', {
+            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+    }
+
+    // Semaine courante
+    const currentWeek = getWeekNumber(today);
+    const weekString = `${today.getFullYear()}-W${currentWeek.toString().padStart(2, '0')}`;
+
+    // Timestamp début de semaine (lundi)
+    const dayOfWeek = today.getDay() || 7;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - dayOfWeek + 1);
+    monday.setHours(0, 0, 0, 0);
+
+    try {
+        // Charger tout en parallèle
+        const [feuillesSnap, signalementsSnap, devisSnap] = await Promise.all([
+            getDocs(collection(db, 'feuilles_passage')),
+            getDocs(collection(db, 'signalements')),
+            getDocs(collection(db, 'devis'))
+        ]);
+
+        // KPI Feuilles — cette semaine
+        let feuillesSemaine = 0;
+        feuillesSnap.forEach(doc => {
+            const data = doc.data();
+            const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+            if (createdAt && createdAt >= monday) feuillesSemaine++;
+        });
+
+        // KPI Signalements — total
+        const totalSignalements = signalementsSnap.size;
+
+        // KPI Devis — en attente de chiffrage
+        let devisEnAttente = 0;
+        devisSnap.forEach(doc => {
+            if (doc.data().status !== 'chiffre') devisEnAttente++;
+        });
+
+        // KPI Heures — semaine courante, tous les employés
+        const employeeIds = Object.keys(employeeNames);
+        const weekResults = await Promise.all(
+            employeeIds.map(async (empId) => {
+                try {
+                    const weekDocSnap = await getDoc(doc(db, 'employees', empId, 'weeks', weekString));
+                    if (!weekDocSnap.exists()) return 0;
+                    const data = weekDocSnap.data();
+                    let hours = 0;
+                    if (data.days) data.days.forEach(d => { hours += parseFloat(d.hours) || 0; });
+                    return hours;
+                } catch { return 0; }
+            })
+        );
+        const totalHeuresSemaine = weekResults.reduce((a, b) => a + b, 0);
+
+        // Afficher les KPIs
+        document.getElementById('kpi-feuilles').textContent = feuillesSemaine;
+        document.getElementById('kpi-signalements').textContent = totalSignalements;
+        document.getElementById('kpi-heures').textContent = `${totalHeuresSemaine.toFixed(1)}h`;
+        document.getElementById('kpi-devis').textContent = devisEnAttente;
+
+        // Badge rouge si signalements ou devis en attente
+        const kpiSignEl = document.getElementById('kpi-signalements');
+        if (totalSignalements > 0) kpiSignEl.closest('.kpi-card').classList.add('kpi-alert');
+
+        const kpiDevisEl = document.getElementById('kpi-devis');
+        if (devisEnAttente > 0) kpiDevisEl.closest('.kpi-card').classList.add('kpi-alert');
+
+        showContent('overview');
+    } catch (error) {
+        console.error('Erreur overview:', error);
+        showError('overview', error.message);
+    }
+}
+
+window.switchTabPublic = function(tab) {
+    switchTab(tab);
+};
+
 
 // ========== FEUILLES DE PASSAGE ==========
 async function loadFeuillesPassage() {
