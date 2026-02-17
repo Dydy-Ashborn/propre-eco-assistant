@@ -357,12 +357,20 @@ uploadBtn.addEventListener('click', async () => {
             }, 3000);
         } else {
             hideLoading();
-            showMessage('<i class="fas fa-times-circle"></i> Erreur lors de l\'upload ImgBB', 'error');
+            showError('Erreur lors de l\'upload ImgBB');
+            
+            setTimeout(() => {
+                hideError();
+            }, 5000);
         }
-    } catch (e) {
+   } catch (e) {
         console.error(e);
         hideLoading();
-        showMessage(`<i class="fas fa-times-circle"></i> Erreur : ${e.message}`, 'error');
+        showError(e.message || 'Erreur lors de l\'upload');
+        
+        setTimeout(() => {
+            hideError();
+        }, 5000);
     }
 });
 
@@ -434,7 +442,27 @@ function hideSuccess() {
         successOverlay.style.display = 'none';
     }
 }
+function showError(message) {
+    const errorOverlay = document.getElementById('errorOverlay');
+    if (errorOverlay) {
+        const errorMessage = errorOverlay.querySelector('.error-message');
+        if (errorMessage) {
+            errorMessage.textContent = message || 'Une erreur est survenue';
+        }
+        errorOverlay.style.display = 'flex';
+        setTimeout(() => errorOverlay.classList.add('active'), 10);
+    }
+}
 
+function hideError() {
+    const errorOverlay = document.getElementById('errorOverlay');
+    if (errorOverlay) {
+        errorOverlay.classList.remove('active');
+        setTimeout(() => {
+            errorOverlay.style.display = 'none';
+        }, 300);
+    }
+}
 // Initialisation
 window.addEventListener('load', () => {
     loadProperties();

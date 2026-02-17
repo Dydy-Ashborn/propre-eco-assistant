@@ -117,6 +117,36 @@ function hideSuccess() {
         }, 300);
     }
 }
+function showError(message) {
+    console.log('showError appelée');
+    const errorOverlay = document.getElementById('errorOverlay');
+    console.log('errorOverlay:', errorOverlay);
+    if (errorOverlay) {
+        const errorMessage = errorOverlay.querySelector('.error-message');
+        if (errorMessage) {
+            errorMessage.textContent = message || 'Une erreur est survenue';
+        }
+        errorOverlay.style.display = 'flex';
+        console.log('display flex appliqué');
+        setTimeout(() => {
+            errorOverlay.classList.add('active');
+            console.log('classe active ajoutée');
+        }, 10);
+    } else {
+        console.error('Element errorOverlay non trouvé !');
+    }
+}
+
+function hideError() {
+    console.log('hideError appelée');
+    const errorOverlay = document.getElementById('errorOverlay');
+    if (errorOverlay) {
+        errorOverlay.classList.remove('active');
+        setTimeout(() => {
+            errorOverlay.style.display = 'none';
+        }, 300);
+    }
+}
 
 // Variables pour les images
 let selectedFiles = [];
@@ -634,11 +664,16 @@ form.addEventListener('submit', async (e) => {
             }
         }, 3000);
 
-    } catch (err) {
+  } catch (err) {
         console.error("Erreur:", err);
         hideLoading();
-        showStatus(`Erreur lors de l'envoi : ${err.message}`, "error");
+        showError(err.message || 'Erreur lors de l\'envoi');
+        
+        setTimeout(() => {
+            hideError();
+        }, 5000);
     }
+
 });
 
 // Navigation mobile

@@ -183,6 +183,7 @@
                         </button>
                         <div id="previewContainer" class="preview-container" style="display:none">
                             <img id="previewImage" class="preview-image" alt="Aperçu" />
+                            <div id="compressionInfo" class="compression-info"></div>
                         </div>
                     </div>
                 </div>
@@ -229,6 +230,18 @@
             <p class="success-redirect">Le formulaire va se réinitialiser automatiquement...</p>
         </div>
     </div>
+    <div id="errorOverlay" class="error-overlay" style="display: none;">
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h3 class="error-title">Erreur d'envoi</h3>
+        <p class="error-message">Une erreur est survenue lors de l'envoi</p>
+        <div class="error-bar">
+            <div class="error-bar-fill"></div>
+        </div>
+    </div>
+</div>
 
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
