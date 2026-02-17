@@ -150,6 +150,17 @@
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     box-shadow: 0 4px 6px rgba(139, 92, 246, 0.25);
 }
+.btn-excel {
+    background: linear-gradient(135deg, #217346 0%, #185a32 100%);
+    color: white;
+    box-shadow: 0 4px 6px rgba(33, 115, 70, 0.3);
+}
+
+.btn-excel:hover {
+    box-shadow: 0 6px 12px rgba(33, 115, 70, 0.45);
+    transform: translateY(-2px);
+}
+
 
 .btn-imgbb:hover {
     box-shadow: 0 6px 12px rgba(139, 92, 246, 0.35);

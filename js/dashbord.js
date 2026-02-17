@@ -5,10 +5,10 @@ import { initCoproManagement } from './dashboard-copro.js';
 //TEMPS PAR DEFAUT POUR LE CHIFFRAGE (en minutes)
 const TEMPS_DEFAUT = {
     'Vitres Standard': 6,
-    'Baies Vitrées': 8,
+    'Baies VitrÃ©es': 8,
     'Vitres Hautes': 10,
-    'Vélux': 10,
-    'Portes vitrées': 3,
+    'VÃ©lux': 10,
+    'Portes vitrÃ©es': 3,
     'Chambres avec placard': 30,
     'Chambres sans placard': 20,
     'Placards seuls': 10,
@@ -28,7 +28,7 @@ const TEMPS_DEFAUT = {
     'Cellier': 60,
     'Buanderie': 60,
     'WC lave-mains': 20,
-    'Salle vidéo': 30,
+    'Salle vidÃ©o': 30,
     'Local technique': 30,
     'Escalier': 15,
     'Rambarde': 30,
@@ -38,7 +38,7 @@ const TEMPS_DEFAUT = {
     'Chaufferie': 60,
     'Aspiration poutraison + mur': 60,
     'Ascenseur': 30,
-    'Tapis entrée': 10,
+    'Tapis entrÃ©e': 10,
     'Bureau': 30,
     'Garage': 60
 };
@@ -51,7 +51,7 @@ let currentGalleryPhotos = [];
 let currentPhotoIndex = 0;
 let annoncePhotos = [];
 
-// Données paginées
+// DonnÃ©es paginÃ©es
 let allData = {
     feuilles_passage: [],
     photos_chantiers: [],
@@ -82,7 +82,7 @@ function init() {
     const currentWeek = getWeekNumber(today);
     const weekString = `${today.getFullYear()}-W${currentWeek.toString().padStart(2, '0')}`;
 
-    // Définir les valeurs par défaut
+    // DÃ©finir les valeurs par dÃ©faut
     const weekStartInput = document.getElementById('filterWeekStart');
     const weekEndInput = document.getElementById('filterWeekEnd');
     if (weekStartInput) weekStartInput.value = weekString;
@@ -273,7 +273,7 @@ function renderFeuillesPassage() {
 window.deleteFeuille = async function(feuilleId) {
     showConfirmModal({
         title: 'Supprimer cette feuille de passage ?',
-        message: 'Cette action est irréversible. La feuille sera définitivement supprimée.',
+        message: 'Cette action est irrÃ©versible. La feuille sera dÃ©finitivement supprimÃ©e.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
@@ -286,7 +286,7 @@ window.deleteFeuille = async function(feuilleId) {
                 // Re-render
                 renderFeuillesPassage();
                 
-                showNotification('Feuille supprimee avec succès', 'success');
+                showNotification('Feuille supprimee avec succÃ¨s', 'success');
             } catch (error) {
                 console.error('Erreur suppression feuille:', error);
                 showNotification('Erreur lors de la suppression', 'error');
@@ -346,12 +346,12 @@ function renderPhotosChantiers() {
                     <span class="photo-badge">+${photoCount}</span>
                 </div>
                 <div class="chantier-info">
-                    <div class="chantier-name">${chantier.chantier || 'Non spécifié'}</div>
-                    <div class="chantier-meta">${chantier.agent || 'Agent non spécifié'}${description ? ' - ' + description : ''}</div>
+                    <div class="chantier-name">${chantier.chantier || 'Non spÃ©cifiÃ©'}</div>
+                    <div class="chantier-meta">${chantier.agent || 'Agent non spÃ©cifiÃ©'}${description ? ' - ' + description : ''}</div>
                 </div>
                 <div class="chantier-date">${date}</div>
                 <div class="chantier-actions">
-                    <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="Télécharger">
+                    <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="TÃ©lÃ©charger">
                         <i class="fas fa-download"></i>
                     </button>
                     <button class="btn-icon danger" onclick="deleteChantier('${chantier.id}')" title="Supprimer">
@@ -417,8 +417,8 @@ function renderSignalements() {
                     </div>
                 ` : ''}
                 <div class="chantier-info">
-                    <div class="chantier-name">${signalement.copro || 'Non spécifiée'}</div>
-                    <div class="chantier-meta">${signalement.employee || 'Employé non spécifié'}${description ? ' - ' + description : ''}</div>
+                    <div class="chantier-name">${signalement.copro || 'Non spÃ©cifiÃ©e'}</div>
+                    <div class="chantier-meta">${signalement.employee || 'EmployÃ© non spÃ©cifiÃ©'}${description ? ' - ' + description : ''}</div>
                 </div>
                 <div class="chantier-date">${date}</div>
                 <div class="chantier-actions">
@@ -472,7 +472,7 @@ function renderConsommables() {
         const date = formatDate(item.createdAt);
         const photoUrl = item.images?.[0]?.url || '';
         const factureStatus = item.facture ?
-            '<span style="color: #059669;"><i class="fas fa-check-circle"></i> Facturé</span>' :
+            '<span style="color: #059669;"><i class="fas fa-check-circle"></i> FacturÃ©</span>' :
             '<span style="color: #d97706;"><i class="fas fa-clock"></i> A facturer</span>';
 
         container.innerHTML += `
@@ -484,8 +484,8 @@ function renderConsommables() {
                     </div>
                 ` : ''}
                 <div class="chantier-info">
-                    <div class="chantier-name">${item.type || 'Non spécifié'} - ${item.quantite || 0} unité(s)</div>
-                    <div class="chantier-meta">${item.copro || 'Copro non spécifiée'} - ${item.employee || 'Employé non spécifié'}</div>
+                    <div class="chantier-name">${item.type || 'Non spÃ©cifiÃ©'} - ${item.quantite || 0} unitÃ©(s)</div>
+                    <div class="chantier-meta">${item.copro || 'Copro non spÃ©cifiÃ©e'} - ${item.employee || 'EmployÃ© non spÃ©cifiÃ©'}</div>
                     <div class="chantier-meta">${factureStatus}</div>
                 </div>
                 <div class="chantier-date">${date}</div>
@@ -527,11 +527,11 @@ function renderPagination(tab, totalItems) {
 
     container.innerHTML = `
         <div class="pagination-info">
-            Affichage de ${startIndex} à ${endIndex} sur ${totalItems} éléments
+            Affichage de ${startIndex} Ã  ${endIndex} sur ${totalItems} Ã©lÃ©ments
         </div>
         <div class="pagination-controls">
             <button class="btn-pagination" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage('${tab}', -1)">
-                <i class="fas fa-chevron-left"></i> Précédent
+                <i class="fas fa-chevron-left"></i> PrÃ©cÃ©dent
             </button>
             <div class="page-numbers">
                 ${generatePageNumbers(currentPage, totalPages, tab)}
@@ -744,7 +744,7 @@ async function saveAnnonce() {
             createdAt: new Date()
         });
 
-        alert('Annonce publiée !');
+        alert('Annonce publiÃ©e !');
         hideAnnonceForm();
         loadAnnonces();
     } catch (error) {
@@ -811,7 +811,7 @@ function createDevisCard(devis) {
         (devis.exterieurs?.terrasse ? 1 : 0);
 
     const isChiffre = devis.status === 'chiffre';
-    const statusLabel = isChiffre ? 'Chiffré' : 'En attente';
+    const statusLabel = isChiffre ? 'ChiffrÃ©' : 'En attente';
     const statusClass = isChiffre ? 'success' : 'warning';
 
     let tempsFormate = '--';
@@ -832,7 +832,7 @@ function createDevisCard(devis) {
                     <h3>${escapeHtml(devis.nomChantier || 'Devis sans nom')}</h3>
                     <div class="devis-meta">
                         <span><i class="fas fa-calendar"></i> ${dateAffichee}</span>
-                        <span><i class="fas fa-home"></i> ${totalElements} éléments</span>
+                        <span><i class="fas fa-home"></i> ${totalElements} Ã©lÃ©ments</span>
                         <span class="badge badge-${statusClass}">${statusLabel}</span>
                     </div>
                 </div>
@@ -845,16 +845,16 @@ function createDevisCard(devis) {
                             </div>
                             <div class="devis-total-tag prix-tag prix-ht-tag">
                                 <div class="prix-label">HT</div>
-                                <span>${prixHT.toFixed(2)} €</span>
+                                <span>${prixHT.toFixed(2)} â‚¬</span>
                             </div>
                             <div class="devis-total-tag prix-tag prix-ttc-tag">
                                 <div class="prix-label">TTC</div>
-                                <span>${prixTTC.toFixed(2)} €</span>
+                                <span>${prixTTC.toFixed(2)} â‚¬</span>
                             </div>
                             <button class="btn-icon-action btn-icon-edit" onclick="event.stopPropagation(); openChiffrageModal('${devis.id}')" title="Modifier le chiffrage">
                                 <i class="fas fa-pen"></i>
                             </button>
-                            <button class="btn-icon-action btn-icon-pdf" onclick="event.stopPropagation(); downloadDevisPDF('${devis.id}')" title="Télécharger PDF">
+                            <button class="btn-icon-action btn-icon-pdf" onclick="event.stopPropagation(); downloadDevisPDF('${devis.id}')" title="TÃ©lÃ©charger PDF">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
                             <button class="btn-icon-action btn-icon-delete" onclick="event.stopPropagation(); deleteDevis('${devis.id}')" title="Supprimer">
@@ -879,11 +879,11 @@ function createDevisCard(devis) {
 }
 
 function createDevisDetails(devis) {
-    let html = '<div class="detail-section"><h4><i class="fas fa-home"></i> Détails du bien</h4><div class="detail-grid">';
+    let html = '<div class="detail-section"><h4><i class="fas fa-home"></i> DÃ©tails du bien</h4><div class="detail-grid">';
 
     // Section Vitres
     if (devis.vitres?.standard > 0) html += `<div class="detail-item"><strong>Vitres Standard</strong><span>${devis.vitres.standard}</span></div>`;
-    if (devis.vitres?.baies > 0) html += `<div class="detail-item"><strong>Baies vitrées</strong><span>${devis.vitres.baies}</span></div>`;
+    if (devis.vitres?.baies > 0) html += `<div class="detail-item"><strong>Baies vitrÃ©es</strong><span>${devis.vitres.baies}</span></div>`;
     if (devis.vitres?.hautes > 0) html += `<div class="detail-item"><strong>Vitres hautes</strong><span>${devis.vitres.hautes}</span></div>`;
 
     // Section Chambres
@@ -897,10 +897,10 @@ function createDevisDetails(devis) {
 
     // Section Grattage
     if (devis.grattage && Object.values(devis.grattage).some(v => v === true)) {
-        html += '<div class="detail-section"><h4><i class="fas fa-exclamation-triangle"></i> Grattage nécessaire</h4><div class="grattage-tags">';
+        html += '<div class="detail-section"><h4><i class="fas fa-exclamation-triangle"></i> Grattage nÃ©cessaire</h4><div class="grattage-tags">';
         if (devis.grattage.standard) html += '<span class="grattage-tag">Vitres standard</span>';
-        if (devis.grattage.baies) html += '<span class="grattage-tag">Baies vitrées</span>';
-        if (devis.grattage.velux) html += '<span class="grattage-tag">Vélux</span>';
+        if (devis.grattage.baies) html += '<span class="grattage-tag">Baies vitrÃ©es</span>';
+        if (devis.grattage.velux) html += '<span class="grattage-tag">VÃ©lux</span>';
         if (devis.grattage.hautes) html += '<span class="grattage-tag">Vitres hautes</span>';
         html += '</div></div>';
     }
@@ -1077,17 +1077,17 @@ window.closePhotoGallery = function () {
 };
 
 
-// ========== TÉLÉCHARGEMENT ZIP AMÉLIORÉ ==========
+// ========== TÃ‰LÃ‰CHARGEMENT ZIP AMÃ‰LIORÃ‰ ==========
 async function downloadAllFeuilles() {
     const btn = document.getElementById('downloadAllFeuilles');
     const originalContent = btn.innerHTML;
 
     try {
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Téléchargement...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> TÃ©lÃ©chargement...';
         btn.disabled = true;
 
         if (allData.feuilles_passage.length === 0) {
-            alert('Aucune feuille à télécharger');
+            alert('Aucune feuille Ã  tÃ©lÃ©charger');
             return;
         }
 
@@ -1123,10 +1123,10 @@ async function downloadAllFeuilles() {
         a.click();
         window.URL.revokeObjectURL(url);
 
-        alert(`${processed} feuilles téléchargées`);
+        alert(`${processed} feuilles tÃ©lÃ©chargÃ©es`);
     } catch (error) {
         console.error('Erreur ZIP:', error);
-        alert('Erreur lors de la création du ZIP');
+        alert('Erreur lors de la crÃ©ation du ZIP');
     } finally {
         btn.innerHTML = originalContent;
         btn.disabled = false;
@@ -1138,11 +1138,11 @@ async function downloadAllPhotosChantiers() {
     const originalContent = btn.innerHTML;
 
     try {
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Téléchargement...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> TÃ©lÃ©chargement...';
         btn.disabled = true;
 
         if (allData.photos_chantiers.length === 0) {
-            alert('Aucun chantier à télécharger');
+            alert('Aucun chantier Ã  tÃ©lÃ©charger');
             return;
         }
 
@@ -1184,10 +1184,10 @@ async function downloadAllPhotosChantiers() {
         a.click();
         window.URL.revokeObjectURL(url);
 
-        alert(`${totalPhotos} photos téléchargées`);
+        alert(`${totalPhotos} photos tÃ©lÃ©chargÃ©es`);
     } catch (error) {
         console.error('Erreur ZIP:', error);
-        alert('Erreur lors de la création du ZIP');
+        alert('Erreur lors de la crÃ©ation du ZIP');
     } finally {
         btn.innerHTML = originalContent;
         btn.disabled = false;
@@ -1197,7 +1197,7 @@ async function downloadAllPhotosChantiers() {
 window.downloadSingleChantier = async function (chantierID) {
     const chantier = allData.photos_chantiers.find(c => c.id === chantierID);
     if (!chantier || !chantier.photos || chantier.photos.length === 0) {
-        alert('Aucune photo à télécharger');
+        alert('Aucune photo Ã  tÃ©lÃ©charger');
         return;
     }
 
@@ -1229,7 +1229,7 @@ window.downloadSingleChantier = async function (chantierID) {
         window.URL.revokeObjectURL(url);
     } catch (error) {
         console.error('Erreur:', error);
-        alert('Erreur lors du téléchargement');
+        alert('Erreur lors du tÃ©lÃ©chargement');
     }
 };
 
@@ -1237,13 +1237,13 @@ window.downloadSingleChantier = async function (chantierID) {
 window.deleteChantier = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce chantier ?',
-        message: 'Cette action est irréversible. Le chantier et ses photos seront définitivement supprimés.',
+        message: 'Cette action est irrÃ©versible. Le chantier et ses photos seront dÃ©finitivement supprimÃ©s.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'photos_chantiers', id));
-                showNotification('Chantier supprimé avec succès', 'success');
+                showNotification('Chantier supprimÃ© avec succÃ¨s', 'success');
                 currentPages.photos_chantiers = 1;
                 loadPhotosChantiers();
             } catch (error) {
@@ -1257,13 +1257,13 @@ window.deleteChantier = async function (id) {
 window.deleteSignalement = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce signalement ?',
-        message: 'Cette action est irréversible. Le signalement sera définitivement supprimé.',
+        message: 'Cette action est irrÃ©versible. Le signalement sera dÃ©finitivement supprimÃ©.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'signalements', id));
-                showNotification('Signalement supprimé avec succès', 'success');
+                showNotification('Signalement supprimÃ© avec succÃ¨s', 'success');
                 currentPages.signalements = 1;
                 loadSignalements();
             } catch (error) {
@@ -1277,13 +1277,13 @@ window.deleteSignalement = async function (id) {
 window.deleteConsommable = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce consommable ?',
-        message: 'Cette action est irréversible. Le consommable sera définitivement supprimé.',
+        message: 'Cette action est irrÃ©versible. Le consommable sera dÃ©finitivement supprimÃ©.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'consommables', id));
-                showNotification('Consommable supprimé avec succès', 'success');
+                showNotification('Consommable supprimÃ© avec succÃ¨s', 'success');
                 currentPages.consommables = 1;
                 loadConsommables();
             } catch (error) {
@@ -1297,13 +1297,13 @@ window.deleteConsommable = async function (id) {
 window.deleteAnnonce = async function (id) {
     showConfirmModal({
         title: 'Supprimer cette annonce ?',
-        message: 'Cette action est irréversible. L\'annonce sera définitivement supprimée.',
+        message: 'Cette action est irrÃ©versible. L\'annonce sera dÃ©finitivement supprimÃ©e.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'annonces', id));
-                showNotification('Annonce supprimée avec succès', 'success');
+                showNotification('Annonce supprimÃ©e avec succÃ¨s', 'success');
                 loadAnnonces();
             } catch (error) {
                 console.error('Erreur:', error);
@@ -1316,13 +1316,13 @@ window.deleteAnnonce = async function (id) {
 window.deleteDevis = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce devis ?',
-        message: 'Cette action est irréversible. Le devis sera définitivement supprimé.',
+        message: 'Cette action est irrÃ©versible. Le devis sera dÃ©finitivement supprimÃ©.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'devis', id));
-                showNotification('Devis supprimé avec succès', 'success');
+                showNotification('Devis supprimÃ© avec succÃ¨s', 'success');
                 loadDevis();
             } catch (error) {
                 console.error('Erreur:', error);
@@ -1332,7 +1332,7 @@ window.deleteDevis = async function (id) {
     });
 };
 
-// Fonction générique pour afficher une modale de confirmation moderne
+// Fonction gÃ©nÃ©rique pour afficher une modale de confirmation moderne
 function showConfirmModal({ title, message, confirmText = 'Confirmer', cancelText = 'Annuler', onConfirm }) {
     const modalHTML = `
         <div class="confirm-modal">
@@ -1380,18 +1380,18 @@ function showConfirmModal({ title, message, confirmText = 'Confirmer', cancelTex
 
 window.marquerFacture = async function (id) {
     showConfirmModal({
-        title: 'Marquer comme facturé ?',
-        message: 'Ce consommable sera marqué comme facturé.',
+        title: 'Marquer comme facturÃ© ?',
+        message: 'Ce consommable sera marquÃ© comme facturÃ©.',
         confirmText: 'Confirmer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await updateDoc(doc(db, 'consommables', id), { facture: true });
-                showNotification('Marqué comme facturé', 'success');
+                showNotification('MarquÃ© comme facturÃ©', 'success');
                 loadConsommables();
             } catch (error) {
                 console.error('Erreur:', error);
-                showNotification('Erreur lors de la mise à jour', 'error');
+                showNotification('Erreur lors de la mise Ã  jour', 'error');
             }
         }
     });
@@ -1458,7 +1458,7 @@ function cleanFilename(name) {
         .replace(/[^a-zA-Z0-9 ]/g, '') // Garder seulement lettres, chiffres, espaces
         .replace(/\s+/g, '_') // Remplacer espaces par underscore
         .replace(/_+/g, '_') // Enlever underscores multiples
-        .replace(/^_|_$/g, ''); // Enlever underscores début/fin
+        .replace(/^_|_$/g, ''); // Enlever underscores dÃ©but/fin
 
     return clean || 'inconnu';
 }
@@ -1533,22 +1533,22 @@ function filterAndRenderChantiers(searchTerm) {
 // ========== ONGLET HEURES ==========
 const employeeNames = {
     'dylan': 'Dylan',
-    'oceane': 'Océane',
+    'oceane': 'OcÃ©ane',
     'samuel': 'Samuel',
-    'jeremie': 'Jérémie',
+    'jeremie': 'JÃ©rÃ©mie',
     'carlos': 'Carlos',
     'sandra': 'Sandra',
     'manon': 'Manon',
-    'stephane': 'Stéphane',
+    'stephane': 'StÃ©phane',
     'isabelle': 'Isabelle',
     'caroline': 'Caroline',
     'nadjet': 'Nadjet',
-    'remy': 'Rémy',
+    'remy': 'RÃ©my',
     'maxime': 'Maxime',
     'shana': 'Shana'
 };
 
-// Cache pour les heures (évite de recharger les mêmes données)
+// Cache pour les heures (Ã©vite de recharger les mÃªmes donnÃ©es)
 let heuresCache = {};
 
 async function loadHeures() {
@@ -1558,17 +1558,17 @@ async function loadHeures() {
 
     if (!weekStart || !weekEnd) {
         const content = document.getElementById('content-heures');
-        content.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><p>Veuillez sélectionner une période</p></div>';
+        content.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><p>Veuillez sÃ©lectionner une pÃ©riode</p></div>';
         showContent('heures');
         return;
     }
 
-    // Clé de cache
+    // ClÃ© de cache
     const cacheKey = `${weekStart}_${weekEnd}_${selectedEmployee}`;
 
-    // Si en cache, affichage instantané !
+    // Si en cache, affichage instantanÃ© !
     if (heuresCache[cacheKey]) {
-        console.log('âÅ“"¦ Données en cache - affichage instantané');
+        console.log('Ã¢Ã…â€œ"Â¦ DonnÃ©es en cache - affichage instantanÃ©');
         renderHeures(...heuresCache[cacheKey]);
         showContent('heures');
         return;
@@ -1584,7 +1584,7 @@ async function loadHeures() {
         let totalKmGlobal = 0;
         let totalChantiersGlobal = 0;
 
-        // OPTIMISATION : Promise.all pour charger tous les employés en parallèle
+        // OPTIMISATION : Promise.all pour charger tous les employÃ©s en parallÃ¨le
         const results = await Promise.all(
             employeeIds.map(async (employeeId) => {
                 let employeeTotalHours = 0;
@@ -1593,7 +1593,7 @@ async function loadHeures() {
                 const kmValues = [];
                 let weeksCount = 0;
 
-                // OPTIMISATION : Promise.all pour charger toutes les semaines en parallèle
+                // OPTIMISATION : Promise.all pour charger toutes les semaines en parallÃ¨le
                 const weekResults = await Promise.all(
                     weeksToLoad.map(async (week) => {
                         try {
@@ -1627,7 +1627,7 @@ async function loadHeures() {
                     })
                 );
 
-                // Traiter les résultats
+                // Traiter les rÃ©sultats
                 weekResults.forEach(result => {
                     if (result) {
                         employeeTotalHours += result.weekHours;
@@ -1657,7 +1657,7 @@ async function loadHeures() {
             })
         );
 
-        // Filtrer les résultats null et calculer les totaux
+        // Filtrer les rÃ©sultats null et calculer les totaux
         const employeeData = results.filter(emp => emp !== null);
         employeeData.forEach(emp => {
             totalHoursGlobal += emp.totalHours;
@@ -1697,6 +1697,15 @@ function getWeeksBetween(weekStart, weekEnd) {
 function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
     const container = document.getElementById('content-heures');
 
+    // Afficher le bouton export si des données existent
+    const exportBtn = document.getElementById('btnExportHeures');
+    if (exportBtn) {
+        exportBtn.style.display = employeeData.length > 0 ? 'flex' : 'none';
+    }
+
+    // Stocker les données pour l'export
+    window.lastHeuresData = { employeeData, totalHours, totalKm, totalChantiers };
+
     let html = `
         <div style="padding: 1.5rem;">
             <div class="stats-grid">
@@ -1711,14 +1720,14 @@ function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
                     <i class="fas fa-route" style="color: #3b82f6; font-size: 2rem;"></i>
                     <div>
                         <div class="stat-value">${totalKm} km</div>
-                        <div class="stat-label">Total kilometres</div>
+                        <div class="stat-label">Total kilomètres</div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-hard-hat" style="color: #8b5cf6; font-size: 2rem;"></i>
                     <div>
                         <div class="stat-value">${totalChantiers}</div>
-                        <div class="stat-label">Chantiers specifiques</div>
+                        <div class="stat-label">Chantiers spécifiques</div>
                     </div>
                 </div>
             </div>
@@ -1727,10 +1736,10 @@ function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Employe</th>
+                            <th>Employé</th>
                             <th>Semaines</th>
                             <th>Total heures</th>
-                            <th>Kilometres</th>
+                            <th>Kilomètres</th>
                             <th>Chantiers</th>
                             <th>Actions</th>
                         </tr>
@@ -1738,14 +1747,14 @@ function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
                     <tbody>
                         ${employeeData.map(emp => `
                             <tr>
-                                <td data-label="Employe"><strong>${emp.name}</strong></td>
+                                <td data-label="Employé"><strong>${emp.name}</strong></td>
                                 <td data-label="Semaines">${emp.weeks} semaine(s)</td>
                                 <td data-label="Total heures" style="color: #10b981; font-weight: 600;">${emp.totalHours.toFixed(2)}h</td>
-                                <td data-label="Kilometres">${emp.totalKm} km</td>
+                                <td data-label="Kilomètres">${emp.totalKm} km</td>
                                 <td data-label="Chantiers">${emp.totalChantiers} chantier(s)</td>
                                 <td>
                                     <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="viewEmployeeDetails('${emp.id}')">
-                                        <i class="fas fa-eye"></i> Details
+                                        <i class="fas fa-eye"></i> Détails
                                     </button>
                                 </td>
                             </tr>
@@ -1759,7 +1768,85 @@ function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
     container.innerHTML = html;
 }
 
-// ========== CHIFFRAGE DEVIS DÉTAILLÉ ==========
+// ========== EXPORT EXCEL HEURES ==========
+window.exportHeuresExcel = function () {
+    const data = window.lastHeuresData;
+    if (!data || !data.employeeData || data.employeeData.length === 0) {
+        showNotification('Aucune donnée à exporter', 'error');
+        return;
+    }
+
+    const weekStart = document.getElementById('filterWeekStart').value;
+    const weekEnd = document.getElementById('filterWeekEnd').value;
+
+    // Formater les semaines pour le nom de fichier
+    const periodeLabel = weekStart === weekEnd
+        ? weekStart.replace('-W', '_S')
+        : `${weekStart.replace('-W', '_S')}_au_${weekEnd.replace('-W', '_S')}`;
+
+    // En-tête du fichier avec info période
+    const periode = weekStart === weekEnd
+        ? `Semaine ${weekStart.replace('-W', ' S')}`
+        : `Semaines ${weekStart.replace('-W', ' S')} à ${weekEnd.replace('-W', ' S')}`;
+
+    // BOM UTF-8 pour Excel + séparateur point-virgule (standard FR)
+    const BOM = '\uFEFF';
+    const SEP = ';';
+
+    const lines = [];
+
+    // Titre et période
+    lines.push(`Relevé d'heures Propre Eco${SEP}${SEP}${SEP}${SEP}`);
+    lines.push(`Période${SEP}${periode}${SEP}${SEP}${SEP}`);
+    lines.push(`Exporté le${SEP}${new Date().toLocaleDateString('fr-FR')}${SEP}${SEP}${SEP}`);
+    lines.push(`${SEP}${SEP}${SEP}${SEP}`);
+
+    // En-têtes colonnes
+    lines.push([
+        'Employé',
+        'Semaines travaillées',
+        'Total heures',
+        'Kilomètres parcourus',
+        'Chantiers spécifiques'
+    ].join(SEP));
+
+    // Lignes employés
+    data.employeeData.forEach(emp => {
+        lines.push([
+            emp.name,
+            emp.weeks,
+            emp.totalHours.toFixed(2).replace('.', ','),
+            emp.totalKm,
+            emp.totalChantiers
+        ].join(SEP));
+    });
+
+    // Ligne séparatrice
+    lines.push(`${SEP}${SEP}${SEP}${SEP}`);
+
+    // Ligne TOTAL
+    lines.push([
+        'TOTAL',
+        data.employeeData.length + ' employé(s)',
+        data.totalHours.toFixed(2).replace('.', ','),
+        data.totalKm,
+        data.totalChantiers
+    ].join(SEP));
+
+    const csvContent = BOM + lines.join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `heures_propre_eco_${periodeLabel}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showNotification(`Export réussi — ${data.employeeData.length} employé(s)`, 'success');
+};
+
+// ========== CHIFFRAGE DEVIS DÃ‰TAILLÃ‰ ==========
 window.openChiffrageDetailModal = async function (devisId) {
     const devis = allData.devis?.find(d => d.id === devisId);
     if (!devis) return;
@@ -1770,7 +1857,7 @@ window.openChiffrageDetailModal = async function (devisId) {
         <div class="modal-overlay" onclick="this.parentElement.remove()"></div>
         <div class="modal-content-large" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2><i class="fas fa-calculator"></i> Chiffrage détaillé</h2>
+                <h2><i class="fas fa-calculator"></i> Chiffrage dÃ©taillÃ©</h2>
                 <button class="modal-close" onclick="this.closest('.chiffrage-modal').remove()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1784,12 +1871,12 @@ window.openChiffrageDetailModal = async function (devisId) {
                 
                 <div class="chiffrage-totals">
                     <div class="total-line">
-                        <span>Total temps estimé:</span>
+                        <span>Total temps estimÃ©:</span>
                         <strong id="totalTemps">0h</strong>
                     </div>
                     <div class="total-line">
                         <span>Total prix:</span>
-                        <strong id="totalPrix" style="color: #10b981; font-size: 1.5rem;">0 €</strong>
+                        <strong id="totalPrix" style="color: #10b981; font-size: 1.5rem;">0 â‚¬</strong>
                     </div>
                 </div>
                 
@@ -1826,8 +1913,8 @@ function createChiffrageElements(devis) {
     const vitresHautes = devis.vitres?.hautes || false;
 
     if (nbVitres > 0) elements.push({ label: 'Vitres Standard', qty: nbVitres, temps: 0.1, taux: 43.40 });
-    if (nbBaies > 0) elements.push({ label: 'Baies Vitrées', qty: nbBaies, temps: 0.13, taux: 43.40 });
-    if (nbVelux > 0) elements.push({ label: 'Vélux', qty: nbVelux, temps: 0.17, taux: 43.40 });
+    if (nbBaies > 0) elements.push({ label: 'Baies VitrÃ©es', qty: nbBaies, temps: 0.13, taux: 43.40 });
+    if (nbVelux > 0) elements.push({ label: 'VÃ©lux', qty: nbVelux, temps: 0.17, taux: 43.40 });
     if (vitresHautes) elements.push({ label: 'Vitres Hautes', qty: 1, temps: 0.17, taux: 43.40 });
 
     // Grattage
@@ -1878,13 +1965,13 @@ function createChiffrageElements(devis) {
     if (annexes.bureau > 0) elements.push({ label: 'Bureau', qty: annexes.bureau, temps: 0.5, taux: 43.40 });
     if (annexes.garage > 0) elements.push({ label: 'Garage', qty: annexes.garage, temps: 1, taux: 43.40 });
     if (annexes.skiroom > 0) elements.push({ label: 'Skiroom', qty: annexes.skiroom, temps: 1, taux: 43.40 });
-    if (annexes.salleVideo > 0) elements.push({ label: 'Salle vidéo', qty: annexes.salleVideo, temps: 0.5, taux: 43.40 });
+    if (annexes.salleVideo > 0) elements.push({ label: 'Salle vidÃ©o', qty: annexes.salleVideo, temps: 0.5, taux: 43.40 });
     if (annexes.chaufferie > 0) elements.push({ label: 'Chaufferie', qty: annexes.chaufferie, temps: 1, taux: 43.40 });
     if (annexes.escalier > 0) elements.push({ label: 'Escalier', qty: annexes.escalier, temps: 0.25, taux: 43.40 });
     if (annexes.ascenseur > 0) elements.push({ label: 'Ascenseur', qty: annexes.ascenseur, temps: 0.5, taux: 43.40 });
     
     // Checkboxes annexes
-    if (annexes.tapisEntree) elements.push({ label: 'Tapis entrée', qty: 1, temps: 0.17, taux: 43.40 });
+    if (annexes.tapisEntree) elements.push({ label: 'Tapis entrÃ©e', qty: 1, temps: 0.17, taux: 43.40 });
     if (annexes.aspiVmc) elements.push({ label: 'Aspi trappe VMC', qty: 1, temps: 0.33, taux: 43.40 });
     if (annexes.rambarde) elements.push({ label: 'Rambarde', qty: 1, temps: 0.5, taux: 43.40 });
     if (annexes.aspiPoutraison) elements.push({ label: 'Aspiration poutraison + mur', qty: 1, temps: 1, taux: 43.40 });
@@ -1924,13 +2011,13 @@ function createChiffrageElements(devis) {
                         <input type="number" class="temps-input" data-qty="${qty}" value="${temps}" min="0" step="0.25">
                     </div>
                     <div class="input-group-chiffrage">
-                        <label>Taux horaire (€/h)</label>
+                        <label>Taux horaire (â‚¬/h)</label>
                         <input type="number" class="taux-input" data-qty="${qty}" value="${taux}" min="0" step="0.5">
                     </div>
                 </div>
                 <div class="item-total">
                     <span>Temps: <strong class="subtotal-temps">${(temps * qty).toFixed(2)}h</strong></span>
-                    <span>Prix: <strong class="subtotal-prix">${(temps * qty * taux).toFixed(2)} €</strong></span>
+                    <span>Prix: <strong class="subtotal-prix">${(temps * qty * taux).toFixed(2)} â‚¬</strong></span>
                 </div>
             </div>
         `;
@@ -1964,14 +2051,14 @@ function calculateChiffrageTotals() {
         const subtotalPrix = subtotalTemps * taux;
 
         item.querySelector('.subtotal-temps').textContent = `${subtotalTemps.toFixed(2)}h`;
-        item.querySelector('.subtotal-prix').textContent = `${subtotalPrix.toFixed(2)} €`;
+        item.querySelector('.subtotal-prix').textContent = `${subtotalPrix.toFixed(2)} â‚¬`;
 
         totalTemps += subtotalTemps;
         totalPrix += subtotalPrix;
     });
 
     document.getElementById('totalTemps').textContent = `${totalTemps.toFixed(2)}h`;
-    document.getElementById('totalPrix').textContent = `${totalPrix.toFixed(2)} €`;
+    document.getElementById('totalPrix').textContent = `${totalPrix.toFixed(2)} â‚¬`;
 }
 
 window.saveChiffrage = async function (devisId) {
@@ -2039,18 +2126,18 @@ window.saveChiffrage = async function (devisId) {
 };
 
 
-// ========== DÉTAILS EMPLOYÉ (MODAL) ==========
+// ========== DÃ‰TAILS EMPLOYÃ‰ (MODAL) ==========
 window.viewEmployeeDetails = async function (employeeId) {
     const weekStart = document.getElementById('filterWeekStart').value;
     const weekEnd = document.getElementById('filterWeekEnd').value;
     const employeeName = employeeNames[employeeId];
 
     if (!weekStart || !weekEnd) {
-        alert('Veuillez sélectionner une période');
+        alert('Veuillez sÃ©lectionner une pÃ©riode');
         return;
     }
 
-    // Créer le modal avec spinner
+    // CrÃ©er le modal avec spinner
     const modal = document.createElement('div');
     modal.className = 'employee-details-modal';
     modal.innerHTML = `
@@ -2059,7 +2146,7 @@ window.viewEmployeeDetails = async function (employeeId) {
             <div class="modal-header-details">
                 <div>
                     <h2><i class="fas fa-user-clock"></i> ${employeeName}</h2>
-                    <p>Semaines ${weekStart.replace('W', 'S')} à ${weekEnd.replace('W', 'S')}</p>
+                    <p>Semaines ${weekStart.replace('W', 'S')} Ã  ${weekEnd.replace('W', 'S')}</p>
                 </div>
                 <button class="modal-close" onclick="this.closest('.employee-details-modal').remove()">
                     <i class="fas fa-times"></i>
@@ -2068,7 +2155,7 @@ window.viewEmployeeDetails = async function (employeeId) {
             <div class="modal-body-details">
                 <div class="loading-spinner">
                     <i class="fas fa-spinner fa-spin"></i>
-                    <p>Chargement des détails...</p>
+                    <p>Chargement des dÃ©tails...</p>
                 </div>
             </div>
         </div>
@@ -2136,16 +2223,16 @@ window.viewEmployeeDetails = async function (employeeId) {
 
         const parcourus = (firstKm !== null && lastKm !== null) ? lastKm - firstKm : 0;
 
-        // Remplir le modal avec les données
+        // Remplir le modal avec les donnÃ©es
         const modalBody = modal.querySelector('.modal-body-details');
         modalBody.innerHTML = renderEmployeeDetails(weeksData, totalHours, firstKm, lastKm, parcourus, allProjects);
 
     } catch (error) {
-        console.error('Erreur détails:', error);
+        console.error('Erreur dÃ©tails:', error);
         modal.querySelector('.modal-body-details').innerHTML = `
             <div class="error-state">
                 <i class="fas fa-exclamation-circle"></i>
-                <p>Erreur lors du chargement des détails</p>
+                <p>Erreur lors du chargement des dÃ©tails</p>
             </div>
         `;
     }
@@ -2272,7 +2359,7 @@ function renderEmployeeDetails(weeksData, totalHours, firstKm, lastKm, parcourus
 window.downloadDevisPDF = async function (devisId) {
     const devis = allData.devis.find(d => d.id === devisId);
     if (!devis || devis.status !== 'chiffre') {
-        alert('Devis non chiffré ou introuvable');
+        alert('Devis non chiffrÃ© ou introuvable');
         return;
     }
 
@@ -2300,7 +2387,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'normal');
         pdf.setTextColor(...grisClair);
-        pdf.text('Réf: ' + devisId.substring(0, 8).toUpperCase(), pageWidth - margin, y + 14, { align: 'right' });
+        pdf.text('RÃ©f: ' + devisId.substring(0, 8).toUpperCase(), pageWidth - margin, y + 14, { align: 'right' });
 
         y += 20;
 
@@ -2334,11 +2421,11 @@ window.downloadDevisPDF = async function (devisId) {
 
         const infoLine = [];
         if (devis.typeLogement) infoLine.push('Type: ' + devis.typeLogement);
-        if (devis.surface) infoLine.push('Surface: ' + devis.surface + ' m²');
+        if (devis.surface) infoLine.push('Surface: ' + devis.surface + ' mÂ²');
         infoLine.push('Date: ' + date);
-        infoLine.push('Chiffré le: ' + dateChiffrage);
+        infoLine.push('ChiffrÃ© le: ' + dateChiffrage);
 
-        pdf.text(infoLine.join('  "¢  '), margin + 6, y + 17);
+        pdf.text(infoLine.join('  "Â¢  '), margin + 6, y + 17);
 
         y += 28;
 
@@ -2358,8 +2445,8 @@ window.downloadDevisPDF = async function (devisId) {
             taux: margin + 123,
             total: margin + contentWidth - 4
         };
-        pdf.text('DÉSIGNATION', colX.label, y + 6);
-        pdf.text('QTÉ', colX.qty, y + 6);
+        pdf.text('DÃ‰SIGNATION', colX.label, y + 6);
+        pdf.text('QTÃ‰', colX.qty, y + 6);
         pdf.text('TEMPS', colX.temps, y + 6);
         pdf.text('TAUX', colX.taux, y + 6);
         pdf.text('TOTAL', colX.total, y + 6, { align: 'right' });
@@ -2427,11 +2514,11 @@ window.downloadDevisPDF = async function (devisId) {
             pdf.setFont('helvetica', 'normal');
             pdf.setTextColor(...grisClair);
             pdf.text(ligne.tempsUnitaireMn + ' min', colX.temps, centerY);
-            pdf.text(ligne.tauxHoraire.toFixed(2) + ' €/h', colX.taux, centerY);
+            pdf.text(ligne.tauxHoraire.toFixed(2) + ' â‚¬/h', colX.taux, centerY);
 
             pdf.setFont('helvetica', 'bold');
             pdf.setTextColor(...vertFonce);
-            pdf.text(ligne.totalLigne.toFixed(2) + ' €', colX.total, centerY, { align: 'right' });
+            pdf.text(ligne.totalLigne.toFixed(2) + ' â‚¬', colX.total, centerY, { align: 'right' });
 
             // Dessiner la ligne de separation
             pdf.setDrawColor(229, 231, 235);
@@ -2465,7 +2552,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(7);
         pdf.setTextColor(...grisClair);
-        pdf.text('Temps estimé', totauxBoxX + 4, y + 7);
+        pdf.text('Temps estimÃ©', totauxBoxX + 4, y + 7);
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(9);
         pdf.setTextColor(107, 33, 168);
@@ -2482,7 +2569,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(10);
         pdf.setTextColor(...vertFonce);
-        pdf.text(totalHT.toFixed(2) + ' €', totauxBoxX + totauxBoxW - 4, y + 18, { align: 'right' });
+        pdf.text(totalHT.toFixed(2) + ' â‚¬', totauxBoxX + totauxBoxW - 4, y + 18, { align: 'right' });
 
         pdf.setDrawColor(...vert);
         pdf.setLineWidth(0.3);
@@ -2495,7 +2582,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(12);
         pdf.setTextColor(...vertFonce);
-        pdf.text(totalTTC.toFixed(2) + ' €', totauxBoxX + totauxBoxW - 4, y + 31, { align: 'right' });
+        pdf.text(totalTTC.toFixed(2) + ' â‚¬', totauxBoxX + totauxBoxW - 4, y + 31, { align: 'right' });
 
         y += totauxBoxH + 8;
 
@@ -2529,12 +2616,12 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.save(filename);
 
     } catch (error) {
-        console.error('Erreur génération PDF:', error);
-        alert('Erreur lors de la génération du PDF');
+        console.error('Erreur gÃ©nÃ©ration PDF:', error);
+        alert('Erreur lors de la gÃ©nÃ©ration du PDF');
     }
 };
 
-// ========== MODAL DE MISE À JOUR ==========
+// ========== MODAL DE MISE Ã€ JOUR ==========
 function showUpdateModal() {
     const modalHTML = `
         <div class="update-modal show" id="updateModal">
@@ -2546,8 +2633,8 @@ function showUpdateModal() {
                     <div class="header-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h2>Mise à jour v2.2.0 !</h2>
-                    <p>Découvrez toutes les nouveautés</p>
+                    <h2>Mise Ã  jour v2.2.0 !</h2>
+                    <p>DÃ©couvrez toutes les nouveautÃ©s</p>
                 </div>
                 
                 <div class="update-modal-body">
@@ -2555,7 +2642,7 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-layer-group"></i></div>
-                            <span>Modales chargement & succès</span>
+                            <span>Modales chargement & succÃ¨s</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
@@ -2563,14 +2650,14 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-spinner"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Animation pendant l'envoi</h4>
-                                    <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle à chaque envoi.</p>
+                                    <p class="update-item-desc">Les pages Feuilles, Signaler et SpÃ©cifique affichent une animation de chargement et une confirmation visuelle Ã  chaque envoi.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-file-code"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Code JavaScript externalisé</h4>
-                                    <p class="update-item-desc">Le code de ces pages a été déplacé dans des fichiers JS séparés pour une meilleure stabilité.</p>
+                                    <h4 class="update-item-title">Code JavaScript externalisÃ©</h4>
+                                    <p class="update-item-desc">Le code de ces pages a Ã©tÃ© dÃ©placÃ© dans des fichiers JS sÃ©parÃ©s pour une meilleure stabilitÃ©.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2579,7 +2666,7 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-file-invoice"></i></div>
-                            <span>Refonte complète du formulaire devis</span>
+                            <span>Refonte complÃ¨te du formulaire devis</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
@@ -2587,14 +2674,14 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-calculator"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Nouveau formulaire et chiffrage</h4>
-                                    <p class="update-item-desc">Le formulaire devis et le système de chiffrage ont été entièrement refondus pour plus de clarté et de précision.</p>
+                                    <p class="update-item-desc">Le formulaire devis et le systÃ¨me de chiffrage ont Ã©tÃ© entiÃ¨rement refondus pour plus de clartÃ© et de prÃ©cision.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-bell"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Notification à l'envoi</h4>
-                                    <p class="update-item-desc">Une notification est envoyée automatiquement à chaque nouveau devis soumis.</p>
+                                    <h4 class="update-item-title">Notification Ã  l'envoi</h4>
+                                    <p class="update-item-desc">Une notification est envoyÃ©e automatiquement Ã  chaque nouveau devis soumis.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2603,7 +2690,7 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-                            <span>Gestion des erreurs améliorée</span>
+                            <span>Gestion des erreurs amÃ©liorÃ©e</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
@@ -2611,7 +2698,7 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-times-circle"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Modales d'erreur</h4>
-                                    <p class="update-item-desc">Les pages Signaler, Feuilles et Spécifique affichent désormais un message clair en cas de problème lors de l'envoi.</p>
+                                    <p class="update-item-desc">Les pages Signaler, Feuilles et SpÃ©cifique affichent dÃ©sormais un message clair en cas de problÃ¨me lors de l'envoi.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2620,28 +2707,28 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-save"></i></div>
-                            <span>Améliorations formulaires</span>
+                            <span>AmÃ©liorations formulaires</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-user"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Nom d'agent mémorisé</h4>
-                                    <p class="update-item-desc">Votre prénom est sauvegardé automatiquement et pré-rempli à chaque visite sur toutes les pages.</p>
+                                    <h4 class="update-item-title">Nom d'agent mÃ©morisÃ©</h4>
+                                    <p class="update-item-desc">Votre prÃ©nom est sauvegardÃ© automatiquement et prÃ©-rempli Ã  chaque visite sur toutes les pages.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-trash-alt"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Suppression photo individuelle</h4>
-                                    <p class="update-item-desc">Retirez une photo précise de votre sélection avant envoi, sans recommencer toute la sélection.</p>
+                                    <p class="update-item-desc">Retirez une photo prÃ©cise de votre sÃ©lection avant envoi, sans recommencer toute la sÃ©lection.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-redo-alt"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Réinitialisation automatique</h4>
-                                    <p class="update-item-desc">Le formulaire se remet à zéro 3 secondes après un envoi réussi, sans perdre le nom de l'agent.</p>
+                                    <h4 class="update-item-title">RÃ©initialisation automatique</h4>
+                                    <p class="update-item-desc">Le formulaire se remet Ã  zÃ©ro 3 secondes aprÃ¨s un envoi rÃ©ussi, sans perdre le nom de l'agent.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2670,7 +2757,7 @@ window.closeUpdateModal = function () {
         localStorage.setItem('updateModalShown_v2.2.0', 'true');
     }
 }
-// Afficher la modal au chargement si pas déjà vue
+// Afficher la modal au chargement si pas dÃ©jÃ  vue
 window.addEventListener('load', () => {
     setTimeout(() => {
         const loginModal = document.getElementById('loginModal');
@@ -2705,7 +2792,7 @@ function generateDevisInfos(devis) {
     if (devis.surface) {
         html += `<div class="devis-info-item">
             <div class="info-label">Surface</div>
-            <div class="info-value">${devis.surface} m²</div>
+            <div class="info-value">${devis.surface} mÂ²</div>
         </div>`;
     }
 
@@ -2740,11 +2827,11 @@ function generateDevisInfos(devis) {
 
     if (sejourPhotos.length > 0) {
         html += `<div class="devis-photos-section">
-            <h4><i class="fas fa-couch"></i> Photos séjour (${sejourPhotos.length})</h4>
+            <h4><i class="fas fa-couch"></i> Photos sÃ©jour (${sejourPhotos.length})</h4>
             <div class="devis-photos-grid">
                 ${sejourPhotos.map((photo, index) => `
                     <div class="devis-photo-item" onclick="openPhotoModal('sejour', ${index})">
-                        <img src="${photo.url}" alt="Séjour ${index + 1}">
+                        <img src="${photo.url}" alt="SÃ©jour ${index + 1}">
                         <div class="photo-overlay">
                             <i class="fas fa-search-plus"></i>
                         </div>
@@ -2801,10 +2888,10 @@ async function openChiffrageModal(devisId) {
                     <table class="chiffrage-table">
                         <thead>
                             <tr>
-                                <th class="col-designation">DÉSIGNATION</th>
-                                <th class="col-center">Quantité</th>
+                                <th class="col-designation">DÃ‰SIGNATION</th>
+                                <th class="col-center">QuantitÃ©</th>
                                 <th class="col-center">TEMPS (min)</th>
-                                <th class="col-center">TAUX (€/h)</th>
+                                <th class="col-center">TAUX (â‚¬/h)</th>
                                 <th class="col-right">TOTAL</th>
                             </tr>
                         </thead>
@@ -2824,11 +2911,11 @@ async function openChiffrageModal(devisId) {
                         </div>
                         <div class="chiffrage-total-item prix">
                             <div class="chiffrage-total-label"><i class="fas fa-euro-sign"></i> Total HT</div>
-                            <div class="chiffrage-total-value"><span id="grandTotal">0.00</span> €</div>
+                            <div class="chiffrage-total-value"><span id="grandTotal">0.00</span> â‚¬</div>
                         </div>
                         <div class="chiffrage-total-item prix-ttc">
                             <div class="chiffrage-total-label"><i class="fas fa-euro-sign"></i> Total TTC</div>
-                            <div class="chiffrage-total-value"><span id="grandTotalTTC">0.00</span> €</div>
+                            <div class="chiffrage-total-value"><span id="grandTotalTTC">0.00</span> â‚¬</div>
                         </div>
                     </div>
                     <div class="chiffrage-actions">
@@ -2862,9 +2949,9 @@ function generateChiffrageRows(devis) {
     if (devis.vitres?.baies > 0) {
         const needsGrattage = devis.grattage?.baies;
         items.push({
-            label: 'Baies Vitrées',
+            label: 'Baies VitrÃ©es',
             nb: devis.vitres.baies,
-            tempsMn: TEMPS_DEFAUT['Baies Vitrées'] || 8,
+            tempsMn: TEMPS_DEFAUT['Baies VitrÃ©es'] || 8,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -2872,9 +2959,9 @@ function generateChiffrageRows(devis) {
     if (devis.vitres?.velux > 0) {
         const needsGrattage = devis.grattage?.velux;
         items.push({
-            label: 'Vélux',
+            label: 'VÃ©lux',
             nb: devis.vitres.velux,
-            tempsMn: TEMPS_DEFAUT['Vélux'] || 10,
+            tempsMn: TEMPS_DEFAUT['VÃ©lux'] || 10,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -2882,9 +2969,9 @@ function generateChiffrageRows(devis) {
     if (devis.vitres?.portes > 0) {
         const needsGrattage = devis.grattage?.portes;
         items.push({
-            label: 'Portes vitrées',
+            label: 'Portes vitrÃ©es',
             nb: devis.vitres.portes,
-            tempsMn: TEMPS_DEFAUT['Portes vitrées'] || 6,
+            tempsMn: TEMPS_DEFAUT['Portes vitrÃ©es'] || 6,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -2954,13 +3041,13 @@ function generateChiffrageRows(devis) {
     if (annexes.bureau > 0) items.push({ label: 'Bureau', nb: annexes.bureau, tempsMn: TEMPS_DEFAUT['Bureau'] || 30, taux: 43.40 });
     if (annexes.garage > 0) items.push({ label: 'Garage', nb: annexes.garage, tempsMn: TEMPS_DEFAUT['Garage'] || 60, taux: 43.40 });
     if (annexes.skiroom > 0) items.push({ label: 'Skiroom', nb: annexes.skiroom, tempsMn: TEMPS_DEFAUT['Skiroom'] || 60, taux: 43.40 });
-    if (annexes.salleVideo > 0) items.push({ label: 'Salle vidéo', nb: annexes.salleVideo, tempsMn: TEMPS_DEFAUT['Salle vidéo'] || 30, taux: 43.40 });
+    if (annexes.salleVideo > 0) items.push({ label: 'Salle vidÃ©o', nb: annexes.salleVideo, tempsMn: TEMPS_DEFAUT['Salle vidÃ©o'] || 30, taux: 43.40 });
     if (annexes.chaufferie > 0) items.push({ label: 'Chaufferie', nb: annexes.chaufferie, tempsMn: TEMPS_DEFAUT['Chaufferie'] || 60, taux: 43.40 });
     if (annexes.escalier > 0) items.push({ label: 'Escalier', nb: annexes.escalier, tempsMn: TEMPS_DEFAUT['Escalier'] || 15, taux: 43.40 });
     if (annexes.ascenseur > 0) items.push({ label: 'Ascenseur', nb: annexes.ascenseur, tempsMn: TEMPS_DEFAUT['Ascenseur'] || 30, taux: 43.40 });
     
     // Checkboxes annexes
-    if (annexes.tapisEntree) items.push({ label: 'Tapis entrée', nb: 1, tempsMn: TEMPS_DEFAUT['Tapis entrée'] || 10, taux: 43.40 });
+    if (annexes.tapisEntree) items.push({ label: 'Tapis entrÃ©e', nb: 1, tempsMn: TEMPS_DEFAUT['Tapis entrÃ©e'] || 10, taux: 43.40 });
     if (annexes.aspiVmc) items.push({ label: 'Aspi trappe VMC', nb: 1, tempsMn: TEMPS_DEFAUT['Aspi trappe VMC'] || 20, taux: 43.40 });
     if (annexes.rambarde) items.push({ label: 'Rambarde', nb: 1, tempsMn: TEMPS_DEFAUT['Rambarde'] || 30, taux: 43.40 });
     if (annexes.aspiPoutraison) items.push({ label: 'Aspiration poutraison + mur', nb: 1, tempsMn: TEMPS_DEFAUT['Aspiration poutraison + mur'] || 60, taux: 43.40 });
@@ -2995,14 +3082,14 @@ function generateChiffrageRows(devis) {
 
     return items.map(item => `
         <tr class="chiffrage-row ${item.grattage ? 'row-grattage' : ''}">
-            <td class="chiffrage-td-label" data-label="Élément">
+            <td class="chiffrage-td-label" data-label="Ã‰lÃ©ment">
                 ${item.label}
                 ${item.grattage ? '<span class="grattage-badge"><i class="fas fa-exclamation-triangle"></i> Grattage</span>' : ''}
             </td>
-            <td class="chiffrage-td-center" data-label="Quantité"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
+            <td class="chiffrage-td-center" data-label="QuantitÃ©"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
             <td class="chiffrage-td-center" data-label="Temps (mn)"><input type="number" step="1" class="calc-temps chiffrage-input-editable" value="${item.tempsMn}" oninput="calculerTotalDevis()" placeholder="minutes"></td>
-            <td class="chiffrage-td-center" data-label="Taux (€/h)"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
-            <td class="chiffrage-td-total" data-label="Total"><span class="row-total-val">0.00</span>€</td>
+            <td class="chiffrage-td-center" data-label="Taux (â‚¬/h)"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
+            <td class="chiffrage-td-total" data-label="Total"><span class="row-total-val">0.00</span>â‚¬</td>
         </tr>
     `).join('');
 }
@@ -3112,7 +3199,7 @@ async function saveChiffrage(devisId) {
 
         document.getElementById('chiffrageModal').remove();
 
-        showNotification('Chiffrage enregistré avec succès !', 'success');
+        showNotification('Chiffrage enregistrÃ© avec succÃ¨s !', 'success');
 
         await loadDevis();
 
@@ -3147,7 +3234,7 @@ function openPhotoModal(category, startIndex) {
     const photos = window.currentDevisPhotos[category];
     if (!photos || photos.length === 0) return;
 
-    // Extraire les URLs (compatibilité ancien et nouveau format)
+    // Extraire les URLs (compatibilitÃ© ancien et nouveau format)
     const photoUrls = photos.map(photo => typeof photo === 'string' ? photo : photo.url);
 
     const modalHTML = `
