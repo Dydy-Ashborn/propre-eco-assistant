@@ -61,23 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupPhotoPreview(inputId, previewId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
+    
+    // Stocker les fichiers dans un array sur l'élément input
+    if (!input.filesArray) {
+        input.filesArray = [];
+    }
 
     input.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files);
-        const existingFiles = input.dataset.existingFiles ? JSON.parse(input.dataset.existingFiles) : [];
+        const newFiles = Array.from(e.target.files);
         
-        // Ajouter les nouveaux fichiers aux existants
+        // Ajouter les nouveaux fichiers à l'array existant
+        input.filesArray = [...input.filesArray, ...newFiles];
+        
+        // Mettre à jour le FileList de l'input
         const dt = new DataTransfer();
-        existingFiles.forEach(file => dt.items.add(file));
-        files.forEach(file => dt.items.add(file));
-        
-        // Stocker tous les fichiers
-        input.dataset.existingFiles = JSON.stringify(Array.from(dt.files));
+        input.filesArray.forEach(file => dt.items.add(file));
         input.files = dt.files;
         
         // Afficher toutes les photos
         preview.innerHTML = '';
-        Array.from(dt.files).forEach((file, index) => {
+        input.filesArray.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const div = document.createElement('div');
@@ -97,15 +100,16 @@ function setupPhotoPreview(inputId, previewId) {
 
 window.removePhoto = function (inputId, index) {
     const input = document.getElementById(inputId);
-    const dt = new DataTransfer();
-    const existingFiles = input.dataset.existingFiles ? JSON.parse(input.dataset.existingFiles) : [];
     
-    existingFiles.forEach((file, i) => {
-        if (i !== index) dt.items.add(file);
-    });
-
-    input.dataset.existingFiles = JSON.stringify(Array.from(dt.files));
+    // Retirer le fichier de l'array
+    input.filesArray.splice(index, 1);
+    
+    // Reconstruire le FileList
+    const dt = new DataTransfer();
+    input.filesArray.forEach(file => dt.items.add(file));
     input.files = dt.files;
+    
+    // Déclencher l'événement change pour rafraîchir l'affichage
     input.dispatchEvent(new Event('change'));
 };
 
