@@ -1,6 +1,6 @@
 // Système de modal de mise Ã  jour
 const UpdateModal = {
-MODAL_VERSION: 'update_v3.0.0',
+    MODAL_VERSION: 'update_v2.2.0',
 
     init() {
         // Créer la modal si elle n'existe pas déjÃ 
@@ -14,7 +14,7 @@ MODAL_VERSION: 'update_v3.0.0',
         }
     },
 
- createModal() {
+    createModal() {
         const modalHTML = `
             <div id="updateModal" class="update-modal">
                 <div class="update-modal-content">
@@ -30,51 +30,73 @@ MODAL_VERSION: 'update_v3.0.0',
                     
                     <div class="update-modal-body">
                         <div class="update-version">
-                            <span class="version-badge">v2.0</span>
+                            <span class="version-badge">v2.2.0</span>
                             <span class="version-date">Février 2026</span>
                         </div>
 
-                        <div class="update-features">
-                            <div class="update-feature">
-                                <div class="feature-icon feature-improved">
-                                    <i class="fas fa-paint-brush"></i>
-                                </div>
-                                <div class="feature-content">
-                                    <h3>🎨 Tableau de bord tout neuf</h3>
-                                    <p>Le tableau de bord a été entièrement repensé pour être plus clair, plus rapide et plus agréable à utiliser au quotidien.</p>
-                                </div>
-                            </div>
+                     <div class="update-features">
 
-                            <div class="update-feature">
-                                <div class="feature-icon feature-new">
-                                    <i class="fas fa-bullhorn"></i>
-                                </div>
-                                <div class="feature-content">
-                                    <h3>📢 Annonces</h3>
-                                    <p>Besoin de faire passer un message à toute l'équipe ? Créez une annonce et tous les employés la verront à leur prochaine connexion.</p>
-                                </div>
-                            </div>
+    <div class="update-feature">
+        <div class="feature-icon feature-new">
+            <i class="fas fa-code-branch"></i>
+        </div>
+        <div class="feature-content">
+            <h3>🗂️ Code JS externalisé</h3>
+            <p>Les pages Feuilles, Signaler et Spécifique ont leur code JavaScript dans des fichiers séparés pour une meilleure stabilité.</p>
+        </div>
+    </div>
 
-                            <div class="update-feature">
-                                <div class="feature-icon feature-new">
-                                    <i class="fas fa-file-invoice"></i>
-                                </div>
-                                <div class="feature-content">
-                                    <h3>📋 Devis depuis le tableau de bord</h3>
-                                    <p>Consultez, chiffrez et gérez tous vos devis directement depuis le tableau de bord, sans changer de page.</p>
-                                </div>
-                            </div>
+    <div class="update-feature">
+        <div class="feature-icon feature-improved">
+            <i class="fas fa-layer-group"></i>
+        </div>
+        <div class="feature-content">
+            <h3>✨ Modales chargement & succès</h3>
+            <p>Toutes les pages affichent désormais une animation pendant l'envoi et une confirmation visuelle avec barre de progression.</p>
+        </div>
+    </div>
 
-                            <div class="update-feature">
-                                <div class="feature-icon feature-new">
-                                    <i class="fas fa-clipboard-list"></i>
-                                </div>
-                                <div class="feature-content">
-                                    <h3>📝 Page de demande de devis</h3>
-                                    <p>Une nouvelle page dédiée permet d'envoyer une demande de devis complète avec photos et détails du chantier.</p>
-                                </div>
-                            </div>
-                        </div>
+    <div class="update-feature">
+        <div class="feature-icon feature-improved">
+            <i class="fas fa-compress-arrows-alt"></i>
+        </div>
+        <div class="feature-content">
+            <h3>📸 Compression d'images améliorée</h3>
+            <p>Algorithme plus robuste avec fallback automatique et support étendu des formats (JPEG, PNG, WebP, GIF).</p>
+        </div>
+    </div>
+
+    <div class="update-feature">
+        <div class="feature-icon feature-new">
+            <i class="fas fa-boxes"></i>
+        </div>
+        <div class="feature-content">
+            <h3>📦 Signalement consommables</h3>
+            <p>Nouveau type de signalement pour déclarer les consommables utilisés avec type, quantité et photos à l'appui.</p>
+        </div>
+    </div>
+
+    <div class="update-feature">
+        <div class="feature-icon feature-fixed">
+            <i class="fas fa-save"></i>
+        </div>
+        <div class="feature-content">
+            <h3>🔒 Nom d'agent mémorisé</h3>
+            <p>Votre prénom est sauvegardé automatiquement et pré-rempli à chaque visite sur toutes les pages.</p>
+        </div>
+    </div>
+
+    <div class="update-feature">
+        <div class="feature-icon feature-fixed">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class="feature-content">
+            <h3>🗑️ Suppression photo individuelle</h3>
+            <p>Retirez une photo précise de votre sélection avant envoi, sans recommencer toute la sélection.</p>
+        </div>
+    </div>
+
+</div>   
                     </div>
 
                     <div class="update-modal-footer">
@@ -93,7 +115,7 @@ MODAL_VERSION: 'update_v3.0.0',
 
     attachEvents() {
         const modal = document.getElementById('updateModal');
-        
+
         // Fermer en cliquant sur le fond
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {

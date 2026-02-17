@@ -2546,300 +2546,107 @@ function showUpdateModal() {
                     <div class="header-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h2>Mise à jour v2.0 !</h2>
+                    <h2>Mise à jour v2.2.0 !</h2>
                     <p>Découvrez toutes les nouveautés</p>
                 </div>
                 
                 <div class="update-modal-body">
-                    
-                    <!-- REFONTE COMPLETE DASHBOARD -->
+
                     <div class="update-section">
                         <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-magic"></i></div>
-                            <span>Refonte complète du tableau de bord</span>
+                            <div class="icon"><i class="fas fa-layer-group"></i></div>
+                            <span>Modales chargement & succès</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-paint-brush"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Design moderne et épuré</h4>
-                                    <p class="update-item-desc">Interface entièrement repensée pour une meilleure lisibilité et ergonomie</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-th-large"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Organisation optimisée</h4>
-                                    <p class="update-item-desc">Toutes les informations importantes visibles d'un seul coup d'œil</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <!-- GESTION COPRO -->
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-building"></i></div>
-                            <span>Gestion des copropriétés</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-plus-circle"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Ajout de copropriétés</h4>
-                                    <p class="update-item-desc">Créez facilement de nouvelles copropriétés avec toutes leurs informations</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-edit"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Modification en temps réel</h4>
-                                    <p class="update-item-desc">Modifiez les informations des copropriétés directement depuis le tableau de bord</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-trash"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Suppression sécurisée</h4>
-                                    <p class="update-item-desc">Supprimez les copropriétés obsolètes avec confirmation de sécurité</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <!-- NOUVELLE PAGE DEVIS -->
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-file-invoice"></i></div>
-                            <span>Nouvelle page : Devis</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-mobile-alt"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Formulaire mobile complet</h4>
-                                    <p class="update-item-desc">Remplissez les devis directement sur chantier : vitres, chambres, salles de bain, pièces annexes, cuisine, séjour...</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-camera"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Photos du chantier</h4>
-                                    <p class="update-item-desc">Prenez des photos de la cuisine, du séjour et des vitres hautes pour mieux évaluer</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-calculator"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Chiffrage automatique</h4>
-                                    <p class="update-item-desc">Le prix et le temps sont calculés automatiquement selon vos saisies</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-file-pdf"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">PDF professionnel</h4>
-                                    <p class="update-item-desc">Téléchargez le devis en PDF avec logo Propre Eco, photos et tous les détails</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <!-- SYSTEME D'ANNONCES -->
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-bullhorn"></i></div>
-                            <span>Système d'annonces</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-bell"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Notifications pour toute l'équipe</h4>
-                                    <p class="update-item-desc">Créez des annonces visibles par tous les employés à leur connexion</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-images"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Annonces avec photos</h4>
-                                    <p class="update-item-desc">Ajoutez jusqu'à 5 photos dans vos annonces pour mieux informer</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <!-- MENU NAVIGATION -->
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-bars"></i></div>
-                            <span>Refonte du menu de navigation</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-th"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Menu latéral moderne</h4>
-                                    <p class="update-item-desc">Nouveau menu déroulant avec animations fluides et design épuré</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-mobile-alt"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Optimisé mobile</h4>
-                                    <p class="update-item-desc">Navigation simplifiée et plus agréable sur smartphone</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-link"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Accès rapide à toutes les pages</h4>
-                                    <p class="update-item-desc">Menu unifié sur toutes les pages pour un accès instantané</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <!-- MESSAGES D'ENVOI PHOTOS -->
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-check-circle"></i></div>
-                            <span>Confirmations d'envoi améliorées</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-image"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Messages visuels pour les photos</h4>
-                                    <p class="update-item-desc">Animations et messages clairs quand vous envoyez des photos sur Signaler, Spécifique et Feuilles</p>
-                                </div>
-                            </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-spinner"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Indicateurs de progression</h4>
-                                    <p class="update-item-desc">Vous savez exactement où en est l'envoi de vos photos</p>
+                                    <h4 class="update-item-title">Animation pendant l'envoi</h4>
+                                    <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle à chaque envoi.</p>
+                                </div>
+                            </li>
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-file-code"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">Code JavaScript externalisé</h4>
+                                    <p class="update-item-desc">Le code de ces pages a été déplacé dans des fichiers JS séparés pour une meilleure stabilité.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    
-                    <!-- AMELIORATIONS DASHBOARD -->
+
                     <div class="update-section">
                         <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-columns"></i></div>
-                            <span>Fonctions du tableau de bord</span>
+                            <div class="icon"><i class="fas fa-file-invoice"></i></div>
+                            <span>Refonte complète du formulaire devis</span>
+                            <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-file-invoice"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-calculator"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Gestion des devis intégrée</h4>
-                                    <p class="update-item-desc">Consultez, chiffrez et gérez tous vos devis sans quitter le tableau de bord</p>
+                                    <h4 class="update-item-title">Nouveau formulaire et chiffrage</h4>
+                                    <p class="update-item-desc">Le formulaire devis et le système de chiffrage ont été entièrement refondus pour plus de clarté et de précision.</p>
                                 </div>
                             </li>
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-chart-line"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-bell"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Statistiques en temps réel</h4>
-                                    <p class="update-item-desc">Vue d'ensemble complète de l'activité avec graphiques et indicateurs</p>
+                                    <h4 class="update-item-title">Notification à l'envoi</h4>
+                                    <p class="update-item-desc">Une notification est envoyée automatiquement à chaque nouveau devis soumis.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    
-                    <!-- PERFORMANCE -->
+
                     <div class="update-section">
                         <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
-                            <span>Performances ultra-rapides</span>
+                            <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <span>Gestion des erreurs améliorée</span>
+                            <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-bolt"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-times-circle"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Onglet Heures 10 fois plus rapide</h4>
-                                    <p class="update-item-desc">Chargement optimisé : de 6 secondes à moins d'1 seconde grâce au système de cache</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-clock"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Chargement instantané</h4>
-                                    <p class="update-item-desc">Toutes les pages se chargent maintenant beaucoup plus rapidement</p>
+                                    <h4 class="update-item-title">Modales d'erreur</h4>
+                                    <p class="update-item-desc">Les pages Signaler, Feuilles et Spécifique affichent désormais un message clair en cas de problème lors de l'envoi.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    
-                    <!-- AMELIORATIONS HEURES -->
+
                     <div class="update-section">
                         <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-user-clock"></i></div>
-                            <span>Onglet Heures amélioré</span>
+                            <div class="icon"><i class="fas fa-save"></i></div>
+                            <span>Améliorations formulaires</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-calendar-week"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-user"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Vue semaine par semaine</h4>
-                                    <p class="update-item-desc">Consultez les détails des employés semaine après semaine facilement</p>
+                                    <h4 class="update-item-title">Nom d'agent mémorisé</h4>
+                                    <p class="update-item-desc">Votre prénom est sauvegardé automatiquement et pré-rempli à chaque visite sur toutes les pages.</p>
                                 </div>
                             </li>
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-car"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-trash-alt"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Calcul automatique des kilomètres</h4>
-                                    <p class="update-item-desc">Les kilomètres sont maintenant calculés et affichés automatiquement</p>
+                                    <h4 class="update-item-title">Suppression photo individuelle</h4>
+                                    <p class="update-item-desc">Retirez une photo précise de votre sélection avant envoi, sans recommencer toute la sélection.</p>
                                 </div>
                             </li>
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-list"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-redo-alt"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Liste des chantiers spécifiques</h4>
-                                    <p class="update-item-desc">Voyez la liste complète des chantiers spécifiques de chaque employé</p>
+                                    <h4 class="update-item-title">Réinitialisation automatique</h4>
+                                    <p class="update-item-desc">Le formulaire se remet à zéro 3 secondes après un envoi réussi, sans perdre le nom de l'agent.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    
-                    <!-- CORRECTIONS -->
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-wrench"></i></div>
-                            <span>Corrections et améliorations</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-font"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Affichage corrigé partout</h4>
-                                    <p class="update-item-desc">Tous les accents et caractères spéciaux s'affichent correctement</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-calendar"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Dates plus lisibles</h4>
-                                    <p class="update-item-desc">Les dates sont maintenant au format français clair : "Semaine 06 2026"</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-mouse-pointer"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Boutons plus grands sur mobile</h4>
-                                    <p class="update-item-desc">Tous les boutons font au minimum 40px pour être plus faciles à cliquer</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
+
                 </div>
                 
                 <div class="update-modal-footer">
@@ -2854,12 +2661,13 @@ function showUpdateModal() {
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
+
 window.closeUpdateModal = function () {
     const modal = document.getElementById('updateModal');
     if (modal) {
         modal.classList.remove('show');
         setTimeout(() => modal.remove(), 300);
-        localStorage.setItem('updateModalShown_v2', 'true');
+        localStorage.setItem('updateModalShown_v2.2.0', 'true');
     }
 }
 // Afficher la modal au chargement si pas déjà vue
@@ -2867,7 +2675,7 @@ window.addEventListener('load', () => {
     setTimeout(() => {
         const loginModal = document.getElementById('loginModal');
         const isLoggedIn = !loginModal || loginModal.style.display === 'none';
-        const alreadySeen = localStorage.getItem('updateModalShown_v2');
+        const alreadySeen = localStorage.getItem('updateModalShown_v2.2.0');
 
         console.log('Modal debug:', { isLoggedIn, alreadySeen, loginModal });
 
