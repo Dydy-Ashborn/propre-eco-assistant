@@ -1077,7 +1077,7 @@ window.closePhotoGallery = function () {
 };
 
 
-// ========== TÃ‰LÃ‰CHARGEMENT ZIP AMÃ‰LIORÃ‰ ==========
+// ========== TÉLÉCHARGEMENT ZIP AMÉLIORÉ ==========
 async function downloadAllFeuilles() {
     const btn = document.getElementById('downloadAllFeuilles');
     const originalContent = btn.innerHTML;
@@ -1568,7 +1568,7 @@ async function loadHeures() {
 
     // Si en cache, affichage instantané !
     if (heuresCache[cacheKey]) {
-        console.log('âœ… Données en cache - affichage instantané');
+        console.log('âÅ“"¦ Données en cache - affichage instantané');
         renderHeures(...heuresCache[cacheKey]);
         showContent('heures');
         return;
@@ -1759,7 +1759,7 @@ function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
     container.innerHTML = html;
 }
 
-// ========== CHIFFRAGE DEVIS DÃ‰TAILLÃ‰ ==========
+// ========== CHIFFRAGE DEVIS DÉTAILLÉ ==========
 window.openChiffrageDetailModal = async function (devisId) {
     const devis = allData.devis?.find(d => d.id === devisId);
     if (!devis) return;
@@ -1826,8 +1826,8 @@ function createChiffrageElements(devis) {
     const vitresHautes = devis.vitres?.hautes || false;
 
     if (nbVitres > 0) elements.push({ label: 'Vitres Standard', qty: nbVitres, temps: 0.1, taux: 43.40 });
-    if (nbBaies > 0) elements.push({ label: 'Baies Vitrees', qty: nbBaies, temps: 0.13, taux: 43.40 });
-    if (nbVelux > 0) elements.push({ label: 'Velux', qty: nbVelux, temps: 0.17, taux: 43.40 });
+    if (nbBaies > 0) elements.push({ label: 'Baies Vitrées', qty: nbBaies, temps: 0.13, taux: 43.40 });
+    if (nbVelux > 0) elements.push({ label: 'Vélux', qty: nbVelux, temps: 0.17, taux: 43.40 });
     if (vitresHautes) elements.push({ label: 'Vitres Hautes', qty: 1, temps: 0.17, taux: 43.40 });
 
     // Grattage
@@ -1878,13 +1878,13 @@ function createChiffrageElements(devis) {
     if (annexes.bureau > 0) elements.push({ label: 'Bureau', qty: annexes.bureau, temps: 0.5, taux: 43.40 });
     if (annexes.garage > 0) elements.push({ label: 'Garage', qty: annexes.garage, temps: 1, taux: 43.40 });
     if (annexes.skiroom > 0) elements.push({ label: 'Skiroom', qty: annexes.skiroom, temps: 1, taux: 43.40 });
-    if (annexes.salleVideo > 0) elements.push({ label: 'Salle video', qty: annexes.salleVideo, temps: 0.5, taux: 43.40 });
+    if (annexes.salleVideo > 0) elements.push({ label: 'Salle vidéo', qty: annexes.salleVideo, temps: 0.5, taux: 43.40 });
     if (annexes.chaufferie > 0) elements.push({ label: 'Chaufferie', qty: annexes.chaufferie, temps: 1, taux: 43.40 });
     if (annexes.escalier > 0) elements.push({ label: 'Escalier', qty: annexes.escalier, temps: 0.25, taux: 43.40 });
     if (annexes.ascenseur > 0) elements.push({ label: 'Ascenseur', qty: annexes.ascenseur, temps: 0.5, taux: 43.40 });
     
     // Checkboxes annexes
-    if (annexes.tapisEntree) elements.push({ label: 'Tapis entree', qty: 1, temps: 0.17, taux: 43.40 });
+    if (annexes.tapisEntree) elements.push({ label: 'Tapis entrée', qty: 1, temps: 0.17, taux: 43.40 });
     if (annexes.aspiVmc) elements.push({ label: 'Aspi trappe VMC', qty: 1, temps: 0.33, taux: 43.40 });
     if (annexes.rambarde) elements.push({ label: 'Rambarde', qty: 1, temps: 0.5, taux: 43.40 });
     if (annexes.aspiPoutraison) elements.push({ label: 'Aspiration poutraison + mur', qty: 1, temps: 1, taux: 43.40 });
@@ -2039,7 +2039,7 @@ window.saveChiffrage = async function (devisId) {
 };
 
 
-// ========== DÃ‰TAILS EMPLOYÃ‰ (MODAL) ==========
+// ========== DÉTAILS EMPLOYÉ (MODAL) ==========
 window.viewEmployeeDetails = async function (employeeId) {
     const weekStart = document.getElementById('filterWeekStart').value;
     const weekEnd = document.getElementById('filterWeekEnd').value;
@@ -2338,7 +2338,7 @@ window.downloadDevisPDF = async function (devisId) {
         infoLine.push('Date: ' + date);
         infoLine.push('Chiffré le: ' + dateChiffrage);
 
-        pdf.text(infoLine.join('  •  '), margin + 6, y + 17);
+        pdf.text(infoLine.join('  "¢  '), margin + 6, y + 17);
 
         y += 28;
 
@@ -2534,7 +2534,7 @@ window.downloadDevisPDF = async function (devisId) {
     }
 };
 
-// ========== MODAL DE MISE Ã€ JOUR ==========
+// ========== MODAL DE MISE À JOUR ==========
 function showUpdateModal() {
     const modalHTML = `
         <div class="update-modal show" id="updateModal">
