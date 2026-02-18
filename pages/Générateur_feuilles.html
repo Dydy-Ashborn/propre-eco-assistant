@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Générateur de Dates avec Récurrence</title>
-    
+
     <!-- PWA Configuration -->
     <link rel="icon" type="image/png" href="../img/logo.png" />
     <link rel="apple-touch-icon" href="../img/logo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="../img/logo.png" />
     <link rel="manifest" href="../manifest.json">
-    
+
     <!-- PWA Métadonnées -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,7 +20,7 @@
     <meta name="theme-color" content="#10B981">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- Styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/variables.css">
@@ -31,84 +33,84 @@
 </head>
 
 <body>
-   <!-- Header -->
-<header class="header">
-    <div class="header-content">
-        <button class="hamburger-btn" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <button class="hamburger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-        <a href="../index.html" class="logo">
-            <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
-            Propre Eco Assistant
-        </a>
+            <a href="../index.html" class="logo">
+                <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
+                Propre Eco Assistant
+            </a>
 
-        <div class="header-spacer"></div>
-    </div>
-</header>
-
-<div class="sidebar-overlay"></div>
-<nav class="sidebar-menu">
-    <div class="sidebar-header">
-        <img src="../img/logo.png" width="50px" alt="Logo">
-        <h3>Propre Eco</h3>
-        <button class="sidebar-close" aria-label="Fermer">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-
-    <div class="sidebar-content">
-        <div class="menu-section">
-            <span class="menu-section-title">Navigation</span>
-            <ul class="sidebar-nav">
-                <li>
-                    <a href="../index.html">
-                        <i class="fas fa-home"></i>
-                        <span>Accueil</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="signaler.html">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Signaler</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="Feuilles.html">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Feuilles</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="Specifique.html">
-                        <i class="fas fa-hard-hat"></i>
-                        <span>Specifique</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pointeuse.html">
-                        <i class="fas fa-clock"></i>
-                        <span>Pointeuse</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="devis.html">
-                        <i class="fas fa-file-invoice"></i>
-                        <span>Devis</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="dashbord.html">
-                        <i class="fas fa-columns"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="header-spacer"></div>
         </div>
-    </div>
-</nav>
+    </header>
+
+    <div class="sidebar-overlay"></div>
+    <nav class="sidebar-menu">
+        <div class="sidebar-header">
+            <img src="../img/logo.png" width="50px" alt="Logo">
+            <h3>Propre Eco</h3>
+            <button class="sidebar-close" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="menu-section">
+                <span class="menu-section-title">Navigation</span>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="../index.html">
+                            <i class="fas fa-home"></i>
+                            <span>Accueil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="signaler.html">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Signaler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Feuilles.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Feuilles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Specifique.html">
+                            <i class="fas fa-hard-hat"></i>
+                            <span>Specifique</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pointeuse.html">
+                            <i class="fas fa-clock"></i>
+                            <span>Pointeuse</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="devis.html">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Devis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="dashbord.html">
+                            <i class="fas fa-columns"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="print-header">
@@ -193,13 +195,13 @@
                     </div>
                     <div class="control-group">
                         <label for="taskFrequency1">⏰ Fréquence :</label>
-                       <select id="taskFrequency1">
-    <option value="">Aucune récurrence</option>
-    <option value="first">Premier passage de chaque mois</option>
-    <option value="last">Dernier passage de chaque mois</option>
-    <option value="every2">1 passage sur 2</option>
-    <option value="weekly3times">3 fois par semaine</option>
-</select>
+                        <select id="taskFrequency1">
+                            <option value="">Aucune récurrence</option>
+                            <option value="first">Premier passage de chaque mois</option>
+                            <option value="last">Dernier passage de chaque mois</option>
+                            <option value="every2">1 passage sur 2</option>
+                            <option value="weekly3times">3 fois par semaine</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -213,13 +215,13 @@
                     </div>
                     <div class="control-group">
                         <label for="taskFrequency2">⏰ Fréquence :</label>
-                       <select id="taskFrequency2">
-    <option value="">Aucune récurrence</option>
-    <option value="first">Premier passage de chaque mois</option>
-    <option value="last">Dernier passage de chaque mois</option>
-    <option value="every2">1 passage sur 2</option>
-    <option value="weekly3times">3 fois par semaine</option>
-</select>
+                        <select id="taskFrequency2">
+                            <option value="">Aucune récurrence</option>
+                            <option value="first">Premier passage de chaque mois</option>
+                            <option value="last">Dernier passage de chaque mois</option>
+                            <option value="every2">1 passage sur 2</option>
+                            <option value="weekly3times">3 fois par semaine</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -489,48 +491,48 @@
             // Déterminer premiers/derniers passages
             const { firstPassages, lastPassages } = findFirstLastPassages(dates);
 
-           // Construire données avec 2 blocs de tâches
-for (let i = 0; i < dates.length; i++) {
-    let taches = [];
+            // Construire données avec 2 blocs de tâches
+            for (let i = 0; i < dates.length; i++) {
+                let taches = [];
 
-    // Bloc 1
-    if (taskName1 && taskFrequency1) {
-        if (taskFrequency1 === 'first' && firstPassages.has(i)) {
-            taches.push(taskName1);
-        }
-        if (taskFrequency1 === 'last' && lastPassages.has(i)) {
-            taches.push(taskName1);
-        }
-        if (taskFrequency1 === 'every2' && i % 2 === 0) {
-            taches.push(taskName1);
-        }
-        if (taskFrequency1 === 'weekly3times' && i % 7 < 3) {
-            taches.push(taskName1);
-        }
-    }
+                // Bloc 1
+                if (taskName1 && taskFrequency1) {
+                    if (taskFrequency1 === 'first' && firstPassages.has(i)) {
+                        taches.push(taskName1);
+                    }
+                    if (taskFrequency1 === 'last' && lastPassages.has(i)) {
+                        taches.push(taskName1);
+                    }
+                    if (taskFrequency1 === 'every2' && i % 2 === 0) {
+                        taches.push(taskName1);
+                    }
+                    if (taskFrequency1 === 'weekly3times' && i % 7 < 3) {
+                        taches.push(taskName1);
+                    }
+                }
 
-    // Bloc 2
-    if (taskName2 && taskFrequency2) {
-        if (taskFrequency2 === 'first' && firstPassages.has(i)) {
-            taches.push(taskName2);
-        }
-        if (taskFrequency2 === 'last' && lastPassages.has(i)) {
-            taches.push(taskName2);
-        }
-        if (taskFrequency2 === 'every2' && i % 2 === 0) {
-            taches.push(taskName2);
-        }
-        if (taskFrequency2 === 'weekly3times' && i % 7 < 3) {
-            taches.push(taskName2);
-        }
-    }
+                // Bloc 2
+                if (taskName2 && taskFrequency2) {
+                    if (taskFrequency2 === 'first' && firstPassages.has(i)) {
+                        taches.push(taskName2);
+                    }
+                    if (taskFrequency2 === 'last' && lastPassages.has(i)) {
+                        taches.push(taskName2);
+                    }
+                    if (taskFrequency2 === 'every2' && i % 2 === 0) {
+                        taches.push(taskName2);
+                    }
+                    if (taskFrequency2 === 'weekly3times' && i % 7 < 3) {
+                        taches.push(taskName2);
+                    }
+                }
 
-    generatedData.push({
-        date: formatDate(dates[i]),
-        intervenant: '',
-        taches: taches.join(', ')
-    });
-}
+                generatedData.push({
+                    date: formatDate(dates[i]),
+                    intervenant: '',
+                    taches: taches.join(', ')
+                });
+            }
             renderTable(title);
             document.getElementById('emptyState').style.display = 'none';
         }
@@ -540,7 +542,7 @@ for (let i = 0; i < dates.length; i++) {
             document.getElementById('printTitle').innerHTML = `${title} <br>Fiche d\'entretien`;
 
             generatedData = [];
-            
+
             // Générer des lignes vides
             for (let i = 0; i < numberOfRows; i++) {
                 generatedData.push({
@@ -579,7 +581,7 @@ for (let i = 0; i < dates.length; i++) {
             generatedData.forEach((row, index) => {
                 const dateClass = row.date ? 'date-cell' : 'empty-date-cell';
                 const dateContent = row.date || '';
-                
+
                 html += `
                     <tr>
                         <td class="line-number">${index + 1}</td>
@@ -622,17 +624,17 @@ for (let i = 0; i < dates.length; i++) {
             });
         }
 
-  function printPlanning() {
+        function printPlanning() {
             const mainTable = document.getElementById('mainTable');
             if (!mainTable || generatedData.length === 0) {
                 alert('🚫 Veuillez d\'abord générer un planning avant d\'imprimer.');
                 return;
             }
-            
+
             // Verifier le contenu REEL des divs editable-info
             const scheduleInfoDiv = document.querySelector('.schedule-info');
             const editableInfos = scheduleInfoDiv.querySelectorAll('.editable-info');
-            
+
             let hasContent = false;
             editableInfos.forEach(div => {
                 const text = div.textContent.trim();
@@ -640,7 +642,7 @@ for (let i = 0; i < dates.length; i++) {
                     hasContent = true;
                 }
             });
-            
+
             // Si aucun contenu, masquer la case jaune
             if (!hasContent) {
                 scheduleInfoDiv.classList.add('empty');
@@ -649,7 +651,7 @@ for (let i = 0; i < dates.length; i++) {
             }
 
             window.print();
-            
+
             // Retirer la classe apres l'impression
             setTimeout(() => {
                 scheduleInfoDiv.classList.remove('empty');
@@ -817,28 +819,23 @@ for (let i = 0; i < dates.length; i++) {
             document.getElementById('startDate').value = today.toISOString().split('T')[0];
         });
     </script>
-    <script src="../js/Générateur_feuilles.js"></script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('✅ Service Worker enregistré', reg))
-      .catch(err => console.error('❌ Erreur Service Worker', err));
-  }
-</script>
+        <script type="module" src="../js/announcements.js"></script>
+    <script type="module" src="Générateur_feuilles.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('../service-worker.js')
+                .then(reg => console.log('✅ Service Worker enregistré', reg))
+                .catch(err => console.error('❌ Erreur Service Worker', err));
+        }
+    </script>
 
-    <script type="module" src="../js/announcements.js"></script>
 
-<script>
-    // Vérifier et afficher les annonces au chargement
-    document.addEventListener('DOMContentLoaded', () => {
-        AnnouncementSystem.showPopupIfNeeded();
-    });
-</script>
-<script type="module">
-    import { initNavigation, setActiveNavItem } from '../js/navbar.js';
-    initNavigation();
-    setActiveNavItem('NOM_DU_FICHIER.html'); 
-</script>
+
+    <script type="module">
+        import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+        initNavigation();
+        setActiveNavItem('NOM_DU_FICHIER.html'); 
+    </script>
 </body>
 
 </html>

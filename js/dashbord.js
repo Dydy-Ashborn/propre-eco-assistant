@@ -248,7 +248,6 @@ async function loadOverview() {
         ]);
 
         // 📸 Photos chantiers
-
         const totalChantiers = photosSnap.size;
 
         document.getElementById('kpi-photos').textContent = totalChantiers;
