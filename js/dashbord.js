@@ -233,50 +233,65 @@ async function loadOverview() {
 
     try {
         // Charger tout en parallèle
-        const [feuillesSnap, signalementsSnap, devisSnap] = await Promise.all([
-            getDocs(collection(db, 'feuilles_passage')),
+        const [
+            photosSnap,
+            consommablesSnap,
+            signalementsSnap,
+            devisSnap,
+            coprosSnap
+        ] = await Promise.all([
+            getDocs(collection(db, 'photos_chantiers')),
+            getDocs(collection(db, 'consommables')),
             getDocs(collection(db, 'signalements')),
-            getDocs(collection(db, 'devis'))
+            getDocs(collection(db, 'devis')),
+            getDocs(collection(db, 'coproprietes'))
         ]);
 
-        // KPI Feuilles — cette semaine
-        let feuillesSemaine = 0;
-        feuillesSnap.forEach(doc => {
-            const data = doc.data();
-            const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : null;
-            if (createdAt && createdAt >= monday) feuillesSemaine++;
+        // 📸 Photos chantiers
+
+        const totalChantiers = photosSnap.size;
+
+        document.getElementById('kpi-photos').textContent = totalChantiers;
+
+
+        // 🧴 Consommables à facturer
+        let aFacturer = 0;
+        consommablesSnap.forEach(doc => {
+            if (!doc.data().facture) aFacturer++;
         });
 
-        // KPI Signalements — total
+        // 🚨 Signalements
         const totalSignalements = signalementsSnap.size;
 
-        // KPI Devis — en attente de chiffrage
+        // 📑 Devis en attente
         let devisEnAttente = 0;
         devisSnap.forEach(doc => {
             if (doc.data().status !== 'chiffre') devisEnAttente++;
         });
 
-        // KPI Heures — semaine courante, tous les employés
-        const employeeIds = Object.keys(employeeNames);
-        const weekResults = await Promise.all(
-            employeeIds.map(async (empId) => {
-                try {
-                    const weekDocSnap = await getDoc(doc(db, 'employees', empId, 'weeks', weekString));
-                    if (!weekDocSnap.exists()) return 0;
-                    const data = weekDocSnap.data();
-                    let hours = 0;
-                    if (data.days) data.days.forEach(d => { hours += parseFloat(d.hours) || 0; });
-                    return hours;
-                } catch { return 0; }
-            })
-        );
-        const totalHeuresSemaine = weekResults.reduce((a, b) => a + b, 0);
+        // 🏢 Copros incomplètes (logique identique à ton module copro)
+        let coprosIncompletes = 0;
+        coprosSnap.forEach(doc => {
+            const c = doc.data();
+            const hasProcedures = c.procedures && c.procedures.trim().length > 0;
+            const hasCode = c.code && c.code.trim().length > 0;
+
+            if (!hasProcedures || !hasCode) {
+                coprosIncompletes++;
+            }
+        });
+
+
+        // const totalHeuresSemaine = weekResults.reduce((a, b) => a + b, 0);
 
         // Afficher les KPIs
-        document.getElementById('kpi-feuilles').textContent = feuillesSemaine;
+        document.getElementById('kpi-photos').textContent = totalChantiers;
+        document.getElementById('kpi-consommables').textContent = aFacturer;
         document.getElementById('kpi-signalements').textContent = totalSignalements;
-        document.getElementById('kpi-heures').textContent = `${totalHeuresSemaine.toFixed(1)}h`;
         document.getElementById('kpi-devis').textContent = devisEnAttente;
+        document.getElementById('kpi-copros').textContent = coprosIncompletes;
+
+
 
         // Badge rouge si signalements ou devis en attente
         const kpiSignEl = document.getElementById('kpi-signalements');
@@ -618,7 +633,7 @@ function renderPagination(tab, totalItems) {
 
     container.innerHTML = `
         <div class="pagination-info">
-            Affichage de ${startIndex} Ã  ${endIndex} sur ${totalItems} éléments
+            Affichage de ${startIndex} à  ${endIndex} sur ${totalItems} éléments
         </div>
         <div class="pagination-controls">
             <button class="btn-pagination" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage('${tab}', -1)">
@@ -1179,7 +1194,7 @@ async function downloadAllFeuilles() {
         btn.disabled = true;
 
         if (allData.feuilles_passage.length === 0) {
-            alert('Aucune feuille Ã  télécharger');
+            alert('Aucune feuille à télécharger');
             return;
         }
 
@@ -1234,7 +1249,7 @@ async function downloadAllPhotosChantiers() {
         btn.disabled = true;
 
         if (allData.photos_chantiers.length === 0) {
-            alert('Aucun chantier Ã  télécharger');
+            alert('Aucun chantier à télécharger');
             return;
         }
 
@@ -1289,7 +1304,7 @@ async function downloadAllPhotosChantiers() {
 window.downloadSingleChantier = async function (chantierID) {
     const chantier = allData.photos_chantiers.find(c => c.id === chantierID);
     if (!chantier || !chantier.photos || chantier.photos.length === 0) {
-        alert('Aucune photo Ã  télécharger');
+        alert('Aucune photo à télécharger');
         return;
     }
 
@@ -1483,7 +1498,7 @@ window.marquerFacture = async function (id) {
                 loadConsommables();
             } catch (error) {
                 console.error('Erreur:', error);
-                showNotification('Erreur lors de la mise Ã  jour', 'error');
+                showNotification('Erreur lors de la mise à jour', 'error');
             }
         }
     });
@@ -2238,7 +2253,7 @@ window.viewEmployeeDetails = async function (employeeId) {
             <div class="modal-header-details">
                 <div>
                     <h2><i class="fas fa-user-clock"></i> ${employeeName}</h2>
-                    <p>Semaines ${weekStart.replace('W', 'S')} Ã  ${weekEnd.replace('W', 'S')}</p>
+                    <p>Semaines ${weekStart.replace('W', 'S')} à  ${weekEnd.replace('W', 'S')}</p>
                 </div>
                 <button class="modal-close" onclick="this.closest('.employee-details-modal').remove()">
                     <i class="fas fa-times"></i>
@@ -2725,7 +2740,7 @@ function showUpdateModal() {
                     <div class="header-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h2>Mise Ã  jour v2.2.0 !</h2>
+                    <h2>Mise à jour v2.2.0 !</h2>
                     <p>Découvrez toutes les nouveautés</p>
                 </div>
                 
@@ -2742,7 +2757,7 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-spinner"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Animation pendant l'envoi</h4>
-                                    <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle Ã  chaque envoi.</p>
+                                    <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle à chaque envoi.</p>
                                 </div>
                             </li>
                             <li class="update-item">
@@ -2772,8 +2787,8 @@ function showUpdateModal() {
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-bell"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Notification Ã  l'envoi</h4>
-                                    <p class="update-item-desc">Une notification est envoyée automatiquement Ã  chaque nouveau devis soumis.</p>
+                                    <h4 class="update-item-title">Notification à l'envoi</h4>
+                                    <p class="update-item-desc">Une notification est envoyée automatiquement à chaque nouveau devis soumis.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2806,7 +2821,7 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-user"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Nom d'agent mémorisé</h4>
-                                    <p class="update-item-desc">Votre prénom est sauvegardé automatiquement et pré-rempli Ã  chaque visite sur toutes les pages.</p>
+                                    <p class="update-item-desc">Votre prénom est sauvegardé automatiquement et pré-rempli à chaque visite sur toutes les pages.</p>
                                 </div>
                             </li>
                             <li class="update-item">
@@ -2820,7 +2835,7 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-redo-alt"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Réinitialisation automatique</h4>
-                                    <p class="update-item-desc">Le formulaire se remet Ã  zéro 3 secondes après un envoi réussi, sans perdre le nom de l'agent.</p>
+                                    <p class="update-item-desc">Le formulaire se remet à zéro 3 secondes après un envoi réussi, sans perdre le nom de l'agent.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2849,7 +2864,7 @@ window.closeUpdateModal = function () {
         localStorage.setItem('updateModalShown_v2.2.0', 'true');
     }
 }
-// Afficher la modal au chargement si pas déjÃ  vue
+// Afficher la modal au chargement si pas déjà vue
 window.addEventListener('load', () => {
     setTimeout(() => {
         const loginModal = document.getElementById('loginModal');

@@ -186,345 +186,365 @@
                 </div>
                 <div id="content-overview" style="display:none;">
                     <div class="overview-grid">
-                        <div class="kpi-card kpi-green" onclick="switchTabPublic('feuilles_passage')">
-                            <div class="kpi-icon"><i class="fas fa-file-signature"></i></div>
+
+                        <!-- Photos chantiers -->
+                        <div class="kpi-card kpi-purple" onclick="switchTabPublic('photos_chantiers')">
+                            <div class="kpi-icon"><i class="fas fa-camera"></i></div>
                             <div class="kpi-body">
-                                <div class="kpi-value" id="kpi-feuilles">—</div>
-                                <div class="kpi-label">Feuilles de passage cette semaine</div>
+                                <div class="kpi-value" id="kpi-photos">—</div>
+                                <div class="kpi-label">Photos chantiers</div>
                             </div>
                             <i class="fas fa-chevron-right kpi-arrow"></i>
                         </div>
+
+                        <!-- Consommables -->
+                        <div class="kpi-card kpi-orange" onclick="switchTabPublic('consommables')">
+                            <div class="kpi-icon"><i class="fas fa-box-open"></i></div>
+                            <div class="kpi-body">
+                                <div class="kpi-value" id="kpi-consommables">—</div>
+                                <div class="kpi-label">Consommables à facturer</div>
+                            </div>
+                            <i class="fas fa-chevron-right kpi-arrow"></i>
+                        </div>
+
+                        <!-- Signalements -->
                         <div class="kpi-card kpi-red" onclick="switchTabPublic('signalements')">
                             <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
                             <div class="kpi-body">
                                 <div class="kpi-value" id="kpi-signalements">—</div>
-                                <div class="kpi-label">Signalements en cours</div>
+                                <div class="kpi-label">Signalements</div>
                             </div>
                             <i class="fas fa-chevron-right kpi-arrow"></i>
                         </div>
-                        <div class="kpi-card kpi-blue" onclick="switchTabPublic('heures')">
-                            <div class="kpi-icon"><i class="fas fa-clock"></i></div>
-                            <div class="kpi-body">
-                                <div class="kpi-value" id="kpi-heures">—</div>
-                                <div class="kpi-label">Heures équipe cette semaine</div>
-                            </div>
-                            <i class="fas fa-chevron-right kpi-arrow"></i>
-                        </div>
-                        <div class="kpi-card kpi-orange" onclick="switchTabPublic('devis')">
+
+                        <!-- Devis -->
+                        <div class="kpi-card kpi-blue" onclick="switchTabPublic('devis')">
                             <div class="kpi-icon"><i class="fas fa-file-invoice"></i></div>
                             <div class="kpi-body">
                                 <div class="kpi-value" id="kpi-devis">—</div>
-                                <div class="kpi-label">Devis en attente de chiffrage</div>
+                                <div class="kpi-label">Devis en attente</div>
                             </div>
                             <i class="fas fa-chevron-right kpi-arrow"></i>
                         </div>
+
+                        <!-- Copros incomplètes -->
+                        <div class="kpi-card kpi-green" onclick="switchTabPublic('copro')">
+                            <div class="kpi-icon"><i class="fas fa-building"></i></div>
+                            <div class="kpi-body">
+                                <div class="kpi-value" id="kpi-copros">—</div>
+                                <div class="kpi-label">Copros incomplètes</div>
+                            </div>
+                            <i class="fas fa-chevron-right kpi-arrow"></i>
+                        </div>
+
                     </div>
+
                 </div>
             </div>
-           
 
-                <!-- Section Feuilles de Passage -->
-                <div id="section-feuilles_passage" class="card-section">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-file-signature"></i>
-                            Feuilles de Passage
-                        </h2>
-                        <div class="card-actions">
-                            <button class="btn btn-secondary btn-imgbb"
-                                onclick="window.open('https://dylan-propreeco.imgbb.com/')">
-                                <i class="fas fa-external-link-alt"></i>
-                                Supprimer sur ImgBB
-                            </button>
-                            <button id="downloadAllFeuilles" class="btn">
-                                <i class="fas fa-download"></i>
-                                Télécharger ZIP
-                            </button>
-                        </div>
-                    </div>
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchFeuilles" placeholder="Rechercher par copropriété ou agent...">
-                    </div>
-                    <div id="loading-feuilles_passage" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
-                    </div>
-                    <div id="content-feuilles_passage" style="display: none;"></div>
-                    <div id="pagination-feuilles_passage" class="pagination-container"></div>
-                </div>
 
-                <!-- Section Photos Chantiers -->
-                <div id="section-photos_chantiers" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-hard-hat"></i>
-                            Photos des Chantiers
-                        </h2>
-                        <div class="card-actions">
-                            <button class="btn btn-secondary btn-imgbb"
-                                onclick="window.open('https://dylan-propreeco.imgbb.com/')">
-                                <i class="fas fa-external-link-alt"></i>
-                                Supprimer sur ImgBB
-                            </button>
-                            <button id="downloadAllPhotosChantiers" class="btn">
-                                <i class="fas fa-download"></i>
-                                Télécharger ZIP
-                            </button>
-                        </div>
-                    </div>
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchChantiers"
-                            placeholder="Rechercher par chantier, agent ou description...">
-                    </div>
-                    <div id="loading-photos_chantiers" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
-                    </div>
-                    <div id="content-photos_chantiers" class="chantiers-list" style="display: none;"></div>
-                    <div id="pagination-photos_chantiers" class="pagination-container"></div>
-                </div>
-
-                <!-- Section Signalements -->
-                <div id="section-signalements" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Signalements
-                        </h2>
-                    </div>
-                    <div id="loading-signalements" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
-                    </div>
-                    <div id="content-signalements" class="chantiers-list" style="display: none;"></div>
-                    <div id="pagination-signalements" class="pagination-container"></div>
-                </div>
-
-                <!-- Section Consommables -->
-                <div id="section-consommables" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-lightbulb"></i>
-                            Consommables
-                        </h2>
-                    </div>
-                    <div id="loading-consommables" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
-                    </div>
-                    <div id="content-consommables" class="chantiers-list" style="display: none;"></div>
-                    <div id="pagination-consommables" class="pagination-container"></div>
-                </div>
-
-                <!-- Section Heures -->
-                <div id="section-heures" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-clock"></i>
-                            Relevé d'heures des employés
-                        </h2>
-                        <button id="btnExportHeures" class="btn" onclick="exportHeuresExcel()" style="display:none;">
-                            <i class="fas fa-file-excel"></i>
-                            Exporter Excel
+            <!-- Section Feuilles de Passage -->
+            <div id="section-feuilles_passage" class="card-section">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-file-signature"></i>
+                        Feuilles de Passage
+                    </h2>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary btn-imgbb"
+                            onclick="window.open('https://dylan-propreeco.imgbb.com/')">
+                            <i class="fas fa-external-link-alt"></i>
+                            Supprimer sur ImgBB
+                        </button>
+                        <button id="downloadAllFeuilles" class="btn">
+                            <i class="fas fa-download"></i>
+                            Télécharger ZIP
                         </button>
                     </div>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchFeuilles" placeholder="Rechercher par copropriété ou agent...">
+                </div>
+                <div id="loading-feuilles_passage" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
+                <div id="content-feuilles_passage" style="display: none;"></div>
+                <div id="pagination-feuilles_passage" class="pagination-container"></div>
+            </div>
 
-                    <div class="heures-filters">
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar"></i> Semaine de début</label>
-                            <input type="week" id="filterWeekStart" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar"></i> Semaine de fin</label>
-                            <input type="week" id="filterWeekEnd" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-user"></i> Filtrer par employé</label>
-                            <select id="filterEmployee" class="filter-input">
-                                <option value="">Tous les employés</option>
-                                <option value="dylan">Dylan</option>
-                                <option value="oceane">Océane</option>
-                                <option value="samuel">Samuel</option>
-                                <option value="jeremie">Jérémie</option>
-                                <option value="carlos">Carlos</option>
-                                <option value="sandra">Sandra</option>
-                                <option value="isabelle">Isabelle</option>
-                                <option value="caroline">Caroline</option>
-                                <option value="nadjet">Nadjet</option>
-                                <option value="maxime">Maxime</option>
-                                <option value="shana">Shana</option>
-                                <div class="tabs-container">
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <button class="btn" onclick="loadHeures()">
-                                <i class="fas fa-search"></i> Rechercher
-                            </button>
-                            <button class="btn btn-cancel"
-                                onclick="document.getElementById('filterWeekStart').value='';document.getElementById('filterWeekEnd').value='';document.getElementById('filterEmployee').value='';">
-                                <i class="fas fa-times"></i> Effacer
-                            </button>
-                        </div>
+            <!-- Section Photos Chantiers -->
+            <div id="section-photos_chantiers" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-hard-hat"></i>
+                        Photos des Chantiers
+                    </h2>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary btn-imgbb"
+                            onclick="window.open('https://dylan-propreeco.imgbb.com/')">
+                            <i class="fas fa-external-link-alt"></i>
+                            Supprimer sur ImgBB
+                        </button>
+                        <button id="downloadAllPhotosChantiers" class="btn">
+                            <i class="fas fa-download"></i>
+                            Télécharger ZIP
+                        </button>
                     </div>
-                    <div id="loading-heures" class="loading-state">
-                        <i class="fas fa-info-circle"></i>
-                        <p>Sélectionnez une période</p>
-                    </div>
-                    <div id="content-heures" style="display: none;"></div>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchChantiers"
+                        placeholder="Rechercher par chantier, agent ou description...">
+                </div>
+                <div id="loading-photos_chantiers" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
+                <div id="content-photos_chantiers" class="chantiers-list" style="display: none;"></div>
+                <div id="pagination-photos_chantiers" class="pagination-container"></div>
+            </div>
+
+            <!-- Section Signalements -->
+            <div id="section-signalements" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Signalements
+                    </h2>
+                </div>
+                <div id="loading-signalements" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
+                <div id="content-signalements" class="chantiers-list" style="display: none;"></div>
+                <div id="pagination-signalements" class="pagination-container"></div>
+            </div>
+
+            <!-- Section Consommables -->
+            <div id="section-consommables" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Consommables
+                    </h2>
+                </div>
+                <div id="loading-consommables" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
+                <div id="content-consommables" class="chantiers-list" style="display: none;"></div>
+                <div id="pagination-consommables" class="pagination-container"></div>
+            </div>
+
+            <!-- Section Heures -->
+            <div id="section-heures" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-clock"></i>
+                        Relevé d'heures des employés
+                    </h2>
+                    <button id="btnExportHeures" class="btn" onclick="exportHeuresExcel()" style="display:none;">
+                        <i class="fas fa-file-excel"></i>
+                        Exporter Excel
+                    </button>
                 </div>
 
-                <!-- Section Annonces -->
-                <div id="section-annonces" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-bullhorn"></i>
-                            Annonces
-                        </h2>
-                        <button id="btnCreateAnnonce" class="btn">
-                            <i class="fas fa-plus"></i>
-                            Nouvelle Annonce
+                <div class="heures-filters">
+                    <div class="filter-group">
+                        <label><i class="fas fa-calendar"></i> Semaine de début</label>
+                        <input type="week" id="filterWeekStart" class="filter-input">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-calendar"></i> Semaine de fin</label>
+                        <input type="week" id="filterWeekEnd" class="filter-input">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-user"></i> Filtrer par employé</label>
+                        <select id="filterEmployee" class="filter-input">
+                            <option value="">Tous les employés</option>
+                            <option value="dylan">Dylan</option>
+                            <option value="oceane">Océane</option>
+                            <option value="samuel">Samuel</option>
+                            <option value="jeremie">Jérémie</option>
+                            <option value="carlos">Carlos</option>
+                            <option value="sandra">Sandra</option>
+                            <option value="isabelle">Isabelle</option>
+                            <option value="caroline">Caroline</option>
+                            <option value="nadjet">Nadjet</option>
+                            <option value="maxime">Maxime</option>
+                            <option value="shana">Shana</option>
+                            <div class="tabs-container">
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn" onclick="loadHeures()">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                        <button class="btn btn-cancel"
+                            onclick="document.getElementById('filterWeekStart').value='';document.getElementById('filterWeekEnd').value='';document.getElementById('filterEmployee').value='';">
+                            <i class="fas fa-times"></i> Effacer
                         </button>
                     </div>
-                    <div id="formAnnonce" class="form-card" style="display: none;">
-                        <h3>Créer une annonce</h3>
-                        <div class="form-group">
-                            <label class="form-label">Titre</label>
-                            <input type="text" id="annonceTitre" class="form-input" placeholder="Ex: Réunion d'équipe">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Message</label>
-                            <textarea id="annonceMessage" class="form-textarea" rows="5"
-                                placeholder="Votre message..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Photos (optionnel)</label>
-                            <input type="file" id="annoncePhotos" accept="image/*" multiple>
-                            <div id="annoncePreview" class="photos-preview"></div>
-                        </div>
-                        <div style="display: flex; gap: 0.75rem;">
-                            <button id="btnSaveAnnonce" class="btn">
-                                <i class="fas fa-save"></i>
-                                Publier
-                            </button>
-                            <button id="btnCancelAnnonce" class="btn btn-cancel">
-                                <i class="fas fa-times"></i>
-                                Annuler
-                            </button>
-                        </div>
+                </div>
+                <div id="loading-heures" class="loading-state">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Sélectionnez une période</p>
+                </div>
+                <div id="content-heures" style="display: none;"></div>
+            </div>
+
+            <!-- Section Annonces -->
+            <div id="section-annonces" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-bullhorn"></i>
+                        Annonces
+                    </h2>
+                    <button id="btnCreateAnnonce" class="btn">
+                        <i class="fas fa-plus"></i>
+                        Nouvelle Annonce
+                    </button>
+                </div>
+                <div id="formAnnonce" class="form-card" style="display: none;">
+                    <h3>Créer une annonce</h3>
+                    <div class="form-group">
+                        <label class="form-label">Titre</label>
+                        <input type="text" id="annonceTitre" class="form-input" placeholder="Ex: Réunion d'équipe">
                     </div>
-                    <div id="loading-annonces" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="annonceMessage" class="form-textarea" rows="5"
+                            placeholder="Votre message..."></textarea>
                     </div>
-                    <div id="content-annonces" style="display: none; padding: 1rem;"></div>
+                    <div class="form-group">
+                        <label class="form-label">Photos (optionnel)</label>
+                        <input type="file" id="annoncePhotos" accept="image/*" multiple>
+                        <div id="annoncePreview" class="photos-preview"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button id="btnSaveAnnonce" class="btn">
+                            <i class="fas fa-save"></i>
+                            Publier
+                        </button>
+                        <button id="btnCancelAnnonce" class="btn btn-cancel">
+                            <i class="fas fa-times"></i>
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+                <div id="loading-annonces" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
+                <div id="content-annonces" style="display: none; padding: 1rem;"></div>
+            </div>
+
+            <!-- Section Devis -->
+            <div id="section-devis" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-file-invoice"></i>
+                        Demandes de Devis
+                    </h2>
+                </div>
+                <div id="loading-devis" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
+                <div id="content-devis" style="display: none; padding: 1rem;"></div>
+            </div>
+
+            <div id="section-copro" class="card-section" style="display: none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-building"></i>
+                        Gestion des copropriétés
+                    </h2>
+                    <button class="btn" id="addCoproBtn">
+                        <i class="fas fa-plus"></i>
+                        Nouvelle copro
+                    </button>
                 </div>
 
-                <!-- Section Devis -->
-                <div id="section-devis" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-file-invoice"></i>
-                            Demandes de Devis
-                        </h2>
-                    </div>
-                    <div id="loading-devis" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
-                    </div>
-                    <div id="content-devis" style="display: none; padding: 1rem;"></div>
+                <div class="copro-filters">
+                    <span class="copro-counter" id="coproCounter">0 copropriété</span>
+                    <button class="filter-pill active" data-filter="all">
+                        <i class="fas fa-list"></i>
+                        Toutes
+                    </button>
+                    <button class="filter-pill" data-filter="incomplete">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Incomplètes
+                    </button>
+                    <button class="filter-pill" data-filter="no-procedures">
+                        <i class="fas fa-file-alt"></i>
+                        Sans procédures
+                    </button>
+                    <button class="filter-pill" data-filter="no-code">
+                        <i class="fas fa-key"></i>
+                        Sans code
+                    </button>
                 </div>
 
-                <div id="section-copro" class="card-section" style="display: none;">
-                    <div class="card-section-header">
-                        <h2 class="card-section-title">
-                            <i class="fas fa-building"></i>
-                            Gestion des copropriétés
-                        </h2>
-                        <button class="btn" id="addCoproBtn">
-                            <i class="fas fa-plus"></i>
-                            Nouvelle copro
-                        </button>
-                    </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchCopro" placeholder="Rechercher une copropriété...">
+                </div>
 
-                    <div class="copro-filters">
-                        <span class="copro-counter" id="coproCounter">0 copropriété</span>
-                        <button class="filter-pill active" data-filter="all">
-                            <i class="fas fa-list"></i>
-                            Toutes
-                        </button>
-                        <button class="filter-pill" data-filter="incomplete">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Incomplètes
-                        </button>
-                        <button class="filter-pill" data-filter="no-procedures">
-                            <i class="fas fa-file-alt"></i>
-                            Sans procédures
-                        </button>
-                        <button class="filter-pill" data-filter="no-code">
-                            <i class="fas fa-key"></i>
-                            Sans code
-                        </button>
-                    </div>
+                <div id="loading-copro" class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Chargement...</p>
+                </div>
 
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchCopro" placeholder="Rechercher une copropriété...">
-                    </div>
+                <div id="content-copro" class="copro-grid" style="display: none;"></div>
 
-                    <div id="loading-copro" class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <p>Chargement...</p>
-                    </div>
+                <div id="coproModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3 id="modalTitle">Ajouter une copropriété</h3>
 
-                    <div id="content-copro" class="copro-grid" style="display: none;"></div>
+                        <form id="coproForm">
+                            <div class="form-group">
+                                <label>Nom *</label>
+                                <input type="text" id="coproNom" required>
+                            </div>
 
-                    <div id="coproModal" class="modal" style="display: none;">
-                        <div class="modal-content">
-                            <span class="close">&times;</span>
-                            <h3 id="modalTitle">Ajouter une copropriété</h3>
+                            <div class="form-group">
+                                <label>Adresse *</label>
+                                <input type="text" id="coproAdresse" required>
+                            </div>
 
-                            <form id="coproForm">
-                                <div class="form-group">
-                                    <label>Nom *</label>
-                                    <input type="text" id="coproNom" required>
-                                </div>
+                            <div class="form-group">
+                                <label>Code *</label>
+                                <input type="text" id="coproCode" required>
+                            </div>
 
-                                <div class="form-group">
-                                    <label>Adresse *</label>
-                                    <input type="text" id="coproAdresse" required>
-                                </div>
+                            <div class="form-group">
+                                <label>Procédures</label>
+                                <textarea id="coproProcedures" rows="10"></textarea>
+                            </div>
 
-                                <div class="form-group">
-                                    <label>Code *</label>
-                                    <input type="text" id="coproCode" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Procédures</label>
-                                    <textarea id="coproProcedures" rows="10"></textarea>
-                                </div>
-
-                                <div class="form-actions">
-                                    <button type="button" class="btn btn-secondary" id="cancelBtn">Annuler</button>
-                                    <button type="submit" class="btn">Enregistrer</button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" id="cancelBtn">Annuler</button>
+                                <button type="submit" class="btn">Enregistrer</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script type="module" src="../js/dashbord.js"></script>
-        <script type="module" src="../js/firebase-copro.js"></script>
+    <script type="module" src="../js/dashbord.js"></script>
+    <script type="module" src="../js/firebase-copro.js"></script>
 
-        <script type="module">
-            import { initNavigation, setActiveNavItem } from '../js/navbar.js';
-            initNavigation();
-            setActiveNavItem('dashbord.html');
-        </script>
+    <script type="module">
+        import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+        initNavigation();
+        setActiveNavItem('dashbord.html');
+    </script>
 </body>
 
 </html>
