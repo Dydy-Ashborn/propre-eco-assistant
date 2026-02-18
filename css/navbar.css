@@ -1,7 +1,7 @@
 /* Header moderne avec glassmorphism */
 .header {
     backdrop-filter: blur(20px);
-    background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%);
+    /* background: linear-gradient(135deg, #4aaf70 0%, #2d8650 100%); */
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1rem 2rem;
     position: sticky;
