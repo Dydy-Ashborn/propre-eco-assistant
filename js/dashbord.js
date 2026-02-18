@@ -114,7 +114,7 @@ function showLogin() {
 function showDashboard() {
     document.getElementById('loginModal').style.display = 'none';
     document.getElementById('dashboardContent').style.display = 'block';
-    loadCurrentTab();
+    switchTab(currentTab);
 }
 
 function handleLogin(e) {
