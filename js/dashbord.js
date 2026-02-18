@@ -5,10 +5,10 @@ import { initCoproManagement } from './dashboard-copro.js';
 //TEMPS PAR DEFAUT POUR LE CHIFFRAGE (en minutes)
 const TEMPS_DEFAUT = {
     'Vitres Standard': 6,
-    'Baies VitrÃ©es': 8,
+    'Baies Vitrées': 8,
     'Vitres Hautes': 10,
-    'VÃ©lux': 10,
-    'Portes vitrÃ©es': 3,
+    'Vélux': 10,
+    'Portes vitrées': 3,
     'Chambres avec placard': 30,
     'Chambres sans placard': 20,
     'Placards seuls': 10,
@@ -28,7 +28,7 @@ const TEMPS_DEFAUT = {
     'Cellier': 60,
     'Buanderie': 60,
     'WC lave-mains': 20,
-    'Salle vidÃ©o': 30,
+    'Salle vidéo': 30,
     'Local technique': 30,
     'Escalier': 15,
     'Rambarde': 30,
@@ -38,7 +38,7 @@ const TEMPS_DEFAUT = {
     'Chaufferie': 60,
     'Aspiration poutraison + mur': 60,
     'Ascenseur': 30,
-    'Tapis entrÃ©e': 10,
+    'Tapis entrée': 10,
     'Bureau': 30,
     'Garage': 60
 };
@@ -51,7 +51,7 @@ let currentGalleryPhotos = [];
 let currentPhotoIndex = 0;
 let annoncePhotos = [];
 
-// DonnÃ©es paginÃ©es
+// Données paginées
 let allData = {
     feuilles_passage: [],
     photos_chantiers: [],
@@ -82,7 +82,7 @@ function init() {
     const currentWeek = getWeekNumber(today);
     const weekString = `${today.getFullYear()}-W${currentWeek.toString().padStart(2, '0')}`;
 
-    // DÃ©finir les valeurs par dÃ©faut
+    // Définir les valeurs par défaut
     const weekStartInput = document.getElementById('filterWeekStart');
     const weekEndInput = document.getElementById('filterWeekEnd');
     if (weekStartInput) weekStartInput.value = weekString;
@@ -292,7 +292,7 @@ async function loadOverview() {
     }
 }
 
-window.switchTabPublic = function(tab) {
+window.switchTabPublic = function (tab) {
     switchTab(tab);
 };
 
@@ -342,7 +342,7 @@ function renderFeuillesPassage() {
             <div class="chantier-item">
                 <div class="chantier-thumb-container">
                     <img src="${feuille.url}" class="chantier-thumb" 
-                         onclick="openFeuilleGallery(${globalIndex})" alt="Feuille">
+                         onclick="openFeuilleGallery('${feuille.id}')"" alt="Feuille">
                 </div>
                 <div class="chantier-info">
                     <div class="chantier-name">${feuille.copro || 'Non specifiee'}</div>
@@ -361,23 +361,23 @@ function renderFeuillesPassage() {
     renderPagination('feuilles_passage', allData.feuilles_passage.length);
 }
 // Fonction de suppression de feuille
-window.deleteFeuille = async function(feuilleId) {
+window.deleteFeuille = async function (feuilleId) {
     showConfirmModal({
         title: 'Supprimer cette feuille de passage ?',
-        message: 'Cette action est irrÃ©versible. La feuille sera dÃ©finitivement supprimÃ©e.',
+        message: 'Cette action est irréversible. La feuille sera définitivement supprimée.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'feuilles_passage', feuilleId));
-                
+
                 // Supprimer de allData
                 allData.feuilles_passage = allData.feuilles_passage.filter(f => f.id !== feuilleId);
-                
+
                 // Re-render
                 renderFeuillesPassage();
-                
-                showNotification('Feuille supprimee avec succÃ¨s', 'success');
+
+                showNotification('Feuille supprimee avec succès', 'success');
             } catch (error) {
                 console.error('Erreur suppression feuille:', error);
                 showNotification('Erreur lors de la suppression', 'error');
@@ -437,12 +437,12 @@ function renderPhotosChantiers() {
                     <span class="photo-badge">+${photoCount}</span>
                 </div>
                 <div class="chantier-info">
-                    <div class="chantier-name">${chantier.chantier || 'Non spÃ©cifiÃ©'}</div>
-                    <div class="chantier-meta">${chantier.agent || 'Agent non spÃ©cifiÃ©'}${description ? ' - ' + description : ''}</div>
+                    <div class="chantier-name">${chantier.chantier || 'Non spécifié'}</div>
+                    <div class="chantier-meta">${chantier.agent || 'Agent non spécifié'}${description ? ' - ' + description : ''}</div>
                 </div>
                 <div class="chantier-date">${date}</div>
                 <div class="chantier-actions">
-                    <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="TÃ©lÃ©charger">
+                    <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="Télécharger">
                         <i class="fas fa-download"></i>
                     </button>
                     <button class="btn-icon danger" onclick="deleteChantier('${chantier.id}')" title="Supprimer">
@@ -508,8 +508,8 @@ function renderSignalements() {
                     </div>
                 ` : ''}
                 <div class="chantier-info">
-                    <div class="chantier-name">${signalement.copro || 'Non spÃ©cifiÃ©e'}</div>
-                    <div class="chantier-meta">${signalement.employee || 'EmployÃ© non spÃ©cifiÃ©'}${description ? ' - ' + description : ''}</div>
+                    <div class="chantier-name">${signalement.copro || 'Non spécifiée'}</div>
+                    <div class="chantier-meta">${signalement.employee || 'Employé non spécifié'}${description ? ' - ' + description : ''}</div>
                 </div>
                 <div class="chantier-date">${date}</div>
                 <div class="chantier-actions">
@@ -563,7 +563,7 @@ function renderConsommables() {
         const date = formatDate(item.createdAt);
         const photoUrl = item.images?.[0]?.url || '';
         const factureStatus = item.facture ?
-            '<span style="color: #059669;"><i class="fas fa-check-circle"></i> FacturÃ©</span>' :
+            '<span style="color: #059669;"><i class="fas fa-check-circle"></i> Facturé</span>' :
             '<span style="color: #d97706;"><i class="fas fa-clock"></i> A facturer</span>';
 
         container.innerHTML += `
@@ -575,8 +575,8 @@ function renderConsommables() {
                     </div>
                 ` : ''}
                 <div class="chantier-info">
-                    <div class="chantier-name">${item.type || 'Non spÃ©cifiÃ©'} - ${item.quantite || 0} unitÃ©(s)</div>
-                    <div class="chantier-meta">${item.copro || 'Copro non spÃ©cifiÃ©e'} - ${item.employee || 'EmployÃ© non spÃ©cifiÃ©'}</div>
+                    <div class="chantier-name">${item.type || 'Non spécifié'} - ${item.quantite || 0} unité(s)</div>
+                    <div class="chantier-meta">${item.copro || 'Copro non spécifiée'} - ${item.employee || 'Employé non spécifié'}</div>
                     <div class="chantier-meta">${factureStatus}</div>
                 </div>
                 <div class="chantier-date">${date}</div>
@@ -618,11 +618,11 @@ function renderPagination(tab, totalItems) {
 
     container.innerHTML = `
         <div class="pagination-info">
-            Affichage de ${startIndex} Ã  ${endIndex} sur ${totalItems} Ã©lÃ©ments
+            Affichage de ${startIndex} Ã  ${endIndex} sur ${totalItems} éléments
         </div>
         <div class="pagination-controls">
             <button class="btn-pagination" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage('${tab}', -1)">
-                <i class="fas fa-chevron-left"></i> PrÃ©cÃ©dent
+                <i class="fas fa-chevron-left"></i> Précédent
             </button>
             <div class="page-numbers">
                 ${generatePageNumbers(currentPage, totalPages, tab)}
@@ -835,7 +835,7 @@ async function saveAnnonce() {
             createdAt: new Date()
         });
 
-        alert('Annonce publiÃ©e !');
+        alert('Annonce publiée !');
         hideAnnonceForm();
         loadAnnonces();
     } catch (error) {
@@ -902,7 +902,7 @@ function createDevisCard(devis) {
         (devis.exterieurs?.terrasse ? 1 : 0);
 
     const isChiffre = devis.status === 'chiffre';
-    const statusLabel = isChiffre ? 'ChiffrÃ©' : 'En attente';
+    const statusLabel = isChiffre ? 'Chiffré' : 'En attente';
     const statusClass = isChiffre ? 'success' : 'warning';
 
     let tempsFormate = '--';
@@ -923,7 +923,7 @@ function createDevisCard(devis) {
                     <h3>${escapeHtml(devis.nomChantier || 'Devis sans nom')}</h3>
                     <div class="devis-meta">
                         <span><i class="fas fa-calendar"></i> ${dateAffichee}</span>
-                        <span><i class="fas fa-home"></i> ${totalElements} Ã©lÃ©ments</span>
+                        <span><i class="fas fa-home"></i> ${totalElements} éléments</span>
                         <span class="badge badge-${statusClass}">${statusLabel}</span>
                     </div>
                 </div>
@@ -936,16 +936,16 @@ function createDevisCard(devis) {
                             </div>
                             <div class="devis-total-tag prix-tag prix-ht-tag">
                                 <div class="prix-label">HT</div>
-                                <span>${prixHT.toFixed(2)} â‚¬</span>
+                                <span>${prixHT.toFixed(2)}€</span>
                             </div>
                             <div class="devis-total-tag prix-tag prix-ttc-tag">
                                 <div class="prix-label">TTC</div>
-                                <span>${prixTTC.toFixed(2)} â‚¬</span>
+                                <span>${prixTTC.toFixed(2)}€</span>
                             </div>
                             <button class="btn-icon-action btn-icon-edit" onclick="event.stopPropagation(); openChiffrageModal('${devis.id}')" title="Modifier le chiffrage">
                                 <i class="fas fa-pen"></i>
                             </button>
-                            <button class="btn-icon-action btn-icon-pdf" onclick="event.stopPropagation(); downloadDevisPDF('${devis.id}')" title="TÃ©lÃ©charger PDF">
+                            <button class="btn-icon-action btn-icon-pdf" onclick="event.stopPropagation(); downloadDevisPDF('${devis.id}')" title="Télécharger PDF">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
                             <button class="btn-icon-action btn-icon-delete" onclick="event.stopPropagation(); deleteDevis('${devis.id}')" title="Supprimer">
@@ -970,11 +970,11 @@ function createDevisCard(devis) {
 }
 
 function createDevisDetails(devis) {
-    let html = '<div class="detail-section"><h4><i class="fas fa-home"></i> DÃ©tails du bien</h4><div class="detail-grid">';
+    let html = '<div class="detail-section"><h4><i class="fas fa-home"></i> Détails du bien</h4><div class="detail-grid">';
 
     // Section Vitres
     if (devis.vitres?.standard > 0) html += `<div class="detail-item"><strong>Vitres Standard</strong><span>${devis.vitres.standard}</span></div>`;
-    if (devis.vitres?.baies > 0) html += `<div class="detail-item"><strong>Baies vitrÃ©es</strong><span>${devis.vitres.baies}</span></div>`;
+    if (devis.vitres?.baies > 0) html += `<div class="detail-item"><strong>Baies vitrées</strong><span>${devis.vitres.baies}</span></div>`;
     if (devis.vitres?.hautes > 0) html += `<div class="detail-item"><strong>Vitres hautes</strong><span>${devis.vitres.hautes}</span></div>`;
 
     // Section Chambres
@@ -988,10 +988,10 @@ function createDevisDetails(devis) {
 
     // Section Grattage
     if (devis.grattage && Object.values(devis.grattage).some(v => v === true)) {
-        html += '<div class="detail-section"><h4><i class="fas fa-exclamation-triangle"></i> Grattage nÃ©cessaire</h4><div class="grattage-tags">';
+        html += '<div class="detail-section"><h4><i class="fas fa-exclamation-triangle"></i> Grattage nécessaire</h4><div class="grattage-tags">';
         if (devis.grattage.standard) html += '<span class="grattage-tag">Vitres standard</span>';
-        if (devis.grattage.baies) html += '<span class="grattage-tag">Baies vitrÃ©es</span>';
-        if (devis.grattage.velux) html += '<span class="grattage-tag">VÃ©lux</span>';
+        if (devis.grattage.baies) html += '<span class="grattage-tag">Baies vitrées</span>';
+        if (devis.grattage.velux) html += '<span class="grattage-tag">Vélux</span>';
         if (devis.grattage.hautes) html += '<span class="grattage-tag">Vitres hautes</span>';
         html += '</div></div>';
     }
@@ -1020,15 +1020,16 @@ window.openPhotoGallery = function (chantierID, startIndex = 0) {
     createAndShowGalleryModal(chantier.chantier, chantier.description);
 };
 
-window.openFeuilleGallery = function (index) {
-    if (!window.allFeuillesPassage[index]) return;
+window.openFeuilleGallery = function (feuilleId) {
+    const feuille = allData.feuilles_passage.find(f => f.id === feuilleId);
+    if (!feuille) return;
 
-    const feuille = window.allFeuillesPassage[index];
     currentGalleryPhotos = [{ url: feuille.url }];
     currentPhotoIndex = 0;
 
     createAndShowGalleryModal(feuille.copro, feuille.agent);
 };
+
 
 window.openSignalementGallery = function (signalementID, startIndex = 0) {
     const signalement = window.allSignalements.find(s => s.id === signalementID);
@@ -1168,17 +1169,17 @@ window.closePhotoGallery = function () {
 };
 
 
-// ========== TÃ‰LÃ‰CHARGEMENT ZIP AMÃ‰LIORÃ‰ ==========
+// ========== TÉLÉCHARGEMENT ZIP AMÉLIORÉ ==========
 async function downloadAllFeuilles() {
     const btn = document.getElementById('downloadAllFeuilles');
     const originalContent = btn.innerHTML;
 
     try {
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> TÃ©lÃ©chargement...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Téléchargement...';
         btn.disabled = true;
 
         if (allData.feuilles_passage.length === 0) {
-            alert('Aucune feuille Ã  tÃ©lÃ©charger');
+            alert('Aucune feuille Ã  télécharger');
             return;
         }
 
@@ -1214,10 +1215,10 @@ async function downloadAllFeuilles() {
         a.click();
         window.URL.revokeObjectURL(url);
 
-        alert(`${processed} feuilles tÃ©lÃ©chargÃ©es`);
+        alert(`${processed} feuilles téléchargées`);
     } catch (error) {
         console.error('Erreur ZIP:', error);
-        alert('Erreur lors de la crÃ©ation du ZIP');
+        alert('Erreur lors de la création du ZIP');
     } finally {
         btn.innerHTML = originalContent;
         btn.disabled = false;
@@ -1229,11 +1230,11 @@ async function downloadAllPhotosChantiers() {
     const originalContent = btn.innerHTML;
 
     try {
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> TÃ©lÃ©chargement...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Téléchargement...';
         btn.disabled = true;
 
         if (allData.photos_chantiers.length === 0) {
-            alert('Aucun chantier Ã  tÃ©lÃ©charger');
+            alert('Aucun chantier Ã  télécharger');
             return;
         }
 
@@ -1275,10 +1276,10 @@ async function downloadAllPhotosChantiers() {
         a.click();
         window.URL.revokeObjectURL(url);
 
-        alert(`${totalPhotos} photos tÃ©lÃ©chargÃ©es`);
+        alert(`${totalPhotos} photos téléchargées`);
     } catch (error) {
         console.error('Erreur ZIP:', error);
-        alert('Erreur lors de la crÃ©ation du ZIP');
+        alert('Erreur lors de la création du ZIP');
     } finally {
         btn.innerHTML = originalContent;
         btn.disabled = false;
@@ -1288,7 +1289,7 @@ async function downloadAllPhotosChantiers() {
 window.downloadSingleChantier = async function (chantierID) {
     const chantier = allData.photos_chantiers.find(c => c.id === chantierID);
     if (!chantier || !chantier.photos || chantier.photos.length === 0) {
-        alert('Aucune photo Ã  tÃ©lÃ©charger');
+        alert('Aucune photo Ã  télécharger');
         return;
     }
 
@@ -1320,7 +1321,7 @@ window.downloadSingleChantier = async function (chantierID) {
         window.URL.revokeObjectURL(url);
     } catch (error) {
         console.error('Erreur:', error);
-        alert('Erreur lors du tÃ©lÃ©chargement');
+        alert('Erreur lors du téléchargement');
     }
 };
 
@@ -1328,13 +1329,13 @@ window.downloadSingleChantier = async function (chantierID) {
 window.deleteChantier = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce chantier ?',
-        message: 'Cette action est irrÃ©versible. Le chantier et ses photos seront dÃ©finitivement supprimÃ©s.',
+        message: 'Cette action est irréversible. Le chantier et ses photos seront définitivement supprimés.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'photos_chantiers', id));
-                showNotification('Chantier supprimÃ© avec succÃ¨s', 'success');
+                showNotification('Chantier supprimé avec succès', 'success');
                 currentPages.photos_chantiers = 1;
                 loadPhotosChantiers();
             } catch (error) {
@@ -1348,13 +1349,13 @@ window.deleteChantier = async function (id) {
 window.deleteSignalement = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce signalement ?',
-        message: 'Cette action est irrÃ©versible. Le signalement sera dÃ©finitivement supprimÃ©.',
+        message: 'Cette action est irréversible. Le signalement sera définitivement supprimé.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'signalements', id));
-                showNotification('Signalement supprimÃ© avec succÃ¨s', 'success');
+                showNotification('Signalement supprimé avec succès', 'success');
                 currentPages.signalements = 1;
                 loadSignalements();
             } catch (error) {
@@ -1368,13 +1369,13 @@ window.deleteSignalement = async function (id) {
 window.deleteConsommable = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce consommable ?',
-        message: 'Cette action est irrÃ©versible. Le consommable sera dÃ©finitivement supprimÃ©.',
+        message: 'Cette action est irréversible. Le consommable sera définitivement supprimé.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'consommables', id));
-                showNotification('Consommable supprimÃ© avec succÃ¨s', 'success');
+                showNotification('Consommable supprimé avec succès', 'success');
                 currentPages.consommables = 1;
                 loadConsommables();
             } catch (error) {
@@ -1388,13 +1389,13 @@ window.deleteConsommable = async function (id) {
 window.deleteAnnonce = async function (id) {
     showConfirmModal({
         title: 'Supprimer cette annonce ?',
-        message: 'Cette action est irrÃ©versible. L\'annonce sera dÃ©finitivement supprimÃ©e.',
+        message: 'Cette action est irréversible. L\'annonce sera définitivement supprimée.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'annonces', id));
-                showNotification('Annonce supprimÃ©e avec succÃ¨s', 'success');
+                showNotification('Annonce supprimée avec succès', 'success');
                 loadAnnonces();
             } catch (error) {
                 console.error('Erreur:', error);
@@ -1407,13 +1408,13 @@ window.deleteAnnonce = async function (id) {
 window.deleteDevis = async function (id) {
     showConfirmModal({
         title: 'Supprimer ce devis ?',
-        message: 'Cette action est irrÃ©versible. Le devis sera dÃ©finitivement supprimÃ©.',
+        message: 'Cette action est irréversible. Le devis sera définitivement supprimé.',
         confirmText: 'Supprimer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'devis', id));
-                showNotification('Devis supprimÃ© avec succÃ¨s', 'success');
+                showNotification('Devis supprimé avec succès', 'success');
                 loadDevis();
             } catch (error) {
                 console.error('Erreur:', error);
@@ -1423,7 +1424,7 @@ window.deleteDevis = async function (id) {
     });
 };
 
-// Fonction gÃ©nÃ©rique pour afficher une modale de confirmation moderne
+// Fonction générique pour afficher une modale de confirmation moderne
 function showConfirmModal({ title, message, confirmText = 'Confirmer', cancelText = 'Annuler', onConfirm }) {
     const modalHTML = `
         <div class="confirm-modal">
@@ -1471,18 +1472,18 @@ function showConfirmModal({ title, message, confirmText = 'Confirmer', cancelTex
 
 window.marquerFacture = async function (id) {
     showConfirmModal({
-        title: 'Marquer comme facturÃ© ?',
-        message: 'Ce consommable sera marquÃ© comme facturÃ©.',
+        title: 'Marquer comme facturé ?',
+        message: 'Ce consommable sera marqué comme facturé.',
         confirmText: 'Confirmer',
         cancelText: 'Annuler',
         onConfirm: async () => {
             try {
                 await updateDoc(doc(db, 'consommables', id), { facture: true });
-                showNotification('MarquÃ© comme facturÃ©', 'success');
+                showNotification('Marqué comme facturé', 'success');
                 loadConsommables();
             } catch (error) {
                 console.error('Erreur:', error);
-                showNotification('Erreur lors de la mise Ã  jour', 'error');
+                showNotification('Erreur lors de la mise Ã  jour', 'error');
             }
         }
     });
@@ -1549,7 +1550,7 @@ function cleanFilename(name) {
         .replace(/[^a-zA-Z0-9 ]/g, '') // Garder seulement lettres, chiffres, espaces
         .replace(/\s+/g, '_') // Remplacer espaces par underscore
         .replace(/_+/g, '_') // Enlever underscores multiples
-        .replace(/^_|_$/g, ''); // Enlever underscores dÃ©but/fin
+        .replace(/^_|_$/g, ''); // Enlever underscores début/fin
 
     return clean || 'inconnu';
 }
@@ -1624,22 +1625,22 @@ function filterAndRenderChantiers(searchTerm) {
 // ========== ONGLET HEURES ==========
 const employeeNames = {
     'dylan': 'Dylan',
-    'oceane': 'OcÃ©ane',
+    'oceane': 'Océane',
     'samuel': 'Samuel',
-    'jeremie': 'JÃ©rÃ©mie',
+    'jeremie': 'Jérémie',
     'carlos': 'Carlos',
     'sandra': 'Sandra',
     'manon': 'Manon',
-    'stephane': 'StÃ©phane',
+    'stephane': 'Stéphane',
     'isabelle': 'Isabelle',
     'caroline': 'Caroline',
     'nadjet': 'Nadjet',
-    'remy': 'RÃ©my',
+    'remy': 'Rémy',
     'maxime': 'Maxime',
     'shana': 'Shana'
 };
 
-// Cache pour les heures (Ã©vite de recharger les mÃªmes donnÃ©es)
+// Cache pour les heures (évite de recharger les mêmes données)
 let heuresCache = {};
 
 async function loadHeures() {
@@ -1649,17 +1650,17 @@ async function loadHeures() {
 
     if (!weekStart || !weekEnd) {
         const content = document.getElementById('content-heures');
-        content.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><p>Veuillez sÃ©lectionner une pÃ©riode</p></div>';
+        content.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><p>Veuillez sélectionner une période</p></div>';
         showContent('heures');
         return;
     }
 
-    // ClÃ© de cache
+    // Clé de cache
     const cacheKey = `${weekStart}_${weekEnd}_${selectedEmployee}`;
 
-    // Si en cache, affichage instantanÃ© !
+    // Si en cache, affichage instantané !
     if (heuresCache[cacheKey]) {
-        console.log('Ã¢Ã…â€œ"Â¦ DonnÃ©es en cache - affichage instantanÃ©');
+        console.log('âÃ…â€œ"¦ Données en cache - affichage instantané');
         renderHeures(...heuresCache[cacheKey]);
         showContent('heures');
         return;
@@ -1675,7 +1676,7 @@ async function loadHeures() {
         let totalKmGlobal = 0;
         let totalChantiersGlobal = 0;
 
-        // OPTIMISATION : Promise.all pour charger tous les employÃ©s en parallÃ¨le
+        // OPTIMISATION : Promise.all pour charger tous les employés en parallèle
         const results = await Promise.all(
             employeeIds.map(async (employeeId) => {
                 let employeeTotalHours = 0;
@@ -1684,7 +1685,7 @@ async function loadHeures() {
                 const kmValues = [];
                 let weeksCount = 0;
 
-                // OPTIMISATION : Promise.all pour charger toutes les semaines en parallÃ¨le
+                // OPTIMISATION : Promise.all pour charger toutes les semaines en parallèle
                 const weekResults = await Promise.all(
                     weeksToLoad.map(async (week) => {
                         try {
@@ -1718,7 +1719,7 @@ async function loadHeures() {
                     })
                 );
 
-                // Traiter les rÃ©sultats
+                // Traiter les résultats
                 weekResults.forEach(result => {
                     if (result) {
                         employeeTotalHours += result.weekHours;
@@ -1748,7 +1749,7 @@ async function loadHeures() {
             })
         );
 
-        // Filtrer les rÃ©sultats null et calculer les totaux
+        // Filtrer les résultats null et calculer les totaux
         const employeeData = results.filter(emp => emp !== null);
         employeeData.forEach(emp => {
             totalHoursGlobal += emp.totalHours;
@@ -1937,7 +1938,7 @@ window.exportHeuresExcel = function () {
     showNotification(`Export réussi — ${data.employeeData.length} employé(s)`, 'success');
 };
 
-// ========== CHIFFRAGE DEVIS DÃ‰TAILLÃ‰ ==========
+// ========== CHIFFRAGE DEVIS DÉTAILLÉ ==========
 window.openChiffrageDetailModal = async function (devisId) {
     const devis = allData.devis?.find(d => d.id === devisId);
     if (!devis) return;
@@ -1948,7 +1949,7 @@ window.openChiffrageDetailModal = async function (devisId) {
         <div class="modal-overlay" onclick="this.parentElement.remove()"></div>
         <div class="modal-content-large" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2><i class="fas fa-calculator"></i> Chiffrage dÃ©taillÃ©</h2>
+                <h2><i class="fas fa-calculator"></i> Chiffrage détaillé</h2>
                 <button class="modal-close" onclick="this.closest('.chiffrage-modal').remove()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1962,12 +1963,12 @@ window.openChiffrageDetailModal = async function (devisId) {
                 
                 <div class="chiffrage-totals">
                     <div class="total-line">
-                        <span>Total temps estimÃ©:</span>
+                        <span>Total temps estimé:</span>
                         <strong id="totalTemps">0h</strong>
                     </div>
                     <div class="total-line">
                         <span>Total prix:</span>
-                        <strong id="totalPrix" style="color: #10b981; font-size: 1.5rem;">0 â‚¬</strong>
+                        <strong id="totalPrix" style="color: #10b981; font-size: 1.5rem;">0€</strong>
                     </div>
                 </div>
                 
@@ -2004,8 +2005,8 @@ function createChiffrageElements(devis) {
     const vitresHautes = devis.vitres?.hautes || false;
 
     if (nbVitres > 0) elements.push({ label: 'Vitres Standard', qty: nbVitres, temps: 0.1, taux: 43.40 });
-    if (nbBaies > 0) elements.push({ label: 'Baies VitrÃ©es', qty: nbBaies, temps: 0.13, taux: 43.40 });
-    if (nbVelux > 0) elements.push({ label: 'VÃ©lux', qty: nbVelux, temps: 0.17, taux: 43.40 });
+    if (nbBaies > 0) elements.push({ label: 'Baies Vitrées', qty: nbBaies, temps: 0.13, taux: 43.40 });
+    if (nbVelux > 0) elements.push({ label: 'Vélux', qty: nbVelux, temps: 0.17, taux: 43.40 });
     if (vitresHautes) elements.push({ label: 'Vitres Hautes', qty: 1, temps: 0.17, taux: 43.40 });
 
     // Grattage
@@ -2056,13 +2057,13 @@ function createChiffrageElements(devis) {
     if (annexes.bureau > 0) elements.push({ label: 'Bureau', qty: annexes.bureau, temps: 0.5, taux: 43.40 });
     if (annexes.garage > 0) elements.push({ label: 'Garage', qty: annexes.garage, temps: 1, taux: 43.40 });
     if (annexes.skiroom > 0) elements.push({ label: 'Skiroom', qty: annexes.skiroom, temps: 1, taux: 43.40 });
-    if (annexes.salleVideo > 0) elements.push({ label: 'Salle vidÃ©o', qty: annexes.salleVideo, temps: 0.5, taux: 43.40 });
+    if (annexes.salleVideo > 0) elements.push({ label: 'Salle vidéo', qty: annexes.salleVideo, temps: 0.5, taux: 43.40 });
     if (annexes.chaufferie > 0) elements.push({ label: 'Chaufferie', qty: annexes.chaufferie, temps: 1, taux: 43.40 });
     if (annexes.escalier > 0) elements.push({ label: 'Escalier', qty: annexes.escalier, temps: 0.25, taux: 43.40 });
     if (annexes.ascenseur > 0) elements.push({ label: 'Ascenseur', qty: annexes.ascenseur, temps: 0.5, taux: 43.40 });
-    
+
     // Checkboxes annexes
-    if (annexes.tapisEntree) elements.push({ label: 'Tapis entrÃ©e', qty: 1, temps: 0.17, taux: 43.40 });
+    if (annexes.tapisEntree) elements.push({ label: 'Tapis entrée', qty: 1, temps: 0.17, taux: 43.40 });
     if (annexes.aspiVmc) elements.push({ label: 'Aspi trappe VMC', qty: 1, temps: 0.33, taux: 43.40 });
     if (annexes.rambarde) elements.push({ label: 'Rambarde', qty: 1, temps: 0.5, taux: 43.40 });
     if (annexes.aspiPoutraison) elements.push({ label: 'Aspiration poutraison + mur', qty: 1, temps: 1, taux: 43.40 });
@@ -2102,13 +2103,13 @@ function createChiffrageElements(devis) {
                         <input type="number" class="temps-input" data-qty="${qty}" value="${temps}" min="0" step="0.25">
                     </div>
                     <div class="input-group-chiffrage">
-                        <label>Taux horaire (â‚¬/h)</label>
+                        <label>Taux horaire (€/h)</label>
                         <input type="number" class="taux-input" data-qty="${qty}" value="${taux}" min="0" step="0.5">
                     </div>
                 </div>
                 <div class="item-total">
                     <span>Temps: <strong class="subtotal-temps">${(temps * qty).toFixed(2)}h</strong></span>
-                    <span>Prix: <strong class="subtotal-prix">${(temps * qty * taux).toFixed(2)} â‚¬</strong></span>
+                    <span>Prix: <strong class="subtotal-prix">${(temps * qty * taux).toFixed(2)}€</strong></span>
                 </div>
             </div>
         `;
@@ -2142,14 +2143,14 @@ function calculateChiffrageTotals() {
         const subtotalPrix = subtotalTemps * taux;
 
         item.querySelector('.subtotal-temps').textContent = `${subtotalTemps.toFixed(2)}h`;
-        item.querySelector('.subtotal-prix').textContent = `${subtotalPrix.toFixed(2)} â‚¬`;
+        item.querySelector('.subtotal-prix').textContent = `${subtotalPrix.toFixed(2)}€`;
 
         totalTemps += subtotalTemps;
         totalPrix += subtotalPrix;
     });
 
     document.getElementById('totalTemps').textContent = `${totalTemps.toFixed(2)}h`;
-    document.getElementById('totalPrix').textContent = `${totalPrix.toFixed(2)} â‚¬`;
+    document.getElementById('totalPrix').textContent = `${totalPrix.toFixed(2)}€`;
 }
 
 window.saveChiffrage = async function (devisId) {
@@ -2217,18 +2218,18 @@ window.saveChiffrage = async function (devisId) {
 };
 
 
-// ========== DÃ‰TAILS EMPLOYÃ‰ (MODAL) ==========
+// ========== DÉTAILS EMPLOYÉ (MODAL) ==========
 window.viewEmployeeDetails = async function (employeeId) {
     const weekStart = document.getElementById('filterWeekStart').value;
     const weekEnd = document.getElementById('filterWeekEnd').value;
     const employeeName = employeeNames[employeeId];
 
     if (!weekStart || !weekEnd) {
-        alert('Veuillez sÃ©lectionner une pÃ©riode');
+        alert('Veuillez sélectionner une période');
         return;
     }
 
-    // CrÃ©er le modal avec spinner
+    // Créer le modal avec spinner
     const modal = document.createElement('div');
     modal.className = 'employee-details-modal';
     modal.innerHTML = `
@@ -2237,7 +2238,7 @@ window.viewEmployeeDetails = async function (employeeId) {
             <div class="modal-header-details">
                 <div>
                     <h2><i class="fas fa-user-clock"></i> ${employeeName}</h2>
-                    <p>Semaines ${weekStart.replace('W', 'S')} Ã  ${weekEnd.replace('W', 'S')}</p>
+                    <p>Semaines ${weekStart.replace('W', 'S')} Ã  ${weekEnd.replace('W', 'S')}</p>
                 </div>
                 <button class="modal-close" onclick="this.closest('.employee-details-modal').remove()">
                     <i class="fas fa-times"></i>
@@ -2246,7 +2247,7 @@ window.viewEmployeeDetails = async function (employeeId) {
             <div class="modal-body-details">
                 <div class="loading-spinner">
                     <i class="fas fa-spinner fa-spin"></i>
-                    <p>Chargement des dÃ©tails...</p>
+                    <p>Chargement des détails...</p>
                 </div>
             </div>
         </div>
@@ -2314,16 +2315,16 @@ window.viewEmployeeDetails = async function (employeeId) {
 
         const parcourus = (firstKm !== null && lastKm !== null) ? lastKm - firstKm : 0;
 
-        // Remplir le modal avec les donnÃ©es
+        // Remplir le modal avec les données
         const modalBody = modal.querySelector('.modal-body-details');
         modalBody.innerHTML = renderEmployeeDetails(weeksData, totalHours, firstKm, lastKm, parcourus, allProjects);
 
     } catch (error) {
-        console.error('Erreur dÃ©tails:', error);
+        console.error('Erreur détails:', error);
         modal.querySelector('.modal-body-details').innerHTML = `
             <div class="error-state">
                 <i class="fas fa-exclamation-circle"></i>
-                <p>Erreur lors du chargement des dÃ©tails</p>
+                <p>Erreur lors du chargement des détails</p>
             </div>
         `;
     }
@@ -2450,7 +2451,7 @@ function renderEmployeeDetails(weeksData, totalHours, firstKm, lastKm, parcourus
 window.downloadDevisPDF = async function (devisId) {
     const devis = allData.devis.find(d => d.id === devisId);
     if (!devis || devis.status !== 'chiffre') {
-        alert('Devis non chiffrÃ© ou introuvable');
+        alert('Devis non chiffré ou introuvable');
         return;
     }
 
@@ -2478,7 +2479,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'normal');
         pdf.setTextColor(...grisClair);
-        pdf.text('RÃ©f: ' + devisId.substring(0, 8).toUpperCase(), pageWidth - margin, y + 14, { align: 'right' });
+        pdf.text('Réf: ' + devisId.substring(0, 8).toUpperCase(), pageWidth - margin, y + 14, { align: 'right' });
 
         y += 20;
 
@@ -2512,11 +2513,11 @@ window.downloadDevisPDF = async function (devisId) {
 
         const infoLine = [];
         if (devis.typeLogement) infoLine.push('Type: ' + devis.typeLogement);
-        if (devis.surface) infoLine.push('Surface: ' + devis.surface + ' mÂ²');
+        if (devis.surface) infoLine.push('Surface: ' + devis.surface + ' m²');
         infoLine.push('Date: ' + date);
-        infoLine.push('ChiffrÃ© le: ' + dateChiffrage);
+        infoLine.push('Chiffré le: ' + dateChiffrage);
 
-        pdf.text(infoLine.join('  "Â¢  '), margin + 6, y + 17);
+        pdf.text(infoLine.join('  "¢  '), margin + 6, y + 17);
 
         y += 28;
 
@@ -2536,8 +2537,8 @@ window.downloadDevisPDF = async function (devisId) {
             taux: margin + 123,
             total: margin + contentWidth - 4
         };
-        pdf.text('DÃ‰SIGNATION', colX.label, y + 6);
-        pdf.text('QTÃ‰', colX.qty, y + 6);
+        pdf.text('DÉSIGNATION', colX.label, y + 6);
+        pdf.text('QTÉ', colX.qty, y + 6);
         pdf.text('TEMPS', colX.temps, y + 6);
         pdf.text('TAUX', colX.taux, y + 6);
         pdf.text('TOTAL', colX.total, y + 6, { align: 'right' });
@@ -2605,11 +2606,11 @@ window.downloadDevisPDF = async function (devisId) {
             pdf.setFont('helvetica', 'normal');
             pdf.setTextColor(...grisClair);
             pdf.text(ligne.tempsUnitaireMn + ' min', colX.temps, centerY);
-            pdf.text(ligne.tauxHoraire.toFixed(2) + ' â‚¬/h', colX.taux, centerY);
+            pdf.text(ligne.tauxHoraire.toFixed(2) + ' €/h', colX.taux, centerY);
 
             pdf.setFont('helvetica', 'bold');
             pdf.setTextColor(...vertFonce);
-            pdf.text(ligne.totalLigne.toFixed(2) + ' â‚¬', colX.total, centerY, { align: 'right' });
+            pdf.text(ligne.totalLigne.toFixed(2) + ' €', colX.total, centerY, { align: 'right' });
 
             // Dessiner la ligne de separation
             pdf.setDrawColor(229, 231, 235);
@@ -2628,11 +2629,11 @@ window.downloadDevisPDF = async function (devisId) {
         const minutes = Math.round(tempsTotalMn % 60);
         const tempsStr = `${heures}h${minutes.toString().padStart(2, '0')}`;
 
-      const totauxBoxW = 75;
+        const totauxBoxW = 75;
         const totauxBoxX = margin + contentWidth - totauxBoxW;
         const totauxBoxH = 38;
-        
-        if (y + totauxBoxH > pageHeight - 15) {  
+
+        if (y + totauxBoxH > pageHeight - 15) {
             pdf.addPage();
             y = margin;
         }
@@ -2643,7 +2644,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(7);
         pdf.setTextColor(...grisClair);
-        pdf.text('Temps estimÃ©', totauxBoxX + 4, y + 7);
+        pdf.text('Temps estimé', totauxBoxX + 4, y + 7);
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(9);
         pdf.setTextColor(107, 33, 168);
@@ -2660,7 +2661,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(10);
         pdf.setTextColor(...vertFonce);
-        pdf.text(totalHT.toFixed(2) + ' â‚¬', totauxBoxX + totauxBoxW - 4, y + 18, { align: 'right' });
+        pdf.text(totalHT.toFixed(2) + '€', totauxBoxX + totauxBoxW - 4, y + 18, { align: 'right' });
 
         pdf.setDrawColor(...vert);
         pdf.setLineWidth(0.3);
@@ -2673,7 +2674,7 @@ window.downloadDevisPDF = async function (devisId) {
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(12);
         pdf.setTextColor(...vertFonce);
-        pdf.text(totalTTC.toFixed(2) + ' â‚¬', totauxBoxX + totauxBoxW - 4, y + 31, { align: 'right' });
+        pdf.text(totalTTC.toFixed(2) + '€', totauxBoxX + totauxBoxW - 4, y + 31, { align: 'right' });
 
         y += totauxBoxH + 8;
 
@@ -2702,17 +2703,17 @@ window.downloadDevisPDF = async function (devisId) {
             y += boxH + 6;
         }
 
-      
+
         const filename = 'Devis_' + (devis.nomChantier || 'Chantier').replace(/[^a-zA-Z0-9]/g, '_') + '_' + date.replace(/ /g, '_') + '.pdf';
         pdf.save(filename);
 
     } catch (error) {
-        console.error('Erreur gÃ©nÃ©ration PDF:', error);
-        alert('Erreur lors de la gÃ©nÃ©ration du PDF');
+        console.error('Erreur génération PDF:', error);
+        alert('Erreur lors de la génération du PDF');
     }
 };
 
-// ========== MODAL DE MISE Ã€ JOUR ==========
+// ========== MODAL DE MISE À JOUR ==========
 function showUpdateModal() {
     const modalHTML = `
         <div class="update-modal show" id="updateModal">
@@ -2724,8 +2725,8 @@ function showUpdateModal() {
                     <div class="header-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h2>Mise Ã  jour v2.2.0 !</h2>
-                    <p>DÃ©couvrez toutes les nouveautÃ©s</p>
+                    <h2>Mise Ã  jour v2.2.0 !</h2>
+                    <p>Découvrez toutes les nouveautés</p>
                 </div>
                 
                 <div class="update-modal-body">
@@ -2733,7 +2734,7 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-layer-group"></i></div>
-                            <span>Modales chargement & succÃ¨s</span>
+                            <span>Modales chargement & succès</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
@@ -2741,14 +2742,14 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-spinner"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Animation pendant l'envoi</h4>
-                                    <p class="update-item-desc">Les pages Feuilles, Signaler et SpÃ©cifique affichent une animation de chargement et une confirmation visuelle Ã  chaque envoi.</p>
+                                    <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle Ã  chaque envoi.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-file-code"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Code JavaScript externalisÃ©</h4>
-                                    <p class="update-item-desc">Le code de ces pages a Ã©tÃ© dÃ©placÃ© dans des fichiers JS sÃ©parÃ©s pour une meilleure stabilitÃ©.</p>
+                                    <h4 class="update-item-title">Code JavaScript externalisé</h4>
+                                    <p class="update-item-desc">Le code de ces pages a été déplacé dans des fichiers JS séparés pour une meilleure stabilité.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2757,7 +2758,7 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-file-invoice"></i></div>
-                            <span>Refonte complÃ¨te du formulaire devis</span>
+                            <span>Refonte complète du formulaire devis</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
@@ -2765,14 +2766,14 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-calculator"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Nouveau formulaire et chiffrage</h4>
-                                    <p class="update-item-desc">Le formulaire devis et le systÃ¨me de chiffrage ont Ã©tÃ© entiÃ¨rement refondus pour plus de clartÃ© et de prÃ©cision.</p>
+                                    <p class="update-item-desc">Le formulaire devis et le système de chiffrage ont été entièrement refondus pour plus de clarté et de précision.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-bell"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Notification Ã  l'envoi</h4>
-                                    <p class="update-item-desc">Une notification est envoyÃ©e automatiquement Ã  chaque nouveau devis soumis.</p>
+                                    <h4 class="update-item-title">Notification Ã  l'envoi</h4>
+                                    <p class="update-item-desc">Une notification est envoyée automatiquement Ã  chaque nouveau devis soumis.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2781,7 +2782,7 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-                            <span>Gestion des erreurs amÃ©liorÃ©e</span>
+                            <span>Gestion des erreurs améliorée</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
@@ -2789,7 +2790,7 @@ function showUpdateModal() {
                                 <div class="update-item-icon"><i class="fas fa-times-circle"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Modales d'erreur</h4>
-                                    <p class="update-item-desc">Les pages Signaler, Feuilles et SpÃ©cifique affichent dÃ©sormais un message clair en cas de problÃ¨me lors de l'envoi.</p>
+                                    <p class="update-item-desc">Les pages Signaler, Feuilles et Spécifique affichent désormais un message clair en cas de problème lors de l'envoi.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2798,28 +2799,28 @@ function showUpdateModal() {
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-save"></i></div>
-                            <span>AmÃ©liorations formulaires</span>
+                            <span>Améliorations formulaires</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-user"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Nom d'agent mÃ©morisÃ©</h4>
-                                    <p class="update-item-desc">Votre prÃ©nom est sauvegardÃ© automatiquement et prÃ©-rempli Ã  chaque visite sur toutes les pages.</p>
+                                    <h4 class="update-item-title">Nom d'agent mémorisé</h4>
+                                    <p class="update-item-desc">Votre prénom est sauvegardé automatiquement et pré-rempli Ã  chaque visite sur toutes les pages.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-trash-alt"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Suppression photo individuelle</h4>
-                                    <p class="update-item-desc">Retirez une photo prÃ©cise de votre sÃ©lection avant envoi, sans recommencer toute la sÃ©lection.</p>
+                                    <p class="update-item-desc">Retirez une photo précise de votre sélection avant envoi, sans recommencer toute la sélection.</p>
                                 </div>
                             </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-redo-alt"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">RÃ©initialisation automatique</h4>
-                                    <p class="update-item-desc">Le formulaire se remet Ã  zÃ©ro 3 secondes aprÃ¨s un envoi rÃ©ussi, sans perdre le nom de l'agent.</p>
+                                    <h4 class="update-item-title">Réinitialisation automatique</h4>
+                                    <p class="update-item-desc">Le formulaire se remet Ã  zéro 3 secondes après un envoi réussi, sans perdre le nom de l'agent.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2848,7 +2849,7 @@ window.closeUpdateModal = function () {
         localStorage.setItem('updateModalShown_v2.2.0', 'true');
     }
 }
-// Afficher la modal au chargement si pas dÃ©jÃ  vue
+// Afficher la modal au chargement si pas déjÃ  vue
 window.addEventListener('load', () => {
     setTimeout(() => {
         const loginModal = document.getElementById('loginModal');
@@ -2883,7 +2884,7 @@ function generateDevisInfos(devis) {
     if (devis.surface) {
         html += `<div class="devis-info-item">
             <div class="info-label">Surface</div>
-            <div class="info-value">${devis.surface} mÂ²</div>
+            <div class="info-value">${devis.surface} m²</div>
         </div>`;
     }
 
@@ -2918,11 +2919,11 @@ function generateDevisInfos(devis) {
 
     if (sejourPhotos.length > 0) {
         html += `<div class="devis-photos-section">
-            <h4><i class="fas fa-couch"></i> Photos sÃ©jour (${sejourPhotos.length})</h4>
+            <h4><i class="fas fa-couch"></i> Photos séjour (${sejourPhotos.length})</h4>
             <div class="devis-photos-grid">
                 ${sejourPhotos.map((photo, index) => `
                     <div class="devis-photo-item" onclick="openPhotoModal('sejour', ${index})">
-                        <img src="${photo.url}" alt="SÃ©jour ${index + 1}">
+                        <img src="${photo.url}" alt="Séjour ${index + 1}">
                         <div class="photo-overlay">
                             <i class="fas fa-search-plus"></i>
                         </div>
@@ -2932,8 +2933,8 @@ function generateDevisInfos(devis) {
         </div>`;
     }
 
-  if (vitresHautesPhotos.length > 0) {
-    html += `<div class="devis-photos-section">
+    if (vitresHautesPhotos.length > 0) {
+        html += `<div class="devis-photos-section">
         <h4><i class="fas fa-window-maximize"></i> Photos vitres hautes (${vitresHautesPhotos.length})</h4>
         <div class="devis-photos-grid">
             ${vitresHautesPhotos.map((photo, index) => `
@@ -2946,7 +2947,7 @@ function generateDevisInfos(devis) {
             `).join('')}
         </div>
     </div>`;
-}
+    }
 
     html += '</div>';
     return html;
@@ -2979,10 +2980,10 @@ async function openChiffrageModal(devisId) {
                     <table class="chiffrage-table">
                         <thead>
                             <tr>
-                                <th class="col-designation">DÃ‰SIGNATION</th>
-                                <th class="col-center">QuantitÃ©</th>
+                                <th class="col-designation">DÉSIGNATION</th>
+                                <th class="col-center">Quantité</th>
                                 <th class="col-center">TEMPS (min)</th>
-                                <th class="col-center">TAUX (â‚¬/h)</th>
+                                <th class="col-center">TAUX (€/h)</th>
                                 <th class="col-right">TOTAL</th>
                             </tr>
                         </thead>
@@ -3002,11 +3003,11 @@ async function openChiffrageModal(devisId) {
                         </div>
                         <div class="chiffrage-total-item prix">
                             <div class="chiffrage-total-label"><i class="fas fa-euro-sign"></i> Total HT</div>
-                            <div class="chiffrage-total-value"><span id="grandTotal">0.00</span> â‚¬</div>
+                            <div class="chiffrage-total-value"><span id="grandTotal">0.00</span>€</div>
                         </div>
                         <div class="chiffrage-total-item prix-ttc">
                             <div class="chiffrage-total-label"><i class="fas fa-euro-sign"></i> Total TTC</div>
-                            <div class="chiffrage-total-value"><span id="grandTotalTTC">0.00</span> â‚¬</div>
+                            <div class="chiffrage-total-value"><span id="grandTotalTTC">0.00</span>€</div>
                         </div>
                     </div>
                     <div class="chiffrage-actions">
@@ -3040,9 +3041,9 @@ function generateChiffrageRows(devis) {
     if (devis.vitres?.baies > 0) {
         const needsGrattage = devis.grattage?.baies;
         items.push({
-            label: 'Baies VitrÃ©es',
+            label: 'Baies Vitrées',
             nb: devis.vitres.baies,
-            tempsMn: TEMPS_DEFAUT['Baies VitrÃ©es'] || 8,
+            tempsMn: TEMPS_DEFAUT['Baies Vitrées'] || 8,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -3050,9 +3051,9 @@ function generateChiffrageRows(devis) {
     if (devis.vitres?.velux > 0) {
         const needsGrattage = devis.grattage?.velux;
         items.push({
-            label: 'VÃ©lux',
+            label: 'Vélux',
             nb: devis.vitres.velux,
-            tempsMn: TEMPS_DEFAUT['VÃ©lux'] || 10,
+            tempsMn: TEMPS_DEFAUT['Vélux'] || 10,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -3060,9 +3061,9 @@ function generateChiffrageRows(devis) {
     if (devis.vitres?.portes > 0) {
         const needsGrattage = devis.grattage?.portes;
         items.push({
-            label: 'Portes vitrÃ©es',
+            label: 'Portes vitrées',
             nb: devis.vitres.portes,
-            tempsMn: TEMPS_DEFAUT['Portes vitrÃ©es'] || 6,
+            tempsMn: TEMPS_DEFAUT['Portes vitrées'] || 6,
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -3132,24 +3133,24 @@ function generateChiffrageRows(devis) {
     if (annexes.bureau > 0) items.push({ label: 'Bureau', nb: annexes.bureau, tempsMn: TEMPS_DEFAUT['Bureau'] || 30, taux: 43.40 });
     if (annexes.garage > 0) items.push({ label: 'Garage', nb: annexes.garage, tempsMn: TEMPS_DEFAUT['Garage'] || 60, taux: 43.40 });
     if (annexes.skiroom > 0) items.push({ label: 'Skiroom', nb: annexes.skiroom, tempsMn: TEMPS_DEFAUT['Skiroom'] || 60, taux: 43.40 });
-    if (annexes.salleVideo > 0) items.push({ label: 'Salle vidÃ©o', nb: annexes.salleVideo, tempsMn: TEMPS_DEFAUT['Salle vidÃ©o'] || 30, taux: 43.40 });
+    if (annexes.salleVideo > 0) items.push({ label: 'Salle vidéo', nb: annexes.salleVideo, tempsMn: TEMPS_DEFAUT['Salle vidéo'] || 30, taux: 43.40 });
     if (annexes.chaufferie > 0) items.push({ label: 'Chaufferie', nb: annexes.chaufferie, tempsMn: TEMPS_DEFAUT['Chaufferie'] || 60, taux: 43.40 });
     if (annexes.escalier > 0) items.push({ label: 'Escalier', nb: annexes.escalier, tempsMn: TEMPS_DEFAUT['Escalier'] || 15, taux: 43.40 });
     if (annexes.ascenseur > 0) items.push({ label: 'Ascenseur', nb: annexes.ascenseur, tempsMn: TEMPS_DEFAUT['Ascenseur'] || 30, taux: 43.40 });
-    
+
     // Checkboxes annexes
-    if (annexes.tapisEntree) items.push({ label: 'Tapis entrÃ©e', nb: 1, tempsMn: TEMPS_DEFAUT['Tapis entrÃ©e'] || 10, taux: 43.40 });
+    if (annexes.tapisEntree) items.push({ label: 'Tapis entrée', nb: 1, tempsMn: TEMPS_DEFAUT['Tapis entrée'] || 10, taux: 43.40 });
     if (annexes.aspiVmc) items.push({ label: 'Aspi trappe VMC', nb: 1, tempsMn: TEMPS_DEFAUT['Aspi trappe VMC'] || 20, taux: 43.40 });
     if (annexes.rambarde) items.push({ label: 'Rambarde', nb: 1, tempsMn: TEMPS_DEFAUT['Rambarde'] || 30, taux: 43.40 });
     if (annexes.aspiPoutraison) items.push({ label: 'Aspiration poutraison + mur', nb: 1, tempsMn: TEMPS_DEFAUT['Aspiration poutraison + mur'] || 60, taux: 43.40 });
-    
+
     // Autres annexes (texte libre)
     if (annexes.autres && Array.isArray(annexes.autres)) {
         annexes.autres.forEach(autre => {
             items.push({ label: autre, nb: 1, tempsMn: TEMPS_DEFAUT[autre] || 45, taux: 43.40 });
         });
     }
-    
+
     // Exterieurs
     if (devis.exterieurs?.balcon > 0) {
         items.push({ label: 'Balcon', nb: devis.exterieurs.balcon, tempsMn: TEMPS_DEFAUT['Balcon'] || 30, taux: 43.40 });
@@ -3173,14 +3174,14 @@ function generateChiffrageRows(devis) {
 
     return items.map(item => `
         <tr class="chiffrage-row ${item.grattage ? 'row-grattage' : ''}">
-            <td class="chiffrage-td-label" data-label="Ã‰lÃ©ment">
+            <td class="chiffrage-td-label" data-label="Élément">
                 ${item.label}
                 ${item.grattage ? '<span class="grattage-badge"><i class="fas fa-exclamation-triangle"></i> Grattage</span>' : ''}
             </td>
-            <td class="chiffrage-td-center" data-label="QuantitÃ©"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
+            <td class="chiffrage-td-center" data-label="Quantité"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
             <td class="chiffrage-td-center" data-label="Temps (mn)"><input type="number" step="1" class="calc-temps chiffrage-input-editable" value="${item.tempsMn}" oninput="calculerTotalDevis()" placeholder="minutes"></td>
-            <td class="chiffrage-td-center" data-label="Taux (â‚¬/h)"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
-            <td class="chiffrage-td-total" data-label="Total"><span class="row-total-val">0.00</span>â‚¬</td>
+            <td class="chiffrage-td-center" data-label="Taux (€/h)"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
+            <td class="chiffrage-td-total" data-label="Total"><span class="row-total-val">0.00</span>€</td>
         </tr>
     `).join('');
 }
@@ -3290,7 +3291,7 @@ async function saveChiffrage(devisId) {
 
         document.getElementById('chiffrageModal').remove();
 
-        showNotification('Chiffrage enregistrÃ© avec succÃ¨s !', 'success');
+        showNotification('Chiffrage enregistré avec succès !', 'success');
 
         await loadDevis();
 
@@ -3325,7 +3326,7 @@ function openPhotoModal(category, startIndex) {
     const photos = window.currentDevisPhotos[category];
     if (!photos || photos.length === 0) return;
 
-    // Extraire les URLs (compatibilitÃ© ancien et nouveau format)
+    // Extraire les URLs (compatibilité ancien et nouveau format)
     const photoUrls = photos.map(photo => typeof photo === 'string' ? photo : photo.url);
 
     const modalHTML = `
@@ -3378,7 +3379,7 @@ function photoModalPrev() {
     data.currentIndex = (data.currentIndex - 1 + data.photos.length) % data.photos.length;
     const img = document.getElementById('photoModalImg');
     const counter = document.getElementById('photoModalIndex');
-    
+
     if (img) img.src = data.photos[data.currentIndex];
     if (counter) counter.textContent = data.currentIndex + 1;
 }
@@ -3390,7 +3391,7 @@ function photoModalNext() {
     data.currentIndex = (data.currentIndex + 1) % data.photos.length;
     const img = document.getElementById('photoModalImg');
     const counter = document.getElementById('photoModalIndex');
-    
+
     if (img) img.src = data.photos[data.currentIndex];
     if (counter) counter.textContent = data.currentIndex + 1;
 }
