@@ -302,7 +302,7 @@ async function loadOverview() {
             if (card) card.style.display = value === 0 ? 'none' : '';
         });
 
-      // Badge rouge si signalements ou devis en attente
+        // Badge rouge si signalements ou devis en attente
         const kpiSignEl = document.getElementById('kpi-signalements');
         if (totalSignalements > 0) kpiSignEl.closest('.kpi-card').classList.add('kpi-alert');
 
@@ -3189,7 +3189,7 @@ function generateChiffrageRows(devis) {
         items.push({ label: 'WC seul', nb: devis.sallesDeBain.wcSeul, tempsMn: TEMPS_DEFAUT['WC seul'] || 15, taux: 43.40 });
     }
 
-  if (devis.cuisine?.petite > 0) {
+    if (devis.cuisine?.petite > 0) {
         items.push({ label: 'Petite cuisine', nb: devis.cuisine.petite, tempsMn: TEMPS_DEFAUT['Petite cuisine'] || 40, taux: 43.40 });
     }
     if (devis.cuisine?.grande > 0) {
@@ -3247,20 +3247,20 @@ function generateChiffrageRows(devis) {
                 const designationClean = l.designation.replace(/Grattage/g, '').trim();
                 return designationClean === item.label || l.designation === item.label;
             });
-            if (ligneExistante) {
+           if (ligneExistante) {
+                item.nb = ligneExistante.quantite || item.nb;
                 item.tempsMn = ligneExistante.tempsUnitaireMn || item.tempsMn;
                 item.taux = ligneExistante.tauxHoraire || 43.40;
             }
         });
     }
-
-    return items.map(item => `
+return items.map(item => `
         <tr class="chiffrage-row ${item.grattage ? 'row-grattage' : ''}">
             <td class="chiffrage-td-label" data-label="Élément">
                 ${item.label}
                 ${item.grattage ? '<span class="grattage-badge"><i class="fas fa-exclamation-triangle"></i> Grattage</span>' : ''}
             </td>
-            <td class="chiffrage-td-center" data-label="Quantité"><input type="number" class="calc-nb chiffrage-input-readonly" value="${item.nb}" readonly></td>
+            <td class="chiffrage-td-center" data-label="Quantité"><input type="number" class="calc-nb chiffrage-input-editable" value="${item.nb}" min="0" oninput="calculerTotalDevis()"></td>
             <td class="chiffrage-td-center" data-label="Temps (mn)"><input type="number" step="1" class="calc-temps chiffrage-input-editable" value="${item.tempsMn}" oninput="calculerTotalDevis()" placeholder="minutes"></td>
             <td class="chiffrage-td-center" data-label="Taux (€/h)"><input type="number" step="0.1" class="calc-taux chiffrage-input-editable" value="${item.taux}" oninput="calculerTotalDevis()"></td>
             <td class="chiffrage-td-total" data-label="Total"><span class="row-total-val">0.00</span>€</td>
