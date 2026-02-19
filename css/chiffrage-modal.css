@@ -962,35 +962,50 @@
 .row-grattage .chiffrage-td-label {
     font-weight: 600;
 }
-/* ========== RESPONSIVE TABLE CHIFFRAGE ========== */
 @media (max-width: 768px) {
     .chiffrage-modal-content {
-        max-height: 100vh;
-        border-radius: 0;
+        max-height: 90vh;
+        height: 90vh;
+        margin: auto;
+        border-radius: 16px 16px 0 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
     }
-    
+
     .chiffrage-modal-header {
-        padding: 1rem;
-        border-radius: 0;
+        padding: 0.75rem 1rem;
+        border-radius: 16px 16px 0 0;
+        flex-shrink: 0;
     }
-    
+
     .chiffrage-modal-title h2 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
-    
+
     .chiffrage-modal-body {
-        padding: 1rem;
+        padding: 0.75rem 1rem;
+        flex: 1;
+        overflow-y: auto;
     }
-    
+
+    .chiffrage-modal-footer {
+        padding: 0.75rem 1rem;
+        flex-shrink: 0;
+    }
+
     /* Tableau responsive */
     .chiffrage-table {
         font-size: 0.85rem;
     }
-    
+
     .chiffrage-table thead {
         display: none;
     }
-    
+
     .chiffrage-table tbody tr {
         display: block;
         margin-bottom: 1rem;
@@ -999,14 +1014,14 @@
         padding: 1rem;
         background: white;
     }
-    
+
     .chiffrage-table tbody td {
         display: block;
         text-align: left !important;
         padding: 0.5rem 0;
         border: none;
     }
-    
+
     .chiffrage-table tbody td::before {
         content: attr(data-label);
         font-weight: 700;
@@ -1016,80 +1031,75 @@
         font-size: 0.75rem;
         text-transform: uppercase;
     }
-    
+
     .chiffrage-td-label {
         font-size: 1rem !important;
         margin-bottom: 0.5rem;
     }
-    
+
     .chiffrage-td-label::before {
         display: none !important;
     }
-    
+
     .chiffrage-td-center input {
         font-size: 1rem !important;
         width: 100%;
     }
-    
+
     .grattage-badge {
         display: block;
         margin: 0.5rem 0;
         width: fit-content;
     }
-    
-    /* TOTAUX OPTIMISÉS */
+
+   /* TOTAUX OPTIMISÉS */
     .chiffrage-totaux {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        grid-template-rows: auto auto !important;
-        gap: 0.5rem !important;
-        margin-bottom: 1rem !important;
+        grid-template-columns: 1fr 1fr 1fr !important;
+        gap: 0.4rem !important;
+        margin-bottom: 0.5rem !important;
     }
-    
-    /* Temps total et Total HT - petits et côte à côte */
+
     .chiffrage-total-item.temps,
     .chiffrage-total-item:not(.temps):not(.prix-ttc) {
-        padding: 0.75rem !important;
+        padding: 0.5rem !important;
     }
-    
+
     .chiffrage-total-item.temps .chiffrage-total-value,
     .chiffrage-total-item:not(.temps):not(.prix-ttc) .chiffrage-total-value {
-        font-size: 1.2rem !important;
+        font-size: 1rem !important;
     }
-    
+
     .chiffrage-total-item.temps .chiffrage-total-label,
     .chiffrage-total-item:not(.temps):not(.prix-ttc) .chiffrage-total-label {
-        font-size: 0.75rem !important;
+        font-size: 0.65rem !important;
     }
-    
-    /* Total TTC - grand et sur toute la largeur */
+
     .chiffrage-total-item.prix-ttc {
-        grid-column: 1 / -1 !important;
-        padding: 1rem !important;
+        grid-column: auto !important;
+        padding: 0.5rem !important;
     }
-    
+
     .chiffrage-total-item.prix-ttc .chiffrage-total-value {
-        font-size: 1.8rem !important;
+        font-size: 0.95rem !important;
+        white-space: nowrap !important;
     }
-    
+
     .chiffrage-total-item.prix-ttc .chiffrage-total-label {
-        font-size: 0.9rem !important;
+        font-size: 0.65rem !important;
+        white-space: nowrap !important;
     }
-    
-    /* Boutons actions */
+
     .chiffrage-actions {
-        flex-direction: column;
-        gap: 0.75rem !important;
+        flex-direction: row !important;
+        gap: 0.5rem !important;
     }
-    
+
     .chiffrage-actions .btn {
         width: 100%;
         justify-content: center;
-        padding: 1rem !important;
-    }
-    
-    .chiffrage-modal-footer {
-        padding: 1rem;
+        padding: 0.65rem !important;
+        font-size: 0.85rem !important;
     }
 }
 
@@ -1097,12 +1107,13 @@
     .chiffrage-table {
         font-size: 0.8rem;
     }
-    
+
     .chiffrage-table tbody tr {
         padding: 0.75rem;
     }
-    
-    .chiffrage-total-item.prix-ttc .chiffrage-total-value {
-        font-size: 1.6rem !important;
+
+   .chiffrage-total-item.prix-ttc .chiffrage-total-value {
+        font-size: 0.95rem !important;
+        white-space: nowrap !important;
     }
 }
