@@ -2787,6 +2787,8 @@ window.downloadDevisPDF = async function (devisId) {
 
 // ========== MODAL DE MISE À JOUR ==========
 function showUpdateModal() {
+    if (localStorage.getItem('updateModalShown_v2.3.0')) return;
+
     const modalHTML = `
         <div class="update-modal show" id="updateModal">
             <div class="update-modal-content">
@@ -2797,7 +2799,7 @@ function showUpdateModal() {
                     <div class="header-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h2>Mise à jour v2.2.0 !</h2>
+                    <h2>Mise à jour v2.3.0 !</h2>
                     <p>Découvrez toutes les nouveautés</p>
                 </div>
                 
@@ -2805,9 +2807,66 @@ function showUpdateModal() {
 
                     <div class="update-section">
                         <div class="update-section-title">
+                            <div class="icon"><i class="fas fa-chart-bar"></i></div>
+                            <span>Vue d'ensemble améliorée</span>
+                            <span class="badge-new">NEW</span>
+                        </div>
+                        <ul class="update-list">
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-eye-slash"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">KPI à zéro masquées</h4>
+                                    <p class="update-item-desc">Les indicateurs affichant 0 disparaissent automatiquement pour une vue d'ensemble plus lisible et épurée.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-section-title">
+                            <div class="icon"><i class="fas fa-images"></i></div>
+                            <span>Chantiers — Descriptions longues</span>
+                            <span class="badge-new">NEW</span>
+                        </div>
+                        <ul class="update-list">
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-expand-alt"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">Bouton "Afficher plus"</h4>
+                                    <p class="update-item-desc">Les descriptions de chantier trop longues sont tronquées avec un bouton pour les déplier, rendant la liste plus compacte.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-section-title">
+                            <div class="icon"><i class="fas fa-calculator"></i></div>
+                            <span>Chiffrage devis enrichi</span>
+                            <span class="badge-new">NEW</span>
+                        </div>
+                        <ul class="update-list">
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-couch"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">Lignes séjour & cuisine automatiques</h4>
+                                    <p class="update-item-desc">Si le devis contient une photo de séjour ou de cuisine, une ligne de chiffrage est ajoutée automatiquement avec 30 minutes prédéfinies pour chacune.</p>
+                                </div>
+                            </li>
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">Footer mobile optimisé</h4>
+                                    <p class="update-item-desc">Les totaux et boutons d'action de la modal chiffrage s'affichent sur une seule ligne sur mobile pour gagner de l'espace écran.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-section-title">
                             <div class="icon"><i class="fas fa-layer-group"></i></div>
                             <span>Modales chargement & succès</span>
-                            <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
@@ -2817,82 +2876,20 @@ function showUpdateModal() {
                                     <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle à chaque envoi.</p>
                                 </div>
                             </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-file-code"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Code JavaScript externalisé</h4>
-                                    <p class="update-item-desc">Le code de ces pages a été déplacé dans des fichiers JS séparés pour une meilleure stabilité.</p>
-                                </div>
-                            </li>
                         </ul>
                     </div>
 
                     <div class="update-section">
                         <div class="update-section-title">
                             <div class="icon"><i class="fas fa-file-invoice"></i></div>
-                            <span>Refonte complète du formulaire devis</span>
-                            <span class="badge-new">NEW</span>
+                            <span>Formulaire devis</span>
                         </div>
                         <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-calculator"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Nouveau formulaire et chiffrage</h4>
-                                    <p class="update-item-desc">Le formulaire devis et le système de chiffrage ont été entièrement refondus pour plus de clarté et de précision.</p>
-                                </div>
-                            </li>
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-bell"></i></div>
                                 <div class="update-item-content">
                                     <h4 class="update-item-title">Notification à l'envoi</h4>
                                     <p class="update-item-desc">Une notification est envoyée automatiquement à chaque nouveau devis soumis.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-                            <span>Gestion des erreurs améliorée</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-times-circle"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Modales d'erreur</h4>
-                                    <p class="update-item-desc">Les pages Signaler, Feuilles et Spécifique affichent désormais un message clair en cas de problème lors de l'envoi.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-save"></i></div>
-                            <span>Améliorations formulaires</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-user"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Nom d'agent mémorisé</h4>
-                                    <p class="update-item-desc">Votre prénom est sauvegardé automatiquement et pré-rempli à chaque visite sur toutes les pages.</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-trash-alt"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Suppression photo individuelle</h4>
-                                    <p class="update-item-desc">Retirez une photo précise de votre sélection avant envoi, sans recommencer toute la sélection.</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-redo-alt"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Réinitialisation automatique</h4>
-                                    <p class="update-item-desc">Le formulaire se remet à zéro 3 secondes après un envoi réussi, sans perdre le nom de l'agent.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2918,7 +2915,7 @@ window.closeUpdateModal = function () {
     if (modal) {
         modal.classList.remove('show');
         setTimeout(() => modal.remove(), 300);
-        localStorage.setItem('updateModalShown_v2.2.0', 'true');
+        localStorage.setItem('updateModalShown_v2.3.0', 'true');
     }
 }
 // Afficher la modal au chargement si pas déjà vue
@@ -2926,11 +2923,8 @@ window.addEventListener('load', () => {
     setTimeout(() => {
         const loginModal = document.getElementById('loginModal');
         const isLoggedIn = !loginModal || loginModal.style.display === 'none';
-        const alreadySeen = localStorage.getItem('updateModalShown_v2.2.0');
 
-        console.log('Modal debug:', { isLoggedIn, alreadySeen, loginModal });
-
-        if (isLoggedIn && !alreadySeen) {
+        if (isLoggedIn) {
             showUpdateModal();
         }
     }, 300);
@@ -3247,14 +3241,14 @@ function generateChiffrageRows(devis) {
                 const designationClean = l.designation.replace(/Grattage/g, '').trim();
                 return designationClean === item.label || l.designation === item.label;
             });
-           if (ligneExistante) {
+            if (ligneExistante) {
                 item.nb = ligneExistante.quantite || item.nb;
                 item.tempsMn = ligneExistante.tempsUnitaireMn || item.tempsMn;
                 item.taux = ligneExistante.tauxHoraire || 43.40;
             }
         });
     }
-return items.map(item => `
+    return items.map(item => `
         <tr class="chiffrage-row ${item.grattage ? 'row-grattage' : ''}">
             <td class="chiffrage-td-label" data-label="Élément">
                 ${item.label}
