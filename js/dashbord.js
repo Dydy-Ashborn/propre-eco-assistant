@@ -40,7 +40,9 @@ const TEMPS_DEFAUT = {
     'Ascenseur': 30,
     'Tapis entrée': 10,
     'Bureau': 30,
-    'Garage': 60
+    'Garage': 60,
+    'Séjour': 30,
+    'Cuisine (photo)': 30
 };
 // Configuration
 const PASSWORD = "110389";
@@ -3187,11 +3189,21 @@ function generateChiffrageRows(devis) {
         items.push({ label: 'WC seul', nb: devis.sallesDeBain.wcSeul, tempsMn: TEMPS_DEFAUT['WC seul'] || 15, taux: 43.40 });
     }
 
-    if (devis.cuisine?.petite > 0) {
+  if (devis.cuisine?.petite > 0) {
         items.push({ label: 'Petite cuisine', nb: devis.cuisine.petite, tempsMn: TEMPS_DEFAUT['Petite cuisine'] || 40, taux: 43.40 });
     }
     if (devis.cuisine?.grande > 0) {
         items.push({ label: 'Grande cuisine', nb: devis.cuisine.grande, tempsMn: TEMPS_DEFAUT['Grande cuisine'] || 60, taux: 43.40 });
+    }
+
+    // Ligne automatique si photo séjour uploadée
+    if (devis.photos?.sejour?.length > 0) {
+        items.push({ label: 'Séjour (photo)', nb: 1, tempsMn: TEMPS_DEFAUT['Séjour'] || 30, taux: 43.40 });
+    }
+
+    // Ligne automatique si photo cuisine uploadée
+    if (devis.photos?.cuisine?.length > 0) {
+        items.push({ label: 'Cuisine (photo)', nb: 1, tempsMn: TEMPS_DEFAUT['Cuisine (photo)'] || 30, taux: 43.40 });
     }
 
     // Pieces annexes (structure objet)
