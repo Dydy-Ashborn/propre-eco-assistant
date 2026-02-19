@@ -275,7 +275,7 @@
 
 .chantier-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     padding: 1rem;
     border-bottom: 1px solid var(--border);
@@ -325,13 +325,18 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
 .chantier-meta {
     color: var(--text-light);
     font-size: 0.9rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.chantier-meta.expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 .chantier-date {
@@ -3256,4 +3261,18 @@
         justify-content: center;
         padding: 0.75rem;
     }
+}
+.btn-show-more {
+    background: none;
+    border: none;
+    color: var(--primary, #2e7d32);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 0 0 0 4px;
+    font-weight: 600;
+    text-decoration: underline;
+    vertical-align: baseline;
+}
+.btn-show-more:hover {
+    opacity: 0.75;
 }

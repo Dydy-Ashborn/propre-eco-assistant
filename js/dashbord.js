@@ -435,6 +435,15 @@ async function loadPhotosChantiers() {
         showError('photos_chantiers', error.message);
     }
 }
+function toggleMetaDesc(btn, metaId, fullText, shortText) {
+    const el = document.getElementById(metaId);
+    const meta = el.closest('.chantier-meta');
+    const isExpanded = btn.dataset.expanded === '1';
+    el.textContent = isExpanded ? shortText : fullText;
+    btn.textContent = isExpanded ? 'Afficher plus' : 'Réduire';
+    btn.dataset.expanded = isExpanded ? '0' : '1';
+    meta.classList.toggle('expanded', !isExpanded);
+}
 
 function renderPhotosChantiers() {
     const container = document.getElementById('content-photos_chantiers');
@@ -450,30 +459,44 @@ function renderPhotosChantiers() {
         const date = formatDate(chantier.createdAt);
         const photoCount = chantier.photos?.length || 0;
         const firstPhoto = chantier.photos?.[0]?.url || '';
-        const description = chantier.description ? chantier.description.substring(0, 50) + (chantier.description.length > 50 ? '...' : '') : '';
+        const description = chantier.description || '';
+        const descCourt = description.length > 80 ? description.substring(0, 80) + '…' : description;
+        const hasMore = description.length > 80;
+        const metaId = `meta-desc-${globalIndex}`;
 
-        container.innerHTML += `
-            <div class="chantier-item">
-                <div class="chantier-thumb-container">
-                    <img src="${firstPhoto}" class="chantier-thumb" 
-                         onclick="openPhotoGallery('${chantier.id}', 0)" alt="Chantier">
-                    <span class="photo-badge">+${photoCount}</span>
-                </div>
-                <div class="chantier-info">
-                    <div class="chantier-name">${chantier.chantier || 'Non spécifié'}</div>
-                    <div class="chantier-meta">${chantier.agent || 'Agent non spécifié'}${description ? ' - ' + description : ''}</div>
-                </div>
-                <div class="chantier-date">${date}</div>
-                <div class="chantier-actions">
-                    <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="Télécharger">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    <button class="btn-icon danger" onclick="deleteChantier('${chantier.id}')" title="Supprimer">
-                        <i class="fas fa-trash"></i>
-                    </button>
+        const div = document.createElement('div');
+        div.className = 'chantier-item';
+
+        div.innerHTML = `
+            <div class="chantier-thumb-container">
+                <img src="${firstPhoto}" class="chantier-thumb"
+                     onclick="openPhotoGallery('${chantier.id}', 0)" alt="Chantier">
+                <span class="photo-badge">+${photoCount}</span>
+            </div>
+            <div class="chantier-info">
+                <div class="chantier-name">${chantier.chantier || 'Non spécifié'}</div>
+                <div class="chantier-meta">
+                    ${chantier.agent || 'Agent non spécifié'}${description ? ' - <span id="' + metaId + '">' + escapeHtml(descCourt) + '</span>' : ''}
+                    ${hasMore ? '<button class="btn-show-more" data-expanded="0" data-meta-id="' + metaId + '">Afficher plus</button>' : ''}
                 </div>
             </div>
+            <div class="chantier-date">${date}</div>
+            <div class="chantier-actions">
+                <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="Télécharger">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button class="btn-icon danger" onclick="deleteChantier('${chantier.id}')" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         `;
+
+        if (hasMore) {
+            const btn = div.querySelector('.btn-show-more');
+            btn.addEventListener('click', () => toggleMetaDesc(btn, metaId, description, descCourt));
+        }
+
+        container.appendChild(div);
     });
 
     renderPagination('photos_chantiers', allData.photos_chantiers.length);
@@ -516,32 +539,59 @@ function renderSignalements() {
     container.innerHTML = '';
 
     pageData.forEach((signalement, index) => {
+        const globalIndex = start + index;
         const date = formatDate(signalement.createdAt);
         const photoCount = signalement.images?.length || 0;
         const firstPhoto = signalement.images?.[0]?.url || '';
-        const description = signalement.description ? signalement.description.substring(0, 50) + (signalement.description.length > 50 ? '...' : '') : '';
+        const description = signalement.description || '';
+        const metaId = `meta-sign-${globalIndex}`;
 
-        container.innerHTML += `
-            <div class="chantier-item">
-                ${photoCount > 0 ? `
-                    <div class="chantier-thumb-container">
-                        <img src="${firstPhoto}" class="chantier-thumb" 
-                             onclick="openSignalementGallery('${signalement.id}', 0)" alt="Signalement">
-                        ${photoCount > 1 ? `<span class="photo-badge">+${photoCount}</span>` : ''}
-                    </div>
-                ` : ''}
-                <div class="chantier-info">
-                    <div class="chantier-name">${signalement.copro || 'Non spécifiée'}</div>
-                    <div class="chantier-meta">${signalement.employee || 'Employé non spécifié'}${description ? ' - ' + description : ''}</div>
+        const div = document.createElement('div');
+        div.className = 'chantier-item';
+
+        div.innerHTML = `
+            ${photoCount > 0 ? `
+                <div class="chantier-thumb-container">
+                    <img src="${firstPhoto}" class="chantier-thumb"
+                         onclick="openSignalementGallery('${signalement.id}', 0)" alt="Signalement">
+                    ${photoCount > 1 ? `<span class="photo-badge">+${photoCount}</span>` : ''}
                 </div>
-                <div class="chantier-date">${date}</div>
-                <div class="chantier-actions">
-                    <button class="btn-icon danger" onclick="deleteSignalement('${signalement.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
+            ` : ''}
+            <div class="chantier-info">
+                <div class="chantier-name">${signalement.copro || 'Non spécifiée'}</div>
+                <div class="chantier-meta">
+                    ${signalement.employee || 'Employé non spécifié'}${description ? ' - <span id="' + metaId + '">' + escapeHtml(description) + '</span>' : ''}
+                    ${description ? '<button class="btn-show-more" data-expanded="0" style="display:none">Afficher plus</button>' : ''}
                 </div>
             </div>
+            <div class="chantier-date">${date}</div>
+            <div class="chantier-actions">
+                <button class="btn-icon danger" onclick="deleteSignalement('${signalement.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         `;
+
+        container.appendChild(div);
+
+        if (description) {
+            const btn = div.querySelector('.btn-show-more');
+            const meta = div.querySelector('.chantier-meta');
+
+            // Vérifie après rendu si le texte est tronqué
+            requestAnimationFrame(() => {
+                if (meta.scrollWidth > meta.clientWidth) {
+                    btn.style.display = 'inline';
+                }
+            });
+
+            btn.addEventListener('click', () => {
+                const isExpanded = btn.dataset.expanded === '1';
+                meta.classList.toggle('expanded', !isExpanded);
+                btn.textContent = isExpanded ? 'Afficher plus' : 'Réduire';
+                btn.dataset.expanded = isExpanded ? '0' : '1';
+            });
+        }
     });
 
     renderPagination('signalements', allData.signalements.length);
@@ -1087,7 +1137,6 @@ function createAndShowGalleryModal(title, description) {
                 <div class="gallery-header">
                     <div class="gallery-info">
                         <h3 id="galleryTitle"></h3>
-                        <p id="galleryDescription"></p>
                     </div>
                     <button class="gallery-close" onclick="closePhotoGallery()">
                         <i class="fas fa-times"></i>
@@ -1114,7 +1163,6 @@ function createAndShowGalleryModal(title, description) {
         `;
         document.body.appendChild(modal);
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             const m = document.getElementById('photoGalleryModal');
             if (!m || !m.classList.contains('active')) return;
@@ -1125,7 +1173,6 @@ function createAndShowGalleryModal(title, description) {
     }
 
     document.getElementById('galleryTitle').textContent = title || 'Photos';
-    document.getElementById('galleryDescription').textContent = description || '';
 
     updateGalleryImage();
     updateGalleryThumbnails();
