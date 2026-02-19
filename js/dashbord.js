@@ -284,22 +284,31 @@ async function loadOverview() {
         // const totalHeuresSemaine = weekResults.reduce((a, b) => a + b, 0);
 
         // Afficher les KPIs
-        document.getElementById('kpi-photos').textContent = totalChantiers;
-        document.getElementById('kpi-consommables').textContent = aFacturer;
-        document.getElementById('kpi-signalements').textContent = totalSignalements;
-        document.getElementById('kpi-devis').textContent = devisEnAttente;
-        document.getElementById('kpi-copros').textContent = coprosIncompletes;
+        const kpiMap = {
+            'kpi-photos': totalChantiers,
+            'kpi-consommables': aFacturer,
+            'kpi-signalements': totalSignalements,
+            'kpi-devis': devisEnAttente,
+            'kpi-copros': coprosIncompletes
+        };
 
+        Object.entries(kpiMap).forEach(([id, value]) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = value;
+            const card = el.closest('.kpi-card');
+            if (card) card.style.display = value === 0 ? 'none' : '';
+        });
 
-
-        // Badge rouge si signalements ou devis en attente
+      // Badge rouge si signalements ou devis en attente
         const kpiSignEl = document.getElementById('kpi-signalements');
         if (totalSignalements > 0) kpiSignEl.closest('.kpi-card').classList.add('kpi-alert');
 
         const kpiDevisEl = document.getElementById('kpi-devis');
         if (devisEnAttente > 0) kpiDevisEl.closest('.kpi-card').classList.add('kpi-alert');
 
-        showContent('overview');
+        showContent('overview'); // ← doit être présent ici
+
     } catch (error) {
         console.error('Erreur overview:', error);
         showError('overview', error.message);
