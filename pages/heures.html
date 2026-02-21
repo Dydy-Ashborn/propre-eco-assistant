@@ -315,8 +315,23 @@
             <p style="color:#374151; line-height:1.6; margin-bottom:1.5rem;">
                 N'oubliez pas de renseigner <strong>0</strong> si vous êtes en repos <strong>samedi et/ou
                     dimanche</strong>.<br><br>
-                Pensez également à indiquer <strong>0</strong> & <strong>CP</strong> dans les commentaires lorsque vous
-                êtes en congés payés.
+                Pour les jours non travaillés, indiquez <strong>0</strong> dans les heures et précisez le motif dans les
+                commentaires :<br><br>
+                <span style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:4px;">
+                    <span
+                        style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Repos</span>
+                    <span
+                        style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">CP</span>
+                    <span
+                        style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Congé</span>
+                    <span
+                        style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Absent</span>
+                    <span
+                        style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Maladie</span>
+                    <span
+                        style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Férié</span>
+                </span><br>
+                Ces mots permettent au système de ne pas générer d'alerte pour ces jours.
             </p>
             <button onclick="closeSamediRappel()"
                 style="background:linear-gradient(135deg,#f59e0b,#d97706); color:white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; width:100%;">
@@ -621,14 +636,13 @@
         }
         function checkSamediRappel() {
             const today = new Date();
-            if (today.getDay() === 6) {
-                const key = `samedi_rappel_${today.toISOString().split('T')[0]}`;
-                if (!sessionStorage.getItem(key)) {
-                    setTimeout(() => {
-                        const modal = document.getElementById('samediRappelModal');
-                        modal.style.display = 'flex';
-                    }, 800);
-                }
+            const key = `samedi_rappel_${today.toISOString().split('T')[0]}`;
+            if (!sessionStorage.getItem(key)) {
+                setTimeout(() => {
+                    sessionStorage.setItem(key, '1');
+                    const modal = document.getElementById('samediRappelModal');
+                    modal.style.display = 'flex';
+                }, 800);
             }
         }
 
@@ -674,7 +688,7 @@
             rows.forEach((row, index) => {
                 const hours = row.querySelector('.hours').value.trim();
                 if (hours === '' || parseFloat(hours) === 0) return;
-                 const jourReel = new Date(getWeekStartDate(currentWeek));
+                const jourReel = new Date(getWeekStartDate(currentWeek));
                 jourReel.setDate(jourReel.getDate() + index);
 
                 if (jourReel > today) {

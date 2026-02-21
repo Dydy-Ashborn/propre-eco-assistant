@@ -309,7 +309,158 @@ async function loadOverview() {
         const kpiDevisEl = document.getElementById('kpi-devis');
         if (devisEnAttente > 0) kpiDevisEl.closest('.kpi-card').classList.add('kpi-alert');
 
-        showContent('overview'); // ← doit être présent ici
+        const DASHBOARD_EMPLOYEES = [
+            { name: "Dylan", id: "dylan" },
+            { name: "Océane", id: "oceane" },
+            { name: "Samuel", id: "samuel" },
+            { name: "Jérémie", id: "jeremie" },
+            { name: "Carlos", id: "carlos" },
+            { name: "Sandra", id: "sandra" },
+            { name: "Manon", id: "manon" },
+            { name: "Stéphane", id: "stephane" },
+            { name: "Isabelle", id: "isabelle" },
+            { name: "Caroline", id: "caroline" },
+            { name: "Nadjet", id: "nadjet" },
+            { name: "Rémy", id: "remy" },
+            { name: "Maxime", id: "maxime" },
+            { name: "Shana", id: "shana" }
+        ];
+        // ========== ALERTE HEURES MANQUANTES ==========
+        async function checkHeuresManquantes() {
+            const today = new Date();
+            const hour = today.getHours();
+
+            // Lundi de la semaine courante
+            const dayOfWeek = today.getDay() || 7; // lundi=1 ... dimanche=7
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - dayOfWeek + 1);
+            monday.setHours(0, 0, 0, 0);
+
+            // Construire la liste des jours ouvrés écoulés (lundi → hier)
+            // Si on est lundi, aucun jour à vérifier cette semaine
+            const joursAVerifier = [];
+            const cursor = new Date(monday);
+            while (cursor < today) {
+                const dow = cursor.getDay();
+                if (dow >= 1 && dow <= 5) { // lundi à vendredi
+                    joursAVerifier.push(new Date(cursor));
+                }
+                cursor.setDate(cursor.getDate() + 1);
+            }
+
+            if (joursAVerifier.length === 0) {
+                renderAlerteHeures([], today, hour);
+                return;
+            }
+
+            // Clé semaine (ISO)
+            const getWeekNum = (d) => {
+                const tmp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+                tmp.setUTCDate(tmp.getUTCDate() + 4 - (tmp.getUTCDay() || 7));
+                const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
+                return Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
+            };
+
+            // Grouper les jours par semaine (en théorie une seule semaine ici)
+            const semaineMap = {};
+            joursAVerifier.forEach(d => {
+                const wk = `${d.getFullYear()}-W${getWeekNum(d).toString().padStart(2, '0')}`;
+                if (!semaineMap[wk]) semaineMap[wk] = [];
+                semaineMap[wk].push({ date: d, index: d.getDay() - 1 }); // index 0=lundi
+            });
+
+            const manquants = []; // { emp, count, jours[] }
+
+            await Promise.all(DASHBOARD_EMPLOYEES.map(async (emp) => {
+                let joursManquants = [];
+
+                await Promise.all(Object.entries(semaineMap).map(async ([weekString, jours]) => {
+                    try {
+                        const docRef = doc(db, 'employees', emp.id, 'weeks', weekString);
+                        const snap = await getDoc(docRef);
+
+                        jours.forEach(({ date, index }) => {
+                            if (!snap.exists()) {
+                                joursManquants.push(date);
+                                return;
+                            }
+                            const days = snap.data().days || [];
+                         const hours = days[index]?.hours;
+                            const comments = (days[index]?.comments || '').toLowerCase().trim();
+                            const isEmpty = hours === undefined || hours === null || hours === '' || (typeof hours === 'string' && hours.trim() === '');
+                            const isZero = hours === 0 || hours === '0' || parseFloat(hours) === 0;
+                            const isExplicit = comments.includes('repos') || comments.includes('cp') || comments.includes('congé') || comments.includes('conge') || comments.includes('absent') || comments.includes('maladie') || comments.includes('férié') || comments.includes('ferie');
+                            if (isEmpty && !isZero && !isExplicit) {
+                                joursManquants.push(date);
+                            }
+                        });
+                    } catch (e) {
+                        console.warn(`Erreur vérif heures ${emp.name}:`, e);
+                    }
+                }));
+
+                if (joursManquants.length > 0) {
+                    manquants.push({ emp, count: joursManquants.length, jours: joursManquants });
+                }
+            }));
+
+            renderAlerteHeures(manquants, hour);
+        }
+        function renderAlerteHeures(manquants, hour) {
+            const existing = document.getElementById('alerte-heures-widget');
+            if (existing) existing.remove();
+
+            if (manquants.length === 0 || hour < 8) return;
+
+            const widget = document.createElement('div');
+            widget.id = 'alerte-heures-widget';
+            widget.className = 'alerte-heures-widget';
+            widget.innerHTML = `
+        <div class="alerte-heures-header">
+            <div class="alerte-heures-icon-wrap">
+                <i class="fas fa-clock-rotate-left"></i>
+            </div>
+            <div class="alerte-heures-titles">
+                <span class="alerte-heures-title">Heures manquantes</span>
+                <span class="alerte-heures-sub">Semaine en cours · ${manquants.length} employé${manquants.length > 1 ? 's' : ''} concerné${manquants.length > 1 ? 's' : ''}</span>
+            </div>
+            <span class="alerte-heures-badge">${manquants.length}</span>
+        </div>
+        <div class="alerte-heures-list">
+            ${manquants.map(({ emp, count }) => `
+                <button class="alerte-emp-btn" onclick="naviguerVersHeuresEmploye('${emp.id}', '${emp.name}')">
+                    <span class="alerte-emp-avatar">${emp.name.charAt(0).toUpperCase()}</span>
+                    <div class="alerte-emp-info">
+                        <span class="alerte-emp-name">${emp.name}</span>
+                        <span class="alerte-emp-detail">${count} jour${count > 1 ? 's' : ''} non saisi${count > 1 ? 's' : ''}</span>
+                    </div>
+                    <span class="alerte-emp-tag ${count > 1 ? 'tag-retard' : 'tag-aremplir'}">${count > 1 ? 'En retard' : 'À remplir'}</span>
+                    <i class="fas fa-chevron-right alerte-emp-arrow"></i>
+                </button>
+            `).join('')}
+        </div>
+    `;
+
+            const overviewGrid = document.querySelector('#content-overview .overview-grid');
+            if (overviewGrid) {
+                overviewGrid.parentNode.insertBefore(widget, overviewGrid.nextSibling);
+            }
+        }
+
+        window.naviguerVersHeuresEmploye = function (empId, empName) {
+            // Pré-sélectionner l'employé dans le filtre de l'onglet Heures
+            const filterEmployee = document.getElementById('filterEmployee');
+            if (filterEmployee) {
+                filterEmployee.value = empId;
+            }
+
+            // Naviguer vers l'onglet Heures
+            switchTab('heures');
+        };
+        await checkHeuresManquantes();
+        showContent('overview');
+
+
 
     } catch (error) {
         console.error('Erreur overview:', error);

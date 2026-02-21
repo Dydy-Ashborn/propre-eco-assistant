@@ -2830,6 +2830,172 @@
 .kpi-card.kpi-alert {
     animation: kpiPulse 2s ease-in-out infinite;
 }
+/* ── Alerte heures manquantes ── */
+.alerte-heures-widget {
+    background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,247,235,0.9) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(251, 146, 60, 0.10), 0 1px 4px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.alerte-heures-widget:hover {
+    box-shadow: 0 8px 32px rgba(251, 146, 60, 0.18), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.alerte-heures-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(251, 146, 60, 0.15);
+}
+
+.alerte-heures-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f97316, #fbbf24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.35);
+}
+
+.alerte-heures-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.alerte-heures-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1c1917;
+    letter-spacing: -0.01em;
+}
+
+.alerte-heures-sub {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #a8a29e;
+}
+
+.alerte-heures-badge {
+    background: linear-gradient(135deg, #f97316, #fbbf24);
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 11px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 6px rgba(249,115,22,0.3);
+}
+
+.alerte-heures-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 10px;
+}
+
+.alerte-emp-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease, transform 0.15s ease;
+    width: 100%;
+}
+
+.alerte-emp-btn:hover {
+    background: rgba(249, 115, 22, 0.07);
+    transform: translateY(-1px);
+}
+
+.alerte-emp-btn:hover .alerte-emp-arrow {
+    color: #f97316;
+    transform: translateX(3px);
+}
+
+.alerte-emp-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fed7aa, #fef3c7);
+    color: #c2410c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(249,115,22,0.2);
+}
+
+.alerte-emp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.alerte-emp-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1c1917;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.alerte-emp-detail {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: #a8a29e;
+}
+
+.alerte-emp-tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.tag-retard {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.tag-aremplir {
+    background: rgba(249, 115, 22, 0.1);
+    color: #ea580c;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.alerte-emp-arrow {
+    font-size: 0.7rem;
+    color: #d4cdc8;
+    flex-shrink: 0;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
 
 @keyframes kpiPulse {
 
