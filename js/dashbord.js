@@ -2938,7 +2938,7 @@ window.downloadDevisPDF = async function (devisId) {
 
 // ========== MODAL DE MISE À JOUR ==========
 function showUpdateModal() {
-    if (localStorage.getItem('updateModalShown_v2.3.0')) return;
+    if (localStorage.getItem('updateModalShown_v2.4.0')) return;
 
     const modalHTML = `
         <div class="update-modal show" id="updateModal">
@@ -2950,24 +2950,31 @@ function showUpdateModal() {
                     <div class="header-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h2>Mise à jour v2.3.0 !</h2>
+                    <h2>Mise à jour v2.4.0 !</h2>
                     <p>Découvrez toutes les nouveautés</p>
                 </div>
-                
+
                 <div class="update-modal-body">
 
                     <div class="update-section">
                         <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-chart-bar"></i></div>
-                            <span>Vue d'ensemble améliorée</span>
+                            <div class="icon"><i class="fas fa-triangle-exclamation"></i></div>
+                            <span>Alertes heures manquantes</span>
                             <span class="badge-new">NEW</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-eye-slash"></i></div>
+                                <div class="update-item-icon"><i class="fas fa-clock-rotate-left"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">KPI à zéro masquées</h4>
-                                    <p class="update-item-desc">Les indicateurs affichant 0 disparaissent automatiquement pour une vue d'ensemble plus lisible et épurée.</p>
+                                    <h4 class="update-item-title">Détection automatique depuis le lundi</h4>
+                                    <p class="update-item-desc">La vue d'ensemble signale les employés n'ayant pas saisi leurs heures depuis le lundi de la semaine courante, avec le nombre de jours manquants.</p>
+                                </div>
+                            </li>
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-arrow-right"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">Navigation rapide</h4>
+                                    <p class="update-item-desc">Cliquer sur un employé dans l'alerte redirige directement vers l'onglet Heures filtré sur son nom.</p>
                                 </div>
                             </li>
                         </ul>
@@ -2975,79 +2982,30 @@ function showUpdateModal() {
 
                     <div class="update-section">
                         <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-images"></i></div>
-                            <span>Chantiers — Descriptions longues</span>
+                            <div class="icon"><i class="fas fa-calendar-check"></i></div>
+                            <span>Rappel repos & congés</span>
                             <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-expand-alt"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Bouton "Afficher plus"</h4>
-                                    <p class="update-item-desc">Les descriptions de chantier trop longues sont tronquées avec un bouton pour les déplier, rendant la liste plus compacte.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-calculator"></i></div>
-                            <span>Chiffrage devis enrichi</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-couch"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Lignes séjour & cuisine automatiques</h4>
-                                    <p class="update-item-desc">Si le devis contient une photo de séjour ou de cuisine, une ligne de chiffrage est ajoutée automatiquement avec 30 minutes prédéfinies pour chacune.</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-mobile-alt"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Footer mobile optimisé</h4>
-                                    <p class="update-item-desc">Les totaux et boutons d'action de la modal chiffrage s'affichent sur une seule ligne sur mobile pour gagner de l'espace écran.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-layer-group"></i></div>
-                            <span>Modales chargement & succès</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-spinner"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Animation pendant l'envoi</h4>
-                                    <p class="update-item-desc">Les pages Feuilles, Signaler et Spécifique affichent une animation de chargement et une confirmation visuelle à chaque envoi.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-file-invoice"></i></div>
-                            <span>Formulaire devis</span>
                         </div>
                         <ul class="update-list">
                             <li class="update-item">
                                 <div class="update-item-icon"><i class="fas fa-bell"></i></div>
                                 <div class="update-item-content">
-                                    <h4 class="update-item-title">Notification à l'envoi</h4>
-                                    <p class="update-item-desc">Une notification est envoyée automatiquement à chaque nouveau devis soumis.</p>
+                                    <h4 class="update-item-title">Rappel quotidien</h4>
+                                    <p class="update-item-desc">La modale de rappel s'affiche une fois par jour pour prendre l'habitude de renseigner les jours non travaillés.</p>
+                                </div>
+                            </li>
+                            <li class="update-item">
+                                <div class="update-item-icon"><i class="fas fa-tag"></i></div>
+                                <div class="update-item-content">
+                                    <h4 class="update-item-title">Mots-clés reconnus</h4>
+                                    <p class="update-item-desc">Indiquez <strong>0</strong> dans les heures + un mot-clé dans les commentaires pour éviter les fausses alertes : <strong>repos, cp, congé, absent, maladie, férié</strong>.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
 
                 </div>
-                
+
                 <div class="update-modal-footer">
                     <button class="btn btn-primary" onclick="closeUpdateModal()">
                         <i class="fas fa-thumbs-up"></i>
@@ -3066,7 +3024,7 @@ window.closeUpdateModal = function () {
     if (modal) {
         modal.classList.remove('show');
         setTimeout(() => modal.remove(), 300);
-        localStorage.setItem('updateModalShown_v2.3.0', 'true');
+        localStorage.setItem('updateModalShown_v2.4.0', 'true');
     }
 }
 // Afficher la modal au chargement si pas déjà vue
