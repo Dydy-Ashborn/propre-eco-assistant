@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Mes heures - Propre Eco</title>
 
     <!-- PWA Configuration -->
@@ -36,83 +37,83 @@
 
 <body>
     <!-- Header -->
-<header class="header">
-    <div class="header-content">
-        <button class="hamburger-btn" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <header class="header">
+        <div class="header-content">
+            <button class="hamburger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-        <a href="../index.html" class="logo">
-            <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
-            Propre Eco Assistant
-        </a>
+            <a href="../index.html" class="logo">
+                <img src="../img/logo.png" width="60px" alt="Logo Propre Eco">
+                Propre Eco Assistant
+            </a>
 
-        <div class="header-spacer"></div>
-    </div>
-</header>
-
-<div class="sidebar-overlay"></div>
-<nav class="sidebar-menu">
-    <div class="sidebar-header">
-        <img src="../img/logo.png" width="50px" alt="Logo">
-        <h3>Propre Eco</h3>
-        <button class="sidebar-close" aria-label="Fermer">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-
-    <div class="sidebar-content">
-        <div class="menu-section">
-            <span class="menu-section-title">Navigation</span>
-            <ul class="sidebar-nav">
-                <li>
-                    <a href="../index.html">
-                        <i class="fas fa-home"></i>
-                        <span>Accueil</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="signaler.html">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Signaler</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="Feuilles.html">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Feuilles</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="Specifique.html">
-                        <i class="fas fa-hard-hat"></i>
-                        <span>Specifique</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="pointeuse.html">
-                        <i class="fas fa-clock"></i>
-                        <span>Pointeuse</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="devis.html">
-                        <i class="fas fa-file-invoice"></i>
-                        <span>Devis</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="dashbord.html">
-                        <i class="fas fa-columns"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="header-spacer"></div>
         </div>
-    </div>
-</nav>
+    </header>
+
+    <div class="sidebar-overlay"></div>
+    <nav class="sidebar-menu">
+        <div class="sidebar-header">
+            <img src="../img/logo.png" width="50px" alt="Logo">
+            <h3>Propre Eco</h3>
+            <button class="sidebar-close" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="menu-section">
+                <span class="menu-section-title">Navigation</span>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="../index.html">
+                            <i class="fas fa-home"></i>
+                            <span>Accueil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="signaler.html">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Signaler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Feuilles.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Feuilles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Specifique.html">
+                            <i class="fas fa-hard-hat"></i>
+                            <span>Specifique</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pointeuse.html">
+                            <i class="fas fa-clock"></i>
+                            <span>Pointeuse</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="devis.html">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Devis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="dashbord.html">
+                            <i class="fas fa-columns"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div id="loadingOverlay" class="loading-overlay" style="display:none">
         <div class="loading-content">
@@ -301,6 +302,49 @@
             </div>
         </div>
     </div>
+    <!-- Modale rappel samedi -->
+    <div id="samediRappelModal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+        <div
+            style="background:white; border-radius:16px; padding:2rem; max-width:360px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div
+                style="background:linear-gradient(135deg,#f59e0b,#d97706); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
+                <i class="fas fa-calendar-check" style="color:white; font-size:1.5rem;"></i>
+            </div>
+            <h3 style="color:#92400e; margin-bottom:1rem;">Rappel repos & congés</h3>
+            <p style="color:#374151; line-height:1.6; margin-bottom:1.5rem;">
+                N'oubliez pas de renseigner <strong>0</strong> si vous êtes en repos <strong>samedi et/ou
+                    dimanche</strong>.<br><br>
+                Pensez également à indiquer <strong>0</strong> & <strong>CP</strong> dans les commentaires lorsque vous
+                êtes en congés payés.
+            </p>
+            <button onclick="closeSamediRappel()"
+                style="background:linear-gradient(135deg,#f59e0b,#d97706); color:white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; width:100%;">
+                <i class="fas fa-check"></i> Compris
+            </button>
+        </div>
+    </div>
+
+    <!-- Modale interdiction remplissage futur -->
+    <div id="futurInterdictionModal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+        <div
+            style="background:white; border-radius:16px; padding:2rem; max-width:360px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div
+                style="background:linear-gradient(135deg,#ef4444,#dc2626); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
+                <i class="fas fa-ban" style="color:white; font-size:1.5rem;"></i>
+            </div>
+            <h3 style="color:#991b1b; margin-bottom:1rem;">Remplissage interdit</h3>
+            <p style="color:#374151; line-height:1.6; margin-bottom:1.5rem;">
+                <strong>Il est strictement interdit de remplir ses heures à l'avance.</strong><br><br>
+                Les heures doivent être renseignées chaque jour.
+            </p>
+            <button onclick="closeFuturInterdiction()"
+                style="background:linear-gradient(135deg,#ef4444,#dc2626); color:white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; width:100%;">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
     <footer class="app-footer">
         Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
     </footer>
@@ -336,7 +380,7 @@
         }
 
         let currentEmployeeId = null, currentEmployeeName = null, currentWeek = null, projectRowCounter = 0;
-const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy', 'maxime': 'Maxime', 'shana': 'Shana' };
+        const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy', 'maxime': 'Maxime', 'shana': 'Shana' };
         document.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
             currentEmployeeId = urlParams.get('employee');
@@ -361,10 +405,14 @@ const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel
             loadWeekDataAuto();
             loadProjectsData();
 
+            // Vérifier si samedi → afficher rappel
+            checkSamediRappel();
+
             // Ajouter un listener pour charger automatiquement quand on change la semaine
             weekInput.addEventListener('change', function () {
                 currentWeek = this.value;
                 loadWeekDataAuto();
+                checkSamediRappel();
             });
 
             // Validation et calcul pour les inputs d'heures
@@ -571,13 +619,73 @@ const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel
                 showLoading(false);
             }
         }
+        function checkSamediRappel() {
+            const today = new Date();
+            if (today.getDay() === 6) {
+                const key = `samedi_rappel_${today.toISOString().split('T')[0]}`;
+                if (!sessionStorage.getItem(key)) {
+                    setTimeout(() => {
+                        const modal = document.getElementById('samediRappelModal');
+                        modal.style.display = 'flex';
+                    }, 800);
+                }
+            }
+        }
+
+        function closeSamediRappel() {
+            document.getElementById('samediRappelModal').style.display = 'none';
+            const today = new Date();
+            const key = `samedi_rappel_${today.toISOString().split('T')[0]}`;
+            sessionStorage.setItem(key, '1');
+        }
+
+        function closeFuturInterdiction() {
+            document.getElementById('futurInterdictionModal').style.display = 'none';
+        }
+
+        // Retourne true si la semaine sélectionnée contient des jours FUTURS (après demain)
+        function getWeekStartDate(weekString) {
+            const [year, week] = weekString.split('-W').map(Number);
+            const jan4 = new Date(year, 0, 4); // Local, pas UTC
+            const dayOfWeek = jan4.getDay() || 7;
+            const monday = new Date(jan4);
+            monday.setDate(jan4.getDate() - dayOfWeek + 1 + (week - 1) * 7);
+            monday.setHours(0, 0, 0, 0); // Minuit local → plus de décalage
+            return monday;
+        }
+
+
 
         // ✅ CORRECTION 1 : Ajouter { merge: true } pour ne pas écraser les chantiers
         async function saveWeeklyData() {
             if (!currentWeek) {
                 showNotification('Sélectionnez une semaine', 'warning');
-                return
+                return;
             }
+
+            // Bloquer si un jour non encore passé contient des heures
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+
+            const [year, weekNum] = currentWeek.split('-W').map(Number);
+            const rows = document.querySelectorAll('#weeklyTable tbody tr');
+            let futurDetecte = false;
+
+            rows.forEach((row, index) => {
+                const hours = row.querySelector('.hours').value.trim();
+                if (hours === '' || parseFloat(hours) === 0) return;
+                 const jourReel = new Date(getWeekStartDate(currentWeek));
+                jourReel.setDate(jourReel.getDate() + index);
+
+                if (jourReel > today) {
+                    futurDetecte = true;
+                }
+            });
+            if (futurDetecte) {
+                document.getElementById('futurInterdictionModal').style.display = 'flex';
+                return;
+            }
+
             const data = { days: [], kilometrage: document.getElementById('kilometrage').value, lastUpdate: firebase.firestore.FieldValue.serverTimestamp() };
             document.querySelectorAll('#weeklyTable tbody tr').forEach((row, index) => {
                 const day = row.querySelector('td strong').textContent;
@@ -590,7 +698,6 @@ const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
             try {
-                // ✅ CORRECTION : Utiliser merge: true pour ne pas écraser les chantiers spécifiques
                 await db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek).set(data, { merge: true });
                 showNotification('Données enregistrées!', 'success')
             } catch (error) {
@@ -602,7 +709,6 @@ const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel
                 saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer'
             }
         }
-
         function resetWeeklyData() {
             if (confirm('Effacer toutes les données?')) {
                 document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = '');
@@ -919,11 +1025,11 @@ const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel
         });
     </script>
     <script type="module" src="../js/announcements.js"></script>
-<script type="module">
-    import { initNavigation, setActiveNavItem } from '../js/navbar.js';
-    initNavigation();
-    setActiveNavItem('NOM_DU_FICHIER.html'); 
-</script>
+    <script type="module">
+        import { initNavigation, setActiveNavItem } from '../js/navbar.js';
+        initNavigation();
+        setActiveNavItem('NOM_DU_FICHIER.html'); 
+    </script>
 </body>
 
 </html>
