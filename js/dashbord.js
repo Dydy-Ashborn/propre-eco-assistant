@@ -385,7 +385,7 @@ async function loadOverview() {
                                 return;
                             }
                             const days = snap.data().days || [];
-                         const hours = days[index]?.hours;
+                            const hours = days[index]?.hours;
                             const comments = (days[index]?.comments || '').toLowerCase().trim();
                             const isEmpty = hours === undefined || hours === null || hours === '' || (typeof hours === 'string' && hours.trim() === '');
                             const isZero = hours === 0 || hours === '0' || parseFloat(hours) === 0;
@@ -613,40 +613,60 @@ function renderPhotosChantiers() {
         const photoCount = chantier.photos?.length || 0;
         const firstPhoto = chantier.photos?.[0]?.url || '';
         const description = chantier.description || '';
-        const descCourt = description.length > 80 ? description.substring(0, 80) + '…' : description;
-        const hasMore = description.length > 80;
         const metaId = `meta-desc-${globalIndex}`;
 
         const div = document.createElement('div');
         div.className = 'chantier-item';
 
         div.innerHTML = `
-            <div class="chantier-thumb-container">
-                <img src="${firstPhoto}" class="chantier-thumb"
-                     onclick="openPhotoGallery('${chantier.id}', 0)" alt="Chantier">
-                <span class="photo-badge">+${photoCount}</span>
-            </div>
-            <div class="chantier-info">
-                <div class="chantier-name">${chantier.chantier || 'Non spécifié'}</div>
-                <div class="chantier-meta">
-                    ${chantier.agent || 'Agent non spécifié'}${description ? ' - <span id="' + metaId + '">' + escapeHtml(descCourt) + '</span>' : ''}
-                    ${hasMore ? '<button class="btn-show-more" data-expanded="0" data-meta-id="' + metaId + '">Afficher plus</button>' : ''}
-                </div>
-            </div>
-            <div class="chantier-date">${date}</div>
-            <div class="chantier-actions">
-                <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="Télécharger">
-                    <i class="fas fa-download"></i>
-                </button>
-                <button class="btn-icon danger" onclick="deleteChantier('${chantier.id}')" title="Supprimer">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `;
+    <div class="chantier-thumb-container">
+        <img src="${firstPhoto}" class="chantier-thumb"
+             onclick="openPhotoGallery('${chantier.id}', 0)" alt="Chantier">
+        <span class="photo-badge">+${photoCount}</span>
+    </div>
+    <div class="chantier-info">
+        <div class="chantier-name">${chantier.chantier || 'Non spécifié'}</div>
+        <div class="chantier-meta">
+            ${chantier.agent || 'Agent non spécifié'}${description ? ' - <span id="' + metaId + '">' + escapeHtml(description) + '</span>' : ''}
+            ${description ? '<button class="btn-show-more" data-expanded="0" data-meta-id="' + metaId + '">Afficher plus</button>' : ''}
+        </div>
+    </div>
+    <div class="chantier-date">${date}</div>
+    <div class="chantier-actions">
+        <button class="btn-icon" onclick="downloadSingleChantier('${chantier.id}')" title="Télécharger">
+            <i class="fas fa-download"></i>
+        </button>
+        <button class="btn-icon danger" onclick="deleteChantier('${chantier.id}')" title="Supprimer">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+`;
 
-        if (hasMore) {
+        if (description) {
             const btn = div.querySelector('.btn-show-more');
-            btn.addEventListener('click', () => toggleMetaDesc(btn, metaId, description, descCourt));
+            const meta = div.querySelector('.chantier-meta');
+
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                void document.body.offsetHeight; // force reflow global
+                if (meta.scrollWidth > meta.clientWidth) {
+                    btn.style.display = 'block';
+                }
+            }));
+
+            btn.addEventListener('click', () => {
+                const isExpanded = btn.dataset.expanded === '1';
+                if (isExpanded) {
+                    meta.classList.remove('expanded');
+                    div.querySelector(`#${metaId}`).textContent = description.length > 40 ? description.substring(0, 40) + '…' : description;
+                    btn.textContent = 'Afficher plus';
+                    btn.dataset.expanded = '0';
+                } else {
+                    meta.classList.add('expanded');
+                    div.querySelector(`#${metaId}`).textContent = description;
+                    btn.textContent = 'Réduire';
+                    btn.dataset.expanded = '1';
+                }
+            });
         }
 
         container.appendChild(div);
@@ -714,7 +734,7 @@ function renderSignalements() {
                 <div class="chantier-name">${signalement.copro || 'Non spécifiée'}</div>
                 <div class="chantier-meta">
                     ${signalement.employee || 'Employé non spécifié'}${description ? ' - <span id="' + metaId + '">' + escapeHtml(description) + '</span>' : ''}
-                    ${description ? '<button class="btn-show-more" data-expanded="0" style="display:none">Afficher plus</button>' : ''}
+                    ${description ? '<button class="btn-show-more" data-expanded="0"">Afficher plus</button>' : ''}
                 </div>
             </div>
             <div class="chantier-date">${date}</div>
@@ -731,12 +751,13 @@ function renderSignalements() {
             const btn = div.querySelector('.btn-show-more');
             const meta = div.querySelector('.chantier-meta');
 
-            // Vérifie après rendu si le texte est tronqué
-            requestAnimationFrame(() => {
+            // Mesure réelle après rendu : est-ce que le texte dépasse la hauteur d'une ligne ?
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                console.log('scrollWidth:', meta.scrollWidth, 'clientWidth:', meta.clientWidth);
                 if (meta.scrollWidth > meta.clientWidth) {
-                    btn.style.display = 'inline';
+                    btn.style.display = 'block';
                 }
-            });
+            }));
 
             btn.addEventListener('click', () => {
                 const isExpanded = btn.dataset.expanded === '1';

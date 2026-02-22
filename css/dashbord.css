@@ -321,9 +321,9 @@
     font-weight: 700;
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
 }
 .chantier-meta {
     color: var(--text-light);
@@ -333,12 +333,17 @@
     white-space: nowrap;
 }
 
-.chantier-meta.expanded {
+.chantier-name.expanded {
     white-space: normal;
     overflow: visible;
     text-overflow: unset;
 }
 
+.chantier-meta.expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+}
 .chantier-date {
     font-size: 0.9rem;
     color: var(--text-light);
@@ -951,6 +956,7 @@
     .tabs-container {
         overflow-x: auto;
     }
+  
 }
 
 /* ========== BARRE DE RECHERCHE ========== */
@@ -3429,16 +3435,25 @@
     }
 }
 .btn-show-more {
-    background: none;
-    border: none;
+    display: none;
+    background: var(--primary-light, #e8f5e9);
     color: var(--primary, #2e7d32);
-    font-size: 0.75rem;
+    border: none;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
     cursor: pointer;
-    padding: 0 0 0 4px;
-    font-weight: 600;
-    text-decoration: underline;
-    vertical-align: baseline;
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.1s;
+    min-height: 28px;
+    line-height: 22px;
 }
-.btn-show-more:hover {
-    opacity: 0.75;
+
+.btn-show-more:hover,
+.btn-show-more:active {
+    background: var(--primary, #2e7d32);
+    color: white;
+    transform: scale(1.04);
 }
