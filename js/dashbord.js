@@ -2937,107 +2937,107 @@ window.downloadDevisPDF = async function (devisId) {
 };
 
 // ========== MODAL DE MISE À JOUR ==========
-function showUpdateModal() {
-    if (localStorage.getItem('updateModalShown_v2.4.0')) return;
+// function showUpdateModal() {
+//     if (localStorage.getItem('updateModalShown_v2.4.0')) return;
 
-    const modalHTML = `
-        <div class="update-modal show" id="updateModal">
-            <div class="update-modal-content">
-                <div class="update-modal-header">
-                    <button class="update-modal-close" onclick="closeUpdateModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="header-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h2>Mise à jour v2.4.0 !</h2>
-                    <p>Découvrez toutes les nouveautés</p>
-                </div>
+//     const modalHTML = `
+//         <div class="update-modal show" id="updateModal">
+//             <div class="update-modal-content">
+//                 <div class="update-modal-header">
+//                     <button class="update-modal-close" onclick="closeUpdateModal()">
+//                         <i class="fas fa-times"></i>
+//                     </button>
+//                     <div class="header-icon">
+//                         <i class="fas fa-rocket"></i>
+//                     </div>
+//                     <h2>Mise à jour v2.4.0 !</h2>
+//                     <p>Découvrez toutes les nouveautés</p>
+//                 </div>
 
-                <div class="update-modal-body">
+//                 <div class="update-modal-body">
 
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-triangle-exclamation"></i></div>
-                            <span>Alertes heures manquantes</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-clock-rotate-left"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Détection automatique depuis le lundi</h4>
-                                    <p class="update-item-desc">La vue d'ensemble signale les employés n'ayant pas saisi leurs heures depuis le lundi de la semaine courante, avec le nombre de jours manquants.</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-arrow-right"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Navigation rapide</h4>
-                                    <p class="update-item-desc">Cliquer sur un employé dans l'alerte redirige directement vers l'onglet Heures filtré sur son nom.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+//                     <div class="update-section">
+//                         <div class="update-section-title">
+//                             <div class="icon"><i class="fas fa-triangle-exclamation"></i></div>
+//                             <span>Alertes heures manquantes</span>
+//                             <span class="badge-new">NEW</span>
+//                         </div>
+//                         <ul class="update-list">
+//                             <li class="update-item">
+//                                 <div class="update-item-icon"><i class="fas fa-clock-rotate-left"></i></div>
+//                                 <div class="update-item-content">
+//                                     <h4 class="update-item-title">Détection automatique depuis le lundi</h4>
+//                                     <p class="update-item-desc">La vue d'ensemble signale les employés n'ayant pas saisi leurs heures depuis le lundi de la semaine courante, avec le nombre de jours manquants.</p>
+//                                 </div>
+//                             </li>
+//                             <li class="update-item">
+//                                 <div class="update-item-icon"><i class="fas fa-arrow-right"></i></div>
+//                                 <div class="update-item-content">
+//                                     <h4 class="update-item-title">Navigation rapide</h4>
+//                                     <p class="update-item-desc">Cliquer sur un employé dans l'alerte redirige directement vers l'onglet Heures filtré sur son nom.</p>
+//                                 </div>
+//                             </li>
+//                         </ul>
+//                     </div>
 
-                    <div class="update-section">
-                        <div class="update-section-title">
-                            <div class="icon"><i class="fas fa-calendar-check"></i></div>
-                            <span>Rappel repos & congés</span>
-                            <span class="badge-new">NEW</span>
-                        </div>
-                        <ul class="update-list">
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-bell"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Rappel quotidien</h4>
-                                    <p class="update-item-desc">La modale de rappel s'affiche une fois par jour pour prendre l'habitude de renseigner les jours non travaillés.</p>
-                                </div>
-                            </li>
-                            <li class="update-item">
-                                <div class="update-item-icon"><i class="fas fa-tag"></i></div>
-                                <div class="update-item-content">
-                                    <h4 class="update-item-title">Mots-clés reconnus</h4>
-                                    <p class="update-item-desc">Indiquez <strong>0</strong> dans les heures + un mot-clé dans les commentaires pour éviter les fausses alertes : <strong>repos, cp, congé, absent, maladie, férié</strong>.</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+//                     <div class="update-section">
+//                         <div class="update-section-title">
+//                             <div class="icon"><i class="fas fa-calendar-check"></i></div>
+//                             <span>Rappel repos & congés</span>
+//                             <span class="badge-new">NEW</span>
+//                         </div>
+//                         <ul class="update-list">
+//                             <li class="update-item">
+//                                 <div class="update-item-icon"><i class="fas fa-bell"></i></div>
+//                                 <div class="update-item-content">
+//                                     <h4 class="update-item-title">Rappel quotidien</h4>
+//                                     <p class="update-item-desc">La modale de rappel s'affiche une fois par jour pour prendre l'habitude de renseigner les jours non travaillés.</p>
+//                                 </div>
+//                             </li>
+//                             <li class="update-item">
+//                                 <div class="update-item-icon"><i class="fas fa-tag"></i></div>
+//                                 <div class="update-item-content">
+//                                     <h4 class="update-item-title">Mots-clés reconnus</h4>
+//                                     <p class="update-item-desc">Indiquez <strong>0</strong> dans les heures + un mot-clé dans les commentaires pour éviter les fausses alertes : <strong>repos, cp, congé, absent, maladie, férié</strong>.</p>
+//                                 </div>
+//                             </li>
+//                         </ul>
+//                     </div>
 
-                </div>
+//                 </div>
 
-                <div class="update-modal-footer">
-                    <button class="btn btn-primary" onclick="closeUpdateModal()">
-                        <i class="fas fa-thumbs-up"></i>
-                        J'ai compris !
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
+//                 <div class="update-modal-footer">
+//                     <button class="btn btn-primary" onclick="closeUpdateModal()">
+//                         <i class="fas fa-thumbs-up"></i>
+//                         J'ai compris !
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+//     `;
 
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-}
+//     document.body.insertAdjacentHTML('beforeend', modalHTML);
+// }
 
-window.closeUpdateModal = function () {
-    const modal = document.getElementById('updateModal');
-    if (modal) {
-        modal.classList.remove('show');
-        setTimeout(() => modal.remove(), 300);
-        localStorage.setItem('updateModalShown_v2.4.0', 'true');
-    }
-}
+// window.closeUpdateModal = function () {
+//     const modal = document.getElementById('updateModal');
+//     if (modal) {
+//         modal.classList.remove('show');
+//         setTimeout(() => modal.remove(), 300);
+//         localStorage.setItem('updateModalShown_v2.4.0', 'true');
+//     }
+// }
 // Afficher la modal au chargement si pas déjà vue
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const loginModal = document.getElementById('loginModal');
-        const isLoggedIn = !loginModal || loginModal.style.display === 'none';
+// window.addEventListener('load', () => {
+//     setTimeout(() => {
+//         const loginModal = document.getElementById('loginModal');
+//         const isLoggedIn = !loginModal || loginModal.style.display === 'none';
 
-        if (isLoggedIn) {
-            showUpdateModal();
-        }
-    }, 300);
-});
+//         if (isLoggedIn) {
+//             showUpdateModal();
+//         }
+//     }, 300);
+// });
 function generateDevisInfos(devis) {
     window.currentDevisPhotos = {
         cuisine: devis.photos?.cuisine || [],
