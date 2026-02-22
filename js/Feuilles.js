@@ -218,7 +218,10 @@ photoInput.addEventListener('change', async e => {
             const originalKB = (file.size / 1024).toFixed(1);
             const compressedKB = (compressed.blob.size / 1024).toFixed(1);
             const ratio = ((1 - compressed.blob.size / file.size) * 100).toFixed(1);
-            ;
+            const compressionInfo = document.getElementById('compressionInfo');
+            if (compressionInfo) {
+                compressionInfo.textContent = `${originalKB} Ko → ${compressedKB} Ko (−${ratio}%)`;
+            }
         };
         reader.readAsDataURL(compressed.blob);
         updateButtonStates();
@@ -358,16 +361,16 @@ uploadBtn.addEventListener('click', async () => {
         } else {
             hideLoading();
             showError('Erreur lors de l\'upload ImgBB');
-            
+
             setTimeout(() => {
                 hideError();
             }, 5000);
         }
-   } catch (e) {
+    } catch (e) {
         console.error(e);
         hideLoading();
         showError(e.message || 'Erreur lors de l\'upload');
-        
+
         setTimeout(() => {
             hideError();
         }, 5000);
