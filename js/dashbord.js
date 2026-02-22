@@ -1309,19 +1309,14 @@ function createAndShowGalleryModal(title, description) {
             <div class="gallery-overlay" onclick="closePhotoGallery()"></div>
             <div class="gallery-container">
                 <div class="gallery-header">
-                    <div class="gallery-info">
-                        <h3 id="galleryTitle"></h3>
-                    </div>
-                    <button class="gallery-close" onclick="closePhotoGallery()">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <h3 id="galleryTitle"></h3>
                 </div>
                 <div class="gallery-main">
                     <div class="gallery-image-container">
                         <button class="gallery-nav gallery-prev" onclick="prevPhoto()">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <div class="gallery-image-wrapper">
+                        <div class="gallery-image-wrapper" id="galleryImageWrapper">
                             <img id="galleryMainImage" src="" alt="Photo">
                         </div>
                         <button class="gallery-nav gallery-next" onclick="nextPhoto()">
@@ -1333,10 +1328,30 @@ function createAndShowGalleryModal(title, description) {
                     </div>
                     <div class="gallery-thumbnails" id="galleryThumbnails"></div>
                 </div>
+                <!-- Barre fixe bas : prev | close | next + counter -->
+                <div class="gallery-bottom-bar">
+                    <button class="gallery-nav gallery-prev" onclick="prevPhoto()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="gallery-counter">
+                        <span id="photoCounterBar"></span>
+                    </div>
+                    <button class="gallery-close" onclick="closePhotoGallery()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="gallery-counter" style="opacity:0;pointer-events:none;">
+                        <!-- spacer symétrique -->
+                        <span></span>
+                    </div>
+                    <button class="gallery-nav gallery-next" onclick="nextPhoto()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         `;
         document.body.appendChild(modal);
 
+        // ── Keyboard ──
         document.addEventListener('keydown', (e) => {
             const m = document.getElementById('photoGalleryModal');
             if (!m || !m.classList.contains('active')) return;
@@ -1344,9 +1359,57 @@ function createAndShowGalleryModal(title, description) {
             else if (e.key === 'ArrowRight') nextPhoto();
             else if (e.key === 'Escape') closePhotoGallery();
         });
+
+        // ── Swipe gauche/droite + swipe down to close ──
+        const wrapper = modal.querySelector('#galleryImageWrapper');
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let isDragging = false;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+            isDragging = false;
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', (e) => {
+            const deltaY = e.touches[0].clientY - touchStartY;
+            const deltaX = e.touches[0].clientX - touchStartX;
+            if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY > 0) {
+                isDragging = true;
+                const img = document.getElementById('galleryMainImage');
+                img.style.transform = `translateY(${deltaY}px)`;
+                img.style.opacity = Math.max(0, 1 - deltaY / 250);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        wrapper.addEventListener('touchend', (e) => {
+            const deltaY = e.changedTouches[0].clientY - touchStartY;
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            const img = document.getElementById('galleryMainImage');
+
+            if (isDragging && deltaY > 90) {
+                closePhotoGallery();
+            } else if (!isDragging && Math.abs(deltaX) > 50) {
+                if (deltaX < 0) nextPhoto();
+                else prevPhoto();
+                img.style.transform = '';
+                img.style.opacity = '';
+            } else {
+                img.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+                img.style.transform = '';
+                img.style.opacity = '';
+                setTimeout(() => img.style.transition = '', 260);
+            }
+            isDragging = false;
+        }, { passive: true });
     }
 
     document.getElementById('galleryTitle').textContent = title || 'Photos';
+
+    const img = document.getElementById('galleryMainImage');
+    if (img) { img.style.transform = ''; img.style.opacity = ''; }
 
     updateGalleryImage();
     updateGalleryThumbnails();
