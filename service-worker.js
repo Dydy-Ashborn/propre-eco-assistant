@@ -1,5 +1,5 @@
 // Service Worker pour Propre Eco
-const CACHE_VERSION = 'v10'; // ← Incrémenter à chaque déploiement
+const CACHE_VERSION = 'v11'; // ← Incrémenter à chaque déploiement
 const CACHE_NAME = `propre-eco-${CACHE_VERSION}`;
 
 const urlsToCache = [
