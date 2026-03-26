@@ -30,13 +30,10 @@ import { collection, getDocs, query, orderBy } from 'https://www.gstatic.com/fir
 
   // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function () {
-  // Initialisation modifiee
   loadStoredData();
   getCurrentLocation();
 
-  // Charger les procedures PUIS les proprietes pour que les boutons apparaissent
-  loadProcedures().then(() => {
-    loadProperties();
+  loadProperties().then(() => {
     updateItineraryDisplay();
   });
 });
@@ -137,70 +134,38 @@ document.addEventListener('DOMContentLoaded', function () {
       locationStatus.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
     }
 
-    // Chargement des données depuis GitHub Gist
+    // Chargement des données depuis firebase
 import { getAllCoproprietes } from './firebase-copro.js';
 
 async function loadProperties() {
   try {
     showLoadingState();
-    
-    const q = query(collection(db, 'coproprietes'), orderBy('nom'));
-    const snapshot = await getDocs(q);
-    
-    properties = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        nom: data.nom || '',
-        adresse: data.adresse || '',
-        code: data.code || '',
-        procedures: data.procedures || ''
-      };
-    });
-    
-    displayProperties();
-    
-  } catch (error) {
-    console.error('Erreur:', error);
-    showErrorState('Erreur lors du chargement depuis Firebase');
-  }
-}
 
-    // Chargement des procédures depuis le fichier JSON
-async function loadProcedures() {
-  try {
-    const q = query(collection(db, 'coproprietes'));
-    const snapshot = await getDocs(q);
-    
+    const copros = await getAllCoproprietes();
+
+    properties = copros.map(c => ({
+      nom: c.nom || '',
+      adresse: c.adresse || '',
+      code: c.code || '',
+      procedures: c.procedures || ''
+    }));
+
     procedures = {};
-    snapshot.docs.forEach(doc => {
-      const data = doc.data();
-      if (data.procedures && data.nom) {
-        procedures[data.nom] = data.procedures;
+    copros.forEach(c => {
+      if (c.procedures && c.nom) {
+        procedures[c.nom] = c.procedures;
       }
     });
-    
-    console.log('Procedures chargees depuis Firebase:', Object.keys(procedures).length);
-    return procedures;
-    
+
+    console.log('Procédures chargées:', Object.keys(procedures).length);
+    displayProperties();
+
   } catch (error) {
-    console.error('Erreur lors du chargement des procedures:', error.message);
-    procedures = {};
-    return procedures;
+    console.error('Erreur:', error);
+    showMessage('Erreur lors du chargement des copropriétés', 'error');
   }
 }
-    function parseCsv(text) {
-      if (!text) return [];
-      const lines = text.trim().split(/\r?\n/).filter(Boolean);
-      const headers = lines.shift().split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
-      return lines.map(line => {
-        const cols = line.split(',').map(c => c.trim().replace(/"/g, ''));
-        const obj = {};
-        headers.forEach((header, index) => {
-          obj[header] = cols[index] || "";
-        });
-        return obj;
-      });
-    }
+  
 
     function showLoadingState() {
       propertiesList.innerHTML = `

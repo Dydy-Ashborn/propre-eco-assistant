@@ -1,6 +1,6 @@
 // Scripts extraits de Feuilles.html
+import { getAllCoproprietes } from './firebase-copro.js';
 
-// Section 1
 // Configuration Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
@@ -19,6 +19,7 @@ const db = firebase.firestore();
 let selectedProperty = null;
 let compressedImageBlob = null;
 let properties = [];
+let filteredProperties = [];
 
 // Éléments DOM
 const propertyName = document.getElementById('propertyName');
@@ -163,35 +164,28 @@ propertySearch.addEventListener('keydown', (e) => {
             break;
     }
 });
-// Chargement des copropriétés
+// Chargement des données depuis firebase
+
 async function loadProperties() {
-    try {
-        const gistId = "67645db75ea2d7228078345dc31667b1";
-        const resp = await fetch(`https://api.github.com/gists/${gistId}`);
-        if (!resp.ok) throw new Error("Erreur lors du chargement des copropriétés");
+  try {
+    console.log('🔄 Chargement des copropriétés depuis Firebase...');
 
-        const data = await resp.json();
-        const csvUrl = Object.values(data.files)[0].raw_url;
-        const csvResp = await fetch(csvUrl, { cache: "no-store" });
-        const csvText = await csvResp.text();
-        properties = parseCsv(csvText);
+    const copros = await getAllCoproprietes();
+    console.log('📦 Copros reçues:', copros.length, copros);
 
-    } catch (e) {
-        console.error(e);
-        showMessage("Erreur lors du chargement des copropriétés", "error");
-    }
-}
+    properties = copros.map(c => ({
+      nom: c.nom || '',
+      adresse: c.adresse || '',
+      code: c.code || '',
+      procedures: c.procedures || ''
+    }));
 
-function parseCsv(text) {
-    if (!text) return [];
-    const lines = text.trim().split(/\r?\n/).filter(Boolean);
-    const headers = lines.shift().split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
-    return lines.map(l => {
-        const cols = l.split(',').map(c => c.trim().replace(/"/g, ''));
-        const o = {};
-        headers.forEach((h, i) => o[h] = cols[i] || "");
-        return o;
-    });
+    console.log('✅ Properties mappées:', properties.length);
+
+  } catch (error) {
+    console.error('❌ Erreur loadProperties:', error);
+    showMessage('Erreur lors du chargement des copropriétés', 'error');
+  }
 }
 
 
