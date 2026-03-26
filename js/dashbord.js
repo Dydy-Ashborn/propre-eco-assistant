@@ -4,10 +4,10 @@ import { collection, getDocs, getDoc, deleteDoc, doc, updateDoc, addDoc } from "
 import { initCoproManagement } from './dashboard-copro.js';
 //TEMPS PAR DEFAUT POUR LE CHIFFRAGE (en minutes)
 const TEMPS_DEFAUT = {
-    'Vitres Standard': 6,
-    'Baies Vitrées': 8,
-    'Vitres Hautes': 10,
-    'Vélux': 10,
+    'Vitres Standard': 3,
+    'Baies Vitrées': 4,
+    'Vitres Hautes': 5,
+    'Vélux': 5,
     'Portes vitrées': 3,
     'Chambres avec placard': 30,
     'Chambres sans placard': 20,
@@ -3465,16 +3465,272 @@ function removeCustomLine(btn) {
     calculerTotalDevis();
 }
 window.removeCustomLine = removeCustomLine;
+function generateChiffrageRowsCopro(devis) {
+    const items = [];
+    const taux = devis.detailsCopro?.tauxHoraire || 37.30;
+
+    // ── Copro Multiple : une ligne par bâtiment ──────────
+    if (devis.typeDevis === 'copro-multiple' && Array.isArray(devis.sections)) {
+        return devis.sections.map((bat, i) => `
+            <tr class="chiffrage-row chiffrage-row--batiment-header">
+                <td colspan="5" class="chiffrage-td-batiment">
+                    <i class="fas fa-building"></i> ${escapeHtml(bat.nom || `Bâtiment ${i + 1}`)}
+                </td>
+            </tr>
+            ${generateCoproLignes(bat, i)}
+        `).join('');
+    }
+
+    // ── Copro Similaire : lignes × nb bâtiments ──────────
+    if (devis.typeDevis === 'copro-similaire') {
+        const nb = devis.batiments?.nb || 1;
+        const rows = generateCoproLignes(devis.detailsCopro, 0, taux);
+        // Injecter le multiplicateur dans le footer
+        return rows + `
+            <tr class="chiffrage-row chiffrage-row--multiplicateur">
+                <td colspan="4" class="chiffrage-td-label" style="font-weight:700;">
+                    <i class="fas fa-clone"></i> × ${nb} bâtiments identiques
+                </td>
+                <td class="chiffrage-td-total">
+                    <input type="number" class="calc-nb-batiments chiffrage-input-editable"
+                           value="${nb}" min="1" oninput="calculerTotalDevis()"
+                           style="width:60px;">
+                </td>
+            </tr>
+        `;
+    }
+
+    // ── Copro Unique ──────────────────────────────────────
+    return generateCoproLignes(devis.detailsCopro, 0, taux);
+}
+
+function generateCoproLignes(details, batIndex, taux) {
+    if (!details) return '';
+    taux = taux || details.tauxHoraire || 37.30;
+    const idx = batIndex !== undefined ? `_${batIndex}` : '';
+    const rows = [];
+
+    // Communs
+    const c = details.communs || {};
+    if (c.hallMn > 0) rows.push({
+        label: 'Hall', nb: 1, tempsMn: c.hallMn, taux,
+        extraClass: 'row-copro-communs'
+    });
+    if (c.escaliersMnParEtage > 0) rows.push({
+        label: `Escaliers (${c.nbEtages || 1} étage${(c.nbEtages || 1) > 1 ? 's' : ''})`,
+        nb: c.nbEtages || 1, tempsMn: c.escaliersMnParEtage, taux,
+        extraClass: 'row-copro-communs'
+    });
+    if (c.ascenseurMn > 0) rows.push({
+        label: 'Ascenseur', nb: 1, tempsMn: c.ascenseurMn, taux,
+        extraClass: 'row-copro-communs'
+    });
+    if (c.localPoubelleMn > 0) rows.push({
+        label: 'Local poubelle', nb: 1, tempsMn: c.localPoubelleMn, taux,
+        extraClass: 'row-copro-communs'
+    });
+
+    // Garages (m²)
+    const g = details.garages || {};
+    if (g.surface > 0) rows.push({
+        label: `Garages (${g.surface} m²)`,
+        nb: g.surface, tempsMn: 0, taux: 0,
+        prixFixe: g.surface * (g.prixM2 || 0.41),
+        extraClass: 'row-copro-garages'
+    });
+
+    // Moquettes
+    const m = details.moquettes || {};
+    if ((m.surface > 0) || (m.vapeurMn > 0) || (m.shampoingMn > 0)) {
+        if (m.surface > 0) rows.push({
+            label: `Moquettes surface (${m.surface} m²)`,
+            nb: m.surface, tempsMn: 0, taux: 0,
+            prixFixe: m.surface * (m.prixM2 || 3.62),
+            extraClass: 'row-copro-moquettes'
+        });
+        if (m.vapeurMn > 0) rows.push({
+            label: 'Moquettes — Passage vapeur',
+            nb: 1, tempsMn: m.vapeurMn, taux,
+            extraClass: 'row-copro-moquettes'
+        });
+        if (m.shampoingMn > 0) rows.push({
+            label: 'Moquettes — Shampoing',
+            nb: 1, tempsMn: m.shampoingMn, taux,
+            extraClass: 'row-copro-moquettes'
+        });
+    }
+
+    // Trajet
+    const tr = details.trajet || {};
+    if (tr.minutes > 0) rows.push({
+        label: 'Trajet', nb: 1, tempsMn: tr.minutes, taux,
+        extraClass: 'row-copro-trajet'
+    });
+
+    // Consommables (prix fixe)
+    const conso = details.consommables || {};
+    ['poubelles', 'savon', 'essuieMain', 'jumbo'].forEach(key => {
+        const line = conso[key];
+        if (line?.quantite > 0) rows.push({
+            label: `${key.charAt(0).toUpperCase() + key.slice(1)} (conso)`,
+            nb: line.quantite, tempsMn: 0, taux: 0,
+            prixFixe: line.quantite * (line.prixUnit || 0),
+            extraClass: 'row-copro-conso'
+        });
+    });
+
+    return rows.map(item => {
+        const totalLigne = item.prixFixe !== undefined
+            ? item.prixFixe
+            : (item.nb * item.tempsMn / 60) * item.taux;
+
+        return `
+        <tr class="chiffrage-row ${item.extraClass || ''}">
+            <td class="chiffrage-td-label" data-label="Élément">${item.label}</td>
+            <td class="chiffrage-td-center" data-label="Quantité">
+                <input type="number" class="calc-nb chiffrage-input-editable"
+                       value="${item.nb}" min="0" oninput="calculerTotalDevis()">
+            </td>
+            <td class="chiffrage-td-center" data-label="Temps (mn)">
+                ${item.prixFixe !== undefined
+                ? `<span class="chiffrage-prix-fixe">Prix fixe</span>`
+                : `<input type="number" step="1" class="calc-temps chiffrage-input-editable"
+                             value="${item.tempsMn}" oninput="calculerTotalDevis()">`
+            }
+            </td>
+            <td class="chiffrage-td-center" data-label="Taux (€/h)">
+                ${item.prixFixe !== undefined
+                ? `<input type="number" step="0.01" class="calc-prix-fixe chiffrage-input-editable"
+                             value="${item.prixFixe.toFixed(2)}" oninput="calculerTotalDevis()">`
+                : `<input type="number" step="0.1" class="calc-taux chiffrage-input-editable"
+                             value="${item.taux}" oninput="calculerTotalDevis()">`
+            }
+            </td>
+            <td class="chiffrage-td-total" data-label="Total">
+                <span class="row-total-val">${totalLigne.toFixed(2)}</span>€
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function generateChiffrageRowsBureau(devis) {
+    const b = devis.detailsBureau;
+    if (!b) return '';
+    const taux = b.tauxHoraire || 37.30;
+    const rows = [];
+
+    const sections = {
+        'Bureaux & Accueil': {
+            'Aspiration / Lavage sols': b.taches?.accueil?.aspi,
+            'Mobilier / Téléphones': b.taches?.accueil?.mobilier,
+            'Poubelles': b.taches?.accueil?.poubelles,
+            'Vitres portes': b.taches?.accueil?.vitres,
+        },
+        'Showroom': {
+            'Aspiration / Lavage sols': b.taches?.showroom?.aspi,
+            'Toiles d\'araignée': b.taches?.showroom?.toiles,
+            'Vitres portes': b.taches?.showroom?.vitres,
+        },
+        'Sanitaires': {
+            'Sols': b.taches?.sanitaires?.sols,
+            'WC': b.taches?.sanitaires?.wc,
+            'Lavabos': b.taches?.sanitaires?.lavabos,
+        },
+        'Vitres spécifiques': {
+            'Façades showroom Int/Ext': b.taches?.vitres?.facades,
+            'Porte sectionnelle': b.taches?.vitres?.porte,
+            'Vitres bureaux': b.taches?.vitres?.bureaux,
+        }
+    };
+
+    let html = '';
+    Object.entries(sections).forEach(([sectionLabel, taches]) => {
+        html += `
+            <tr class="chiffrage-row chiffrage-row--section-header">
+                <td colspan="5" class="chiffrage-td-section">
+                    <i class="fas fa-folder"></i> ${sectionLabel}
+                </td>
+            </tr>`;
+        Object.entries(taches).forEach(([label, t]) => {
+            if (!t) return;
+            const mn = t.mn || 0;
+            const qty = t.qty || 0;
+            const freq = t.freq || 0;
+            const total = (mn / 60) * qty * freq * taux;
+            html += `
+            <tr class="chiffrage-row row-bureau">
+                <td class="chiffrage-td-label" data-label="Élément">${label}</td>
+                <td class="chiffrage-td-center" data-label="Quantité">
+                    <input type="number" class="calc-nb chiffrage-input-editable"
+                           value="${qty}" min="0" oninput="calculerTotalDevis()">
+                </td>
+                <td class="chiffrage-td-center" data-label="Temps (mn)">
+                    <input type="number" step="1" class="calc-temps chiffrage-input-editable"
+                           value="${mn}" oninput="calculerTotalDevis()">
+                </td>
+                <td class="chiffrage-td-center" data-label="Taux (€/h)">
+                    <input type="number" step="0.1" class="calc-taux chiffrage-input-editable"
+                           value="${taux}" oninput="calculerTotalDevis()">
+                    <span class="bureau-freq-label">×${freq}/mois</span>
+                    <input type="number" class="calc-freq chiffrage-input-editable"
+                           value="${freq}" min="0" oninput="calculerTotalDevis()"
+                           style="width:40px;">
+                </td>
+                <td class="chiffrage-td-total" data-label="Total">
+                    <span class="row-total-val">${total.toFixed(2)}</span>€
+                </td>
+            </tr>`;
+        });
+    });
+
+    // Trajet bureau
+    if (b.trajet?.minutes > 0) {
+        const totalTrajet = (b.trajet.minutes / 60) * (b.frequenceMois || 4) * taux;
+        html += `
+            <tr class="chiffrage-row row-bureau">
+                <td class="chiffrage-td-label">Trajet</td>
+                <td class="chiffrage-td-center">
+                    <input type="number" class="calc-nb chiffrage-input-editable"
+                           value="${b.frequenceMois || 4}" min="0" oninput="calculerTotalDevis()">
+                </td>
+                <td class="chiffrage-td-center">
+                    <input type="number" step="1" class="calc-temps chiffrage-input-editable"
+                           value="${b.trajet.minutes}" oninput="calculerTotalDevis()">
+                </td>
+                <td class="chiffrage-td-center">
+                    <input type="number" step="0.1" class="calc-taux chiffrage-input-editable"
+                           value="${taux}" oninput="calculerTotalDevis()">
+                    <input type="number" class="calc-freq chiffrage-input-editable"
+                           value="1" min="0" style="display:none;" oninput="calculerTotalDevis()">
+                </td>
+                <td class="chiffrage-td-total">
+                    <span class="row-total-val">${totalTrajet.toFixed(2)}</span>€
+                </td>
+            </tr>`;
+    }
+    return html;
+}
 function generateChiffrageRows(devis) {
     const items = [];
+
+    const taux = devis.detailsCopro?.tauxHoraire || devis.detailsBureau?.tauxHoraire || 43.40;
+
+    // ── COPRO (unique, similaire, multiple) ──────────────
+    if (['copro', 'copro-similaire', 'copro-multiple'].includes(devis.typeDevis)) {
+        return generateChiffrageRowsCopro(devis);
+    }
+
+    // ── BUREAU ───────────────────────────────────────────
+    if (devis.typeDevis === 'bureau') {
+        return generateChiffrageRowsBureau(devis);
+    }
 
     if (devis.vitres?.standard > 0) {
         const needsGrattage = devis.grattage?.standard;
         items.push({
             label: 'Vitres Standard',
             nb: devis.vitres.standard,
-            tempsMn: TEMPS_DEFAUT['Vitres Standard'] || 6,
-            taux: 43.40,
+            tempsMn: (TEMPS_DEFAUT['Vitres Standard'] || 3) * (needsGrattage ? 2 : 1), taux: 43.40,
             grattage: needsGrattage
         });
     }
@@ -3483,8 +3739,7 @@ function generateChiffrageRows(devis) {
         items.push({
             label: 'Baies Vitrées',
             nb: devis.vitres.baies,
-            tempsMn: TEMPS_DEFAUT['Baies Vitrées'] || 8,
-            taux: 43.40,
+            tempsMn: (TEMPS_DEFAUT['Baies Vitrées'] || 4) * (needsGrattage ? 2 : 1), taux: 43.40,
             grattage: needsGrattage
         });
     }
@@ -3493,7 +3748,7 @@ function generateChiffrageRows(devis) {
         items.push({
             label: 'Vélux',
             nb: devis.vitres.velux,
-            tempsMn: TEMPS_DEFAUT['Vélux'] || 10,
+            tempsMn: TEMPS_DEFAUT['Vélux'] || 10, tempsMn: (TEMPS_DEFAUT['Vélux'] || 5) * (needsGrattage ? 2 : 1),
             taux: 43.40,
             grattage: needsGrattage
         });
@@ -3503,8 +3758,7 @@ function generateChiffrageRows(devis) {
         items.push({
             label: 'Portes vitrées',
             nb: devis.vitres.portes,
-            tempsMn: TEMPS_DEFAUT['Portes vitrées'] || 6,
-            taux: 43.40,
+            tempsMn: (TEMPS_DEFAUT['Portes vitrées'] || 3) * (needsGrattage ? 2 : 1), taux: 43.40,
             grattage: needsGrattage
         });
     }
@@ -3513,8 +3767,7 @@ function generateChiffrageRows(devis) {
         items.push({
             label: 'Vitres Hautes',
             nb: devis.vitres.hautes,
-            tempsMn: TEMPS_DEFAUT['Vitres Hautes'] || 10,
-            taux: 43.40,
+            tempsMn: (TEMPS_DEFAUT['Vitres Hautes'] || 5) * (needsGrattage ? 2 : 1), taux: 43.40,
             grattage: needsGrattage
         });
     }
@@ -3605,14 +3858,15 @@ function generateChiffrageRows(devis) {
     if (devis.exterieurs?.balcon > 0) {
         items.push({ label: 'Balcon', nb: devis.exterieurs.balcon, tempsMn: TEMPS_DEFAUT['Balcon'] || 30, taux: 43.40 });
     }
-   if (devis.exterieurs?.terrasse > 0) {
+    if (devis.exterieurs?.terrasse > 0) {
         items.push({ label: 'Terrasse', nb: devis.exterieurs.terrasse, tempsMn: TEMPS_DEFAUT['Terrasse'] || 60, taux: 43.40 });
     }
     if (devis.exterieurs?.piscine > 0) {
         items.push({ label: 'Piscine', nb: devis.exterieurs.piscine, tempsMn: TEMPS_DEFAUT['Piscine'] || 45, taux: 43.40 });
     }
     if (devis.trajet > 0) {
-items.push({ label: 'Trajet', nb: 1, tempsMn: devis.trajet, taux: 43.40 });    }
+        items.push({ label: 'Trajet', nb: 1, tempsMn: devis.trajet, taux: 43.40 });
+    }
 
     if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
         items.forEach(item => {
@@ -3677,11 +3931,25 @@ function calculerTotalDevis() {
         const totalMinutes = nb * tempsMn;
         const totalHeures = totalMinutes / 60;
         const totalLignePrix = totalHeures * taux;
+        // Prix fixe (copro garages, moquettes m², consommables)
+        const prixFixeInput = row.querySelector('.calc-prix-fixe');
+        if (prixFixeInput) {
+            const prixFixe = parseFloat(prixFixeInput.value) || 0;
+            const displayTotal = row.querySelector('.row-total-val');
+            if (displayTotal) displayTotal.textContent = prixFixe.toFixed(2);
+            grandTotal += prixFixe;
+            // pas de temps à ajouter
+            return;
+        }
+
+        // Bureau : taux × (nb × temps / 60) × fréquence
+        const freqInput = row.querySelector('.calc-freq');
+        const freq = freqInput ? (parseFloat(freqInput.value) || 1) : 1;
+        const totalLignePrixFinal = totalLignePrix * freq;
 
         const displayTotal = row.querySelector('.row-total-val');
-        if (displayTotal) displayTotal.textContent = totalLignePrix.toFixed(2);
-
-        grandTotal += totalLignePrix;
+        if (displayTotal) displayTotal.textContent = totalLignePrixFinal.toFixed(2);
+        grandTotal += totalLignePrixFinal;
         grandTempsMn += totalMinutes;
     });
 
@@ -3703,6 +3971,13 @@ function calculerTotalDevis() {
         grandTempsMn += totalMinutes;
     });
 
+    // Multiplicateur copro-similaire
+    const nbBatInput = document.querySelector('.calc-nb-batiments');
+    if (nbBatInput) {
+        const nbBat = parseFloat(nbBatInput.value) || 1;
+        grandTotal *= nbBat;
+        grandTempsMn *= nbBat;
+    }
     const grandTotalTTC = grandTotal * 1.2;
     const heures = Math.floor(grandTempsMn / 60);
     const minutes = Math.round(grandTempsMn % 60);

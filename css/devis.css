@@ -861,3 +861,596 @@
         font-size: 20px;
     }
 }
+
+/* ── Devis Hub ─────────────────────────────────────── */
+.devis-hub {
+    padding: 24px 0;
+}
+
+.hub-header {
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.hub-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a1a);
+    margin: 8px 0 4px;
+}
+
+.hub-header p {
+    color: var(--text-secondary, #666);
+    font-size: 0.95rem;
+}
+
+.hub-back {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: none;
+    border: none;
+    color: var(--color-primary, #4caf50);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hub-back:hover {
+    opacity: 0.75;
+}
+
+.hub-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.hub-card {
+    background: var(--card-bg, #fff);
+    border: 2px solid var(--border-color, #e0e0e0);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.hub-card:hover:not(:disabled) {
+    border-color: var(--color-primary, #4caf50);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.15);
+}
+
+.hub-card--soon {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.hub-card-icon {
+    font-size: 2rem;
+    color: var(--color-primary, #4caf50);
+}
+
+.hub-card-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a1a);
+}
+
+.hub-card-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #888);
+    line-height: 1.4;
+}
+
+.hub-soon-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--color-warning, #ff9800);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.hub-placeholder {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary, #aaa);
+}
+
+.hub-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+}
+/* ── Copro ─────────────────────────────────────────── */
+.copro-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #999);
+    margin-top: 4px;
+    display: block;
+}
+
+.copro-prix-unit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary, #4caf50);
+    margin-left: 4px;
+}
+.input-prix-unit {
+    width: 75px;
+    padding: 6px 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.conso-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.conso-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 8px 12px;
+}
+
+.conso-label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.conso-qty { min-width: 100px; }
+
+.conso-prix-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.conso-pu-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.conso-sous-total {
+    font-weight: 700;
+    color: var(--color-primary, #10B981);
+    font-size: 0.9rem;
+    min-width: 60px;
+    text-align: right;
+}
+
+/* Récap */
+.recap-copro-section { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+
+.recap-copro-table { display: flex; flex-direction: column; gap: 8px; }
+
+.recap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-secondary);
+}
+
+.recap-row--ht {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    border-top: 2px solid rgba(255,255,255,0.15);
+    margin-top: 4px;
+    padding-top: 10px;
+}
+
+.recap-row--ttc {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-primary, #10B981);
+}
+
+@media (max-width: 480px) {
+    .conso-row {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+    }
+    .conso-label { grid-column: 1 / -1; }
+}
+
+.copro-info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--color-primary, #4caf50);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.copro-result-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.copro-result-val {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-primary, #4caf50);
+    padding: 8px 0;
+}
+
+.copro-recap-section {
+    background: var(--card-bg, #fff);
+    border: 2px solid var(--color-primary, #4caf50);
+    border-radius: 12px;
+}
+
+.copro-recap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.copro-recap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color, #eee);
+    font-size: 0.95rem;
+}
+
+.copro-recap-row:last-child {
+    border-bottom: none;
+}
+
+.copro-recap-total {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--color-primary, #4caf50);
+    border-bottom: none !important;
+    padding-top: 12px;
+}
+
+/* ── Copro Multiple — Summary ───────────────────────── */
+.multi-summary {
+    background: rgba(16,185,129,0.07);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.multi-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(16,185,129,0.1);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.multi-total-cumul {
+    color: var(--primary);
+    font-size: 0.95rem;
+}
+
+.multi-batiments-liste {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.multi-bat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--radius-sm);
+}
+
+.multi-bat-nom {
+    flex: 1;
+    font-size: 0.88rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.multi-bat-nom i { color: var(--primary); font-size: 0.8rem; }
+
+.multi-bat-prix {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.88rem;
+    white-space: nowrap;
+}
+
+.multi-bat-suppr {
+    background: rgba(239,68,68,0.15);
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.batiment-actuel-section {
+    background: rgba(245,158,11,0.06);
+    border: 1px solid rgba(245,158,11,0.2);
+}
+
+.batiment-actuel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    
+    margin-bottom: 12px;
+}
+
+.multi-form-actions {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+/* ── Copro Similaire — Bâtiments ────────────────────── */
+.batiments-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.batiment-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.batiment-num {
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-weight: 600;
+    min-width: 70px;
+    white-space: nowrap;
+}
+
+.batiment-input-row input[type="text"] {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+/* ── Devis Bureau ───────────────────────────────────── */
+.bureau-tache {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+
+.bureau-tache-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.bureau-tache-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.bureau-tache-hint {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+@media (max-width: 480px) {
+    .bureau-tache-inputs {
+        grid-template-columns: 1fr;
+    }
+}
+
+.section-hint {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.sim-par-batiment-badge {
+    font-size: 0.7rem;
+    background: rgba(16,185,129,0.15);
+    color: var(--primary);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-weight: 500;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+/* ── Consommables Copro ─────────────────────────── */
+.conso-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.conso-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.conso-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.conso-card-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.conso-card-label i {
+    color: var(--primary);
+    font-size: 0.85rem;
+}
+
+.conso-sous-total {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+/* Prix unitaire — discret, en bas de carte */
+.conso-pu-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.conso-pu-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.conso-pu-input-wrap input {
+    width: 68px;
+    padding: 4px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    font-size: 0.82rem;
+    text-align: center;
+}
+
+.conso-pu-input-wrap span {
+    font-size: 0.78rem;
+    color: var(--text-lighter);
+}
+
+/* Prix m² (garages / moquettes) */
+.input-prix-unit {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* Récap copro */
+.recap-copro-section {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.2);
+}
+
+.recap-copro-table {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.recap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-light);
+}
+
+.recap-row--ht {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    border-top: 2px solid rgba(255,255,255,0.15);
+    margin-top: 4px;
+    padding-top: 10px;
+    border-bottom: none;
+}
+
+.recap-row--ttc {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary);
+    border-bottom: none;
+}
+
+@media (max-width: 480px) {
+    .conso-cards {
+        grid-template-columns: 1fr;
+    }
+}

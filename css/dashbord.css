@@ -1138,6 +1138,32 @@
     justify-content: center;
     padding: 1rem;
 }
+.chiffrage-row--batiment-header .chiffrage-td-batiment,
+.chiffrage-row--section-header .chiffrage-td-section {
+    background: rgba(16,185,129,0.12);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--primary, #10B981);
+    padding: 8px 12px;
+    letter-spacing: 0.03em;
+}
+
+.row-copro-garages  td { background: rgba(59,130,246,0.04); }
+.row-copro-moquettes td { background: rgba(245,158,11,0.04); }
+.row-copro-conso    td { background: rgba(139,92,246,0.04); }
+.row-bureau         td { background: rgba(16,185,129,0.03); }
+
+.chiffrage-prix-fixe {
+    font-size: 0.75rem;
+    color: var(--text-light, #6b7280);
+    font-style: italic;
+}
+
+.bureau-freq-label {
+    font-size: 0.72rem;
+    color: var(--text-light, #6b7280);
+    margin-right: 4px;
+}
 
 .modal-overlay {
     position: absolute;
