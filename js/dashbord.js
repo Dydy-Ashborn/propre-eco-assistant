@@ -1251,7 +1251,7 @@ function createDevisCard(devis) {
     }
 
     const prixHT = devis.totalPrixHT || devis.totalPrix || 0;
-    const prixTTC = devis.totalPrixTTC || (prixHT * 1.22);
+    const prixTTC = parseFloat((prixHT * 1.2).toFixed(2));
 
     return `
         <div class="devis-card ${isChiffre ? 'devis-card--chiffre' : ''}" id="devis-${devis.id}">
@@ -2591,7 +2591,7 @@ window.saveChiffrage = async function (devisId) {
             });
         });
 
-        const totalPrixTTC = totalPrixHT * 1.22;
+        const totalPrixTTC = totalPrixHT * 1.2; // TVA 20%
 
         await updateDoc(doc(db, 'devis', devisId), {
             elements,
@@ -3019,8 +3019,8 @@ window.downloadDevisPDF = async function (devisId) {
 
         y += 2;
 
-        const totalHT = devis.totalPrixHT || 0;
-        const totalTTC = devis.totalPrixTTC || 0;
+        const totalHT = devis.totalPrixHT || devis.totalPrix || 0;
+        const totalTTC = parseFloat((totalHT * 1.2).toFixed(2));
         const tempsTotalMn = devis.totalTempsMn || 0;
         const heures = Math.floor(tempsTotalMn / 60);
         const minutes = Math.round(tempsTotalMn % 60);
@@ -3588,7 +3588,7 @@ function calculerTotalDevis() {
         grandTempsMn += totalMinutes;
     });
 
-    const grandTotalTTC = grandTotal * 1.22;
+    const grandTotalTTC = grandTotal * 1.2;
 
     const heures = Math.floor(grandTempsMn / 60);
     const minutes = Math.round(grandTempsMn % 60);
