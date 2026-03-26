@@ -336,13 +336,16 @@ async function loadOverview() {
             monday.setDate(today.getDate() - dayOfWeek + 1);
             monday.setHours(0, 0, 0, 0);
 
-            // Construire la liste des jours ouvrés écoulés (lundi → hier)
-            // Si on est lundi, aucun jour à vérifier cette semaine
+            // Hier à 23:59 — on n'inclut jamais aujourd'hui
+            const hier = new Date(today);
+            hier.setDate(today.getDate() - 1);
+            hier.setHours(23, 59, 59, 999);
+
             const joursAVerifier = [];
             const cursor = new Date(monday);
-            while (cursor < today) {
+            while (cursor <= hier) {
                 const dow = cursor.getDay();
-                if (dow >= 1 && dow <= 5) { // lundi à vendredi
+                if (dow >= 1 && dow <= 5) {
                     joursAVerifier.push(new Date(cursor));
                 }
                 cursor.setDate(cursor.getDate() + 1);
