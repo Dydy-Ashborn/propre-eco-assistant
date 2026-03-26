@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupPhotoPreview(inputId, previewId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
-    
+
     // Stocker les fichiers dans un array sur l'élément input
     if (!input.filesArray) {
         input.filesArray = [];
@@ -69,15 +69,15 @@ function setupPhotoPreview(inputId, previewId) {
 
     input.addEventListener('change', (e) => {
         const newFiles = Array.from(e.target.files);
-        
+
         // Ajouter les nouveaux fichiers à l'array existant
         input.filesArray = [...input.filesArray, ...newFiles];
-        
+
         // Mettre à jour le FileList de l'input
         const dt = new DataTransfer();
         input.filesArray.forEach(file => dt.items.add(file));
         input.files = dt.files;
-        
+
         // Afficher toutes les photos
         preview.innerHTML = '';
         input.filesArray.forEach((file, index) => {
@@ -100,15 +100,15 @@ function setupPhotoPreview(inputId, previewId) {
 
 window.removePhoto = function (inputId, index) {
     const input = document.getElementById(inputId);
-    
+
     // Retirer le fichier de l'array
     input.filesArray.splice(index, 1);
-    
+
     // Reconstruire le FileList
     const dt = new DataTransfer();
     input.filesArray.forEach(file => dt.items.add(file));
     input.files = dt.files;
-    
+
     // Déclencher l'événement change pour rafraîchir l'affichage
     input.dispatchEvent(new Event('change'));
 };
@@ -174,8 +174,7 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         const baiesVitrees = parseInt(document.getElementById('baiesVitrees').value) || 0;
         const velux = parseInt(document.getElementById('velux').value) || 0;
         const portesVitrees = parseInt(document.getElementById('portesVitrees').value) || 0;
-        const vitresHautes = document.getElementById('vitresHautes').checked;
-
+        const vitresHautes = parseInt(document.getElementById('vitresHautes').value) || 0;
         // Cuisine
         const petiteCuisine = parseInt(document.getElementById('petiteCuisine').value) || 0;
         const grandeCuisine = parseInt(document.getElementById('grandeCuisine').value) || 0;
@@ -228,12 +227,14 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
         // Exterieurs
         const balcon = parseInt(document.getElementById('balcon').value) || 0;
         const terrasse = parseInt(document.getElementById('terrasse').value) || 0;
+        const piscine = parseInt(document.getElementById('piscine').value) || 0;
+        const trajet = parseInt(document.getElementById('trajet').value) || 0;
 
         const photosCuisine = await uploadPhotos(document.getElementById('photosCuisine').files);
         const photosSejour = await uploadPhotos(document.getElementById('photosSejour').files);
 
         let photosVitresHautes = [];
-        if (vitresHautes && document.getElementById('photosVitresHautes').files.length > 0) {
+        if (vitresHautes > 0 && document.getElementById('photosVitresHautes').files.length > 0) {
             photosVitresHautes = await uploadPhotos(document.getElementById('photosVitresHautes').files);
         }
 
@@ -305,8 +306,10 @@ document.getElementById('devisForm').addEventListener('submit', async (e) => {
             },
             exterieurs: {
                 balcon,
-                terrasse
+                terrasse,
+                piscine
             },
+            trajet,
             photos: {
                 cuisine: photosCuisine,
                 sejour: photosSejour,

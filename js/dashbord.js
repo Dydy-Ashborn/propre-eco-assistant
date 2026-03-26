@@ -3508,11 +3508,11 @@ function generateChiffrageRows(devis) {
             grattage: needsGrattage
         });
     }
-    if (devis.vitres?.hautes) {
+    if (devis.vitres?.hautes > 0) {
         const needsGrattage = devis.grattage?.hautes;
         items.push({
             label: 'Vitres Hautes',
-            nb: 1,
+            nb: devis.vitres.hautes,
             tempsMn: TEMPS_DEFAUT['Vitres Hautes'] || 10,
             taux: 43.40,
             grattage: needsGrattage
@@ -3605,9 +3605,14 @@ function generateChiffrageRows(devis) {
     if (devis.exterieurs?.balcon > 0) {
         items.push({ label: 'Balcon', nb: devis.exterieurs.balcon, tempsMn: TEMPS_DEFAUT['Balcon'] || 30, taux: 43.40 });
     }
-    if (devis.exterieurs?.terrasse > 0) {
+   if (devis.exterieurs?.terrasse > 0) {
         items.push({ label: 'Terrasse', nb: devis.exterieurs.terrasse, tempsMn: TEMPS_DEFAUT['Terrasse'] || 60, taux: 43.40 });
     }
+    if (devis.exterieurs?.piscine > 0) {
+        items.push({ label: 'Piscine', nb: devis.exterieurs.piscine, tempsMn: TEMPS_DEFAUT['Piscine'] || 45, taux: 43.40 });
+    }
+    if (devis.trajet > 0) {
+items.push({ label: 'Trajet', nb: 1, tempsMn: devis.trajet, taux: 43.40 });    }
 
     if (devis.lignesChiffrage && devis.lignesChiffrage.length > 0) {
         items.forEach(item => {

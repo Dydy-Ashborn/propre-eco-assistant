@@ -226,11 +226,17 @@
                     </div>
                 </div>
 
-                <div class="form-group checkbox-option">
-                    <label>
-                        <input type="checkbox" id="vitresHautes">
-                        <span>Vitres hautes présentes</span>
-                    </label>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vitresHautes">Vitres hautes</label>
+                        <div class="input-counter">
+                            <button type="button" class="counter-btn" data-input="vitresHautes"
+                                data-action="decrease">-</button>
+                            <input type="number" id="vitresHautes" min="0" value="0">
+                            <button type="button" class="counter-btn" data-input="vitresHautes"
+                                data-action="increase">+</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grattage-options">
@@ -638,6 +644,17 @@
                                 data-action="increase">+</button>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="piscine">Piscine</label>
+                        <div class="input-counter">
+                            <button type="button" class="counter-btn" data-input="piscine"
+                                data-action="decrease">-</button>
+                            <input type="number" id="piscine" min="0" value="0">
+                            <button type="button" class="counter-btn" data-input="piscine"
+                                data-action="increase">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -673,6 +690,15 @@
             <!-- Remarques -->
             <div class="form-section">
                 <h2><i class="fas fa-comment"></i> Remarques</h2>
+
+                <div class="form-group">
+                    <label for="trajet">Temps de trajet (minutes)</label>
+                    <div class="input-counter">
+                        <button type="button" class="counter-btn" data-input="trajet" data-action="decrease">-</button>
+                        <input type="number" id="trajet" min="0" value="0" step="5">
+                        <button type="button" class="counter-btn" data-input="trajet" data-action="increase">+</button>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label for="remarques">Informations supplémentaires</label>
