@@ -476,29 +476,61 @@ window.switchTabPublic = function (tab) {
 // ========== FEUILLES DE PASSAGE ==========
 async function loadFeuillesPassage() {
     showLoading('feuilles_passage');
-
     try {
         const snapshot = await getDocs(collection(db, 'feuilles_passage'));
-
         allData.feuilles_passage = [];
         snapshot.forEach(doc => {
             allData.feuilles_passage.push({ id: doc.id, ...doc.data() });
         });
-
-        // Trier par date
         allData.feuilles_passage.sort((a, b) => {
             const dateA = a.createdAt?.seconds || 0;
             const dateB = b.createdAt?.seconds || 0;
             return dateB - dateA;
         });
-
         window.allFeuillesPassage = allData.feuilles_passage;
         renderFeuillesPassage();
         showContent('feuilles_passage');
+
+        const btnMode = document.getElementById('btnModeSelection');
+        if (btnMode) {
+            btnMode.onclick = window.toggleModeSelection;
+        }
     } catch (error) {
         console.error('Erreur feuilles:', error);
         showError('feuilles_passage', error.message);
     }
+}
+
+let modeSelectionActif = false;
+
+window.toggleModeSelection = function () {
+    modeSelectionActif = !modeSelectionActif;
+    const btn = document.getElementById('btnModeSelection');
+    if (modeSelectionActif) {
+        btn.innerHTML = '<i class="fas fa-times"></i> Annuler';
+        btn.classList.add('btn-warning');
+        btn.classList.remove('btn-secondary');
+    } else {
+        btn.innerHTML = '<i class="fas fa-check-square"></i> Sélectionner';
+        btn.classList.remove('btn-warning');
+        btn.classList.add('btn-secondary');
+    }
+    renderFeuillesPassage();
+};
+
+window.toggleSelectAll = function () {
+    const checkboxes = document.querySelectorAll('.feuille-checkbox');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+    onFeuilleCheckboxChange();
+};
+
+function onFeuilleCheckboxChange() {
+    const checked = document.querySelectorAll('.feuille-checkbox:checked');
+    const count = document.getElementById('bulkCount');
+    const btnDelete = document.getElementById('btnDeleteSelection');
+    if (count) count.textContent = `${checked.length} sélectionné(s)`;
+    if (btnDelete) btnDelete.style.display = checked.length > 0 ? 'inline-flex' : 'none';
 }
 
 function renderFeuillesPassage() {
@@ -508,35 +540,96 @@ function renderFeuillesPassage() {
     const end = start + ITEMS_PER_PAGE;
     const pageData = allData.feuilles_passage.slice(start, end);
 
-    container.innerHTML = '<div class="chantiers-list"></div>';
+    container.innerHTML = modeSelectionActif ? `
+        <div class="bulk-actions-bar" id="bulkActionsBar">
+            <button class="btn-icon" onclick="toggleSelectAll()" title="Tout sélectionner">
+                <i class="fas fa-check-double"></i>
+            </button>
+            <span id="bulkCount">0 sélectionné(s)</span>
+            <button class="btn btn-danger btn-sm" id="btnDeleteSelection"
+                style="display:none;" onclick="deleteSelectedFeuilles()">
+                <i class="fas fa-trash"></i> Supprimer
+            </button>
+        </div>
+        <div class="chantiers-list"></div>
+    ` : '<div class="chantiers-list"></div>';
+
     const listContainer = container.querySelector('.chantiers-list');
 
-    pageData.forEach((feuille, index) => {
-        const globalIndex = start + index;
+    pageData.forEach((feuille) => {
         const date = formatDate(feuille.createdAt);
-        listContainer.innerHTML += `
-            <div class="chantier-item">
-                <div class="chantier-thumb-container">
-                    <img src="${feuille.url}" class="chantier-thumb" 
-                         onclick="openFeuilleGallery('${feuille.id}')"" alt="Feuille">
-                </div>
-                <div class="chantier-info">
-                    <div class="chantier-name">${feuille.copro || 'Non specifiee'}</div>
-                    <div class="chantier-meta">${feuille.agent || 'Non specifie'}</div>
-                </div>
-                <div class="chantier-date">${date}</div>
-                <div class="chantier-actions">
-                    <button class="btn-icon danger" onclick="deleteFeuille('${feuille.id}')" title="Supprimer">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+        const item = document.createElement('div');
+        item.className = 'chantier-item' + (modeSelectionActif ? ' selectable-item' : '');
+        item.dataset.id = feuille.id;
+
+        if (modeSelectionActif) {
+            item.onclick = () => {
+                const cb = item.querySelector('.feuille-checkbox');
+                cb.checked = !cb.checked;
+                onFeuilleCheckboxChange();
+            };
+        }
+
+        item.innerHTML = `
+            ${modeSelectionActif ? `
+            <div class="select-checkbox">
+                <input type="checkbox" class="feuille-checkbox" data-id="${feuille.id}"
+                    onclick="event.stopPropagation();" onchange="onFeuilleCheckboxChange()">
+            </div>` : ''}
+            <div class="chantier-thumb-container">
+                <img src="${feuille.url}" class="chantier-thumb"
+                     onclick="${modeSelectionActif ? 'event.stopPropagation()' : `openFeuilleGallery('${feuille.id}')`}"
+                     alt="Feuille">
+            </div>
+            <div class="chantier-info">
+                <div class="chantier-name">${feuille.copro || 'Non spécifiée'}</div>
+                <div class="chantier-meta">${feuille.agent || 'Non spécifié'}</div>
+            </div>
+            <div class="chantier-date">${date}</div>
+            <div class="chantier-actions">
+                ${!modeSelectionActif ? `
+                <button class="btn-icon danger" onclick="deleteFeuille('${feuille.id}')" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                </button>` : ''}
             </div>
         `;
+        listContainer.appendChild(item);
     });
 
     renderPagination('feuilles_passage', allData.feuilles_passage.length);
 }
-// Fonction de suppression de feuille
+
+window.deleteSelectedFeuilles = async function () {
+    const checked = document.querySelectorAll('.feuille-checkbox:checked');
+    const ids = Array.from(checked).map(cb => cb.dataset.id);
+    if (ids.length === 0) return;
+
+    showConfirmModal({
+        title: `Supprimer ${ids.length} feuille(s) ?`,
+        message: 'Cette action est irréversible. Les feuilles sélectionnées seront définitivement supprimées.',
+        confirmText: 'Supprimer',
+        cancelText: 'Annuler',
+        onConfirm: async () => {
+            try {
+                await Promise.all(ids.map(id => deleteDoc(doc(db, 'feuilles_passage', id))));
+                allData.feuilles_passage = allData.feuilles_passage.filter(f => !ids.includes(f.id));
+                modeSelectionActif = false;
+                const btn = document.getElementById('btnModeSelection');
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-check-square"></i> Sélectionner';
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-secondary');
+                }
+                renderFeuillesPassage();
+                showNotification(`${ids.length} feuille(s) supprimée(s) avec succès`, 'success');
+            } catch (error) {
+                console.error('Erreur suppression multiple:', error);
+                showNotification('Erreur lors de la suppression', 'error');
+            }
+        }
+    });
+};
+
 window.deleteFeuille = async function (feuilleId) {
     showConfirmModal({
         title: 'Supprimer cette feuille de passage ?',
@@ -546,14 +639,9 @@ window.deleteFeuille = async function (feuilleId) {
         onConfirm: async () => {
             try {
                 await deleteDoc(doc(db, 'feuilles_passage', feuilleId));
-
-                // Supprimer de allData
                 allData.feuilles_passage = allData.feuilles_passage.filter(f => f.id !== feuilleId);
-
-                // Re-render
                 renderFeuillesPassage();
-
-                showNotification('Feuille supprimee avec succès', 'success');
+                showNotification('Feuille supprimée avec succès', 'success');
             } catch (error) {
                 console.error('Erreur suppression feuille:', error);
                 showNotification('Erreur lors de la suppression', 'error');
@@ -561,7 +649,6 @@ window.deleteFeuille = async function (feuilleId) {
         }
     });
 };
-
 // ========== PHOTOS CHANTIERS ==========
 async function loadPhotosChantiers() {
     showLoading('photos_chantiers');

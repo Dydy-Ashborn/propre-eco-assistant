@@ -325,6 +325,7 @@
     overflow: visible;
     text-overflow: unset;
 }
+
 .chantier-meta {
     color: var(--text-light);
     font-size: 0.9rem;
@@ -344,6 +345,7 @@
     overflow: visible;
     text-overflow: unset;
 }
+
 .chantier-date {
     font-size: 0.9rem;
     color: var(--text-light);
@@ -475,9 +477,11 @@
 /* ========== CAROUSEL FULLSCREEN ========== */
 .photo-gallery-modal {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.97);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.97);
     z-index: 10001;
     display: none;
     opacity: 0;
@@ -492,13 +496,16 @@
 
 .gallery-overlay {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .gallery-container {
     position: relative;
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -507,8 +514,10 @@
 /* ── Header (titre uniquement) ── */
 .gallery-header {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
     padding: env(safe-area-inset-top, 1rem) 1.5rem 2.5rem;
     z-index: 10;
     pointer-events: none;
@@ -518,7 +527,7 @@
     color: white;
     font-size: 1.1rem;
     font-weight: 600;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     margin: 0;
 }
 
@@ -558,16 +567,17 @@
 }
 
 /* ── Flèches desktop (milieu image) ── */
-.gallery-image-container > .gallery-nav {
+.gallery-image-container>.gallery-nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white;
-    width: 52px; height: 52px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.2rem;
@@ -575,17 +585,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
     transition: background 0.2s, transform 0.2s;
 }
 
-.gallery-image-container > .gallery-nav:active {
-    background: rgba(255,255,255,0.28);
+.gallery-image-container>.gallery-nav:active {
+    background: rgba(255, 255, 255, 0.28);
     transform: translateY(-50%) scale(0.93);
 }
 
-.gallery-prev { left: 12px; }
-.gallery-next { right: 12px; }
+.gallery-prev {
+    left: 12px;
+}
+
+.gallery-next {
+    right: 12px;
+}
 
 /* ── Thumbnails ── */
 .gallery-thumbnails {
@@ -594,22 +609,27 @@
     padding: 0.75rem 1rem;
     overflow-x: auto;
     justify-content: center;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     flex-shrink: 0;
     position: absolute;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
-    left: 0; right: 0;
+    left: 0;
+    right: 0;
     z-index: 15;
 }
 
-.gallery-thumbnails::-webkit-scrollbar { height: 4px; }
+.gallery-thumbnails::-webkit-scrollbar {
+    height: 4px;
+}
+
 .gallery-thumbnails::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 2px;
 }
 
 .gallery-thumb {
-    width: 56px; height: 56px;
+    width: 56px;
+    height: 56px;
     object-fit: cover;
     border-radius: 6px;
     cursor: pointer;
@@ -619,14 +639,22 @@
     flex-shrink: 0;
 }
 
-.gallery-thumb:hover { opacity: 0.7; }
-.gallery-thumb.active { opacity: 1; border-color: white; }
+.gallery-thumb:hover {
+    opacity: 0.7;
+}
+
+.gallery-thumb.active {
+    opacity: 1;
+    border-color: white;
+}
 
 /* ── Barre fixe bas : ‹ [counter] ✕ [spacer] › ── */
 .gallery-bottom-bar {
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 100%);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, transparent 100%);
     padding: 1.5rem 2rem calc(env(safe-area-inset-bottom, 0px) + 1rem);
     display: flex;
     align-items: center;
@@ -638,68 +666,74 @@
 .gallery-bottom-bar .gallery-nav {
     position: static;
     transform: none;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white;
-    width: 52px; height: 52px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
     transition: background 0.2s, transform 0.15s;
     flex-shrink: 0;
 }
 
 .gallery-bottom-bar .gallery-nav:active {
-    background: rgba(255,255,255,0.28);
+    background: rgba(255, 255, 255, 0.28);
     transform: scale(0.93);
 }
 
 .gallery-close {
-    background: rgba(255,255,255,0.18);
+    background: rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     color: white;
-    border: 1px solid rgba(255,255,255,0.25);
-    width: 56px; height: 56px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.3rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     transition: background 0.2s, transform 0.15s;
     flex-shrink: 0;
 }
 
-.gallery-close:hover { background: rgba(255,255,255,0.28); }
+.gallery-close:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
 .gallery-close:active {
-    background: rgba(255,255,255,0.35);
+    background: rgba(255, 255, 255, 0.35);
     transform: scale(0.93);
 }
 
 .gallery-bottom-bar .gallery-counter {
     flex: 1;
     text-align: center;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 0.9rem;
     font-weight: 500;
 }
 
 /* ── Mobile : cache flèches desktop, garde bottom-bar ── */
 @media (max-width: 768px) {
-    .gallery-image-container > .gallery-nav {
+    .gallery-image-container>.gallery-nav {
         display: none;
     }
 
     .gallery-thumb {
-        width: 44px; height: 44px;
+        width: 44px;
+        height: 44px;
     }
 }
 
@@ -960,7 +994,7 @@
     .tabs-container {
         overflow-x: auto;
     }
-  
+
 }
 
 /* ========== BARRE DE RECHERCHE ========== */
@@ -2840,21 +2874,22 @@
 .kpi-card.kpi-alert {
     animation: kpiPulse 2s ease-in-out infinite;
 }
+
 /* ── Alerte heures manquantes ── */
 .alerte-heures-widget {
-    background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,247,235,0.9) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 247, 235, 0.9) 100%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(251, 146, 60, 0.3);
     border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(251, 146, 60, 0.10), 0 1px 4px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 24px rgba(251, 146, 60, 0.10), 0 1px 4px rgba(0, 0, 0, 0.04);
     margin-bottom: 20px;
     overflow: hidden;
     transition: box-shadow 0.2s ease;
 }
 
 .alerte-heures-widget:hover {
-    box-shadow: 0 8px 32px rgba(251, 146, 60, 0.18), 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 32px rgba(251, 146, 60, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .alerte-heures-header {
@@ -2876,7 +2911,7 @@
     color: #fff;
     font-size: 1rem;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(249,115,22,0.35);
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
 }
 
 .alerte-heures-titles {
@@ -2907,7 +2942,7 @@
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.01em;
-    box-shadow: 0 2px 6px rgba(249,115,22,0.3);
+    box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3);
 }
 
 .alerte-heures-list {
@@ -2953,7 +2988,7 @@
     font-weight: 700;
     font-size: 0.85rem;
     flex-shrink: 0;
-    border: 1.5px solid rgba(249,115,22,0.2);
+    border: 1.5px solid rgba(249, 115, 22, 0.2);
 }
 
 .alerte-emp-info {
@@ -3438,6 +3473,7 @@
         padding: 0.75rem;
     }
 }
+
 .btn-show-more {
     display: none;
     background: var(--primary-light, #e8f5e9);
@@ -3460,4 +3496,126 @@
     background: var(--primary, #2e7d32);
     color: white;
     transform: scale(1.04);
+}
+
+/* ── Sélection multiple feuilles ── */
+.bulk-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(220, 53, 69, 0.08);
+    border: 1px solid rgba(220, 53, 69, 0.25);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.bulk-actions-bar #bulkCount {
+    flex: 1;
+    font-weight: 600;
+}
+
+.selectable-item {
+    transition: background 0.15s;
+}
+
+.selectable-item:has(.feuille-checkbox:checked) {
+    background: rgba(220, 53, 69, 0.06);
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+.select-checkbox {
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+}
+
+.select-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--danger, #dc3545);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.82rem;
+}
+
+/* ── Mode sélection multiple ── */
+.bulk-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.bulk-actions-bar #bulkCount {
+    flex: 1;
+    font-weight: 600;
+}
+
+.selectable-item {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.selectable-item:has(.feuille-checkbox:checked) {
+    background: rgba(220, 53, 69, 0.07);
+    border-bottom-color: rgba(220, 53, 69, 0.2);
+}
+
+.selectable-item:hover {
+    background: var(--surface-alt);
+}
+
+.select-checkbox {
+    display: flex;
+    align-items: center;
+    padding-right: 4px;
+    flex-shrink: 0;
+}
+
+.select-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--danger, #dc3545);
+    pointer-events: none;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.82rem;
+}
+
+.btn-warning {
+    background: var(--warning, #ffc107);
+    color: #000;
+}
+
+#btnDeleteSelection {
+    width: auto !important;
+    padding: 1rem !important;
+}
+
+#btnModeSelection {
+    background: var(--warning, #ffc107) !important;
+}
+
+.btn-imgbb {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+
+}
+#cancelBtn {
+    background: var(--warning, #ffc107) !important;
+
 }
