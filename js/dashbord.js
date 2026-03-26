@@ -3310,7 +3310,7 @@ async function openChiffrageModal(devisId) {
     const modalHTML = `
         <div id="chiffrageModal" class="chiffrage-modal show">
             <div class="chiffrage-modal-content">
-                
+
                 <div class="chiffrage-modal-header ${isEdit ? 'chiffrage-modal-header--edit' : ''}">
                     <div class="chiffrage-modal-title">
                         <i class="fas fa-${isEdit ? 'pen' : 'calculator'}"></i>
@@ -3340,6 +3340,51 @@ async function openChiffrageModal(devisId) {
                             ${generateChiffrageRows(devis)}
                         </tbody>
                     </table>
+
+                    <div class="custom-lines-section">
+                        <div class="custom-lines-header">
+                            <span class="custom-lines-title">
+                                <i class="fas fa-plus-circle"></i> Prestations supplémentaires
+                            </span>
+                            <button class="btn-add-custom" type="button" onclick="addCustomLine()">
+                                <i class="fas fa-plus"></i> Ajouter une ligne
+                            </button>
+                        </div>
+                        <div id="custom-lines-container">
+                            ${(devis.lignesPersonnalisees || []).map(l => `
+                            <div class="custom-line-row">
+                                <input type="text"
+                                       class="custom-input custom-name-input"
+                                       placeholder="Désignation"
+                                       value="${escapeHtml(l.designation || '')}"
+                                       oninput="calculerTotalDevis()" />
+                                <input type="number"
+                                       class="custom-input custom-qty-input"
+                                       placeholder="Qté"
+                                       min="0"
+                                       value="${l.quantite || ''}"
+                                       oninput="calculerTotalDevis()" />
+                                <input type="number"
+                                       class="custom-input custom-time-input"
+                                       placeholder="Temps (min)"
+                                       min="0"
+                                       value="${l.tempsMn || ''}"
+                                       oninput="calculerTotalDevis()" />
+                                <input type="number"
+                                       class="custom-input custom-taux-input"
+                                       placeholder="Taux (€/h)"
+                                       min="0"
+                                       value="${l.tauxHoraire || ''}"
+                                       oninput="calculerTotalDevis()" />
+                                <span class="custom-line-total">
+                                    <span class="custom-total-val">${l.totalLigne > 0 ? l.totalLigne.toFixed(2) : '—'}</span>€
+                                </span>
+                                <button class="btn-remove-custom" type="button" onclick="removeCustomLine(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>`).join('')}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="chiffrage-modal-footer">
@@ -3368,12 +3413,58 @@ async function openChiffrageModal(devisId) {
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     calculerTotalDevis();
 }
+window.openChiffrageModal = openChiffrageModal;
+function addCustomLine() {
+    const container = document.getElementById('custom-lines-container');
+    const div = document.createElement('div');
+    div.className = 'custom-line-row';
+    div.innerHTML = `
+        <input type="text"
+               class="custom-input custom-name-input"
+               placeholder="Désignation"
+               oninput="calculerTotalDevis()" />
+        <input type="number"
+               class="custom-input custom-qty-input"
+               placeholder="Qté"
+               min="0"
+               oninput="calculerTotalDevis()" />
+        <input type="number"
+               class="custom-input custom-time-input"
+               placeholder="Temps (min)"
+               min="0"
+               oninput="calculerTotalDevis()" />
+        <input type="number"
+               class="custom-input custom-taux-input"
+               placeholder="Taux (€/h)"
+               min="0"
+               oninput="calculerTotalDevis()" />
+        <span class="custom-line-total">
+            <span class="custom-total-val">—</span>€
+        </span>
+        <button class="btn-remove-custom" type="button" onclick="removeCustomLine(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+    calculerTotalDevis();
+}
+window.addCustomLine = addCustomLine;
+
+window.saveChiffrage = saveChiffrage;
+window.openChiffrageModal = openChiffrageModal;
+
+function removeCustomLine(btn) {
+    btn.closest('.custom-line-row')?.remove();
+    calculerTotalDevis();
+}
+window.removeCustomLine = removeCustomLine;
 function generateChiffrageRows(devis) {
     const items = [];
 
@@ -3570,8 +3661,9 @@ function formatHeuresDecimales(heures) {
 function calculerTotalDevis() {
     let grandTotal = 0;
     let grandTempsMn = 0;
-    const rows = document.querySelectorAll('#chiffrageBody tr');
 
+    // Lignes standard
+    const rows = document.querySelectorAll('#chiffrageBody tr');
     rows.forEach(row => {
         const nb = parseFloat(row.querySelector('.calc-nb')?.value) || 0;
         const tempsMn = parseFloat(row.querySelector('.calc-temps')?.value) || 0;
@@ -3588,8 +3680,25 @@ function calculerTotalDevis() {
         grandTempsMn += totalMinutes;
     });
 
-    const grandTotalTTC = grandTotal * 1.2;
+    // Lignes personnalisées
+    const customRows = document.querySelectorAll('#custom-lines-container .custom-line-row');
+    customRows.forEach(row => {
+        const qty = parseFloat(row.querySelector('.custom-qty-input')?.value) || 0;
+        const tempsMn = parseFloat(row.querySelector('.custom-time-input')?.value) || 0;
+        const taux = parseFloat(row.querySelector('.custom-taux-input')?.value) || 0;
 
+        const totalMinutes = qty * tempsMn;
+        const totalHeures = totalMinutes / 60;
+        const totalLigne = totalHeures * taux;
+
+        const displayTotal = row.querySelector('.custom-total-val');
+        if (displayTotal) displayTotal.textContent = totalLigne > 0 ? totalLigne.toFixed(2) : '—';
+
+        grandTotal += totalLigne;
+        grandTempsMn += totalMinutes;
+    });
+
+    const grandTotalTTC = grandTotal * 1.2;
     const heures = Math.floor(grandTempsMn / 60);
     const minutes = Math.round(grandTempsMn % 60);
     const tempsFormate = `${heures}h${minutes.toString().padStart(2, '0')}`;
@@ -3598,10 +3707,7 @@ function calculerTotalDevis() {
     if (document.getElementById('grandTotalTTC')) document.getElementById('grandTotalTTC').textContent = grandTotalTTC.toFixed(2);
     if (document.getElementById('grandTemps')) document.getElementById('grandTemps').textContent = (grandTempsMn / 60).toFixed(2);
     if (document.getElementById('grandTempsMn')) document.getElementById('grandTempsMn').textContent = grandTempsMn;
-
-    if (document.getElementById('tempsHeures')) {
-        document.getElementById('tempsHeures').textContent = tempsFormate;
-    }
+    if (document.getElementById('tempsHeures')) document.getElementById('tempsHeures').textContent = tempsFormate;
 }
 async function saveChiffrage(devisId) {
     const totalHT = parseFloat(document.getElementById('grandTotal').textContent);
@@ -3612,9 +3718,9 @@ async function saveChiffrage(devisId) {
     const existingDevis = allData.devis.find(d => d.id === devisId);
     const isEdit = existingDevis && existingDevis.status === 'chiffre';
 
+    // Lignes standard
     const lignesChiffrage = [];
     const rows = document.querySelectorAll('#chiffrageBody tr');
-
     rows.forEach(row => {
         const label = row.querySelector('.chiffrage-td-label')?.textContent;
         const nb = parseFloat(row.querySelector('.calc-nb')?.value) || 0;
@@ -3625,7 +3731,6 @@ async function saveChiffrage(devisId) {
             const totalMinutes = nb * tempsMn;
             const totalHeures = totalMinutes / 60;
             const totalLigne = totalHeures * taux;
-
             lignesChiffrage.push({
                 designation: label,
                 quantite: nb,
@@ -3636,10 +3741,34 @@ async function saveChiffrage(devisId) {
         }
     });
 
+    // Lignes personnalisées
+    const lignesPersonnalisees = [];
+    const customRows = document.querySelectorAll('#custom-lines-container .custom-line-row');
+    customRows.forEach(row => {
+        const designation = row.querySelector('.custom-name-input')?.value?.trim();
+        const qty = parseFloat(row.querySelector('.custom-qty-input')?.value) || 0;
+        const tempsMn = parseFloat(row.querySelector('.custom-time-input')?.value) || 0;
+        const taux = parseFloat(row.querySelector('.custom-taux-input')?.value) || 0;
+
+        if (designation || qty > 0 || tempsMn > 0) {
+            const totalMinutes = qty * tempsMn;
+            const totalHeures = totalMinutes / 60;
+            const totalLigne = totalHeures * taux;
+            lignesPersonnalisees.push({
+                designation: designation || 'Prestation',
+                quantite: qty,
+                tempsMn: tempsMn,
+                tauxHoraire: taux,
+                totalLigne: totalLigne
+            });
+        }
+    });
+
     try {
         const devisRef = doc(db, "devis", devisId);
         await updateDoc(devisRef, {
             lignesChiffrage: lignesChiffrage,
+            lignesPersonnalisees: lignesPersonnalisees,
             totalPrixHT: totalHT,
             totalPrixTTC: totalTTC,
             totalTemps: tempsTotal,
@@ -3649,9 +3778,7 @@ async function saveChiffrage(devisId) {
         });
 
         document.getElementById('chiffrageModal').remove();
-
         showNotification('Chiffrage enregistré avec succès !', 'success');
-
         await loadDevis();
 
     } catch (error) {
@@ -3659,6 +3786,7 @@ async function saveChiffrage(devisId) {
         showNotification('Erreur lors de la sauvegarde : ' + error.message, 'error');
     }
 }
+window.saveChiffrage = saveChiffrage;
 
 function showNotification(message, type = 'success') {
     const existingNotif = document.querySelector('.dashboard-notification');

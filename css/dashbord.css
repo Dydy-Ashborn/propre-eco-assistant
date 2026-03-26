@@ -3619,3 +3619,113 @@
     background: var(--warning, #ffc107) !important;
 
 }
+.custom-lines-section {
+    margin-top: 16px;
+    border-top: 1px dashed var(--border-color, #e0e0e0);
+    padding-top: 12px;
+}
+
+.custom-lines-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.custom-lines-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.custom-lines-title i {
+    color: var(--primary-color, #4CAF50);
+}
+
+.btn-add-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--primary-color, #4CAF50);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-add-custom:hover {
+    background: var(--primary-dark, #388E3C);
+    transform: translateY(-1px);
+}
+.custom-line-row {
+    display: grid;
+    grid-template-columns: 2fr 60px 90px 90px 70px 36px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.custom-input {
+    padding: 6px 10px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: var(--input-bg, #fafafa);
+    color: var(--text-primary, #333);
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.custom-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #4CAF50);
+}
+
+.custom-line-total {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: right;
+    color: var(--text-primary, #333);
+    white-space: nowrap;
+}
+
+.btn-remove-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: #ffebee;
+    color: #e53935;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+}
+
+.btn-remove-custom:hover {
+    background: #e53935;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+    .custom-line-row {
+        grid-template-columns: 1fr 70px 70px 60px 32px;
+        gap: 5px;
+    }
+
+    .custom-input {
+        padding: 5px 7px;
+        font-size: 0.78rem;
+    }
+}
