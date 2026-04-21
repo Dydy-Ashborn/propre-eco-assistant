@@ -259,10 +259,10 @@ async function handleSubmit(e) {
         procedures: document.getElementById('coproProcedures').value.trim()
     };
 
-    if (!data.nom || !data.adresse || !data.code) {
-        alert('Veuillez remplir tous les champs obligatoires');
-        return;
-    }
+    if (!data.nom || !data.adresse) {
+    alert('Le nom et l\'adresse sont obligatoires');
+    return;
+}
 
     try {
         if (currentCoproId) {
@@ -300,24 +300,7 @@ window.confirmDeleteCopro = async function(id) {
     }
 };
 
-async function confirmDeleteCopro(id) {
-    try {
-        await deleteCopropriete(id);
-        document.querySelector('.delete-confirm-modal').remove();
-        
-        const index = allCopros.findIndex(c => c.id === id);
-        if (index > -1) {
-            allCopros.splice(index, 1);
-        }
-        
-        applyFilters();
-        
-        showNotification('Copropriété supprimée', 'success');
-    } catch (error) {
-        console.error('Erreur suppression:', error);
-        showNotification('Erreur lors de la suppression', 'error');
-    }
-}
+
 
 function showNotification(message, type = 'success') {
     const existingNotif = document.querySelector('.dashboard-notification');

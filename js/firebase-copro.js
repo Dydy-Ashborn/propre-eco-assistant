@@ -1,5 +1,5 @@
 import { db } from './config.js';
-import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { collection, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 export async function getAllCoproprietes() {
     const q = query(collection(db, 'coproprietes'), orderBy('nom'));
@@ -19,14 +19,13 @@ export async function getCoproByCode(code) {
 }
 
 export async function addCopropriete(data) {
-    const docId = data.code || data.nom.replace(/\s+/g, '_').toLowerCase();
     const docData = {
         ...data,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     };
-    await setDoc(doc(db, 'coproprietes', docId), docData);
-    return { id: docId, ...docData };
+    const docRef = await addDoc(collection(db, 'coproprietes'), docData);
+    return { id: docRef.id, ...docData };
 }
 
 export async function updateCopropriete(id, data) {

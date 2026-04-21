@@ -167,25 +167,26 @@ propertySearch.addEventListener('keydown', (e) => {
 // Chargement des données depuis firebase
 
 async function loadProperties() {
-  try {
-    console.log('🔄 Chargement des copropriétés depuis Firebase...');
+    try {
+        console.log('🔄 Chargement des copropriétés depuis Firebase...');
 
-    const copros = await getAllCoproprietes();
-    console.log('📦 Copros reçues:', copros.length, copros);
+        const copros = await getAllCoproprietes();
+        console.log('📦 Copros reçues:', copros.length, copros);
 
-    properties = copros.map(c => ({
-      nom: c.nom || '',
-      adresse: c.adresse || '',
-      code: c.code || '',
-      procedures: c.procedures || ''
-    }));
+        properties = copros.map(c => ({
+            id: c.id,
+            nom: c.nom || '',
+            adresse: c.adresse || '',
+            code: c.code || '',
+            procedures: c.procedures || ''
+        }));
 
-    console.log('✅ Properties mappées:', properties.length);
+        console.log('✅ Properties mappées:', properties.length);
 
-  } catch (error) {
-    console.error('❌ Erreur loadProperties:', error);
-    showMessage('Erreur lors du chargement des copropriétés', 'error');
-  }
+    } catch (error) {
+        console.error('❌ Erreur loadProperties:', error);
+        showMessage('Erreur lors du chargement des copropriétés', 'error');
+    }
 }
 
 
