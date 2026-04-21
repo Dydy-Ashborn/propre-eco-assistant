@@ -75,16 +75,44 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function init() {
+    const DASHBOARD_PASSWORD = '1992';
+    const LS_KEY = 'dashboard_auth';
+
+    if (localStorage.getItem(LS_KEY) !== 'true') {
+        const loginOverlay = document.getElementById('loginOverlay');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+
+        if (loginOverlay) loginOverlay.style.display = 'flex';
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = document.getElementById('passwordInput');
+                if (input && input.value === DASHBOARD_PASSWORD) {
+                    localStorage.setItem(LS_KEY, 'true');
+                    loginOverlay.style.display = 'none';
+                    setupDashboard();
+                } else {
+                    if (loginError) loginError.style.display = 'block';
+                }
+            });
+        }
+        return;
+    }
+
+    setupDashboard();
+}
+
+function setupDashboard() {
     checkAuth();
     setupEventListeners();
     setupSearch();
 
-    // Initialiser les dates de la semaine courante pour l'onglet Heures
     const today = new Date();
     const currentWeek = getWeekNumber(today);
     const weekString = `${today.getFullYear()}-W${currentWeek.toString().padStart(2, '0')}`;
 
-    // Définir les valeurs par défaut
     const weekStartInput = document.getElementById('filterWeekStart');
     const weekEndInput = document.getElementById('filterWeekEnd');
     if (weekStartInput) weekStartInput.value = weekString;

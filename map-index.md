@@ -11,3 +11,8 @@
 - Saisie : `index.html`, `Feuilles.html`, `signaler.html`, `Specifique.html`, `pointeuse.html`.
 - Admin : `dashbord.html`, `devis.html`, `voir.html`, `heures.html`.
 - PWA : `sw-update.js` — À inclure avant `</body>` dans tous les HTML.
+
+## 🎨 CSS NOTES
+- `base.css` → `body` : `overflow-x: hidden` (fix scroll horizontal mobile).
+- `devis.css` → `.form-row` : `minmax(min(250px, 100%), 1fr)` (fix débordement grille).
+- `responsive.css` → Copro mobile : grille 2 col `minmax(0, 1fr)` + counter-btn réduits pour `#viewCoproUnique`, `#viewCoproMultiple`, `#viewCoproSimilaire`.

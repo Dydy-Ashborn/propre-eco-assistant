@@ -321,3 +321,63 @@
         font-size: 0.8rem;
     }
 }
+/* ── Copro : layout mobile ──────────────────────────── */
+@media (max-width: 768px) {
+    #viewCoproUnique .form-row,
+    #viewCoproMultiple .form-row,
+    #viewCoproSimilaire .form-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    #viewCoproUnique .form-row .form-group label,
+    #viewCoproMultiple .form-row .form-group label,
+    #viewCoproSimilaire .form-row .form-group label {
+        font-size: 0.78rem;
+        margin-bottom: 0.3rem;
+    }
+
+    #viewCoproUnique .counter-btn,
+    #viewCoproMultiple .counter-btn,
+    #viewCoproSimilaire .counter-btn {
+        width: 34px !important;
+        height: 44px !important;
+        font-size: 20px !important;
+        flex-shrink: 0;
+    }
+
+    #viewCoproUnique .input-counter,
+    #viewCoproMultiple .input-counter,
+    #viewCoproSimilaire .input-counter {
+        gap: 4px;
+    }
+
+    #viewCoproUnique .input-counter input[type="number"],
+    #viewCoproMultiple .input-counter input[type="number"],
+    #viewCoproSimilaire .input-counter input[type="number"] {
+        font-size: 14px !important;
+        min-width: 0;
+        width: 100%;
+        padding: 0.5rem 0;
+    }
+
+    #viewCoproUnique .conso-cards,
+    #viewCoproMultiple .conso-cards,
+    #viewCoproSimilaire .conso-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 360px) {
+    #viewCoproUnique .form-row,
+    #viewCoproMultiple .form-row,
+    #viewCoproSimilaire .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    #viewCoproUnique .conso-cards,
+    #viewCoproMultiple .conso-cards,
+    #viewCoproSimilaire .conso-cards {
+        grid-template-columns: 1fr !important;
+    }
+}
