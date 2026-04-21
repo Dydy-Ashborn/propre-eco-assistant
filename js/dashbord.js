@@ -75,35 +75,33 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function init() {
-    const DASHBOARD_PASSWORD = '1992';
-    const LS_KEY = 'dashboard_auth';
+    const loginModal = document.getElementById('loginModal');
+    const dashboardContent = document.getElementById('dashboardContent');
 
-    if (localStorage.getItem(LS_KEY) !== 'true') {
-        const loginOverlay = document.getElementById('loginOverlay');
-        const loginForm = document.getElementById('loginForm');
-        const loginError = document.getElementById('loginError');
-
-        if (loginOverlay) loginOverlay.style.display = 'flex';
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const input = document.getElementById('passwordInput');
-                if (input && input.value === DASHBOARD_PASSWORD) {
-                    localStorage.setItem(LS_KEY, 'true');
-                    loginOverlay.style.display = 'none';
-                    setupDashboard();
-                } else {
-                    if (loginError) loginError.style.display = 'block';
-                }
-            });
-        }
+    if (sessionStorage.getItem('dashboard_auth') === 'true') {
+        loginModal.style.display = 'none';
+        dashboardContent.style.display = 'block';
+        setupDashboard();
         return;
     }
 
-    setupDashboard();
-}
+    loginModal.style.display = 'flex';
+    dashboardContent.style.display = 'none';
 
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('passwordInput');
+        if (input.value === PASSWORD) {
+            sessionStorage.setItem('dashboard_auth', 'true');
+            loginModal.style.display = 'none';
+            dashboardContent.style.display = 'block';
+            setupDashboard();
+        } else {
+            const err = document.getElementById('loginError');
+            if (err) err.style.display = 'flex';
+        }
+    });
+}
 function setupDashboard() {
     checkAuth();
     setupEventListeners();
@@ -168,7 +166,6 @@ function handleLogout() {
 
 // ========== EVENT LISTENERS ==========
 function setupEventListeners() {
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
     document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
 
     document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
