@@ -58,11 +58,13 @@
                 <span class="menu-section-title">Navigation</span>
                 <ul class="sidebar-nav">
                     <li><a href="../index.html"><i class="fas fa-home"></i><span>Accueil</span></a></li>
-                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i><span>Signaler</span></a></li>
+                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i><span>Signaler</span></a>
+                    </li>
                     <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i><span>Feuilles</span></a></li>
                     <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i><span>Specifique</span></a></li>
                     <li><a href="pointeuse.html"><i class="fas fa-clock"></i><span>Pointeuse</span></a></li>
-                    <li class="active"><a href="devis.html"><i class="fas fa-file-invoice"></i><span>Devis</span></a></li>
+                    <li class="active"><a href="devis.html"><i class="fas fa-file-invoice"></i><span>Devis</span></a>
+                    </li>
                     <li><a href="dashbord.html"><i class="fas fa-columns"></i><span>Tableau de bord</span></a></li>
                 </ul>
             </div>
@@ -124,7 +126,8 @@
         <!-- ── Hub Copro ────────────────────────────────────── -->
         <section id="viewCoproHub" class="devis-hub" style="display:none;">
             <div class="hub-header">
-                <button class="hub-back" onclick="devisNavigate('hub')"><i class="fas fa-arrow-left"></i> Retour</button>
+                <button class="hub-back" onclick="devisNavigate('hub')"><i class="fas fa-arrow-left"></i>
+                    Retour</button>
                 <h1><i class="fas fa-building"></i> Devis Copro</h1>
                 <p>Sélectionnez le type de devis</p>
             </div>
@@ -150,7 +153,8 @@
         <!-- ── Fin de chantier ──────────────────────────────── -->
         <section id="viewFinChantier" style="display:none;">
             <div class="hub-header">
-                <button class="hub-back" onclick="devisNavigate('hub')"><i class="fas fa-arrow-left"></i> Retour</button>
+                <button class="hub-back" onclick="devisNavigate('hub')"><i class="fas fa-arrow-left"></i>
+                    Retour</button>
                 <h1><i class="fas fa-home"></i> Fin de chantier</h1>
             </div>
             <form id="devisForm" class="devis-form">
@@ -190,25 +194,31 @@
                         <div class="form-group">
                             <label for="vitresStandard">Vitres standard</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="vitresStandard" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="vitresStandard"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="vitresStandard" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="vitresStandard" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="vitresStandard"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="baiesVitrees">Baies vitrées</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="baiesVitrees" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="baiesVitrees"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="baiesVitrees" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="baiesVitrees" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="baiesVitrees"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="velux">Vélux</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="velux" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="velux"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="velux" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="velux" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="velux"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -216,28 +226,37 @@
                         <div class="form-group">
                             <label for="portesVitrees">Portes vitrées</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="portesVitrees" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="portesVitrees"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="portesVitrees" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="portesVitrees" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="portesVitrees"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="vitresHautes">Vitres hautes</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="vitresHautes" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="vitresHautes"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="vitresHautes" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="vitresHautes" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="vitresHautes"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
                     <div class="grattage-options">
                         <h4><i class="fas fa-exclamation-triangle"></i> Grattage nécessaire pour :</h4>
                         <div class="checkbox-grid">
-                            <label class="grattage-option"><input type="checkbox" id="grattageStandard"><span>Vitres standard</span></label>
-                            <label class="grattage-option"><input type="checkbox" id="grattageBaies"><span>Baies vitrées</span></label>
-                            <label class="grattage-option"><input type="checkbox" id="grattageVelux"><span>Vélux</span></label>
-                            <label class="grattage-option"><input type="checkbox" id="grattageHautes"><span>Vitres hautes</span></label>
-                            <label class="grattage-option"><input type="checkbox" id="grattagePortes"><span>Portes vitrées</span></label>
+                            <label class="grattage-option"><input type="checkbox" id="grattageStandard"><span>Vitres
+                                    standard</span></label>
+                            <label class="grattage-option"><input type="checkbox" id="grattageBaies"><span>Baies
+                                    vitrées</span></label>
+                            <label class="grattage-option"><input type="checkbox"
+                                    id="grattageVelux"><span>Vélux</span></label>
+                            <label class="grattage-option"><input type="checkbox" id="grattageHautes"><span>Vitres
+                                    hautes</span></label>
+                            <label class="grattage-option"><input type="checkbox" id="grattagePortes"><span>Portes
+                                    vitrées</span></label>
                         </div>
                     </div>
                     <div id="vitresHautesPhotos" class="photo-section" style="display:none;">
@@ -245,7 +264,8 @@
                             <i class="fas fa-camera"></i> Ajouter photos vitres hautes
                             <input type="file" id="photosVitresHautes" accept="image/*" multiple capture="environment">
                         </label>
-                        <p class="photo-hint"><i class="fas fa-info-circle"></i> Vous pouvez ouvrir l'appareil photo plusieurs fois pour ajouter plus de photos</p>
+                        <p class="photo-hint"><i class="fas fa-info-circle"></i> Vous pouvez ouvrir l'appareil photo
+                            plusieurs fois pour ajouter plus de photos</p>
                         <div id="previewVitresHautes" class="photo-preview"></div>
                     </div>
                 </div>
@@ -256,17 +276,21 @@
                         <div class="form-group">
                             <label for="petiteCuisine">Petite cuisine</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="petiteCuisine" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="petiteCuisine"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="petiteCuisine" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="petiteCuisine" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="petiteCuisine"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="grandeCuisine">Grande cuisine</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="grandeCuisine" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="grandeCuisine"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="grandeCuisine" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="grandeCuisine" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="grandeCuisine"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -278,25 +302,31 @@
                         <div class="form-group">
                             <label for="chambresAvecPlacard">Chambres avec placard</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="chambresAvecPlacard" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="chambresAvecPlacard"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="chambresAvecPlacard" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="chambresAvecPlacard" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="chambresAvecPlacard"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="chambresSansPlacard">Chambres sans placard</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="chambresSansPlacard" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="chambresSansPlacard"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="chambresSansPlacard" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="chambresSansPlacard" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="chambresSansPlacard"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dortoir">Dortoir avec placards</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="dortoir" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="dortoir"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="dortoir" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="dortoir" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="dortoir"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -304,25 +334,31 @@
                         <div class="form-group">
                             <label for="mezzanine">Mezzanine</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="mezzanine" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="mezzanine"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="mezzanine" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="mezzanine" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="mezzanine"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dressing">Dressing</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="dressing" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="dressing"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="dressing" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="dressing" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="dressing"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="placardsSeuls">Placards seuls</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="placardsSeuls" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="placardsSeuls"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="placardsSeuls" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="placardsSeuls" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="placardsSeuls"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -334,17 +370,21 @@
                         <div class="form-group">
                             <label for="grandeSdbDouche">Grande SDB avec douche</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="grandeSdbDouche" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="grandeSdbDouche"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="grandeSdbDouche" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="grandeSdbDouche" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="grandeSdbDouche"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="grandeSdbBaignoire">Grande SDB avec baignoire</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="grandeSdbBaignoire" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="grandeSdbBaignoire"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="grandeSdbBaignoire" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="grandeSdbBaignoire" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="grandeSdbBaignoire"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -352,17 +392,21 @@
                         <div class="form-group">
                             <label for="petiteSdbDouche">Petite SDB avec douche</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="petiteSdbDouche" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="petiteSdbDouche"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="petiteSdbDouche" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="petiteSdbDouche" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="petiteSdbDouche"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="petiteSdbBaignoire">Petite SDB avec baignoire</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="petiteSdbBaignoire" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="petiteSdbBaignoire"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="petiteSdbBaignoire" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="petiteSdbBaignoire" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="petiteSdbBaignoire"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -370,17 +414,21 @@
                         <div class="form-group">
                             <label for="wcLaveMain">WC lave-mains</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="wcLaveMain" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="wcLaveMain"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="wcLaveMain" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="wcLaveMain" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="wcLaveMain"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="wcSeul">WC seul</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="wcSeul" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="wcSeul"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="wcSeul" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="wcSeul" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="wcSeul"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -392,25 +440,31 @@
                         <div class="form-group">
                             <label for="sauna">Sauna + douche</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sauna" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sauna"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sauna" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sauna" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sauna"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="buanderie">Buanderie</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="buanderie" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="buanderie"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="buanderie" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="buanderie" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="buanderie"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="localTechnique">Local technique</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="localTechnique" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="localTechnique"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="localTechnique" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="localTechnique" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="localTechnique"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -418,25 +472,31 @@
                         <div class="form-group">
                             <label for="cellier">Cellier</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="cellier" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="cellier"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="cellier" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="cellier" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="cellier"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="bureau">Bureau</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="bureau" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="bureau"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="bureau" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="bureau" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="bureau"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="garage">Garage</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="garage" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="garage"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="garage" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="garage" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="garage"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -444,25 +504,31 @@
                         <div class="form-group">
                             <label for="skiroom">Skiroom</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="skiroom" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="skiroom"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="skiroom" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="skiroom" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="skiroom"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="salleVideo">Salle vidéo</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="salleVideo" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="salleVideo"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="salleVideo" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="salleVideo" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="salleVideo"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="chaufferie">Chaufferie</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="chaufferie" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="chaufferie"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="chaufferie" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="chaufferie" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="chaufferie"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -470,17 +536,21 @@
                         <div class="form-group">
                             <label for="escalier">Escalier</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="escalier" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="escalier"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="escalier" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="escalier" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="escalier"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="ascenseur">Ascenseur</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="ascenseur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="ascenseur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="ascenseur" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="ascenseur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="ascenseur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -488,11 +558,13 @@
                         <label><input type="checkbox" id="tapisEntree"><span>Tapis d'entrée</span></label>
                         <label><input type="checkbox" id="aspiVmc"><span>Aspi trappe VMC</span></label>
                         <label><input type="checkbox" id="rambarde"><span>Rambarde</span></label>
-                        <label><input type="checkbox" id="aspiPoutraison"><span>Aspiration poutraison + mur</span></label>
+                        <label><input type="checkbox" id="aspiPoutraison"><span>Aspiration poutraison +
+                                mur</span></label>
                     </div>
                     <div class="form-group">
                         <label for="autresAnnexes">Autres pièces / équipements</label>
-                        <input type="text" id="autresAnnexes" placeholder="Ex: Cave, Lingerie... (séparés par des virgules)">
+                        <input type="text" id="autresAnnexes"
+                            placeholder="Ex: Cave, Lingerie... (séparés par des virgules)">
                     </div>
                 </div>
 
@@ -502,25 +574,31 @@
                         <div class="form-group">
                             <label for="balcon">Balcon</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="balcon" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="balcon"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="balcon" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="balcon" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="balcon"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="terrasse">Terrasse</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="terrasse" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="terrasse"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="terrasse" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="terrasse" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="terrasse"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="piscine">Piscine</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="piscine" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="piscine"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="piscine" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="piscine" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="piscine"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -545,7 +623,8 @@
                     <div class="photo-group">
                         <label class="photo-label">
                             <i class="fas fa-images"></i> Photos supplémentaires
-                            <input type="file" id="photosSupplementaires" accept="image/*" multiple capture="environment">
+                            <input type="file" id="photosSupplementaires" accept="image/*" multiple
+                                capture="environment">
                         </label>
                         <div id="previewSupplementaires" class="photo-preview"></div>
                     </div>
@@ -556,14 +635,17 @@
                     <div class="form-group">
                         <label for="trajet">Temps de trajet (minutes)</label>
                         <div class="input-counter">
-                            <button type="button" class="counter-btn" data-input="trajet" data-action="decrease">-</button>
+                            <button type="button" class="counter-btn" data-input="trajet"
+                                data-action="decrease">-</button>
                             <input type="number" id="trajet" min="0" value="0" step="5">
-                            <button type="button" class="counter-btn" data-input="trajet" data-action="increase">+</button>
+                            <button type="button" class="counter-btn" data-input="trajet"
+                                data-action="increase">+</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="remarques">Informations supplémentaires</label>
-                        <textarea id="remarques" rows="4" placeholder="État général, particularités, accès..."></textarea>
+                        <textarea id="remarques" rows="4"
+                            placeholder="État général, particularités, accès..."></textarea>
                     </div>
                 </div>
 
@@ -582,7 +664,8 @@
         <!-- ── Copro Unique ──────────────────────────────────── -->
         <section id="viewCoproUnique" style="display:none;">
             <div class="hub-header">
-                <button class="hub-back" onclick="devisNavigate('copro-hub')"><i class="fas fa-arrow-left"></i> Retour</button>
+                <button class="hub-back" onclick="devisNavigate('copro-hub')"><i class="fas fa-arrow-left"></i>
+                    Retour</button>
                 <h1><i class="fas fa-cube"></i> Devis Copro</h1>
             </div>
             <form id="devisCoproForm" class="devis-form">
@@ -601,59 +684,103 @@
                         <div class="form-group">
                             <label for="copro-hall">Hall (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-hall" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-hall"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-hall" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="copro-hall" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-hall"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-escaliers">Escaliers / étage (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-escaliers" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-escaliers"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-escaliers" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="copro-escaliers" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-escaliers"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-nbEtages">Nombre d'étages</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-nbEtages" data-action="decrease">-</button>
-                                <input type="number" id="copro-nbEtages" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-nbEtages" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-nbEtages"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="copro-nbEtages" min="0" value="0"> <button type="button"
+                                    class="counter-btn" data-input="copro-nbEtages" data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
+                    <div id="copro-etages-liste" class="etages-liste"></div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="copro-ascenseur">Ascenseur (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-ascenseur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-ascenseur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-ascenseur" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="copro-ascenseur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-ascenseur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-localPoubelle">Local poubelle (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-localPoubelle" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-localPoubelle"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-localPoubelle" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="copro-localPoubelle" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-localPoubelle"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="copro-localVelos">Local vélos (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="copro-localVelos"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="copro-localVelos" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="copro-localVelos"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="copro-accesM1">Accès -1 (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="copro-accesM1"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="copro-accesM1" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="copro-accesM1"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="copro-caves">Caves (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="copro-caves"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="copro-caves" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="copro-caves"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-tauxHoraire">Taux horaire (€/h)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-tauxHoraire" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-tauxHoraire"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-tauxHoraire" min="0" value="37.30" step="0.10">
-                                <button type="button" class="counter-btn" data-input="copro-tauxHoraire" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-tauxHoraire"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-frequence">Passages / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-frequence" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-frequence"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-frequence" min="1" value="4" step="1">
-                                <button type="button" class="counter-btn" data-input="copro-frequence" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-frequence"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -665,14 +792,17 @@
                         <div class="form-group">
                             <label for="copro-garageSurface">Surface totale (m²)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-garageSurface" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-garageSurface"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-garageSurface" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-garageSurface" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-garageSurface"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-garagePrixM2">Prix au m² (€)</label>
-                            <input type="number" id="copro-garagePrixM2" min="0" value="0.41" step="0.01" class="input-prix-unit">
+                            <input type="number" id="copro-garagePrixM2" min="0" value="0.41" step="0.01"
+                                class="input-prix-unit">
                         </div>
                     </div>
                 </div>
@@ -683,21 +813,26 @@
                         <div class="form-group">
                             <label for="copro-moquetteSurface">Surface (m²)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-moquetteSurface" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-moquetteSurface"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-moquetteSurface" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-moquetteSurface" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-moquetteSurface"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-moquettePrixM2">Prix au m² (€)</label>
-                            <input type="number" id="copro-moquettePrixM2" min="0" value="3.62" step="0.01" class="input-prix-unit">
+                            <input type="number" id="copro-moquettePrixM2" min="0" value="3.62" step="0.01"
+                                class="input-prix-unit">
                         </div>
                         <div class="form-group">
                             <label for="copro-frequenceMoquettes">Passages moquettes / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-frequenceMoquettes" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-frequenceMoquettes"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-frequenceMoquettes" min="1" value="1" step="1">
-                                <button type="button" class="counter-btn" data-input="copro-frequenceMoquettes" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-frequenceMoquettes"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -705,17 +840,21 @@
                         <div class="form-group">
                             <label for="copro-moquetteVapeur">Passage vapeur (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-moquetteVapeur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-moquetteVapeur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-moquetteVapeur" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="copro-moquetteVapeur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-moquetteVapeur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="copro-moquetteShampoing">Shampoing (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-moquetteShampoing" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-moquetteShampoing"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-moquetteShampoing" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="copro-moquetteShampoing" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-moquetteShampoing"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -725,63 +864,63 @@
                     <h2><i class="fas fa-box"></i> Consommables</h2>
                     <div class="conso-cards">
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-trash"></i> Poubelle</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-trash"></i>
+                                    Poubelle</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-poubelles" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-poubelles"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-poubelles" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-poubelles" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-poubelles"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row">
-                                <span>Prix unitaire</span>
-                                <div class="conso-pu-input-wrap">
-                                    <input type="number" id="copro-poubelles-pu" min="0" value="8.95" step="0.05">
-                                    <span>€/u</span>
-                                </div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="copro-poubelles-pu" min="0"
+                                        value="8.95" step="0.05"><span>€/u</span></div>
                             </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-pump-soap"></i> Savon distributeur</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-pump-soap"></i> Savon distributeur</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-savon" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-savon"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-savon" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-savon" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-savon"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row">
-                                <span>Prix unitaire</span>
-                                <div class="conso-pu-input-wrap">
-                                    <input type="number" id="copro-savon-pu" min="0" value="40.00" step="0.50">
-                                    <span>€/u</span>
-                                </div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="copro-savon-pu" min="0"
+                                        value="40.00" step="0.50"><span>€/u</span></div>
                             </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-hands-wash"></i> Essuie-mains</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-hands-wash"></i> Essuie-mains</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-essuieMain" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-essuieMain"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-essuieMain" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-essuieMain" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-essuieMain"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row">
-                                <span>Prix unitaire</span>
-                                <div class="conso-pu-input-wrap">
-                                    <input type="number" id="copro-essuieMain-pu" min="0" value="11.00" step="0.50">
-                                    <span>€/u</span>
-                                </div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="copro-essuieMain-pu" min="0"
+                                        value="11.00" step="0.50"><span>€/u</span></div>
                             </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-toilet-paper"></i> Papier WC Jumbo</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-toilet-paper"></i> Papier WC Jumbo</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="copro-jumbo" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="copro-jumbo"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="copro-jumbo" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="copro-jumbo" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="copro-jumbo"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row">
-                                <span>Prix unitaire</span>
-                                <div class="conso-pu-input-wrap">
-                                    <input type="number" id="copro-jumbo-pu" min="0" value="4.00" step="0.10">
-                                    <span>€/u</span>
-                                </div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="copro-jumbo-pu" min="0"
+                                        value="4.00" step="0.10"><span>€/u</span></div>
                             </div>
                         </div>
                     </div>
@@ -792,9 +931,11 @@
                     <div class="form-group">
                         <label for="copro-trajet">Temps de trajet (minutes)</label>
                         <div class="input-counter">
-                            <button type="button" class="counter-btn" data-input="copro-trajet" data-action="decrease">-</button>
+                            <button type="button" class="counter-btn" data-input="copro-trajet"
+                                data-action="decrease">-</button>
                             <input type="number" id="copro-trajet" min="0" value="0" step="5">
-                            <button type="button" class="counter-btn" data-input="copro-trajet" data-action="increase">+</button>
+                            <button type="button" class="counter-btn" data-input="copro-trajet"
+                                data-action="increase">+</button>
                         </div>
                     </div>
                 </div>
@@ -803,7 +944,8 @@
                     <h2><i class="fas fa-comment"></i> Remarques</h2>
                     <div class="form-group">
                         <label for="copro-remarques">Informations supplémentaires</label>
-                        <textarea id="copro-remarques" rows="4" placeholder="Fréquence, accès, particularités..."></textarea>
+                        <textarea id="copro-remarques" rows="4"
+                            placeholder="Fréquence, accès, particularités..."></textarea>
                     </div>
                 </div>
 
@@ -861,59 +1003,104 @@
                         <div class="form-group">
                             <label for="multi-hall">Hall (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-hall" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-hall"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-hall" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="multi-hall" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-hall"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-escaliers">Escaliers / étage (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-escaliers" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-escaliers"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-escaliers" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="multi-escaliers" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-escaliers"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-nbEtages">Nombre d'étages</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-nbEtages" data-action="decrease">-</button>
-                                <input type="number" id="multi-nbEtages" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-nbEtages" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-nbEtages"
+                                    data-action="decrease">-</button>
+                        <input type="number" id="multi-nbEtages" min="0" value="0">
+                                <button type="button" class="counter-btn" data-input="multi-nbEtages"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
+                    <div id="multi-etages-liste" class="etages-liste"></div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="multi-ascenseur">Ascenseur (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-ascenseur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-ascenseur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-ascenseur" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="multi-ascenseur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-ascenseur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-localPoubelle">Local poubelle (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-localPoubelle" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-localPoubelle"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-localPoubelle" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="multi-localPoubelle" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-localPoubelle"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="multi-localVelos">Local vélos (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="multi-localVelos"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="multi-localVelos" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="multi-localVelos"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="multi-accesM1">Accès -1 (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="multi-accesM1"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="multi-accesM1" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="multi-accesM1"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="multi-caves">Caves (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="multi-caves"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="multi-caves" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="multi-caves"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-tauxHoraire">Taux horaire (€/h)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-tauxHoraire" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-tauxHoraire"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-tauxHoraire" min="0" value="37.30" step="0.10">
-                                <button type="button" class="counter-btn" data-input="multi-tauxHoraire" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-tauxHoraire"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-frequence">Passages / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-frequence" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-frequence"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-frequence" min="1" value="4" step="1">
-                                <button type="button" class="counter-btn" data-input="multi-frequence" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-frequence"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -925,14 +1112,17 @@
                         <div class="form-group">
                             <label for="multi-garageSurface">Surface totale (m²)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-garageSurface" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-garageSurface"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-garageSurface" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-garageSurface" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-garageSurface"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-garagePrixM2">Prix au m² (€)</label>
-                            <input type="number" id="multi-garagePrixM2" min="0" value="0.41" step="0.01" class="input-prix-unit">
+                            <input type="number" id="multi-garagePrixM2" min="0" value="0.41" step="0.01"
+                                class="input-prix-unit">
                         </div>
                     </div>
                 </div>
@@ -943,21 +1133,26 @@
                         <div class="form-group">
                             <label for="multi-moquetteSurface">Surface (m²)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-moquetteSurface" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-moquetteSurface"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-moquetteSurface" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-moquetteSurface" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-moquetteSurface"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-moquettePrixM2">Prix au m² (€)</label>
-                            <input type="number" id="multi-moquettePrixM2" min="0" value="3.62" step="0.01" class="input-prix-unit">
+                            <input type="number" id="multi-moquettePrixM2" min="0" value="3.62" step="0.01"
+                                class="input-prix-unit">
                         </div>
                         <div class="form-group">
                             <label for="multi-frequenceMoquettes">Passages moquettes / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-frequenceMoquettes" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-frequenceMoquettes"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-frequenceMoquettes" min="1" value="1" step="1">
-                                <button type="button" class="counter-btn" data-input="multi-frequenceMoquettes" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-frequenceMoquettes"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -965,17 +1160,21 @@
                         <div class="form-group">
                             <label for="multi-moquetteVapeur">Passage vapeur (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-moquetteVapeur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-moquetteVapeur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-moquetteVapeur" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="multi-moquetteVapeur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-moquetteVapeur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="multi-moquetteShampoing">Shampoing (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-moquetteShampoing" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-moquetteShampoing"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-moquetteShampoing" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="multi-moquetteShampoing" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-moquetteShampoing"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -985,40 +1184,64 @@
                     <h2><i class="fas fa-box"></i> Consommables</h2>
                     <div class="conso-cards">
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-trash"></i> Poubelle</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-trash"></i>
+                                    Poubelle</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-poubelles" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-poubelles"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-poubelles" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-poubelles" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-poubelles"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="multi-poubelles-pu" min="0" value="8.95" step="0.05"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="multi-poubelles-pu" min="0"
+                                        value="8.95" step="0.05"><span>€/u</span></div>
+                            </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-pump-soap"></i> Savon distributeur</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-pump-soap"></i> Savon distributeur</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-savon" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-savon"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-savon" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-savon" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-savon"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="multi-savon-pu" min="0" value="40.00" step="0.50"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="multi-savon-pu" min="0"
+                                        value="40.00" step="0.50"><span>€/u</span></div>
+                            </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-hands-wash"></i> Essuie-mains</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-hands-wash"></i> Essuie-mains</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-essuieMain" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-essuieMain"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-essuieMain" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-essuieMain" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-essuieMain"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="multi-essuieMain-pu" min="0" value="11.00" step="0.50"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="multi-essuieMain-pu" min="0"
+                                        value="11.00" step="0.50"><span>€/u</span></div>
+                            </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-toilet-paper"></i> Papier WC Jumbo</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-toilet-paper"></i> Papier WC Jumbo</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="multi-jumbo" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="multi-jumbo"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="multi-jumbo" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="multi-jumbo" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="multi-jumbo"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="multi-jumbo-pu" min="0" value="4.00" step="0.10"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="multi-jumbo-pu" min="0"
+                                        value="4.00" step="0.10"><span>€/u</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1028,9 +1251,11 @@
                     <div class="form-group">
                         <label for="multi-trajet">Temps de trajet (minutes)</label>
                         <div class="input-counter">
-                            <button type="button" class="counter-btn" data-input="multi-trajet" data-action="decrease">-</button>
+                            <button type="button" class="counter-btn" data-input="multi-trajet"
+                                data-action="decrease">-</button>
                             <input type="number" id="multi-trajet" min="0" value="0" step="5">
-                            <button type="button" class="counter-btn" data-input="multi-trajet" data-action="increase">+</button>
+                            <button type="button" class="counter-btn" data-input="multi-trajet"
+                                data-action="increase">+</button>
                         </div>
                     </div>
                 </div>
@@ -1039,7 +1264,8 @@
                     <h2><i class="fas fa-comment"></i> Remarques</h2>
                     <div class="form-group">
                         <label for="multi-remarques">Informations supplémentaires</label>
-                        <textarea id="multi-remarques" rows="3" placeholder="Particularités de ce bâtiment..."></textarea>
+                        <textarea id="multi-remarques" rows="3"
+                            placeholder="Particularités de ce bâtiment..."></textarea>
                     </div>
                 </div>
 
@@ -1058,20 +1284,24 @@
         <!-- ── Copro Similaire ───────────────────────────────── -->
         <section id="viewCoproSimilaire" style="display:none;">
             <div class="hub-header">
-                <button class="hub-back" onclick="devisNavigate('copro-hub')"><i class="fas fa-arrow-left"></i> Retour</button>
+                <button class="hub-back" onclick="devisNavigate('copro-hub')"><i class="fas fa-arrow-left"></i>
+                    Retour</button>
                 <h1><i class="fas fa-clone"></i> Devis Copro — Multiple similaire</h1>
             </div>
             <form id="devisCoproSimilaireForm" class="devis-form">
 
                 <div class="form-section batiments-section">
                     <h2><i class="fas fa-building"></i> Bâtiments</h2>
-                    <p class="section-hint">Tous les bâtiments ont les mêmes prestations. Saisissez leur nom pour les identifier dans le devis.</p>
+                    <p class="section-hint">Tous les bâtiments ont les mêmes prestations. Saisissez leur nom pour les
+                        identifier dans le devis.</p>
                     <div class="form-group">
                         <label>Nombre de bâtiments</label>
                         <div class="input-counter">
-                            <button type="button" id="btn-moins-batiment" class="counter-btn" onclick="modifierNbBatiments(-1)">-</button>
+                            <button type="button" id="btn-moins-batiment" class="counter-btn"
+                                onclick="modifierNbBatiments(-1)">-</button>
                             <input type="number" id="sim-nbBatiments" min="1" value="1" readonly>
-                            <button type="button" id="btn-plus-batiment" class="counter-btn" onclick="modifierNbBatiments(1)">+</button>
+                            <button type="button" id="btn-plus-batiment" class="counter-btn"
+                                onclick="modifierNbBatiments(1)">+</button>
                         </div>
                     </div>
                     <div id="batiments-liste" class="batiments-liste"></div>
@@ -1091,59 +1321,103 @@
                         <div class="form-group">
                             <label for="sim-hall">Hall (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-hall" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-hall"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-hall" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="sim-hall" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-hall"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-escaliers">Escaliers / étage (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-escaliers" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-escaliers"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-escaliers" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="sim-escaliers" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-escaliers"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-nbEtages">Nombre d'étages</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-nbEtages" data-action="decrease">-</button>
-                                <input type="number" id="sim-nbEtages" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-nbEtages" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-nbEtages"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="sim-nbEtages" min="0" value="0"> <button type="button"
+                                    class="counter-btn" data-input="sim-nbEtages" data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
+                    <div id="sim-etages-liste" class="etages-liste"></div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="sim-ascenseur">Ascenseur (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-ascenseur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-ascenseur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-ascenseur" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="sim-ascenseur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-ascenseur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-localPoubelle">Local poubelle (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-localPoubelle" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-localPoubelle"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-localPoubelle" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="sim-localPoubelle" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-localPoubelle"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-localVelos">Local vélos (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="sim-localVelos"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="sim-localVelos" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="sim-localVelos"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-accesM1">Accès -1 (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="sim-accesM1"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="sim-accesM1" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="sim-accesM1"
+                                    data-action="increase">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-caves">Caves (min)</label>
+                            <div class="input-counter">
+                                <button type="button" class="counter-btn" data-input="sim-caves"
+                                    data-action="decrease">-</button>
+                                <input type="number" id="sim-caves" min="0" value="0" step="5">
+                                <button type="button" class="counter-btn" data-input="sim-caves"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-tauxHoraire">Taux horaire (€/h)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-tauxHoraire" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-tauxHoraire"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-tauxHoraire" min="0" value="37.30" step="0.10">
-                                <button type="button" class="counter-btn" data-input="sim-tauxHoraire" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-tauxHoraire"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-frequence">Passages / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-frequence" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-frequence"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-frequence" min="1" value="4" step="1">
-                                <button type="button" class="counter-btn" data-input="sim-frequence" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-frequence"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -1155,14 +1429,17 @@
                         <div class="form-group">
                             <label for="sim-garageSurface">Surface totale (m²)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-garageSurface" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-garageSurface"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-garageSurface" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-garageSurface" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-garageSurface"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-garagePrixM2">Prix au m² (€)</label>
-                            <input type="number" id="sim-garagePrixM2" min="0" value="0.41" step="0.01" class="input-prix-unit">
+                            <input type="number" id="sim-garagePrixM2" min="0" value="0.41" step="0.01"
+                                class="input-prix-unit">
                         </div>
                     </div>
                 </div>
@@ -1173,21 +1450,26 @@
                         <div class="form-group">
                             <label for="sim-moquetteSurface">Surface (m²)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-moquetteSurface" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-moquetteSurface"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-moquetteSurface" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-moquetteSurface" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-moquetteSurface"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-moquettePrixM2">Prix au m² (€)</label>
-                            <input type="number" id="sim-moquettePrixM2" min="0" value="3.62" step="0.01" class="input-prix-unit">
+                            <input type="number" id="sim-moquettePrixM2" min="0" value="3.62" step="0.01"
+                                class="input-prix-unit">
                         </div>
                         <div class="form-group">
                             <label for="sim-frequenceMoquettes">Passages moquettes / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-frequenceMoquettes" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-frequenceMoquettes"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-frequenceMoquettes" min="1" value="1" step="1">
-                                <button type="button" class="counter-btn" data-input="sim-frequenceMoquettes" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-frequenceMoquettes"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -1195,60 +1477,89 @@
                         <div class="form-group">
                             <label for="sim-moquetteVapeur">Passage vapeur (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-moquetteVapeur" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-moquetteVapeur"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-moquetteVapeur" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="sim-moquetteVapeur" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-moquetteVapeur"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="sim-moquetteShampoing">Shampoing (min)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-moquetteShampoing" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-moquetteShampoing"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-moquetteShampoing" min="0" value="0" step="5">
-                                <button type="button" class="counter-btn" data-input="sim-moquetteShampoing" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-moquetteShampoing"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <h2><i class="fas fa-box"></i> Consommables <span class="sim-par-batiment-badge">par bâtiment</span></h2>
+                    <h2><i class="fas fa-box"></i> Consommables <span class="sim-par-batiment-badge">par bâtiment</span>
+                    </h2>
                     <div class="conso-cards">
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-trash"></i> Poubelle</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-trash"></i>
+                                    Poubelle</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-poubelles" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-poubelles"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-poubelles" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-poubelles" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-poubelles"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="sim-poubelles-pu" min="0" value="8.95" step="0.05"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="sim-poubelles-pu" min="0"
+                                        value="8.95" step="0.05"><span>€/u</span></div>
+                            </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-pump-soap"></i> Savon distributeur</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-pump-soap"></i> Savon distributeur</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-savon" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-savon"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-savon" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-savon" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-savon"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="sim-savon-pu" min="0" value="40.00" step="0.50"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="sim-savon-pu" min="0"
+                                        value="40.00" step="0.50"><span>€/u</span></div>
+                            </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-hands-wash"></i> Essuie-mains</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-hands-wash"></i> Essuie-mains</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-essuieMain" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-essuieMain"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-essuieMain" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-essuieMain" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-essuieMain"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="sim-essuieMain-pu" min="0" value="11.00" step="0.50"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="sim-essuieMain-pu" min="0"
+                                        value="11.00" step="0.50"><span>€/u</span></div>
+                            </div>
                         </div>
                         <div class="conso-card">
-                            <div class="conso-card-header"><span class="conso-card-label"><i class="fas fa-toilet-paper"></i> Papier WC Jumbo</span></div>
+                            <div class="conso-card-header"><span class="conso-card-label"><i
+                                        class="fas fa-toilet-paper"></i> Papier WC Jumbo</span></div>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="sim-jumbo" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="sim-jumbo"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="sim-jumbo" min="0" value="0">
-                                <button type="button" class="counter-btn" data-input="sim-jumbo" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="sim-jumbo"
+                                    data-action="increase">+</button>
                             </div>
-                            <div class="conso-pu-row"><span>Prix unitaire</span><div class="conso-pu-input-wrap"><input type="number" id="sim-jumbo-pu" min="0" value="4.00" step="0.10"><span>€/u</span></div></div>
+                            <div class="conso-pu-row"><span>Prix unitaire</span>
+                                <div class="conso-pu-input-wrap"><input type="number" id="sim-jumbo-pu" min="0"
+                                        value="4.00" step="0.10"><span>€/u</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1258,9 +1569,11 @@
                     <div class="form-group">
                         <label for="sim-trajet">Temps de trajet (minutes)</label>
                         <div class="input-counter">
-                            <button type="button" class="counter-btn" data-input="sim-trajet" data-action="decrease">-</button>
+                            <button type="button" class="counter-btn" data-input="sim-trajet"
+                                data-action="decrease">-</button>
                             <input type="number" id="sim-trajet" min="0" value="0" step="5">
-                            <button type="button" class="counter-btn" data-input="sim-trajet" data-action="increase">+</button>
+                            <button type="button" class="counter-btn" data-input="sim-trajet"
+                                data-action="increase">+</button>
                         </div>
                     </div>
                 </div>
@@ -1269,7 +1582,8 @@
                     <h2><i class="fas fa-comment"></i> Remarques</h2>
                     <div class="form-group">
                         <label for="sim-remarques">Informations supplémentaires</label>
-                        <textarea id="sim-remarques" rows="4" placeholder="Fréquence, accès, particularités..."></textarea>
+                        <textarea id="sim-remarques" rows="4"
+                            placeholder="Fréquence, accès, particularités..."></textarea>
                     </div>
                 </div>
 
@@ -1288,7 +1602,8 @@
         <!-- ── Bureau ────────────────────────────────────────── -->
         <section id="viewBureau" style="display:none;">
             <div class="hub-header">
-                <button class="hub-back" onclick="devisNavigate('hub')"><i class="fas fa-arrow-left"></i> Retour</button>
+                <button class="hub-back" onclick="devisNavigate('hub')"><i class="fas fa-arrow-left"></i>
+                    Retour</button>
                 <h1><i class="fas fa-briefcase"></i> Devis Bureau</h1>
             </div>
             <form id="devisBureauForm" class="devis-form">
@@ -1297,23 +1612,28 @@
                     <h2><i class="fas fa-info-circle"></i> Informations générales</h2>
                     <div class="form-group">
                         <label for="bureau-nomChantier">Nom du client / Adresse *</label>
-                        <input type="text" id="bureau-nomChantier" required placeholder="Ex: Cabinet Dupont - Sallanches">
+                        <input type="text" id="bureau-nomChantier" required
+                            placeholder="Ex: Cabinet Dupont - Sallanches">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="bureau-tauxHoraire">Taux horaire (€/h)</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="bureau-tauxHoraire" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="bureau-tauxHoraire"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="bureau-tauxHoraire" min="0" value="37.30" step="0.10">
-                                <button type="button" class="counter-btn" data-input="bureau-tauxHoraire" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="bureau-tauxHoraire"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="bureau-frequenceMois">Passages / mois</label>
                             <div class="input-counter">
-                                <button type="button" class="counter-btn" data-input="bureau-frequenceMois" data-action="decrease">-</button>
+                                <button type="button" class="counter-btn" data-input="bureau-frequenceMois"
+                                    data-action="decrease">-</button>
                                 <input type="number" id="bureau-frequenceMois" min="1" value="4" step="1">
-                                <button type="button" class="counter-btn" data-input="bureau-frequenceMois" data-action="increase">+</button>
+                                <button type="button" class="counter-btn" data-input="bureau-frequenceMois"
+                                    data-action="increase">+</button>
                             </div>
                         </div>
                     </div>
@@ -1322,37 +1642,108 @@
                 <div class="form-section">
                     <h2><i class="fas fa-desktop"></i> Bureaux et Accueil</h2>
                     <div class="bureau-tache-hint">Temps (min) × Qté × Fréq/mois = heures mensuelles</div>
-
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Aspiration / Lavage sols</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-aspi-mn" data-action="decrease">-</button><input type="number" id="b-accueil-aspi-mn" min="0" value="3" step="1"><button type="button" class="counter-btn" data-input="b-accueil-aspi-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-aspi-qty" data-action="decrease">-</button><input type="number" id="b-accueil-aspi-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-accueil-aspi-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-aspi-freq" data-action="decrease">-</button><input type="number" id="b-accueil-aspi-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-accueil-aspi-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-aspi-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-aspi-mn" min="0" value="3" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-aspi-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-aspi-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-aspi-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-aspi-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-aspi-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-aspi-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-aspi-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Mobilier / Téléphones</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-mobilier-mn" data-action="decrease">-</button><input type="number" id="b-accueil-mobilier-mn" min="0" value="3" step="1"><button type="button" class="counter-btn" data-input="b-accueil-mobilier-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-mobilier-qty" data-action="decrease">-</button><input type="number" id="b-accueil-mobilier-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-accueil-mobilier-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-mobilier-freq" data-action="decrease">-</button><input type="number" id="b-accueil-mobilier-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-accueil-mobilier-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-mobilier-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-mobilier-mn" min="0" value="3" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-mobilier-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-mobilier-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-mobilier-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-mobilier-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-mobilier-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-mobilier-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-mobilier-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Poubelles</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-poubelles-mn" data-action="decrease">-</button><input type="number" id="b-accueil-poubelles-mn" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-accueil-poubelles-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-poubelles-qty" data-action="decrease">-</button><input type="number" id="b-accueil-poubelles-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-accueil-poubelles-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-poubelles-freq" data-action="decrease">-</button><input type="number" id="b-accueil-poubelles-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-accueil-poubelles-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-poubelles-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-poubelles-mn" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-poubelles-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-poubelles-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-poubelles-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-poubelles-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-poubelles-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-poubelles-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-poubelles-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Vitres portes</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-vitres-mn" data-action="decrease">-</button><input type="number" id="b-accueil-vitres-mn" min="0" value="5" step="1"><button type="button" class="counter-btn" data-input="b-accueil-vitres-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-vitres-qty" data-action="decrease">-</button><input type="number" id="b-accueil-vitres-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-accueil-vitres-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-accueil-vitres-freq" data-action="decrease">-</button><input type="number" id="b-accueil-vitres-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-accueil-vitres-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-vitres-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-vitres-mn" min="0" value="5" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-vitres-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-vitres-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-vitres-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-vitres-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-accueil-vitres-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-accueil-vitres-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-accueil-vitres-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1362,25 +1753,79 @@
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Aspiration / Lavage sols</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-aspi-mn" data-action="decrease">-</button><input type="number" id="b-show-aspi-mn" min="0" value="30" step="5"><button type="button" class="counter-btn" data-input="b-show-aspi-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-aspi-qty" data-action="decrease">-</button><input type="number" id="b-show-aspi-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-show-aspi-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-aspi-freq" data-action="decrease">-</button><input type="number" id="b-show-aspi-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-show-aspi-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-aspi-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-show-aspi-mn" min="0" value="30" step="5"><button
+                                        type="button" class="counter-btn" data-input="b-show-aspi-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-aspi-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-show-aspi-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-aspi-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-aspi-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-show-aspi-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-aspi-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Toiles d'araignée</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-toiles-mn" data-action="decrease">-</button><input type="number" id="b-show-toiles-mn" min="0" value="5" step="1"><button type="button" class="counter-btn" data-input="b-show-toiles-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-toiles-qty" data-action="decrease">-</button><input type="number" id="b-show-toiles-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-show-toiles-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-toiles-freq" data-action="decrease">-</button><input type="number" id="b-show-toiles-freq" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-show-toiles-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-toiles-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-show-toiles-mn" min="0" value="5" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-toiles-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-toiles-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-show-toiles-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-toiles-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-toiles-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-show-toiles-freq" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-toiles-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Vitres portes</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-vitres-mn" data-action="decrease">-</button><input type="number" id="b-show-vitres-mn" min="0" value="5" step="1"><button type="button" class="counter-btn" data-input="b-show-vitres-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-vitres-qty" data-action="decrease">-</button><input type="number" id="b-show-vitres-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-show-vitres-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-show-vitres-freq" data-action="decrease">-</button><input type="number" id="b-show-vitres-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-show-vitres-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-vitres-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-show-vitres-mn" min="0" value="5" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-vitres-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-vitres-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-show-vitres-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-vitres-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-show-vitres-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-show-vitres-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-show-vitres-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1390,25 +1835,79 @@
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Sols</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-sols-mn" data-action="decrease">-</button><input type="number" id="b-sanit-sols-mn" min="0" value="5" step="1"><button type="button" class="counter-btn" data-input="b-sanit-sols-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-sols-qty" data-action="decrease">-</button><input type="number" id="b-sanit-sols-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-sanit-sols-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-sols-freq" data-action="decrease">-</button><input type="number" id="b-sanit-sols-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-sanit-sols-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-sols-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-sols-mn" min="0" value="5" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-sols-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-sols-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-sols-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-sols-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-sols-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-sols-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-sols-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">WC</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-wc-mn" data-action="decrease">-</button><input type="number" id="b-sanit-wc-mn" min="0" value="2" step="1"><button type="button" class="counter-btn" data-input="b-sanit-wc-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-wc-qty" data-action="decrease">-</button><input type="number" id="b-sanit-wc-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-sanit-wc-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-wc-freq" data-action="decrease">-</button><input type="number" id="b-sanit-wc-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-sanit-wc-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-wc-mn" data-action="decrease">-</button><input type="number"
+                                        id="b-sanit-wc-mn" min="0" value="2" step="1"><button type="button"
+                                        class="counter-btn" data-input="b-sanit-wc-mn" data-action="increase">+</button>
+                                </div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-wc-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-wc-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-wc-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-wc-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-wc-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-wc-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Lavabos</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-lavabos-mn" data-action="decrease">-</button><input type="number" id="b-sanit-lavabos-mn" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-sanit-lavabos-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-lavabos-qty" data-action="decrease">-</button><input type="number" id="b-sanit-lavabos-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-sanit-lavabos-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-sanit-lavabos-freq" data-action="decrease">-</button><input type="number" id="b-sanit-lavabos-freq" min="0" value="4" step="1"><button type="button" class="counter-btn" data-input="b-sanit-lavabos-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-lavabos-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-lavabos-mn" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-lavabos-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-lavabos-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-lavabos-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-lavabos-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-sanit-lavabos-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-sanit-lavabos-freq" min="0" value="4" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-sanit-lavabos-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1418,25 +1917,79 @@
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Façades showroom Int/Ext</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-facades-mn" data-action="decrease">-</button><input type="number" id="b-vitres-facades-mn" min="0" value="30" step="5"><button type="button" class="counter-btn" data-input="b-vitres-facades-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-facades-qty" data-action="decrease">-</button><input type="number" id="b-vitres-facades-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-vitres-facades-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-facades-freq" data-action="decrease">-</button><input type="number" id="b-vitres-facades-freq" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-vitres-facades-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-facades-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-facades-mn" min="0" value="30" step="5"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-facades-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-facades-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-facades-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-facades-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-facades-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-facades-freq" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-facades-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Porte sectionnelle</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-porte-mn" data-action="decrease">-</button><input type="number" id="b-vitres-porte-mn" min="0" value="15" step="5"><button type="button" class="counter-btn" data-input="b-vitres-porte-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-porte-qty" data-action="decrease">-</button><input type="number" id="b-vitres-porte-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-vitres-porte-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-porte-freq" data-action="decrease">-</button><input type="number" id="b-vitres-porte-freq" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-vitres-porte-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-porte-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-porte-mn" min="0" value="15" step="5"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-porte-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-porte-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-porte-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-porte-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-porte-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-porte-freq" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-porte-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bureau-tache">
                         <span class="bureau-tache-label">Vitres bureaux</span>
                         <div class="bureau-tache-inputs">
-                            <div class="form-group"><label>Temps (min)</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-bureaux-mn" data-action="decrease">-</button><input type="number" id="b-vitres-bureaux-mn" min="0" value="10" step="5"><button type="button" class="counter-btn" data-input="b-vitres-bureaux-mn" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Qté</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-bureaux-qty" data-action="decrease">-</button><input type="number" id="b-vitres-bureaux-qty" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-vitres-bureaux-qty" data-action="increase">+</button></div></div>
-                            <div class="form-group"><label>Fréq/mois</label><div class="input-counter"><button type="button" class="counter-btn" data-input="b-vitres-bureaux-freq" data-action="decrease">-</button><input type="number" id="b-vitres-bureaux-freq" min="0" value="1" step="1"><button type="button" class="counter-btn" data-input="b-vitres-bureaux-freq" data-action="increase">+</button></div></div>
+                            <div class="form-group"><label>Temps (min)</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-bureaux-mn" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-bureaux-mn" min="0" value="10" step="5"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-bureaux-mn"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Qté</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-bureaux-qty" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-bureaux-qty" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-bureaux-qty"
+                                        data-action="increase">+</button></div>
+                            </div>
+                            <div class="form-group"><label>Fréq/mois</label>
+                                <div class="input-counter"><button type="button" class="counter-btn"
+                                        data-input="b-vitres-bureaux-freq" data-action="decrease">-</button><input
+                                        type="number" id="b-vitres-bureaux-freq" min="0" value="1" step="1"><button
+                                        type="button" class="counter-btn" data-input="b-vitres-bureaux-freq"
+                                        data-action="increase">+</button></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1446,9 +1999,11 @@
                     <div class="form-group">
                         <label for="bureau-trajet">Temps de trajet (minutes)</label>
                         <div class="input-counter">
-                            <button type="button" class="counter-btn" data-input="bureau-trajet" data-action="decrease">-</button>
+                            <button type="button" class="counter-btn" data-input="bureau-trajet"
+                                data-action="decrease">-</button>
                             <input type="number" id="bureau-trajet" min="0" value="0" step="5">
-                            <button type="button" class="counter-btn" data-input="bureau-trajet" data-action="increase">+</button>
+                            <button type="button" class="counter-btn" data-input="bureau-trajet"
+                                data-action="increase">+</button>
                         </div>
                     </div>
                 </div>
@@ -1457,7 +2012,8 @@
                     <h2><i class="fas fa-comment"></i> Remarques</h2>
                     <div class="form-group">
                         <label for="bureau-remarques">Informations supplémentaires</label>
-                        <textarea id="bureau-remarques" rows="4" placeholder="Accès, horaires, particularités..."></textarea>
+                        <textarea id="bureau-remarques" rows="4"
+                            placeholder="Accès, horaires, particularités..."></textarea>
                     </div>
                 </div>
 
@@ -1487,7 +2043,9 @@
             </div>
             <h3 class="loading-title">Envoi en cours...</h3>
             <p class="loading-message">Nous téléchargeons vos photos et préparons votre devis</p>
-            <div class="loading-progress"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
         </div>
     </div>
 
@@ -1496,7 +2054,9 @@
             <div class="success-checkmark"><i class="fas fa-check-circle"></i></div>
             <h3 class="success-title">Devis envoyé avec succès !</h3>
             <p class="success-message">Votre devis a été transmis et sauvegardé</p>
-            <div class="success-bar"><div class="success-bar-fill"></div></div>
+            <div class="success-bar">
+                <div class="success-bar-fill"></div>
+            </div>
         </div>
     </div>
 
@@ -1510,4 +2070,5 @@
     <script src="../js/sw-update.js"></script>
 
 </body>
+
 </html>

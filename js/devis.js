@@ -12,7 +12,6 @@ const DEVIS_VIEWS = {
     'copro-multiple': 'viewCoproMultiple',
     'copro-similaire': 'viewCoproSimilaire',
     'bureau': 'viewBureau'
-
 };
 
 // ── Navigation ───────────────────────────────────────
@@ -47,60 +46,72 @@ document.getElementById('devisLoginForm')?.addEventListener('submit', (e) => {
     }
 });
 
-// ── DOMContentLoaded ─────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.counter-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const inputId = this.dataset.input;
-            const action = this.dataset.action;
-            const input = document.getElementById(inputId);
-            if (!input) return;
-            const step = parseFloat(input.step) || 1;
-            const min = parseFloat(input.min) ?? 0;
-            let val = parseFloat(input.value) || 0;
-            if (action === 'increase') {
-                input.value = parseFloat((val + step).toFixed(10));
-            } else if (action === 'decrease' && val > min) {
-                input.value = parseFloat((val - step).toFixed(10));
-            }
-            input.dispatchEvent(new Event('change'));
-        });
-    });
-
-    document.querySelectorAll('#viewCoproUnique input[type="number"]').forEach(input => {
-        input.addEventListener('change', calculerRecapCopro);
-        input.addEventListener('input', calculerRecapCopro);
-    });
-
-    renderBatiments();
+// ── Listener global counter-btn (délégation) ────────
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.counter-btn[data-input]');
+    if (!btn) return;
+    const inputId = btn.dataset.input;
+    const action = btn.dataset.action;
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const step = parseFloat(input.step) || 1;
+    const min = parseFloat(input.min) ?? 0;
+    let val = parseFloat(input.value) || 0;
+    if (action === 'increase') {
+        input.value = parseFloat((val + step).toFixed(10));
+    } else if (action === 'decrease' && val > min) {
+        input.value = parseFloat((val - step).toFixed(10));
+    }
+    input.dispatchEvent(new Event('change'));
+    input.dispatchEvent(new Event('input'));
 });
 
-// ── Recalcul Copro Unique ────────────────────────────
-function calculerRecapCopro() {
-    const taux = parseFloat(document.getElementById('copro-tauxHoraire')?.value) || 37.30;
-    const hallMn = parseFloat(document.getElementById('copro-hall')?.value) || 0;
-    const escaliersMn = parseFloat(document.getElementById('copro-escaliers')?.value) || 0;
-    const nbEtages = parseFloat(document.getElementById('copro-nbEtages')?.value) || 0;
-    const ascenseurMn = parseFloat(document.getElementById('copro-ascenseur')?.value) || 0;
-    const poubelleMn = parseFloat(document.getElementById('copro-localPoubelle')?.value) || 0;
-    const garageSurface = parseFloat(document.getElementById('copro-garageSurface')?.value) || 0;
-    const garagePrixM2 = parseFloat(document.getElementById('copro-garagePrixM2')?.value) || 0.41;
-    const moquetteSurface = parseFloat(document.getElementById('copro-moquetteSurface')?.value) || 0;
-    const moquettePrixM2 = parseFloat(document.getElementById('copro-moquettePrixM2')?.value) || 3.62;
-    const vapeurMn = parseFloat(document.getElementById('copro-moquetteVapeur')?.value) || 0;
-    const shampoingMn = parseFloat(document.getElementById('copro-moquetteShampoing')?.value) || 0;
-    const trajetMn = parseFloat(document.getElementById('copro-trajet')?.value) || 0;
-    const qPoubelles = parseFloat(document.getElementById('copro-poubelles')?.value) || 0;
-    const puPoubelles = parseFloat(document.getElementById('copro-poubelles-pu')?.value) || 8.95;
-    const qSavon = parseFloat(document.getElementById('copro-savon')?.value) || 0;
-    const puSavon = parseFloat(document.getElementById('copro-savon-pu')?.value) || 40.00;
-    const qEssuie = parseFloat(document.getElementById('copro-essuieMain')?.value) || 0;
-    const puEssuie = parseFloat(document.getElementById('copro-essuieMain-pu')?.value) || 11.00;
-    const qJumbo = parseFloat(document.getElementById('copro-jumbo')?.value) || 0;
-    const puJumbo = parseFloat(document.getElementById('copro-jumbo-pu')?.value) || 4.00;
-}
-window.calculerRecapCopro = calculerRecapCopro;
+// ── DOMContentLoaded ─────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    renderBatiments();
+    document.getElementById('btn-ajouter-batiment')?.addEventListener('click', multiAjouterBatiment);
+    document.getElementById('btn-multi-retour')?.addEventListener('click', multiConfirmRetour);
 
+    // Étages dynamiques
+    ['copro', 'sim', 'multi'].forEach(prefix => {
+        document.getElementById(`${prefix}-nbEtages`)?.addEventListener('input', () => renderEtages(prefix));
+        document.getElementById(`${prefix}-nbEtages`)?.addEventListener('change', () => renderEtages(prefix));
+    });
+});
+
+// ── Helpers étages ───────────────────────────────────
+function lireEtagesTempsMn(prefix) {
+    const container = document.getElementById(`${prefix}-etages-liste`);
+    if (!container) return [];
+    return Array.from(container.querySelectorAll('input[type="number"]'))
+        .map(i => parseFloat(i.value) || 0);
+}
+
+// ── Render étages dynamiques ─────────────────────────
+function renderEtages(prefix) {
+    const nbInput = document.getElementById(`${prefix}-nbEtages`);
+    const container = document.getElementById(`${prefix}-etages-liste`);
+    if (!nbInput || !container) return;
+    const nb = parseInt(nbInput.value) || 0;
+    const vals = Array.from(container.querySelectorAll('input')).map(i => i.value);
+    container.innerHTML = '';
+    for (let i = 0; i < nb; i++) {
+        const div = document.createElement('div');
+        div.className = 'etage-input-row';
+        div.innerHTML = `
+            <span class="etage-num"><i class="fas fa-layer-group"></i> Étage ${i + 1}</span>
+            <div class="input-counter">
+                <button type="button" class="counter-btn" data-input="${prefix}-etage-${i}" data-action="decrease">-</button>
+                <input type="number" id="${prefix}-etage-${i}" min="0" value="${vals[i] || 0}" step="5" placeholder="min">
+                <button type="button" class="counter-btn" data-input="${prefix}-etage-${i}" data-action="increase">+</button>
+            </div>
+            <span class="etage-unit">min</span>
+        `;
+        container.appendChild(div);
+    }
+}
+
+window.renderEtages = renderEtages;
 // ── Submit Copro Unique ──────────────────────────────
 document.getElementById('devisCoproForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -112,8 +123,13 @@ document.getElementById('devisCoproForm')?.addEventListener('submit', async (e) 
         const hallMn = parseFloat(document.getElementById('copro-hall').value) || 0;
         const escaliersMn = parseFloat(document.getElementById('copro-escaliers').value) || 0;
         const nbEtages = parseFloat(document.getElementById('copro-nbEtages').value) || 0;
+        const etagesTempsMn = lireEtagesTempsMn('copro');
         const ascenseurMn = parseFloat(document.getElementById('copro-ascenseur').value) || 0;
         const localPoubelleMn = parseFloat(document.getElementById('copro-localPoubelle').value) || 0;
+        const localVelosMn = parseFloat(document.getElementById('copro-localVelos').value) || 0;
+        const accesM1Mn = parseFloat(document.getElementById('copro-accesM1').value) || 0;
+        const cavesMn = parseFloat(document.getElementById('copro-caves').value) || 0;
+        const frequence = parseFloat(document.getElementById('copro-frequence').value) || 1;
         const garageSurface = parseFloat(document.getElementById('copro-garageSurface').value) || 0;
         const garagePrixM2 = parseFloat(document.getElementById('copro-garagePrixM2').value) || 0.41;
         const moquetteSurface = parseFloat(document.getElementById('copro-moquetteSurface').value) || 0;
@@ -129,7 +145,9 @@ document.getElementById('devisCoproForm')?.addEventListener('submit', async (e) 
         const puEssuie = parseFloat(document.getElementById('copro-essuieMain-pu').value) || 11.00;
         const qJumbo = parseFloat(document.getElementById('copro-jumbo').value) || 0;
         const puJumbo = parseFloat(document.getElementById('copro-jumbo-pu').value) || 4.00;
-        const totalCommunsMn = hallMn + (escaliersMn * nbEtages) + ascenseurMn + localPoubelleMn;
+
+        const totalEtagesMn = etagesTempsMn.reduce((s, v) => s + v, 0);
+        const totalCommunsMn = hallMn + totalEtagesMn + ascenseurMn + localPoubelleMn + localVelosMn + accesM1Mn + cavesMn;
         const totalCommunsPrix = (totalCommunsMn / 60) * taux;
         const totalGarages = garageSurface * garagePrixM2;
         const totalMoquettesMn = vapeurMn + shampoingMn;
@@ -140,15 +158,17 @@ document.getElementById('devisCoproForm')?.addEventListener('submit', async (e) 
         const stEssuie = qEssuie * puEssuie;
         const stJumbo = qJumbo * puJumbo;
         const totalConso = stPoubelles + stSavon + stEssuie + stJumbo;
-        const totalHT = totalCommunsPrix + totalGarages + totalMoquettesPrix + trajetPrix + totalConso;
+        const totalHT = (totalCommunsPrix + totalGarages + totalMoquettesPrix + trajetPrix + totalConso) * frequence;
         const totalTTC = totalHT * 1.20;
+
         const nomChantier = document.getElementById('copro-nomChantier').value;
         const remarques = document.getElementById('copro-remarques').value;
+
         await addDoc(collection(db, "devis"), {
-            nomChantier, typeDevis: 'copro', remarques,
+            nomChantier, typeDevis: 'copro', remarques, frequence,
             detailsCopro: {
                 tauxHoraire: taux,
-                communs: { hallMn, escaliersMnParEtage: escaliersMn, nbEtages, ascenseurMn, localPoubelleMn, totalMn: totalCommunsMn, totalPrix: totalCommunsPrix },
+                communs: { hallMn, escaliersMnParEtage: escaliersMn, nbEtages, etagesTempsMn, ascenseurMn, localPoubelleMn, localVelosMn, accesM1Mn, cavesMn, totalMn: totalCommunsMn, totalPrix: totalCommunsPrix },
                 garages: { surface: garageSurface, prixM2: garagePrixM2, totalPrix: totalGarages },
                 moquettes: { surface: moquetteSurface, prixM2: moquettePrixM2, vapeurMn, shampoingMn, totalMn: totalMoquettesMn, totalPrix: totalMoquettesPrix },
                 trajet: { minutes: trajetMn, totalPrix: trajetPrix },
@@ -156,6 +176,7 @@ document.getElementById('devisCoproForm')?.addEventListener('submit', async (e) 
             },
             totalHT, totalTTC, status: 'en_attente', dateCreation: serverTimestamp()
         });
+
         showNotification('Devis copro envoyé avec succès !', 'success');
         try { await fetch("https://ntfy.sh/signalement-propre-eco", { method: "POST", body: `📋 Nouveau devis COPRO !\n\n🏢 ${nomChantier}` }); } catch { }
         setTimeout(() => { window.location.href = '../index.html'; }, 3000);
@@ -173,8 +194,13 @@ function multiLireBatiment() {
     const hallMn = parseFloat(document.getElementById('multi-hall').value) || 0;
     const escaliersMn = parseFloat(document.getElementById('multi-escaliers').value) || 0;
     const nbEtages = parseFloat(document.getElementById('multi-nbEtages').value) || 0;
+    const etagesTempsMn = lireEtagesTempsMn('multi');
     const ascenseurMn = parseFloat(document.getElementById('multi-ascenseur').value) || 0;
     const localPoubelleMn = parseFloat(document.getElementById('multi-localPoubelle').value) || 0;
+    const localVelosMn = parseFloat(document.getElementById('multi-localVelos').value) || 0;
+    const accesM1Mn = parseFloat(document.getElementById('multi-accesM1').value) || 0;
+    const cavesMn = parseFloat(document.getElementById('multi-caves').value) || 0;
+    const frequence = parseFloat(document.getElementById('multi-frequence').value) || 1;
     const garageSurface = parseFloat(document.getElementById('multi-garageSurface').value) || 0;
     const garagePrixM2 = parseFloat(document.getElementById('multi-garagePrixM2').value) || 0.41;
     const moquetteSurface = parseFloat(document.getElementById('multi-moquetteSurface').value) || 0;
@@ -190,7 +216,9 @@ function multiLireBatiment() {
     const puEssuie = parseFloat(document.getElementById('multi-essuieMain-pu').value) || 11.00;
     const qJumbo = parseFloat(document.getElementById('multi-jumbo').value) || 0;
     const puJumbo = parseFloat(document.getElementById('multi-jumbo-pu').value) || 4.00;
-    const totalCommunsMn = hallMn + (escaliersMn * nbEtages) + ascenseurMn + localPoubelleMn;
+
+    const totalEtagesMn = etagesTempsMn.reduce((s, v) => s + v, 0);
+    const totalCommunsMn = hallMn + totalEtagesMn + ascenseurMn + localPoubelleMn + localVelosMn + accesM1Mn + cavesMn;
     const totalCommunsPrix = (totalCommunsMn / 60) * taux;
     const totalGarages = garageSurface * garagePrixM2;
     const totalMoquettesMn = vapeurMn + shampoingMn;
@@ -201,12 +229,13 @@ function multiLireBatiment() {
     const stEssuie = qEssuie * puEssuie;
     const stJumbo = qJumbo * puJumbo;
     const totalConso = stPoubelles + stSavon + stEssuie + stJumbo;
-    const totalHT = totalCommunsPrix + totalGarages + totalMoquettesPrix + trajetPrix + totalConso;
+    const totalHT = (totalCommunsPrix + totalGarages + totalMoquettesPrix + trajetPrix + totalConso) * frequence;
+
     return {
         nom: document.getElementById('multi-nomBatiment').value.trim() || `Bâtiment ${devisMultipleData.length + 1}`,
         remarques: document.getElementById('multi-remarques').value,
-        tauxHoraire: taux,
-        communs: { hallMn, escaliersMnParEtage: escaliersMn, nbEtages, ascenseurMn, localPoubelleMn, totalMn: totalCommunsMn, totalPrix: totalCommunsPrix },
+        tauxHoraire: taux, frequence,
+        communs: { hallMn, escaliersMnParEtage: escaliersMn, nbEtages, etagesTempsMn, ascenseurMn, localPoubelleMn, localVelosMn, accesM1Mn, cavesMn, totalMn: totalCommunsMn, totalPrix: totalCommunsPrix },
         garages: { surface: garageSurface, prixM2: garagePrixM2, totalPrix: totalGarages },
         moquettes: { surface: moquetteSurface, prixM2: moquettePrixM2, vapeurMn, shampoingMn, totalMn: totalMoquettesMn, totalPrix: totalMoquettesPrix },
         trajet: { minutes: trajetMn, totalPrix: trajetPrix },
@@ -217,20 +246,24 @@ function multiLireBatiment() {
 
 function multiResetForm() {
     ['multi-nomBatiment', 'multi-remarques', 'multi-hall', 'multi-escaliers', 'multi-nbEtages',
-        'multi-ascenseur', 'multi-localPoubelle', 'multi-garageSurface', 'multi-moquetteSurface',
-        'multi-moquetteVapeur', 'multi-moquetteShampoing', 'multi-poubelles', 'multi-savon',
-        'multi-essuieMain', 'multi-jumbo', 'multi-trajet'
+        'multi-ascenseur', 'multi-localPoubelle', 'multi-localVelos', 'multi-accesM1', 'multi-caves',
+        'multi-garageSurface', 'multi-moquetteSurface', 'multi-moquetteVapeur', 'multi-moquetteShampoing',
+        'multi-poubelles', 'multi-savon', 'multi-essuieMain', 'multi-jumbo', 'multi-trajet'
     ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = el.type === 'number' ? '0' : '';
     });
     document.getElementById('multi-tauxHoraire').value = '37.30';
+    document.getElementById('multi-frequence').value = '4';
     document.getElementById('multi-garagePrixM2').value = '0.41';
     document.getElementById('multi-moquettePrixM2').value = '3.62';
     document.getElementById('multi-poubelles-pu').value = '8.95';
     document.getElementById('multi-savon-pu').value = '40.00';
     document.getElementById('multi-essuieMain-pu').value = '11.00';
     document.getElementById('multi-jumbo-pu').value = '4.00';
+    // Vider la liste des étages
+    const etagesListe = document.getElementById('multi-etages-liste');
+    if (etagesListe) etagesListe.innerHTML = '';
 }
 
 function multiMettreAJourSummary() {
@@ -290,11 +323,6 @@ window.multiAjouterBatiment = multiAjouterBatiment;
 window.multiSupprimerBatiment = multiSupprimerBatiment;
 window.multiConfirmRetour = multiConfirmRetour;
 
-// Listeners boutons multi (évite le problème defer/module ES)
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btn-ajouter-batiment')?.addEventListener('click', multiAjouterBatiment);
-    document.getElementById('btn-multi-retour')?.addEventListener('click', multiConfirmRetour);
-});
 // ── Submit Copro Multiple ────────────────────────────
 document.getElementById('devisCoproMultipleForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -362,8 +390,13 @@ document.getElementById('devisCoproSimilaireForm')?.addEventListener('submit', a
         const hallMn = parseFloat(document.getElementById('sim-hall').value) || 0;
         const escaliersMn = parseFloat(document.getElementById('sim-escaliers').value) || 0;
         const nbEtages = parseFloat(document.getElementById('sim-nbEtages').value) || 0;
+        const etagesTempsMn = lireEtagesTempsMn('sim');
         const ascenseurMn = parseFloat(document.getElementById('sim-ascenseur').value) || 0;
         const localPoubelleMn = parseFloat(document.getElementById('sim-localPoubelle').value) || 0;
+        const localVelosMn = parseFloat(document.getElementById('sim-localVelos').value) || 0;
+        const accesM1Mn = parseFloat(document.getElementById('sim-accesM1').value) || 0;
+        const cavesMn = parseFloat(document.getElementById('sim-caves').value) || 0;
+        const frequence = parseFloat(document.getElementById('sim-frequence').value) || 1;
         const garageSurface = parseFloat(document.getElementById('sim-garageSurface').value) || 0;
         const garagePrixM2 = parseFloat(document.getElementById('sim-garagePrixM2').value) || 0.41;
         const moquetteSurface = parseFloat(document.getElementById('sim-moquetteSurface').value) || 0;
@@ -379,7 +412,9 @@ document.getElementById('devisCoproSimilaireForm')?.addEventListener('submit', a
         const puEssuie = parseFloat(document.getElementById('sim-essuieMain-pu').value) || 11.00;
         const qJumbo = parseFloat(document.getElementById('sim-jumbo').value) || 0;
         const puJumbo = parseFloat(document.getElementById('sim-jumbo-pu').value) || 4.00;
-        const totalCommunsMn = hallMn + (escaliersMn * nbEtages) + ascenseurMn + localPoubelleMn;
+
+        const totalEtagesMn = etagesTempsMn.reduce((s, v) => s + v, 0);
+        const totalCommunsMn = hallMn + totalEtagesMn + ascenseurMn + localPoubelleMn + localVelosMn + accesM1Mn + cavesMn;
         const totalCommunsPrix = (totalCommunsMn / 60) * taux;
         const totalGarages = garageSurface * garagePrixM2;
         const totalMoquettesMn = vapeurMn + shampoingMn;
@@ -390,17 +425,19 @@ document.getElementById('devisCoproSimilaireForm')?.addEventListener('submit', a
         const stEssuie = qEssuie * puEssuie;
         const stJumbo = qJumbo * puJumbo;
         const totalConso = stPoubelles + stSavon + stEssuie + stJumbo;
-        const totalHTparBatiment = totalCommunsPrix + totalGarages + totalMoquettesPrix + trajetPrix + totalConso;
+        const totalHTparBatiment = (totalCommunsPrix + totalGarages + totalMoquettesPrix + trajetPrix + totalConso) * frequence;
         const totalHT = totalHTparBatiment * nbBatiments;
         const totalTTC = totalHT * 1.20;
+
         const nomChantier = document.getElementById('sim-nomChantier').value;
         const remarques = document.getElementById('sim-remarques').value;
+
         await addDoc(collection(db, "devis"), {
-            nomChantier, typeDevis: 'copro-similaire', remarques,
+            nomChantier, typeDevis: 'copro-similaire', remarques, frequence,
             batiments: { nb: nbBatiments, noms: nomsBatiments },
             detailsCopro: {
                 tauxHoraire: taux,
-                communs: { hallMn, escaliersMnParEtage: escaliersMn, nbEtages, ascenseurMn, localPoubelleMn, totalMn: totalCommunsMn, totalPrix: totalCommunsPrix },
+                communs: { hallMn, escaliersMnParEtage: escaliersMn, nbEtages, etagesTempsMn, ascenseurMn, localPoubelleMn, localVelosMn, accesM1Mn, cavesMn, totalMn: totalCommunsMn, totalPrix: totalCommunsPrix },
                 garages: { surface: garageSurface, prixM2: garagePrixM2, totalPrix: totalGarages },
                 moquettes: { surface: moquetteSurface, prixM2: moquettePrixM2, vapeurMn, shampoingMn, totalMn: totalMoquettesMn, totalPrix: totalMoquettesPrix },
                 trajet: { minutes: trajetMn, totalPrix: trajetPrix },
@@ -409,6 +446,7 @@ document.getElementById('devisCoproSimilaireForm')?.addEventListener('submit', a
             },
             totalHT, totalTTC, status: 'en_attente', dateCreation: serverTimestamp()
         });
+
         showNotification('Devis copro envoyé avec succès !', 'success');
         try { await fetch("https://ntfy.sh/signalement-propre-eco", { method: "POST", body: `📋 Nouveau devis COPRO SIMILAIRE !\n\n🏢 ${nomChantier}\n🏗️ ${nbBatiments} bâtiments\n💶 Total HT : ${totalHT.toFixed(2)} €` }); } catch { }
         setTimeout(() => { window.location.href = '../index.html'; }, 3000);
@@ -424,11 +462,9 @@ document.getElementById('devisBureauForm')?.addEventListener('submit', async (e)
     const loading = document.getElementById('loading');
     loading.style.display = 'flex';
     setTimeout(() => loading.classList.add('active'), 100);
-
     try {
         const taux = parseFloat(document.getElementById('bureau-tauxHoraire').value) || 37.30;
         const trajetMn = parseFloat(document.getElementById('bureau-trajet').value) || 0;
-
         const g = (id) => parseFloat(document.getElementById(id)?.value) || 0;
         const hm = (mn, qty, freq) => (mn / 60) * qty * freq;
 
@@ -456,13 +492,11 @@ document.getElementById('devisBureauForm')?.addEventListener('submit', async (e)
             }
         };
 
-        // Calcul heures mensuelles par section
         const hAccueil = Object.values(taches.accueil).reduce((s, t) => s + hm(t.mn, t.qty, t.freq), 0);
         const hShowroom = Object.values(taches.showroom).reduce((s, t) => s + hm(t.mn, t.qty, t.freq), 0);
         const hSanitaires = Object.values(taches.sanitaires).reduce((s, t) => s + hm(t.mn, t.qty, t.freq), 0);
         const hVitres = Object.values(taches.vitres).reduce((s, t) => s + hm(t.mn, t.qty, t.freq), 0);
         const hTrajet = (trajetMn / 60) * (parseFloat(document.getElementById('bureau-frequenceMois').value) || 4);
-
         const totalHeuresMois = hAccueil + hShowroom + hSanitaires + hVitres + hTrajet;
         const totalHT = totalHeuresMois * taux;
         const totalTTC = totalHT * 1.20;
@@ -471,38 +505,20 @@ document.getElementById('devisBureauForm')?.addEventListener('submit', async (e)
         const remarques = document.getElementById('bureau-remarques').value;
 
         await addDoc(collection(db, "devis"), {
-            nomChantier,
-            typeDevis: 'bureau',
-            remarques,
+            nomChantier, typeDevis: 'bureau', remarques,
             detailsBureau: {
                 tauxHoraire: taux,
                 frequenceMois: parseFloat(document.getElementById('bureau-frequenceMois').value) || 4,
                 taches,
-                heuresMensuelles: {
-                    accueil: hAccueil,
-                    showroom: hShowroom,
-                    sanitaires: hSanitaires,
-                    vitres: hVitres,
-                    trajet: hTrajet,
-                    total: totalHeuresMois
-                },
+                heuresMensuelles: { accueil: hAccueil, showroom: hShowroom, sanitaires: hSanitaires, vitres: hVitres, trajet: hTrajet, total: totalHeuresMois },
                 trajet: { minutes: trajetMn }
             },
-            totalHT,
-            totalTTC,
-            status: 'en_attente',
-            dateCreation: serverTimestamp()
+            totalHT, totalTTC, status: 'en_attente', dateCreation: serverTimestamp()
         });
 
         showNotification('Devis bureau envoyé avec succès !', 'success');
-        try {
-            await fetch("https://ntfy.sh/signalement-propre-eco", {
-                method: "POST",
-                body: `📋 Nouveau devis BUREAU !\n\n🏢 ${nomChantier}\n⏱️ ${totalHeuresMois.toFixed(2)}h/mois\n💶 Total HT : ${totalHT.toFixed(2)} €`
-            });
-        } catch { }
+        try { await fetch("https://ntfy.sh/signalement-propre-eco", { method: "POST", body: `📋 Nouveau devis BUREAU !\n\n🏢 ${nomChantier}\n⏱️ ${totalHeuresMois.toFixed(2)}h/mois\n💶 Total HT : ${totalHT.toFixed(2)} €` }); } catch { }
         setTimeout(() => { window.location.href = '../index.html'; }, 3000);
-
     } catch (error) {
         console.error('Erreur:', error);
         showNotification('Erreur : ' + error.message, 'error');
@@ -569,6 +585,7 @@ document.getElementById('devisForm')?.addEventListener('submit', async (e) => {
         if (document.getElementById('photosSupplementaires').files.length > 0)
             photosSupplementaires = await uploadPhotos(document.getElementById('photosSupplementaires').files);
         const remarques = document.getElementById('remarques').value;
+
         await addDoc(collection(db, "devis"), {
             nomChantier, typeLogement, surface,
             vitres: { standard: vitresStandard, baies: baiesVitrees, velux, portes: portesVitrees, hautes: vitresHautes },
@@ -582,6 +599,7 @@ document.getElementById('devisForm')?.addEventListener('submit', async (e) => {
             photos: { cuisine: photosCuisine, sejour: photosSejour, vitresHautes: photosVitresHautes, supplementaires: photosSupplementaires },
             remarques, status: 'en_attente', dateCreation: serverTimestamp()
         });
+
         showNotification('Devis envoyé avec succès !', 'success');
         try { await fetch("https://ntfy.sh/signalement-propre-eco", { method: "POST", body: `📋 Nouveau devis reçu !\n\n🏠 Chantier : ${nomChantier}\n📍 Type : ${typeLogement}\n📐 Surface : ${surface}m²` }); } catch { }
         setTimeout(() => { window.location.href = '../index.html'; }, 3000);

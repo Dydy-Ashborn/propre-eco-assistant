@@ -3306,6 +3306,15 @@ async function openChiffrageModal(devisId) {
     const docSnap = await getDoc(devisRef);
     const devis = { id: docSnap.id, ...docSnap.data() };
     const isEdit = devis.status === 'chiffre';
+    const isCopro = devis.typeDevis === 'copro' || devis.typeDevis === 'copro-multiple' || devis.typeDevis === 'copro-similaire';
+    const frequence = devis.frequence || 1;
+
+    const freqBlock = isCopro ? `
+        <div class="chiffrage-frequence-block">
+            <label for="copro-frequence"><i class="fas fa-calendar-alt"></i> Fréquence de passage (passages / mois)</label>
+            <input type="number" id="copro-frequence" class="chiffrage-input-editable"
+                   min="1" step="1" value="${frequence}" oninput="calculerTotalDevis()">
+        </div>` : '';
 
     const modalHTML = `
         <div id="chiffrageModal" class="chiffrage-modal show">
@@ -3326,6 +3335,7 @@ async function openChiffrageModal(devisId) {
 
                 <div class="chiffrage-modal-body">
                     ${generateDevisInfos(devis)}
+                    ${freqBlock}
                     <table class="chiffrage-table">
                         <thead>
                             <tr>
@@ -3516,17 +3526,44 @@ function generateCoproLignes(details, batIndex, taux) {
         label: 'Hall', nb: 1, tempsMn: c.hallMn, taux,
         extraClass: 'row-copro-communs'
     });
-    if (c.escaliersMnParEtage > 0) rows.push({
-        label: `Escaliers (${c.nbEtages || 1} étage${(c.nbEtages || 1) > 1 ? 's' : ''})`,
-        nb: c.nbEtages || 1, tempsMn: c.escaliersMnParEtage, taux,
-        extraClass: 'row-copro-communs'
-    });
+
+    // Escaliers — nouveau format etagesTempsMn[] ou ancien format rétrocompat
+    if (c.etagesTempsMn && c.etagesTempsMn.length > 0) {
+        c.etagesTempsMn.forEach((tempsMn, i) => {
+            if (tempsMn > 0) rows.push({
+                label: `Escaliers — Étage ${i + 1}`,
+                nb: 1, tempsMn, taux,
+                extraClass: 'row-copro-communs'
+            });
+        });
+    } else if (c.escaliersMnParEtage > 0 && c.nbEtages > 0) {
+        for (let e = 1; e <= c.nbEtages; e++) {
+            rows.push({
+                label: `Escaliers — Étage ${e}`,
+                nb: 1, tempsMn: c.escaliersMnParEtage, taux,
+                extraClass: 'row-copro-communs'
+            });
+        }
+    }
+
     if (c.ascenseurMn > 0) rows.push({
         label: 'Ascenseur', nb: 1, tempsMn: c.ascenseurMn, taux,
         extraClass: 'row-copro-communs'
     });
     if (c.localPoubelleMn > 0) rows.push({
         label: 'Local poubelle', nb: 1, tempsMn: c.localPoubelleMn, taux,
+        extraClass: 'row-copro-communs'
+    });
+    if (c.localVelosMn > 0) rows.push({
+        label: 'Local vélos', nb: 1, tempsMn: c.localVelosMn, taux,
+        extraClass: 'row-copro-communs'
+    });
+    if (c.accesM1Mn > 0) rows.push({
+        label: 'Accès -1', nb: 1, tempsMn: c.accesM1Mn, taux,
+        extraClass: 'row-copro-communs'
+    });
+    if (c.cavesMn > 0) rows.push({
+        label: 'Caves', nb: 1, tempsMn: c.cavesMn, taux,
         extraClass: 'row-copro-communs'
     });
 
@@ -3541,24 +3578,22 @@ function generateCoproLignes(details, batIndex, taux) {
 
     // Moquettes
     const m = details.moquettes || {};
-    if ((m.surface > 0) || (m.vapeurMn > 0) || (m.shampoingMn > 0)) {
-        if (m.surface > 0) rows.push({
-            label: `Moquettes surface (${m.surface} m²)`,
-            nb: m.surface, tempsMn: 0, taux: 0,
-            prixFixe: m.surface * (m.prixM2 || 3.62),
-            extraClass: 'row-copro-moquettes'
-        });
-        if (m.vapeurMn > 0) rows.push({
-            label: 'Moquettes — Passage vapeur',
-            nb: 1, tempsMn: m.vapeurMn, taux,
-            extraClass: 'row-copro-moquettes'
-        });
-        if (m.shampoingMn > 0) rows.push({
-            label: 'Moquettes — Shampoing',
-            nb: 1, tempsMn: m.shampoingMn, taux,
-            extraClass: 'row-copro-moquettes'
-        });
-    }
+    if (m.surface > 0) rows.push({
+        label: `Moquettes surface (${m.surface} m²)`,
+        nb: m.surface, tempsMn: 0, taux: 0,
+        prixFixe: m.surface * (m.prixM2 || 3.62),
+        extraClass: 'row-copro-moquettes'
+    });
+    if (m.vapeurMn > 0) rows.push({
+        label: 'Moquettes — Passage vapeur',
+        nb: 1, tempsMn: m.vapeurMn, taux,
+        extraClass: 'row-copro-moquettes'
+    });
+    if (m.shampoingMn > 0) rows.push({
+        label: 'Moquettes — Shampoing',
+        nb: 1, tempsMn: m.shampoingMn, taux,
+        extraClass: 'row-copro-moquettes'
+    });
 
     // Trajet
     const tr = details.trajet || {};
@@ -3612,7 +3647,6 @@ function generateCoproLignes(details, batIndex, taux) {
         </tr>`;
     }).join('');
 }
-
 function generateChiffrageRowsBureau(devis) {
     const b = devis.detailsBureau;
     if (!b) return '';
@@ -3927,22 +3961,20 @@ function calculerTotalDevis() {
         const nb = parseFloat(row.querySelector('.calc-nb')?.value) || 0;
         const tempsMn = parseFloat(row.querySelector('.calc-temps')?.value) || 0;
         const taux = parseFloat(row.querySelector('.calc-taux')?.value) || 0;
-
         const totalMinutes = nb * tempsMn;
-        const totalHeures = totalMinutes / 60;
-        const totalLignePrix = totalHeures * taux;
-        // Prix fixe (copro garages, moquettes m², consommables)
+        const totalLignePrix = (totalMinutes / 60) * taux;
+
+        // Prix fixe (garages, moquettes m², consommables)
         const prixFixeInput = row.querySelector('.calc-prix-fixe');
         if (prixFixeInput) {
             const prixFixe = parseFloat(prixFixeInput.value) || 0;
             const displayTotal = row.querySelector('.row-total-val');
             if (displayTotal) displayTotal.textContent = prixFixe.toFixed(2);
             grandTotal += prixFixe;
-            // pas de temps à ajouter
             return;
         }
 
-        // Bureau : taux × (nb × temps / 60) × fréquence
+        // Bureau : × fréquence par ligne
         const freqInput = row.querySelector('.calc-freq');
         const freq = freqInput ? (parseFloat(freqInput.value) || 1) : 1;
         const totalLignePrixFinal = totalLignePrix * freq;
@@ -3959,14 +3991,11 @@ function calculerTotalDevis() {
         const qty = parseFloat(row.querySelector('.custom-qty-input')?.value) || 0;
         const tempsMn = parseFloat(row.querySelector('.custom-time-input')?.value) || 0;
         const taux = parseFloat(row.querySelector('.custom-taux-input')?.value) || 0;
-
         const totalMinutes = qty * tempsMn;
-        const totalHeures = totalMinutes / 60;
-        const totalLigne = totalHeures * taux;
+        const totalLigne = (totalMinutes / 60) * taux;
 
         const displayTotal = row.querySelector('.custom-total-val');
         if (displayTotal) displayTotal.textContent = totalLigne > 0 ? totalLigne.toFixed(2) : '—';
-
         grandTotal += totalLigne;
         grandTempsMn += totalMinutes;
     });
@@ -3978,6 +4007,15 @@ function calculerTotalDevis() {
         grandTotal *= nbBat;
         grandTempsMn *= nbBat;
     }
+
+    // Fréquence globale copro
+    const freqGlobaleInput = document.getElementById('copro-frequence');
+    if (freqGlobaleInput) {
+        const freqGlobale = parseFloat(freqGlobaleInput.value) || 1;
+        grandTotal *= freqGlobale;
+        grandTempsMn *= freqGlobale;
+    }
+
     const grandTotalTTC = grandTotal * 1.2;
     const heures = Math.floor(grandTempsMn / 60);
     const minutes = Math.round(grandTempsMn % 60);

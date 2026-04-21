@@ -9,6 +9,8 @@
 ## devis.js & voir.js
 - `setupPhotoPreview()` : Gestion UI photos devis.
 - `uploadPhotos()` : Bulk upload ImgBB.
+- `renderEtages(prefix)` : Génère dynamiquement N inputs "Étage X (min)" sous le champ `nbEtages`. Préfixes : `copro`, `sim`, `multi`. Exposée via `window.renderEtages`.
+- `lireEtagesTempsMn(prefix)` : Lit le tableau des temps par étage depuis les inputs dynamiques. Retourne `number[]`. Utilisé dans les 3 submit handlers copro.
 - `load()` : Affichage photos chantiers.
 - `deleteSelected()` : Nettoyage ImgBB + Firestore.
 - `calculerRecapCopro()` : Recalcul dynamique — communs (min→h×taux), garages (m²×prixM2 modifiable), moquettes (m²×prixM2 + min×taux), consommables (qty×prixUnit modifiable par ligne). Met à jour sous-totaux inline + récap HT/TTC.
