@@ -343,44 +343,27 @@
                 </div>
             </div>
         </div>
-        <!-- Modale rappel samedi -->
-        <div id="samediRappelModal"
-            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-            <div
-                style="background:white; border-radius:16px; padding:2rem; max-width:360px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-                <div
-                    style="background:linear-gradient(135deg,#f59e0b,#d97706); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
-                    <i class="fas fa-calendar-check" style="color:white; font-size:1.5rem;"></i>
-                </div>
-                <h3 style="color:#92400e; margin-bottom:1rem;">Rappel repos & congés</h3>
-                <p style="color:#374151; line-height:1.6; margin-bottom:1.5rem;">
-                    N'oubliez pas de renseigner <strong>0</strong> si vous êtes en repos <strong>samedi et/ou
-                        dimanche</strong>.<br><br>
-                    Pour les jours non travaillés, indiquez <strong>0</strong> dans les heures et précisez le motif dans
-                    les
-                    commentaires :<br><br>
-                    <span style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:4px;">
-                        <span
-                            style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Repos</span>
-                        <span
-                            style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">CP</span>
-                        <span
-                            style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Congé</span>
-                        <span
-                            style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Absent</span>
-                        <span
-                            style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Maladie</span>
-                        <span
-                            style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:20px; padding:2px 10px; font-size:0.8rem; font-weight:600;">Férié</span>
-                    </span><br>
-                    Ces mots permettent au système de ne pas générer d'alerte pour ces jours.
-                </p>
-                <button onclick="closeSamediRappel()"
-                    style="background:linear-gradient(135deg,#f59e0b,#d97706); color:white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; width:100%;">
-                    <i class="fas fa-check"></i> Compris
-                </button>
-            </div>
+       <!-- Modale rappel repos & congés -->
+<div id="samediRappelModal"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+    <div
+        style="background:white; border-radius:16px; padding:2rem; max-width:360px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div
+            style="background:linear-gradient(135deg,#f59e0b,#d97706); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
+            <i class="fas fa-calendar-check" style="color:white; font-size:1.5rem;"></i>
         </div>
+        <h3 style="color:#92400e; margin-bottom:1rem;">Rappel jours non travaillés</h3>
+        <p style="color:#374151; line-height:1.6; margin-bottom:1.5rem;">
+            Pour tout jour non travaillé, indiquez <strong>0</strong> dans les heures.<br><br>
+            Utilisez les boutons <strong>Repos</strong> ou <strong>Férié</strong> sur chaque ligne, ou le bouton <strong>Vacances</strong> pour toute la semaine.<br><br>
+           
+        </p>
+        <button onclick="closeSamediRappel()"
+            style="background:linear-gradient(135deg,#f59e0b,#d97706); color:white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; width:100%;">
+            <i class="fas fa-check"></i> Compris
+        </button>
+    </div>
+</div>
 
         <!-- Modale interdiction remplissage futur -->
         <div id="futurInterdictionModal"
