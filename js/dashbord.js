@@ -4226,6 +4226,126 @@ function photoModalNext() {
     if (counter) counter.textContent = data.currentIndex + 1;
 }
 
+// ========== SAISIE HEURES ADMIN ==========
+const JOURS_SEMAINE = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+window.ouvrirModalSaisieHeures = function () {
+    const modal = document.getElementById('modalSaisieHeures');
+    modal.style.display = 'flex';
+
+    // Pré-remplir la semaine courante
+    const today = new Date();
+    const weekNum = getWeekNumber(today);
+    const weekStr = `${today.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+    document.getElementById('saisieWeek').value = weekStr;
+
+    // Pré-remplir l'employé si filtré
+    const filterEmp = document.getElementById('filterEmployee').value;
+    if (filterEmp) document.getElementById('saisieEmp').value = filterEmp;
+
+    document.getElementById('saisiTableContainer').style.display = 'none';
+};
+
+window.fermerModalSaisieHeures = function () {
+    document.getElementById('modalSaisieHeures').style.display = 'none';
+    document.getElementById('saisiTableContainer').style.display = 'none';
+    document.getElementById('saisieEmp').value = '';
+    document.getElementById('saisieKm').value = '';
+};
+
+window.chargerDonneesSaisie = async function () {
+    const empId = document.getElementById('saisieEmp').value;
+    const week = document.getElementById('saisieWeek').value;
+
+    if (!empId || !week) {
+        showNotification('Sélectionnez un employé et une semaine', 'error');
+        return;
+    }
+
+    try {
+        const weekDocRef = doc(db, 'employees', empId, 'weeks', week);
+        const snap = await getDoc(weekDocRef);
+
+        const tbody = document.getElementById('saisieTableBody');
+        tbody.innerHTML = '';
+
+        const existingDays = snap.exists() ? (snap.data().days || []) : [];
+        const existingKm = snap.exists() ? (snap.data().kilometrage || '') : '';
+
+        JOURS_SEMAINE.forEach((jour, index) => {
+            const dayData = existingDays[index] || {};
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #f3f4f6';
+            row.style.borderBottom = '1px solid #f3f4f6';
+row.style.transition = 'background 0.15s';
+row.onmouseenter = () => row.style.background = '#f9fafb';
+row.onmouseleave = () => row.style.background = '';
+row.innerHTML = `
+    <td style="padding:0.65rem 1rem; font-weight:600; color:#374151; font-size:0.9rem;">${jour}</td>
+    <td style="padding:0.65rem 1rem; text-align:center;">
+        <input type="number" class="saisie-hours" min="0" max="24" step="0.25"
+            placeholder="0" value="${dayData.hours || ''}"
+            style="width:75px; padding:0.45rem; border:1.5px solid #e5e7eb; border-radius:8px; text-align:center; font-size:0.95rem; font-weight:600; color:#10b981;">
+    </td>
+    <td style="padding:0.65rem 1rem;">
+        <input type="text" class="saisie-comments" placeholder="Commentaires..."
+            value="${dayData.comments || ''}"
+            style="width:100%; padding:0.45rem 0.6rem; border:1.5px solid #e5e7eb; border-radius:8px; font-size:0.9rem; box-sizing:border-box;">
+    </td>
+`;
+            tbody.appendChild(row);
+        });
+
+        document.getElementById('saisieKm').value = existingKm;
+        document.getElementById('saisiTableContainer').style.display = 'block';
+
+    } catch (error) {
+        console.error('Erreur chargement:', error);
+        showNotification('Erreur lors du chargement', 'error');
+    }
+};
+
+window.sauvegarderSaisieHeures = async function () {
+    const empId = document.getElementById('saisieEmp').value;
+    const week = document.getElementById('saisieWeek').value;
+
+    if (!empId || !week) {
+        showNotification('Employé ou semaine manquant', 'error');
+        return;
+    }
+
+    const hoursInputs = document.querySelectorAll('.saisie-hours');
+    const commentsInputs = document.querySelectorAll('.saisie-comments');
+
+    const days = JOURS_SEMAINE.map((jour, index) => ({
+        day: jour,
+        hours: hoursInputs[index]?.value || '',
+        comments: commentsInputs[index]?.value || ''
+    }));
+
+    const km = document.getElementById('saisieKm').value;
+
+    try {
+        const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+        const weekDocRef = doc(db, 'employees', empId, 'weeks', week);
+        await setDoc(weekDocRef, {
+            days,
+            kilometrage: km,
+            lastUpdate: new Date()
+        }, { merge: true });
+
+        showNotification(`Heures enregistrées pour ${employeeNames[empId]} — ${week}`, 'success');
+        fermerModalSaisieHeures();
+
+        // Invalider le cache et recharger si onglet heures actif
+        heuresCache = {};
+        if (currentTab === 'heures') loadHeures();
+
+    } catch (error) {
+        console.error('Erreur sauvegarde:', error);
+        showNotification('Erreur lors de la sauvegarde', 'error');
+    }
+};
 
 // CRUCIAL : Exposer les fonctions au HTML
 window.openChiffrageModal = openChiffrageModal;
