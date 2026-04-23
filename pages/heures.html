@@ -629,35 +629,44 @@
                 return;
             }
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const minAllowed = new Date(today);
-            minAllowed.setDate(today.getDate() - 1);
-
+            const isAdmin = ['sam', 'dylan'].includes(currentEmployeeId);
             const rows = document.querySelectorAll('#weeklyTable tbody tr');
 
-            for (const row of rows) {
-                const hoursInput = row.querySelector('.hours');
-                if (!hoursInput || !hoursInput.value) continue;
+            if (!isAdmin) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const minAllowed = new Date(today);
+                minAllowed.setDate(today.getDate() - 1);
 
-                const dateAttr = row.getAttribute('data-date');
-                if (!dateAttr) continue;
+                for (const row of rows) {
+                    const hoursInput = row.querySelector('.hours');
+                    if (!hoursInput || !hoursInput.value) continue;
 
-                const rowDate = new Date(dateAttr);
-                rowDate.setHours(0, 0, 0, 0);
+                    const val = hoursInput.value.trim();
+                    const numVal = parseFloat(val);
+                    // 0 et texte type "CP", "Repos" toujours autorisés
+                    if (val === '0' || val === '' || isNaN(numVal) || numVal === 0) continue;
 
-                const dayLabel = row.querySelector('td strong').textContent.trim();
+                    const dateAttr = row.getAttribute('data-date');
+                    if (!dateAttr) continue;
 
-                if (rowDate > today) {
-                    document.getElementById('futurInterdictionModal').style.display = 'flex';
-                    hoursInput.value = '';
-                    return;
-                }
+                    const [ry, rm, rd] = dateAttr.split('-').map(Number);
+                    const rowDate = new Date(ry, rm - 1, rd);
+                    rowDate.setHours(0, 0, 0, 0);
 
-                if (rowDate < minAllowed) {
-                    showNotification(`Saisie interdite : "${dayLabel}" est trop ancien (max : hier).`, 'error');
-                    hoursInput.value = '';
-                    return;
+                    const dayLabel = row.querySelector('td strong').textContent.trim();
+
+                    if (rowDate > today) {
+                        document.getElementById('futurInterdictionModal').style.display = 'flex';
+                        hoursInput.value = '';
+                        return;
+                    }
+
+                    if (rowDate < minAllowed) {
+                        showNotification(`Saisie interdite : "${dayLabel}" est trop ancien (max : hier).`, 'error');
+                        hoursInput.value = '';
+                        return;
+                    }
                 }
             }
 
@@ -668,10 +677,11 @@
             };
 
             rows.forEach(row => {
-                const day = row.querySelector('td strong').textContent;
-                const hours = row.querySelector('.hours').value;
-                const comments = row.querySelector('textarea').value;
-                data.days.push({ day, hours, comments });
+                data.days.push({
+                    day: row.querySelector('td strong').textContent,
+                    hours: row.querySelector('.hours').value,
+                    comments: row.querySelector('textarea').value
+                });
             });
 
             const saveBtn = document.getElementById('saveWeeklyBtn');
@@ -856,118 +866,118 @@
             }
         }
         async function loadWeekDataAuto() {
-    if (!currentWeek) return;
-    showLoading(true);
+            if (!currentWeek) return;
+            showLoading(true);
 
-    try {
-        const [year, week] = currentWeek.split('-W').map(Number);
-        const jan4 = new Date(year, 0, 4);
-        const startOfWeek = new Date(jan4);
-        startOfWeek.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7) + (week - 1) * 7);
-        startOfWeek.setHours(0, 0, 0, 0);
+            try {
+                const [year, week] = currentWeek.split('-W').map(Number);
+                const jan4 = new Date(year, 0, 4);
+                const startOfWeek = new Date(jan4);
+                startOfWeek.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7) + (week - 1) * 7);
+                startOfWeek.setHours(0, 0, 0, 0);
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const minAllowed = new Date(today);
-        minAllowed.setDate(today.getDate() - 1);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const minAllowed = new Date(today);
+                minAllowed.setDate(today.getDate() - 1);
 
-        const rows = document.querySelectorAll('#weeklyTable tbody tr');
+                const isAdmin = ['sam', 'dylan'].includes(currentEmployeeId);
+                const rows = document.querySelectorAll('#weeklyTable tbody tr');
 
-        // Poser data-date en heure locale (évite décalage UTC)
-        rows.forEach((row, index) => {
-            const d = new Date(startOfWeek);
-            d.setDate(startOfWeek.getDate() + index);
-            const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-            row.setAttribute('data-date', dateStr);
-        });
-
-        const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
-        const doc = await docRef.get();
-
-        if (doc.exists) {
-            const data = doc.data();
-            if (data.days) {
-                data.days.forEach((dayData, index) => {
-                    if (rows[index]) {
-                        rows[index].querySelector('.hours').value = dayData.hours || '';
-                        rows[index].querySelector('textarea').value = dayData.comments || '';
-                    }
+                // Poser data-date en heure locale
+                rows.forEach((row, index) => {
+                    const d = new Date(startOfWeek);
+                    d.setDate(startOfWeek.getDate() + index);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    row.setAttribute('data-date', dateStr);
                 });
-            }
-            document.getElementById('kilometrage').value = data.kilometrage || '';
-            if (data.projects && data.projects.length > 0) {
-                displaySavedProjects(data.projects);
-            } else {
-                hideSavedProjectsDisplay();
-            }
-        } else {
-            rows.forEach(row => {
-                row.querySelector('.hours').value = '';
-                row.querySelector('textarea').value = '';
-            });
-            document.getElementById('kilometrage').value = '';
-            hideSavedProjectsDisplay();
-        }
 
-        calculateWeeklyTotal();
+                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+                const doc = await docRef.get();
 
-        // Verrouillage + modale au clic
-        rows.forEach(row => {
-            // Parse en heure locale pour éviter décalage UTC
-            const [ry, rm, rd] = row.getAttribute('data-date').split('-').map(Number);
-            const rowDate = new Date(ry, rm - 1, rd);
-            rowDate.setHours(0, 0, 0, 0);
-
-            const hoursInput = row.querySelector('.hours');
-            const textarea = row.querySelector('textarea');
-            const isLocked = rowDate > today || rowDate < minAllowed;
-
-            [hoursInput, textarea].forEach(el => {
-                if (!el) return;
-                el.disabled = isLocked;
-                el.style.opacity = isLocked ? '0.4' : '';
-
-                if (isLocked) {
-                    const parent = el.parentElement;
-                    parent.style.position = 'relative';
-
-                    const overlay = document.createElement('div');
-                    overlay.style.cssText = 'position:absolute;inset:0;cursor:not-allowed;z-index:10;';
-                    overlay.addEventListener('click', () => {
-                        const modal = document.getElementById('saisieInterditeModal');
-                        const icon = document.getElementById('saisieInterditeIcon');
-                        const iconI = document.getElementById('saisieInterditeIconI');
-                        const title = document.getElementById('saisieInterditeTitle');
-                        const msg = document.getElementById('saisieInterditeMsg');
-                        const btn = document.getElementById('saisieInterditeBtn');
-
-                        icon.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
-                        iconI.className = 'fas fa-ban';
-                        title.style.color = '#991b1b';
-                        btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
-
-                        if (rowDate > today) {
-                            title.textContent = 'Saisie interdite';
-                            msg.innerHTML = '<strong>Il est interdit de remplir ses heures à l\'avance.</strong><br><br>Les heures doivent être renseignées chaque jour.';
-                        } else {
-                            title.textContent = 'Modification impossible';
-                            msg.innerHTML = 'Vous ne pouvez modifier que <strong>aujourd\'hui</strong> et <strong>hier</strong>.<br><br>Ce jour est trop ancien pour être modifié.';
-                        }
-
-                        modal.style.display = 'flex';
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.days) {
+                        data.days.forEach((dayData, index) => {
+                            if (rows[index]) {
+                                rows[index].querySelector('.hours').value = dayData.hours || '';
+                                rows[index].querySelector('textarea').value = dayData.comments || '';
+                            }
+                        });
+                    }
+                    document.getElementById('kilometrage').value = data.kilometrage || '';
+                    if (data.projects && data.projects.length > 0) {
+                        displaySavedProjects(data.projects);
+                    } else {
+                        hideSavedProjectsDisplay();
+                    }
+                } else {
+                    rows.forEach(row => {
+                        row.querySelector('.hours').value = '';
+                        row.querySelector('textarea').value = '';
                     });
-                    parent.appendChild(overlay);
+                    document.getElementById('kilometrage').value = '';
+                    hideSavedProjectsDisplay();
                 }
-            });
-        });
 
-    } catch (error) {
-        console.error('Erreur:', error);
-        showNotification('Erreur lors du chargement', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
+                calculateWeeklyTotal();
+
+                // Verrouillage + modale au clic — ignoré pour les admins
+                rows.forEach(row => {
+                    const [ry, rm, rd] = row.getAttribute('data-date').split('-').map(Number);
+                    const rowDate = new Date(ry, rm - 1, rd);
+                    rowDate.setHours(0, 0, 0, 0);
+
+                    const hoursInput = row.querySelector('.hours');
+                    const textarea = row.querySelector('textarea');
+                    const isLocked = !isAdmin && (rowDate > today || rowDate < minAllowed);
+
+                    [hoursInput, textarea].forEach(el => {
+                        if (!el) return;
+                        el.disabled = isLocked;
+                        el.style.opacity = isLocked ? '0.4' : '';
+
+                        if (isLocked) {
+                            const parent = el.parentElement;
+                            parent.style.position = 'relative';
+
+                            const overlay = document.createElement('div');
+                            overlay.style.cssText = 'position:absolute;inset:0;cursor:not-allowed;z-index:10;';
+                            overlay.addEventListener('click', () => {
+                                const modal = document.getElementById('saisieInterditeModal');
+                                const icon = document.getElementById('saisieInterditeIcon');
+                                const iconI = document.getElementById('saisieInterditeIconI');
+                                const title = document.getElementById('saisieInterditeTitle');
+                                const msg = document.getElementById('saisieInterditeMsg');
+                                const btn = document.getElementById('saisieInterditeBtn');
+
+                                icon.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+                                iconI.className = 'fas fa-ban';
+                                title.style.color = '#991b1b';
+                                btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+
+                                if (rowDate > today) {
+                                    title.textContent = 'Saisie interdite';
+                                    msg.innerHTML = '<strong>Il est interdit de remplir ses heures à l\'avance.</strong><br><br>Les heures doivent être renseignées chaque jour.';
+                                } else {
+                                    title.textContent = 'Modification impossible';
+                                    msg.innerHTML = 'Vous ne pouvez modifier que <strong>aujourd\'hui</strong> et <strong>hier</strong>.<br><br>Ce jour est trop ancien pour être modifié.';
+                                }
+
+                                modal.style.display = 'flex';
+                            });
+                            parent.appendChild(overlay);
+                        }
+                    });
+                });
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('Erreur lors du chargement', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
         function displaySavedProjects(projectsData) {
             const display = document.getElementById('savedProjectsDisplay');
             const tbody = document.getElementById('savedProjectsBody');
