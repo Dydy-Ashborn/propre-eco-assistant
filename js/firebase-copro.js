@@ -19,8 +19,11 @@ export async function getCoproByCode(code) {
 }
 
 export async function addCopropriete(data) {
+    // Supprime codeClean s'il traîne — ne jamais utiliser comme ID
+    const { codeClean, ...safeData } = data;
+
     const docData = {
-        ...data,
+        ...safeData,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     };

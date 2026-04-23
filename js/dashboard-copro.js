@@ -158,12 +158,18 @@ function renderCopros(copros) {
     }).join('');
 
     grid.querySelectorAll('.edit-copro').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const coproId = btn.dataset.id;
-            const copro = copros.find(c => c.id === coproId);
-            if (copro) openModal(copro);
-        });
+    btn.addEventListener('click', () => {
+        const coproId = btn.dataset.id;
+        // Toujours lire depuis allCopros — jamais depuis le tableau filtré
+        const copro = allCopros.find(c => c.id === coproId);
+        if (copro) {
+            openModal(copro);
+        } else {
+            console.error('Copro introuvable dans allCopros:', coproId);
+            showNotification('Erreur : copropriété introuvable', 'error');
+        }
     });
+});
 
     grid.querySelectorAll('.delete-copro').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -248,7 +254,6 @@ function closeModal() {
     if (form) form.reset();
     currentCoproId = null;
 }
-
 async function handleSubmit(e) {
     e.preventDefault();
 
@@ -260,17 +265,21 @@ async function handleSubmit(e) {
     };
 
     if (!data.nom || !data.adresse) {
-    alert('Le nom et l\'adresse sont obligatoires');
-    return;
-}
+        alert('Le nom et l\'adresse sont obligatoires');
+        return;
+    }
 
     try {
-        if (currentCoproId) {
+        if (currentCoproId && typeof currentCoproId === 'string' && currentCoproId.length > 0) {
             await updateCopropriete(currentCoproId, data);
             showNotification('Copropriété modifiée avec succès', 'success');
-        } else {
+        } else if (!currentCoproId) {
             await addCopropriete(data);
             showNotification('Copropriété ajoutée avec succès', 'success');
+        } else {
+            console.error('currentCoproId invalide:', currentCoproId);
+            showNotification('Erreur : ID copropriété invalide', 'error');
+            return;
         }
         closeModal();
         await loadCopros();
