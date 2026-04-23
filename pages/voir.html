@@ -838,32 +838,58 @@
 </head>
 
 <body>
+      <!-- Header -->
     <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="logo">
-                <img src="img/logo.png" width="60px" alt="">
+  <div class="header-content">
+    <a href="../index.html" class="logo">
+      <img src="../img/logo.png" width="40px" alt="Logo Propre Eco">
+      Propre Eco Assistant
+    </a>
+  </div>
+</header>
 
-                Propre Eco Assistant
-            </a>
+<div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
 
+<nav class="bottom-nav">
+  <a href="../index.html" class="nav-tab" id="tab-accueil">
+    <i class="fa-solid fa-house"></i>
+    <span>Accueil</span>
+  </a>
 
-            <button class="nav-toggle" aria-label="Menu">
-                <i class="fas fa-bars"></i>
-            </button>
+  <div class="fab-wrapper">
+    <div class="speed-dial" id="speedDial">
+      <a href="../pages/devis.html" class="speed-dial-item">
+        <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
+        <span class="sd-label">DEVIS</span>
+      </a>
+      <a href="../pages/Specifique.html" class="speed-dial-item">
+        <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+        <span class="sd-label">SPÉCIFIQUE</span>
+      </a>
+      <a href="../pages/signaler.html" class="speed-dial-item">
+        <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <span class="sd-label">SIGNALER</span>
+      </a>
+      <a href="../pages/Feuilles.html" class="speed-dial-item">
+        <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+        <span class="sd-label">FEUILLES</span>
+      </a>
+      <a href="../pages/pointeuse.html" class="speed-dial-item">
+        <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
+        <span class="sd-label">POINTEUSE</span>
+      </a>
+    </div>
 
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="../index.html"><i class="fas fa-home"></i> Accueil</a></li>
-                    <li><a href="signaler.html"><i class="fas fa-exclamation-triangle"></i> Signaler</a></li>
-                    <li><a href="Feuilles.html"><i class="fas fa-file-alt"></i> Feuilles</a></li>
-                    <li><a href="Specifique.html"><i class="fas fa-hard-hat"></i> Spécifique</a></li>
-                    <li><a href="pointeuse.html"><i class="fas fa-clock"></i> Pointeuse</a></li>
-                    <li><a href="devis.html"><i class="fas fa-file-invoice"></i> Devis</a></li>
-                    <li><a href="dashbord.html"><i class="fas fa-columns"></i> Tableau de bord</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
+      <i class="fa-solid fa-screwdriver-wrench"></i>
+    </button>
+  </div>
+
+  <a href="../pages/dashbord.html" class="nav-tab" id="tab-dashboard">
+    <i class="fa-solid fa-chart-bar"></i>
+    <span>Tableau de bord</span>
+  </a>
+</nav>
 
     <div class="container">
         <!-- Header de bienvenue -->
@@ -1226,6 +1252,17 @@
     </script>
     <script type="module" src="../js/announcements.js"></script>
     <script src="../js/sw-update.js"></script>
+        <script>
+               function toggleFab() {
+    const fab     = document.getElementById('fabBtn');
+    const dial    = document.getElementById('speedDial');
+    const overlay = document.getElementById('sdOverlay');
+    if (!fab || !dial || !overlay) return;
+    const isOpen = dial.classList.toggle('open');
+    fab.classList.toggle('open', isOpen);
+    overlay.classList.toggle('open', isOpen);
+  }
+    </script>
 
 </body>
 

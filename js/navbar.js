@@ -1,60 +1,42 @@
 export function initNavigation() {
-    const hamburgerBtn = document.querySelector('.hamburger-btn');
-    const sidebar = document.querySelector('.sidebar-menu');
-    const overlay = document.querySelector('.sidebar-overlay');
-    const closeBtn = document.querySelector('.sidebar-close');
-    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
-
-    if (!hamburgerBtn || !sidebar || !overlay || !closeBtn) {
-        console.warn('Navigation elements not found');
-        return;
-    }
-
-    function openSidebar() {
-        hamburgerBtn.classList.add('active');
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeSidebar() {
-        hamburgerBtn.classList.remove('active');
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    hamburgerBtn.addEventListener('click', () => {
-        if (sidebar.classList.contains('active')) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
-    });
-
-    closeBtn.addEventListener('click', closeSidebar);
-    overlay.addEventListener('click', closeSidebar);
-
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            closeSidebar();
-        });
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
-            closeSidebar();
-        }
-    });
+  // Sidebar supprimé — bottom nav uniquement
+  // On garde le listener Escape au cas où
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFab();
+  });
 }
 
 export function setActiveNavItem(pageName) {
-    const navItems = document.querySelectorAll('.sidebar-nav li');
-    navItems.forEach(item => {
-        item.classList.remove('active');
-        const link = item.querySelector('a');
-        if (link && link.getAttribute('href').includes(pageName)) {
-            item.classList.add('active');
-        }
-    });
+  document.querySelectorAll('.bottom-nav .nav-tab').forEach(tab => {
+    tab.classList.remove('active');
+    if (tab.getAttribute('href')?.includes(pageName)) {
+      tab.classList.add('active');
+    }
+  });
+}
+
+// ── Speed Dial ───────────────────────────────────
+function closeFab() {
+  document.getElementById('fabBtn')?.classList.remove('open');
+  document.getElementById('speedDial')?.classList.remove('open');
+  document.getElementById('sdOverlay')?.classList.remove('open');
+}
+
+window.toggleFab = function () {
+  const fab     = document.getElementById('fabBtn');
+  const dial    = document.getElementById('speedDial');
+  const overlay = document.getElementById('sdOverlay');
+  if (!fab || !dial || !overlay) return;
+
+  const isOpen = dial.classList.toggle('open');
+  fab.classList.toggle('open', isOpen);
+  overlay.classList.toggle('open', isOpen);
+};
+export function setActiveNavItem(pageName) {
+  document.querySelectorAll('.bottom-nav .nav-tab').forEach(tab => {
+    tab.classList.remove('active');
+    if (tab.getAttribute('href')?.includes(pageName)) {
+      tab.classList.add('active');
+    }
+  });
 }
