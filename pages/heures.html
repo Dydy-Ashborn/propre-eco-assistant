@@ -709,86 +709,125 @@
 
 
             // ✅ CORRECTION 1 : Ajouter { merge: true } pour ne pas écraser les chantiers
-            async function saveWeeklyData() {
-                if (!currentWeek) {
-                    showNotification('Sélectionnez une semaine', 'warning');
+           async function saveWeeklyData() {
+    if (!currentWeek) {
+        showNotification('Sélectionnez une semaine', 'warning');
+        return;
+    }
+
+    const isAdmin = ['sam', 'dylan'].includes(currentEmployeeId);
+    const rows = document.querySelectorAll('#weeklyTable tbody tr');
+
+    if (!isAdmin) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const minAllowed = new Date(today);
+        minAllowed.setDate(today.getDate() - 1);
+
+        for (const row of rows) {
+            const hoursInput = row.querySelector('.hours');
+            if (!hoursInput || !hoursInput.value) continue;
+
+            const val = hoursInput.value.trim();
+            const numVal = parseFloat(val);
+            if (val === '0' || val === '' || isNaN(numVal) || numVal === 0) continue;
+
+            const dateAttr = row.getAttribute('data-date');
+            if (!dateAttr) continue;
+
+            const [ry, rm, rd] = dateAttr.split('-').map(Number);
+            const rowDate = new Date(ry, rm - 1, rd);
+            rowDate.setHours(0, 0, 0, 0);
+
+            const dayLabel = row.querySelector('td strong').textContent.trim();
+
+            if (rowDate > today) {
+                document.getElementById('futurInterdictionModal').style.display = 'flex';
+                hoursInput.value = '';
+                return;
+            }
+
+            if (rowDate < minAllowed) {
+                showNotification(`Saisie interdite : "${dayLabel}" est trop ancien (max : hier).`, 'error');
+                hoursInput.value = '';
+                return;
+            }
+        }
+    }
+
+    // Charger les données existantes pour préserver les jours verrouillés
+    let existingDays = [];
+    if (!isAdmin) {
+        try {
+            const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+            const snap = await docRef.get();
+            if (snap.exists && snap.data().days) {
+                existingDays = snap.data().days;
+            }
+        } catch (e) {
+            console.error('Erreur lecture existante:', e);
+        }
+    }
+
+    const today2 = new Date();
+    today2.setHours(0, 0, 0, 0);
+    const minAllowed2 = new Date(today2);
+    minAllowed2.setDate(today2.getDate() - 1);
+
+    const days = [];
+    rows.forEach((row, index) => {
+        const day = row.querySelector('td strong').textContent;
+        const hoursInput = row.querySelector('.hours');
+        const textarea = row.querySelector('textarea');
+
+        if (!isAdmin) {
+            const dateAttr = row.getAttribute('data-date');
+            if (dateAttr) {
+                const [ry, rm, rd] = dateAttr.split('-').map(Number);
+                const rowDate = new Date(ry, rm - 1, rd);
+                rowDate.setHours(0, 0, 0, 0);
+                const isLocked = rowDate > today2 || rowDate < minAllowed2;
+
+                if (isLocked && existingDays[index]) {
+                    // Garder les données existantes pour les jours verrouillés
+                    days.push(existingDays[index]);
                     return;
                 }
-
-                const isAdmin = ['samuel', 'dylan'].includes(currentEmployeeId);
-                const rows = document.querySelectorAll('#weeklyTable tbody tr');
-
-                if (!isAdmin) {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const minAllowed = new Date(today);
-                    minAllowed.setDate(today.getDate() - 1);
-
-                    for (const row of rows) {
-                        const hoursInput = row.querySelector('.hours');
-                        if (!hoursInput || !hoursInput.value) continue;
-
-                        const val = hoursInput.value.trim();
-                        const numVal = parseFloat(val);
-                        // 0 et texte type "CP", "Repos" toujours autorisés
-                        if (val === '0' || val === '' || isNaN(numVal) || numVal === 0) continue;
-
-                        const dateAttr = row.getAttribute('data-date');
-                        if (!dateAttr) continue;
-
-                        const [ry, rm, rd] = dateAttr.split('-').map(Number);
-                        const rowDate = new Date(ry, rm - 1, rd);
-                        rowDate.setHours(0, 0, 0, 0);
-
-                        const dayLabel = row.querySelector('td strong').textContent.trim();
-
-                        if (rowDate > today) {
-                            document.getElementById('futurInterdictionModal').style.display = 'flex';
-                            hoursInput.value = '';
-                            return;
-                        }
-
-                        if (rowDate < minAllowed) {
-                            showNotification(`Saisie interdite : "${dayLabel}" est trop ancien (max : hier).`, 'error');
-                            hoursInput.value = '';
-                            return;
-                        }
-                    }
-                }
-
-                const data = {
-                    days: [],
-                    kilometrage: document.getElementById('kilometrage').value,
-                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                rows.forEach(row => {
-                    data.days.push({
-                        day: row.querySelector('td strong').textContent,
-                        hours: row.querySelector('.hours').value,
-                        comments: row.querySelector('textarea').value
-                    });
-                });
-
-                const saveBtn = document.getElementById('saveWeeklyBtn');
-                showLoading(true);
-                saveBtn.disabled = true;
-                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
-
-                try {
-                    await db.collection('employees').doc(currentEmployeeId)
-                        .collection('weeks').doc(currentWeek)
-                        .set(data, { merge: true });
-                    showNotification('Données enregistrées!', 'success');
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    showNotification("Erreur lors de l'enregistrement", 'error');
-                } finally {
-                    showLoading(false);
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
-                }
             }
+        }
+
+        days.push({
+            day,
+            hours: hoursInput?.value || '',
+            comments: textarea?.value || ''
+        });
+    });
+
+    const data = {
+        days,
+        kilometrage: document.getElementById('kilometrage').value,
+        lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    const saveBtn = document.getElementById('saveWeeklyBtn');
+    showLoading(true);
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
+    try {
+        await db.collection('employees').doc(currentEmployeeId)
+            .collection('weeks').doc(currentWeek)
+            .set(data, { merge: true });
+        showNotification('Données enregistrées!', 'success');
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification("Erreur lors de l'enregistrement", 'error');
+    } finally {
+        showLoading(false);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+    }
+}
             function resetWeeklyData() {
                 if (confirm('Effacer toutes les données?')) {
                     document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = '');
@@ -967,7 +1006,7 @@
                     const minAllowed = new Date(today);
                     minAllowed.setDate(today.getDate() - 1);
 
-                    const isAdmin = ['sam', 'dylan'].includes(currentEmployeeId);
+                    const isAdmin = [''].includes(currentEmployeeId);
                     const rows = document.querySelectorAll('#weeklyTable tbody tr');
 
                     // Poser data-date en heure locale
