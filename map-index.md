@@ -16,3 +16,4 @@
 - `base.css` → `body` : `overflow-x: hidden` (fix scroll horizontal mobile).
 - `devis.css` → `.form-row` : `minmax(min(250px, 100%), 1fr)` (fix débordement grille).
 - `responsive.css` → Copro mobile : grille 2 col `minmax(0, 1fr)` + counter-btn réduits pour `#viewCoproUnique`, `#viewCoproMultiple`, `#viewCoproSimilaire`.
+- `heures.html` → `#saisieInterditeModal` : modale générique rouge pour saisie interdite (futur) ou modification impossible (trop ancien). Contenu injecté dynamiquement par `loadWeekDataAuto()`.

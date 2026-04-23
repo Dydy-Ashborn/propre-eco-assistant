@@ -2,9 +2,11 @@
 
 ## heures.js (Saisie Temps)
 - `loadWeekData()` : Charge les heures de la semaine via `getWeekString`.
-- `saveWeeklyData()` : **LOGIQUE CRITIQUE** : Sauvegarde + Blocage si saisie sur jour futur (via `getWeekStartDate`).
+- `saveWeeklyData()` : **LOGIQUE CRITIQUE** : Vérifie `data-date` sur chaque `<tr>` — bloque si jour futur (modale `#futurInterdictionModal`) ou si `rowDate < today - 1` (trop ancien). Utilise `merge:true`.
 - `addProjectRow()` : Ajout dynamique de ligne projet.
 - `checkSamediRappel()` : Modale rappel repos (sessionStorage).
+- `loadWeekDataAuto()` : Calcule les dates de la semaine depuis `YYYY-Www` en **heure locale** (pas UTC) et pose `data-date` sur chaque `<tr>`. Charge Firestore. Verrouille (`disabled` + `opacity:0.4`) les inputs hors fenêtre (aujourd'hui + hier uniquement). Pose un `div` overlay par-dessus chaque input verrouillé pour intercepter les clics et afficher la modale `#saisieInterditeModal` (rouge — message différent selon futur ou trop ancien).
+
 
 ## devis.js & voir.js
 - `setupPhotoPreview()` : Gestion UI photos devis.

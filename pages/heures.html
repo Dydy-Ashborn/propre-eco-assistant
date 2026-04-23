@@ -36,58 +36,58 @@
 </head>
 
 <body>
-       <!-- Header -->
+    <!-- Header -->
     <header class="header">
-  <div class="header-content">
-    <a href="../index.html" class="logo">
-      <img src="../img/logo.png" width="40px" alt="Logo Propre Eco">
-      Propre Eco Assistant
-    </a>
-  </div>
-</header>
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <img src="../img/logo.png" width="40px" alt="Logo Propre Eco">
+                Propre Eco Assistant
+            </a>
+        </div>
+    </header>
 
-<div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
+    <div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
 
-<nav class="bottom-nav">
-  <a href="../index.html" class="nav-tab" id="tab-accueil">
-    <i class="fa-solid fa-house"></i>
-    <span>Accueil</span>
-  </a>
+    <nav class="bottom-nav">
+        <a href="../index.html" class="nav-tab" id="tab-accueil">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </a>
 
-  <div class="fab-wrapper">
-    <div class="speed-dial" id="speedDial">
-      <a href="../pages/devis.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
-        <span class="sd-label">DEVIS</span>
-      </a>
-      <a href="../pages/Specifique.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
-        <span class="sd-label">SPÉCIFIQUE</span>
-      </a>
-      <a href="../pages/signaler.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <span class="sd-label">SIGNALER</span>
-      </a>
-      <a href="../pages/Feuilles.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
-        <span class="sd-label">FEUILLES</span>
-      </a>
-      <a href="../pages/pointeuse.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
-        <span class="sd-label">POINTEUSE</span>
-      </a>
-    </div>
+        <div class="fab-wrapper">
+            <div class="speed-dial" id="speedDial">
+                <a href="../pages/devis.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
+                    <span class="sd-label">DEVIS</span>
+                </a>
+                <a href="../pages/Specifique.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+                    <span class="sd-label">SPÉCIFIQUE</span>
+                </a>
+                <a href="../pages/signaler.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <span class="sd-label">SIGNALER</span>
+                </a>
+                <a href="../pages/Feuilles.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <span class="sd-label">FEUILLES</span>
+                </a>
+                <a href="../pages/pointeuse.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
+                    <span class="sd-label">POINTEUSE</span>
+                </a>
+            </div>
 
-    <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
-      <i class="fa-solid fa-screwdriver-wrench"></i>
-    </button>
-  </div>
+            <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+            </button>
+        </div>
 
-  <a href="../pages/dashbord.html" class="nav-tab" id="tab-dashboard">
-    <i class="fa-solid fa-chart-bar"></i>
-    <span>Tableau de bord</span>
-  </a>
-</nav>
+        <a href="../pages/dashbord.html" class="nav-tab" id="tab-dashboard">
+            <i class="fa-solid fa-chart-bar"></i>
+            <span>Tableau de bord</span>
+        </a>
+    </nav>
 
     <div id="loadingOverlay" class="loading-overlay" style="display:none">
         <div class="loading-content">
@@ -334,6 +334,24 @@
             </button>
         </div>
     </div>
+    <!-- Modale saisie interdite (trop ancien / futur) -->
+    <div id="saisieInterditeModal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+        <div
+            style="background:white; border-radius:16px; padding:2rem; max-width:360px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div id="saisieInterditeIcon"
+                style="width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
+                <i id="saisieInterditeIconI" style="color:white; font-size:1.5rem;"></i>
+            </div>
+            <h3 id="saisieInterditeTitle" style="margin-bottom:1rem;"></h3>
+            <p id="saisieInterditeMsg" style="color:#374151; line-height:1.6; margin-bottom:1.5rem;"></p>
+            <button onclick="document.getElementById('saisieInterditeModal').style.display='none'"
+                id="saisieInterditeBtn"
+                style="color:white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; width:100%;">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
     <footer class="app-footer">
         Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
     </footer>
@@ -567,47 +585,7 @@
             }
         }
 
-        async function loadWeekDataAuto() {
-            if (!currentWeek) {
-                return;
-            }
-            showLoading(true);
-            try {
-                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
-                const doc = await docRef.get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.days) {
-                        data.days.forEach((dayData, index) => {
-                            const rows = document.querySelectorAll('#weeklyTable tbody tr');
-                            if (rows[index]) {
-                                rows[index].querySelector('.hours').value = dayData.hours || '';
-                                rows[index].querySelector('textarea').value = dayData.comments || '';
-                            }
-                        });
-                    }
-                    document.getElementById('kilometrage').value = data.kilometrage || '';
 
-                    // Charger les chantiers spécifiques de cette semaine
-                    if (data.projects && data.projects.length > 0) {
-                        displaySavedProjects(data.projects);
-                    } else {
-                        hideSavedProjectsDisplay();
-                    }
-                } else {
-                    // Aucune donnée pour cette semaine, réinitialiser les champs
-                    document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = '');
-                    document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = '');
-                    document.getElementById('kilometrage').value = '';
-                    hideSavedProjectsDisplay();
-                }
-                calculateWeeklyTotal();
-            } catch (error) {
-                console.error('Erreur:', error);
-            } finally {
-                showLoading(false);
-            }
-        }
         function checkSamediRappel() {
             const today = new Date();
             const key = `samedi_rappel_${today.toISOString().split('T')[0]}`;
@@ -651,50 +629,68 @@
                 return;
             }
 
-            // Bloquer si un jour non encore passé contient des heures
             const today = new Date();
-            today.setHours(23, 59, 59, 999);
+            today.setHours(0, 0, 0, 0);
+            const minAllowed = new Date(today);
+            minAllowed.setDate(today.getDate() - 1);
 
-            const [year, weekNum] = currentWeek.split('-W').map(Number);
             const rows = document.querySelectorAll('#weeklyTable tbody tr');
-            let futurDetecte = false;
 
-            rows.forEach((row, index) => {
-                const hours = row.querySelector('.hours').value.trim();
-                if (hours === '' || parseFloat(hours) === 0) return;
-                const jourReel = new Date(getWeekStartDate(currentWeek));
-                jourReel.setDate(jourReel.getDate() + index);
+            for (const row of rows) {
+                const hoursInput = row.querySelector('.hours');
+                if (!hoursInput || !hoursInput.value) continue;
 
-                if (jourReel > today) {
-                    futurDetecte = true;
+                const dateAttr = row.getAttribute('data-date');
+                if (!dateAttr) continue;
+
+                const rowDate = new Date(dateAttr);
+                rowDate.setHours(0, 0, 0, 0);
+
+                const dayLabel = row.querySelector('td strong').textContent.trim();
+
+                if (rowDate > today) {
+                    document.getElementById('futurInterdictionModal').style.display = 'flex';
+                    hoursInput.value = '';
+                    return;
                 }
-            });
-            if (futurDetecte) {
-                document.getElementById('futurInterdictionModal').style.display = 'flex';
-                return;
+
+                if (rowDate < minAllowed) {
+                    showNotification(`Saisie interdite : "${dayLabel}" est trop ancien (max : hier).`, 'error');
+                    hoursInput.value = '';
+                    return;
+                }
             }
 
-            const data = { days: [], kilometrage: document.getElementById('kilometrage').value, lastUpdate: firebase.firestore.FieldValue.serverTimestamp() };
-            document.querySelectorAll('#weeklyTable tbody tr').forEach((row, index) => {
+            const data = {
+                days: [],
+                kilometrage: document.getElementById('kilometrage').value,
+                lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            rows.forEach(row => {
                 const day = row.querySelector('td strong').textContent;
                 const hours = row.querySelector('.hours').value;
                 const comments = row.querySelector('textarea').value;
-                data.days.push({ day: day, hours: hours, comments: comments })
+                data.days.push({ day, hours, comments });
             });
-            showLoading(true);
+
             const saveBtn = document.getElementById('saveWeeklyBtn');
+            showLoading(true);
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
             try {
-                await db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek).set(data, { merge: true });
-                showNotification('Données enregistrées!', 'success')
+                await db.collection('employees').doc(currentEmployeeId)
+                    .collection('weeks').doc(currentWeek)
+                    .set(data, { merge: true });
+                showNotification('Données enregistrées!', 'success');
             } catch (error) {
                 console.error('Erreur:', error);
-                showNotification('Erreur lors de l\'enregistrement', 'error')
+                showNotification("Erreur lors de l'enregistrement", 'error');
             } finally {
                 showLoading(false);
                 saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer'
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
             }
         }
         function resetWeeklyData() {
@@ -859,7 +855,119 @@
                 showLoading(false)
             }
         }
+        async function loadWeekDataAuto() {
+    if (!currentWeek) return;
+    showLoading(true);
 
+    try {
+        const [year, week] = currentWeek.split('-W').map(Number);
+        const jan4 = new Date(year, 0, 4);
+        const startOfWeek = new Date(jan4);
+        startOfWeek.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7) + (week - 1) * 7);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const minAllowed = new Date(today);
+        minAllowed.setDate(today.getDate() - 1);
+
+        const rows = document.querySelectorAll('#weeklyTable tbody tr');
+
+        // Poser data-date en heure locale (évite décalage UTC)
+        rows.forEach((row, index) => {
+            const d = new Date(startOfWeek);
+            d.setDate(startOfWeek.getDate() + index);
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            row.setAttribute('data-date', dateStr);
+        });
+
+        const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+        const doc = await docRef.get();
+
+        if (doc.exists) {
+            const data = doc.data();
+            if (data.days) {
+                data.days.forEach((dayData, index) => {
+                    if (rows[index]) {
+                        rows[index].querySelector('.hours').value = dayData.hours || '';
+                        rows[index].querySelector('textarea').value = dayData.comments || '';
+                    }
+                });
+            }
+            document.getElementById('kilometrage').value = data.kilometrage || '';
+            if (data.projects && data.projects.length > 0) {
+                displaySavedProjects(data.projects);
+            } else {
+                hideSavedProjectsDisplay();
+            }
+        } else {
+            rows.forEach(row => {
+                row.querySelector('.hours').value = '';
+                row.querySelector('textarea').value = '';
+            });
+            document.getElementById('kilometrage').value = '';
+            hideSavedProjectsDisplay();
+        }
+
+        calculateWeeklyTotal();
+
+        // Verrouillage + modale au clic
+        rows.forEach(row => {
+            // Parse en heure locale pour éviter décalage UTC
+            const [ry, rm, rd] = row.getAttribute('data-date').split('-').map(Number);
+            const rowDate = new Date(ry, rm - 1, rd);
+            rowDate.setHours(0, 0, 0, 0);
+
+            const hoursInput = row.querySelector('.hours');
+            const textarea = row.querySelector('textarea');
+            const isLocked = rowDate > today || rowDate < minAllowed;
+
+            [hoursInput, textarea].forEach(el => {
+                if (!el) return;
+                el.disabled = isLocked;
+                el.style.opacity = isLocked ? '0.4' : '';
+
+                if (isLocked) {
+                    const parent = el.parentElement;
+                    parent.style.position = 'relative';
+
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = 'position:absolute;inset:0;cursor:not-allowed;z-index:10;';
+                    overlay.addEventListener('click', () => {
+                        const modal = document.getElementById('saisieInterditeModal');
+                        const icon = document.getElementById('saisieInterditeIcon');
+                        const iconI = document.getElementById('saisieInterditeIconI');
+                        const title = document.getElementById('saisieInterditeTitle');
+                        const msg = document.getElementById('saisieInterditeMsg');
+                        const btn = document.getElementById('saisieInterditeBtn');
+
+                        icon.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+                        iconI.className = 'fas fa-ban';
+                        title.style.color = '#991b1b';
+                        btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+
+                        if (rowDate > today) {
+                            title.textContent = 'Saisie interdite';
+                            msg.innerHTML = '<strong>Il est interdit de remplir ses heures à l\'avance.</strong><br><br>Les heures doivent être renseignées chaque jour.';
+                        } else {
+                            title.textContent = 'Modification impossible';
+                            msg.innerHTML = 'Vous ne pouvez modifier que <strong>aujourd\'hui</strong> et <strong>hier</strong>.<br><br>Ce jour est trop ancien pour être modifié.';
+                        }
+
+                        modal.style.display = 'flex';
+                    });
+                    parent.appendChild(overlay);
+                }
+            });
+        });
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Erreur lors du chargement', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
         function displaySavedProjects(projectsData) {
             const display = document.getElementById('savedProjectsDisplay');
             const tbody = document.getElementById('savedProjectsBody');
@@ -1016,19 +1124,19 @@
     <script type="module">
         import { initNavigation, setActiveNavItem } from '../js/navbar.js';
         initNavigation();
-        setActiveNavItem('NOM_DU_FICHIER.html'); 
-          function toggleFab() {
-    const fab     = document.getElementById('fabBtn');
-    const dial    = document.getElementById('speedDial');
-    const overlay = document.getElementById('sdOverlay');
-    if (!fab || !dial || !overlay) return;
-    const isOpen = dial.classList.toggle('open');
-    fab.classList.toggle('open', isOpen);
-    overlay.classList.toggle('open', isOpen);
-  }
+        setActiveNavItem('NOM_DU_FICHIER.html');
+        function toggleFab() {
+            const fab = document.getElementById('fabBtn');
+            const dial = document.getElementById('speedDial');
+            const overlay = document.getElementById('sdOverlay');
+            if (!fab || !dial || !overlay) return;
+            const isOpen = dial.classList.toggle('open');
+            fab.classList.toggle('open', isOpen);
+            overlay.classList.toggle('open', isOpen);
+        }
     </script>
     <script src="../js/sw-update.js"></script>
-    
+
 
 </body>
 

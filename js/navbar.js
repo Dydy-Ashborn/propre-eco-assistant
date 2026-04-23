@@ -32,11 +32,3 @@ window.toggleFab = function () {
   fab.classList.toggle('open', isOpen);
   overlay.classList.toggle('open', isOpen);
 };
-export function setActiveNavItem(pageName) {
-  document.querySelectorAll('.bottom-nav .nav-tab').forEach(tab => {
-    tab.classList.remove('active');
-    if (tab.getAttribute('href')?.includes(pageName)) {
-      tab.classList.add('active');
-    }
-  });
-}

@@ -186,118 +186,286 @@ const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel
             return roundedTotal;
         } 
         
-        async function loadWeekData() { 
-            const selectedWeek = document.getElementById('weekInput').value; 
-            if (!selectedWeek) { 
-                showNotification('Sélectionnez une semaine', 'warning'); 
-                return 
-            } 
-            currentWeek = selectedWeek; 
-            showLoading(true); 
-            try { 
-                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek); 
-                const doc = await docRef.get(); 
-                if (doc.exists) { 
-                    const data = doc.data(); 
-                    if (data.days) { 
-                        data.days.forEach((dayData, index) => { 
-                            const rows = document.querySelectorAll('#weeklyTable tbody tr'); 
-                            if (rows[index]) { 
-                                rows[index].querySelector('.hours').value = dayData.hours || ''; 
-                                rows[index].querySelector('textarea').value = dayData.comments || '' 
-                            } 
-                        }) 
-                    } 
-                    document.getElementById('kilometrage').value = data.kilometrage || ''; 
-                    calculateWeeklyTotal(); 
-                    showNotification('Données chargées', 'success') 
-                } else { 
-                    document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = ''); 
-                    document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = ''); 
-                    document.getElementById('kilometrage').value = ''; 
-                    calculateWeeklyTotal(); 
-                    showNotification('Aucune donnée pour cette semaine', 'info') 
-                } 
-            } catch (error) { 
-                console.error('Erreur:', error); 
-                showNotification('Erreur lors du chargement', 'error') 
-            } finally { 
-                showLoading(false) 
-            } 
-        } 
+    async function loadWeekData() {
+    const selectedWeek = document.getElementById('weekInput').value;
+    if (!selectedWeek) {
+        showNotification('Sélectionnez une semaine', 'warning');
+        return;
+    }
+    currentWeek = selectedWeek;
+    showLoading(true);
 
-        async function loadWeekDataAuto() {
-            if (!currentWeek) {
-                return;
-            }
-            showLoading(true);
-            try {
-                const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
-                const doc = await docRef.get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.days) {
-                        data.days.forEach((dayData, index) => {
-                            const rows = document.querySelectorAll('#weeklyTable tbody tr');
-                            if (rows[index]) {
-                                rows[index].querySelector('.hours').value = dayData.hours || '';
-                                rows[index].querySelector('textarea').value = dayData.comments || '';
-                            }
-                        });
+    try {
+        // Calcul des dates de la semaine à partir de YYYY-Www
+        const [year, week] = selectedWeek.split('-W').map(Number);
+        const jan4 = new Date(year, 0, 4);
+        const startOfWeek = new Date(jan4);
+        startOfWeek.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7) + (week - 1) * 7);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const minAllowed = new Date(today);
+        minAllowed.setDate(today.getDate() - 1);
+
+        // Poser data-date sur chaque <tr>
+        const rows = document.querySelectorAll('#weeklyTable tbody tr');
+        rows.forEach((row, index) => {
+            const d = new Date(startOfWeek);
+            d.setDate(startOfWeek.getDate() + index);
+            const dateStr = d.toISOString().split('T')[0];
+            row.setAttribute('data-date', dateStr);
+        });
+
+        // Chargement Firestore
+        const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+        const doc = await docRef.get();
+
+        if (doc.exists) {
+            const data = doc.data();
+            if (data.days) {
+                data.days.forEach((dayData, index) => {
+                    if (rows[index]) {
+                        rows[index].querySelector('.hours').value = dayData.hours || '';
+                        rows[index].querySelector('textarea').value = dayData.comments || '';
                     }
-                    document.getElementById('kilometrage').value = data.kilometrage || '';
-                    
-                    // Charger les chantiers spécifiques de cette semaine
-                    if (data.projects && data.projects.length > 0) {
-                        displaySavedProjects(data.projects);
-                    } else {
-                        hideSavedProjectsDisplay();
-                    }
-                } else {
-                    // Aucune donnée pour cette semaine, réinitialiser les champs
-                    document.querySelectorAll('#weeklyTable .hours').forEach(input => input.value = '');
-                    document.querySelectorAll('#weeklyTable textarea').forEach(textarea => textarea.value = '');
-                    document.getElementById('kilometrage').value = '';
-                    hideSavedProjectsDisplay();
-                }
-                calculateWeeklyTotal();
-            } catch (error) {
-                console.error('Erreur:', error);
-            } finally {
-                showLoading(false);
+                });
             }
+            document.getElementById('kilometrage').value = data.kilometrage || '';
+            calculateWeeklyTotal();
+            showNotification('Données chargées', 'success');
+        } else {
+            rows.forEach(row => {
+                row.querySelector('.hours').value = '';
+                row.querySelector('textarea').value = '';
+            });
+            document.getElementById('kilometrage').value = '';
+            calculateWeeklyTotal();
+            showNotification('Aucune donnée pour cette semaine', 'info');
         }
+
+        // Verrouillage des inputs hors fenêtre
+        rows.forEach(row => {
+            const rowDate = new Date(row.getAttribute('data-date'));
+            rowDate.setHours(0, 0, 0, 0);
+
+            const hoursInput = row.querySelector('.hours');
+            const textarea = row.querySelector('textarea');
+            const isLocked = rowDate > today || rowDate < minAllowed;
+
+            [hoursInput, textarea].forEach(el => {
+                if (!el) return;
+                el.disabled = isLocked;
+                el.style.opacity = isLocked ? '0.4' : '';
+                el.style.cursor = isLocked ? 'not-allowed' : '';
+                el.title = isLocked
+                    ? rowDate > today
+                        ? 'Jour futur — saisie interdite'
+                        : 'Trop ancien — non modifiable'
+                    : '';
+            });
+        });
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Erreur lors du chargement', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+        function lockOutOfRangeInputs() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const minAllowed = new Date(today);
+  minAllowed.setDate(today.getDate() - 1);
+
+  const allInputs = document.querySelectorAll('input[data-date]');
+  allInputs.forEach(input => {
+    const dateStr = input.getAttribute('data-date');
+    const inputDate = new Date(dateStr);
+    inputDate.setHours(0, 0, 0, 0);
+
+    const outOfRange = inputDate > today || inputDate < minAllowed;
+    input.disabled = outOfRange;
+    input.style.opacity = outOfRange ? '0.35' : '';
+    input.style.cursor = outOfRange ? 'not-allowed' : '';
+    input.title = outOfRange
+      ? inputDate > today
+        ? 'Jour futur — saisie interdite'
+        : 'Trop ancien — saisie interdite (max 1 jour)'
+      : '';
+  });
+}
+async function loadWeekDataAuto() {
+    if (!currentWeek) return;
+    showLoading(true);
+
+    try {
+        const [year, week] = currentWeek.split('-W').map(Number);
+        const jan4 = new Date(year, 0, 4);
+        const startOfWeek = new Date(jan4);
+        startOfWeek.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7) + (week - 1) * 7);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const minAllowed = new Date(today);
+        minAllowed.setDate(today.getDate() - 2); // hier = dernier jour autorisé
+
+        const rows = document.querySelectorAll('#weeklyTable tbody tr');
+
+        rows.forEach((row, index) => {
+            const d = new Date(startOfWeek);
+            d.setDate(startOfWeek.getDate() + index);
+            row.setAttribute('data-date', d.toISOString().split('T')[0]);
+        });
+
+        const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
+        const doc = await docRef.get();
+
+        if (doc.exists) {
+            const data = doc.data();
+            if (data.days) {
+                data.days.forEach((dayData, index) => {
+                    if (rows[index]) {
+                        rows[index].querySelector('.hours').value = dayData.hours || '';
+                        rows[index].querySelector('textarea').value = dayData.comments || '';
+                    }
+                });
+            }
+            document.getElementById('kilometrage').value = data.kilometrage || '';
+            if (data.projects && data.projects.length > 0) {
+                displaySavedProjects(data.projects);
+            } else {
+                hideSavedProjectsDisplay();
+            }
+        } else {
+            rows.forEach(row => {
+                row.querySelector('.hours').value = '';
+                row.querySelector('textarea').value = '';
+            });
+            document.getElementById('kilometrage').value = '';
+            hideSavedProjectsDisplay();
+        }
+
+        calculateWeeklyTotal();
+
+        // Verrouillage + message au clic
+     // Verrouillage + message au clic
+// Verrouillage + message au clic
+rows.forEach(row => {
+    const rowDate = new Date(row.getAttribute('data-date'));
+    rowDate.setHours(0, 0, 0, 0);
+
+    const hoursInput = row.querySelector('.hours');
+    const textarea = row.querySelector('textarea');
+    const isLocked = rowDate > today || rowDate < minAllowed;
+
+    [hoursInput, textarea].forEach(el => {
+        if (!el) return;
+        el.disabled = isLocked;
+        el.style.opacity = isLocked ? '0.4' : '';
+
+        if (isLocked) {
+            // Wrapper relatif pour poser l'overlay
+            const parent = el.parentElement;
+            parent.style.position = 'relative';
+
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:absolute;inset:0;cursor:not-allowed;z-index:10;';
+            overlay.addEventListener('click', () => {
+                if (rowDate > today) {
+                    showNotification('Saisie interdite : vous ne pouvez pas remplir un jour futur.', 'error');
+                } else {
+                    showNotification('Saisie interdite : vous ne pouvez modifier que aujourd\'hui et hier.', 'error');
+                }
+            });
+            parent.appendChild(overlay);
+        }
+    });
+});
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Erreur lors du chargement', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
         
         // âœ… CORRECTION 1 : Ajouter { merge: true } pour ne pas écraser les chantiers
-        async function saveWeeklyData() { 
-            if (!currentWeek) { 
-                showNotification('Sélectionnez une semaine', 'warning'); 
-                return 
-            } 
-            const data = { days: [], kilometrage: document.getElementById('kilometrage').value, lastUpdate: firebase.firestore.FieldValue.serverTimestamp() }; 
-            document.querySelectorAll('#weeklyTable tbody tr').forEach((row, index) => { 
-                const day = row.querySelector('td strong').textContent; 
-                const hours = row.querySelector('.hours').value; 
-                const comments = row.querySelector('textarea').value; 
-                data.days.push({ day: day, hours: hours, comments: comments }) 
-            }); 
-            showLoading(true); 
-            const saveBtn = document.getElementById('saveWeeklyBtn'); 
-            saveBtn.disabled = true; 
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...'; 
-            try { 
-                // âœ… CORRECTION : Utiliser merge: true pour ne pas écraser les chantiers spécifiques
-                await db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek).set(data, { merge: true }); 
-                showNotification('Données enregistrées!', 'success') 
-            } catch (error) { 
-                console.error('Erreur:', error); 
-                showNotification('Erreur lors de l\'enregistrement', 'error') 
-            } finally { 
-                showLoading(false); 
-                saveBtn.disabled = false; 
-                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer' 
-            } 
-        } 
+       async function saveWeeklyData() {
+    if (!currentWeek) {
+        showNotification('Sélectionnez une semaine', 'warning');
+        return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const minAllowed = new Date(today);
+    minAllowed.setDate(today.getDate() - 1);
+
+    // Vérification des jours saisis hors fenêtre autorisée
+    const rows = document.querySelectorAll('#weeklyTable tbody tr');
+    for (const row of rows) {
+        const hoursInput = row.querySelector('.hours');
+        if (!hoursInput || !hoursInput.value) continue;
+
+        const dayLabel = row.querySelector('td strong').textContent.trim();
+        const dateAttr = hoursInput.getAttribute('data-date');
+        if (!dateAttr) continue;
+
+        const inputDate = new Date(dateAttr);
+        inputDate.setHours(0, 0, 0, 0);
+
+        if (inputDate > today) {
+            showNotification(`Saisie impossible : "${dayLabel}" est dans le futur.`, 'error');
+            hoursInput.value = '';
+            return;
+        }
+
+        if (inputDate < minAllowed) {
+            showNotification(`Saisie impossible : "${dayLabel}" dépasse la limite (max : hier).`, 'error');
+            hoursInput.value = '';
+            return;
+        }
+    }
+
+    const data = {
+        days: [],
+        kilometrage: document.getElementById('kilometrage').value,
+        lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    rows.forEach(row => {
+        const day = row.querySelector('td strong').textContent;
+        const hours = row.querySelector('.hours').value;
+        const comments = row.querySelector('textarea').value;
+        data.days.push({ day, hours, comments });
+    });
+
+    const saveBtn = document.getElementById('saveWeeklyBtn');
+    showLoading(true);
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
+    try {
+        await db.collection('employees').doc(currentEmployeeId)
+            .collection('weeks').doc(currentWeek)
+            .set(data, { merge: true });
+        showNotification('Données enregistrées!', 'success');
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification("Erreur lors de l'enregistrement", 'error');
+    } finally {
+        showLoading(false);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+    }
+}
         
         function resetWeeklyData() { 
             if (confirm('Effacer toutes les données?')) { 

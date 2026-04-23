@@ -55,6 +55,8 @@ function initNavigation() {
     const closeBtn = document.querySelector('.sidebar-close');
     const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
 
+    if (!hamburgerBtn || !sidebar || !overlay || !closeBtn) return;
+
     function openSidebar() {
         hamburgerBtn.classList.add('active');
         sidebar.classList.add('active');
@@ -81,12 +83,9 @@ function initNavigation() {
     overlay.addEventListener('click', closeSidebar);
 
     sidebarLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            closeSidebar();
-        });
+        link.addEventListener('click', () => closeSidebar());
     });
 
-    // Fermer avec Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && sidebar.classList.contains('active')) {
             closeSidebar();
