@@ -847,3 +847,8 @@
             }
         }
 
+.btn-label-short { display: none; }
+@media (max-width: 480px) {
+    .btn-label-long { display: none; }
+    .btn-label-short { display: inline; }
+}
