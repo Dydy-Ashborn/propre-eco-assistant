@@ -130,9 +130,9 @@ function checkSavedSession() {
                 console.log('Session valide trouvee pour:', employeeName);
                 showNotification(`Connexion automatique en cours pour ${employeeName}...`, 'info');
                 
-                setTimeout(() => {
+            
                     window.location.href = `heures.html?employee=${employeeId}`;
-                }, 800);
+             
                 return true;
             } else {
                 console.log('Session expiree, suppression');
