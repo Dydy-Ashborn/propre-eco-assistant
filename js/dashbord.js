@@ -376,10 +376,10 @@ async function loadOverview() {
                 cursor.setDate(cursor.getDate() + 1);
             }
 
-            if (joursAVerifier.length === 0) {
-                renderAlerteHeures([], today, hour);
-                return;
-            }
+            // if (joursAVerifier.length === 0) {
+            //     renderAlerteHeures([], today, hour);
+            //     return;
+            // }
 
             // Clé semaine (ISO)
             const getWeekNum = (d) => {
@@ -432,48 +432,48 @@ async function loadOverview() {
                 }
             }));
 
-            renderAlerteHeures(manquants, hour);
+            // renderAlerteHeures(manquants, hour);
         }
-        function renderAlerteHeures(manquants, hour) {
-            const existing = document.getElementById('alerte-heures-widget');
-            if (existing) existing.remove();
+    //     function renderAlerteHeures(manquants, hour) {
+    //         const existing = document.getElementById('alerte-heures-widget');
+    //         if (existing) existing.remove();
 
-            if (manquants.length === 0 || hour < 8) return;
+    //         if (manquants.length === 0 || hour < 8) return;
 
-            const widget = document.createElement('div');
-            widget.id = 'alerte-heures-widget';
-            widget.className = 'alerte-heures-widget';
-            widget.innerHTML = `
-        <div class="alerte-heures-header">
-            <div class="alerte-heures-icon-wrap">
-                <i class="fas fa-clock-rotate-left"></i>
-            </div>
-            <div class="alerte-heures-titles">
-                <span class="alerte-heures-title">Heures manquantes</span>
-                <span class="alerte-heures-sub">Semaine en cours · ${manquants.length} employé${manquants.length > 1 ? 's' : ''} concerné${manquants.length > 1 ? 's' : ''}</span>
-            </div>
-            <span class="alerte-heures-badge">${manquants.length}</span>
-        </div>
-        <div class="alerte-heures-list">
-            ${manquants.map(({ emp, count }) => `
-                <button class="alerte-emp-btn" onclick="naviguerVersHeuresEmploye('${emp.id}', '${emp.name}')">
-                    <span class="alerte-emp-avatar">${emp.name.charAt(0).toUpperCase()}</span>
-                    <div class="alerte-emp-info">
-                        <span class="alerte-emp-name">${emp.name}</span>
-                        <span class="alerte-emp-detail">${count} jour${count > 1 ? 's' : ''} non saisi${count > 1 ? 's' : ''}</span>
-                    </div>
-                    <span class="alerte-emp-tag ${count > 1 ? 'tag-retard' : 'tag-aremplir'}">${count > 1 ? 'En retard' : 'À remplir'}</span>
-                    <i class="fas fa-chevron-right alerte-emp-arrow"></i>
-                </button>
-            `).join('')}
-        </div>
-    `;
+    //         const widget = document.createElement('div');
+    //         widget.id = 'alerte-heures-widget';
+    //         widget.className = 'alerte-heures-widget';
+    //         widget.innerHTML = `
+    //     <div class="alerte-heures-header">
+    //         <div class="alerte-heures-icon-wrap">
+    //             <i class="fas fa-clock-rotate-left"></i>
+    //         </div>
+    //         <div class="alerte-heures-titles">
+    //             <span class="alerte-heures-title">Heures manquantes</span>
+    //             <span class="alerte-heures-sub">Semaine en cours · ${manquants.length} employé${manquants.length > 1 ? 's' : ''} concerné${manquants.length > 1 ? 's' : ''}</span>
+    //         </div>
+    //         <span class="alerte-heures-badge">${manquants.length}</span>
+    //     </div>
+    //     <div class="alerte-heures-list">
+    //         ${manquants.map(({ emp, count }) => `
+    //             <button class="alerte-emp-btn" onclick="naviguerVersHeuresEmploye('${emp.id}', '${emp.name}')">
+    //                 <span class="alerte-emp-avatar">${emp.name.charAt(0).toUpperCase()}</span>
+    //                 <div class="alerte-emp-info">
+    //                     <span class="alerte-emp-name">${emp.name}</span>
+    //                     <span class="alerte-emp-detail">${count} jour${count > 1 ? 's' : ''} non saisi${count > 1 ? 's' : ''}</span>
+    //                 </div>
+    //                 <span class="alerte-emp-tag ${count > 1 ? 'tag-retard' : 'tag-aremplir'}">${count > 1 ? 'En retard' : 'À remplir'}</span>
+    //                 <i class="fas fa-chevron-right alerte-emp-arrow"></i>
+    //             </button>
+    //         `).join('')}
+    //     </div>
+    // `;
 
-            const overviewGrid = document.querySelector('#content-overview .overview-grid');
-            if (overviewGrid) {
-                overviewGrid.parentNode.insertBefore(widget, overviewGrid.nextSibling);
-            }
-        }
+    //         const overviewGrid = document.querySelector('#content-overview .overview-grid');
+    //         if (overviewGrid) {
+    //             overviewGrid.parentNode.insertBefore(widget, overviewGrid.nextSibling);
+    //         }
+    //     }
 
         window.naviguerVersHeuresEmploye = function (empId, empName) {
             // Pré-sélectionner l'employé dans le filtre de l'onglet Heures
