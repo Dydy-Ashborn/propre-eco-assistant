@@ -325,11 +325,6 @@
                         <i class="fas fa-clock"></i>
                         Relevé d'heures des employés
                     </h2>
-               
-                    <button class="btn" onclick="ouvrirModalSaisieHeures()" style="display:flex; background:linear-gradient(135deg,#1f2937,#111827);">
-    <i class="fas fa-pen"></i>
-    Saisir des heures
-</button>
                 </div>
 
                 <div class="heures-filters">
@@ -368,6 +363,11 @@
                         <button class="btn btn-cancel"
                             onclick="document.getElementById('filterWeekStart').value='';document.getElementById('filterWeekEnd').value='';document.getElementById('filterEmployee').value='';">
                             <i class="fas fa-times"></i> Effacer
+                        </button>
+                        <button onclick="ouvrirModalSaisieHeures()"
+                            style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg,#6366f1,#4f46e5); color:white; border:none; padding:0.75rem 1.25rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; box-shadow:0 4px 12px rgba(99,102,241,0.3); transition:transform 0.15s;"
+                            onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+                            <i class="fas fa-pen"></i> Saisir des heures
                         </button>
                     </div>
                 </div>
@@ -519,105 +519,220 @@
             </div>
         </div>
     </div>
- <!-- Modale saisie heures admin -->
-<div id="modalSaisieHeures" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9999; align-items:center; justify-content:center; overflow-y:auto; padding:1rem;">
-    <div style="background:white; border-radius:20px; padding:2rem; max-width:640px; width:100%; margin:auto; box-shadow:0 25px 80px rgba(0,0,0,0.35);">
+    <!-- Modale saisie heures admin -->
+    <div id="modalSaisieHeures"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9999; align-items:center; justify-content:center; overflow-y:auto; padding:1rem;">
+        <div
+            style="background:white; border-radius:20px; padding:2rem; max-width:640px; width:100%; margin:auto; box-shadow:0 25px 80px rgba(0,0,0,0.35);">
 
-        <!-- Header -->
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem;">
-            <div style="display:flex; align-items:center; gap:0.75rem;">
-                <div style="background:linear-gradient(135deg,#10b981,#059669); width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                    <i class="fas fa-pen" style="color:white; font-size:1rem;"></i>
+            <!-- Header -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem;">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <div
+                        style="background:linear-gradient(135deg,#10b981,#059669); width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-pen" style="color:white; font-size:1rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin:0; color:#111827; font-size:1.2rem;">Saisir des heures</h3>
+                        <p style="margin:0; color:#6b7280; font-size:0.8rem;">Modification administrative</p>
+                    </div>
+                </div>
+                <button onclick="fermerModalSaisieHeures()"
+                    style="background:#f3f4f6; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; color:#6b7280; font-size:1rem; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Filtres -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+                <div>
+                    <label
+                        style="font-weight:600; font-size:0.82rem; color:#374151; display:block; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-user" style="color:#10b981;"></i> Employé
+                    </label>
+                    <select id="saisieEmp"
+                        style="width:100%; padding:0.65rem 0.75rem; border:1.5px solid #e5e7eb; border-radius:10px; font-size:0.95rem; color:#111827; background:white; outline:none;">
+                        <option value="">Sélectionner...</option>
+                        <option value="dylan">Dylan</option>
+                        <option value="oceane">Océane</option>
+                        <option value="samuel">Samuel</option>
+                        <option value="jeremie">Jérémie</option>
+                        <option value="carlos">Carlos</option>
+                        <option value="sandra">Sandra</option>
+                        <option value="manon">Manon</option>
+                        <option value="stephane">Stéphane</option>
+                        <option value="isabelle">Isabelle</option>
+                        <option value="caroline">Caroline</option>
+                        <option value="nadjet">Nadjet</option>
+                        <option value="remy">Rémy</option>
+                        <option value="maxime">Maxime</option>
+                        <option value="shana">Shana</option>
+                    </select>
                 </div>
                 <div>
-                    <h3 style="margin:0; color:#111827; font-size:1.2rem;">Saisir des heures</h3>
-                    <p style="margin:0; color:#6b7280; font-size:0.8rem;">Modification administrative</p>
+                    <label
+                        style="font-weight:600; font-size:0.82rem; color:#374151; display:block; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-calendar" style="color:#10b981;"></i> Semaine
+                    </label>
+                    <input type="week" id="saisieWeek"
+                        style="width:100%; padding:0.65rem 0.75rem; border:1.5px solid #e5e7eb; border-radius:10px; font-size:0.95rem; color:#111827; outline:none; box-sizing:border-box;">
                 </div>
             </div>
-            <button onclick="fermerModalSaisieHeures()" style="background:#f3f4f6; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; color:#6b7280; font-size:1rem; display:flex; align-items:center; justify-content:center;">
-                <i class="fas fa-times"></i>
+
+            <button onclick="chargerDonneesSaisie()"
+                style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; padding:0.65rem 1.25rem; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.9rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:0.5rem;">
+                <i class="fas fa-search"></i> Charger les données
             </button>
+
+            <!-- Tableau -->
+            <div id="saisiTableContainer" style="display:none;">
+                <div style="border:1.5px solid #e5e7eb; border-radius:12px; overflow:hidden; margin-bottom:1.25rem;">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#f9fafb,#f3f4f6);">
+                                <th
+                                    style="padding:0.75rem 1rem; text-align:left; font-size:0.78rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; width:70px;">
+                                    Jour</th>
+                                <th
+                                    style="padding:0.75rem 1rem; text-align:center; font-size:0.78rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; width:100px;">
+                                    Heures</th>
+                                <th
+                                    style="padding:0.75rem 1rem; text-align:left; font-size:0.78rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">
+                                    Commentaires</th>
+                            </tr>
+                        </thead>
+                        <tbody id="saisieTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Kilométrage -->
+                <div
+                    style="background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:10px; padding:0.75rem 1rem; display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+                    <i class="fas fa-road" style="color:#10b981; font-size:1.1rem;"></i>
+                    <label style="font-weight:600; font-size:0.9rem; color:#374151; margin:0;">Kilométrage</label>
+                    <input type="number" id="saisieKm" placeholder="km" min="0"
+                        style="margin-left:auto; padding:0.5rem 0.75rem; border:1.5px solid #e5e7eb; border-radius:8px; width:130px; font-size:0.95rem; text-align:center;">
+                </div>
+
+                <!-- Actions -->
+                <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+                    <button onclick="fermerModalSaisieHeures()"
+                        style="background:#f3f4f6; color:#374151; border:none; padding:0.75rem 1.5rem; border-radius:10px; font-weight:600; cursor:pointer; font-size:0.95rem;">
+                        Annuler
+                    </button>
+                    <button onclick="sauvegarderSaisieHeures()"
+                        style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; padding:0.75rem 1.75rem; border-radius:10px; font-weight:600; cursor:pointer; font-size:0.95rem; display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
+    <!-- Modale compteur d'heures -->
+    <div id="modalCompteur"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div
+            style="background:white; border-radius:20px; padding:2rem; max-width:480px; width:100%; margin:auto; box-shadow:0 25px 80px rgba(0,0,0,0.35);">
 
-        <!-- Filtres -->
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
-            <div>
-                <label style="font-weight:600; font-size:0.82rem; color:#374151; display:block; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">
-                    <i class="fas fa-user" style="color:#10b981;"></i> Employé
-                </label>
-                <select id="saisieEmp" style="width:100%; padding:0.65rem 0.75rem; border:1.5px solid #e5e7eb; border-radius:10px; font-size:0.95rem; color:#111827; background:white; outline:none;">
-                    <option value="">Sélectionner...</option>
-                    <option value="dylan">Dylan</option>
-                    <option value="oceane">Océane</option>
-                    <option value="samuel">Samuel</option>
-                    <option value="jeremie">Jérémie</option>
-                    <option value="carlos">Carlos</option>
-                    <option value="sandra">Sandra</option>
-                    <option value="manon">Manon</option>
-                    <option value="stephane">Stéphane</option>
-                    <option value="isabelle">Isabelle</option>
-                    <option value="caroline">Caroline</option>
-                    <option value="nadjet">Nadjet</option>
-                    <option value="remy">Rémy</option>
-                    <option value="maxime">Maxime</option>
-                    <option value="shana">Shana</option>
-                </select>
-            </div>
-            <div>
-                <label style="font-weight:600; font-size:0.82rem; color:#374151; display:block; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">
-                    <i class="fas fa-calendar" style="color:#10b981;"></i> Semaine
-                </label>
-                <input type="week" id="saisieWeek" style="width:100%; padding:0.65rem 0.75rem; border:1.5px solid #e5e7eb; border-radius:10px; font-size:0.95rem; color:#111827; outline:none; box-sizing:border-box;">
-            </div>
-        </div>
-
-        <button onclick="chargerDonneesSaisie()" style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; padding:0.65rem 1.25rem; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.9rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:0.5rem;">
-            <i class="fas fa-search"></i> Charger les données
-        </button>
-
-        <!-- Tableau -->
-        <div id="saisiTableContainer" style="display:none;">
-            <div style="border:1.5px solid #e5e7eb; border-radius:12px; overflow:hidden; margin-bottom:1.25rem;">
-                <table style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr style="background:linear-gradient(135deg,#f9fafb,#f3f4f6);">
-                            <th style="padding:0.75rem 1rem; text-align:left; font-size:0.78rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; width:70px;">Jour</th>
-                            <th style="padding:0.75rem 1rem; text-align:center; font-size:0.78rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; width:100px;">Heures</th>
-                            <th style="padding:0.75rem 1rem; text-align:left; font-size:0.78rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">Commentaires</th>
-                        </tr>
-                    </thead>
-                    <tbody id="saisieTableBody"></tbody>
-                </table>
+            <!-- Header -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem;">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <div id="compteurModalIcon"
+                        style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                        <i id="compteurModalIconI" class="fas fa-coins" style="color:white; font-size:1rem;"></i>
+                    </div>
+                    <div>
+                        <h3 id="compteurModalTitle" style="margin:0; color:#111827; font-size:1.2rem;"></h3>
+                        <p id="compteurModalSub" style="margin:0; color:#6b7280; font-size:0.8rem;"></p>
+                    </div>
+                </div>
+                <button onclick="fermerModalCompteur()"
+                    style="background:#f3f4f6; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; color:#6b7280; font-size:1rem; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
-            <!-- Kilométrage -->
-            <div style="background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:10px; padding:0.75rem 1rem; display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                <i class="fas fa-road" style="color:#10b981; font-size:1.1rem;"></i>
-                <label style="font-weight:600; font-size:0.9rem; color:#374151; margin:0;">Kilométrage</label>
-                <input type="number" id="saisieKm" placeholder="km" min="0"
-                    style="margin-left:auto; padding:0.5rem 0.75rem; border:1.5px solid #e5e7eb; border-radius:8px; width:130px; font-size:0.95rem; text-align:center;">
+            <!-- Solde actuel -->
+            <div
+                style="background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:12px; padding:1rem 1.25rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-weight:600; color:#374151; font-size:0.9rem;">Solde actuel</span>
+                <span id="compteurSoldeActuel" style="font-size:1.4rem; font-weight:800;"></span>
+            </div>
+
+            <!-- Infos semaine (Piocher/Ajouter) -->
+            <div id="compteurInfoSemaine"
+                style="background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:12px; padding:1rem 1.25rem; margin-bottom:1.25rem; display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                    <span style="color:#374151; font-size:0.88rem; font-weight:600;">Semaine</span>
+                    <span id="compteurSemaineLabel" style="color:#1d4ed8; font-weight:700; font-size:0.88rem;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:#374151; font-size:0.88rem; font-weight:600;">Total heures semaine</span>
+                    <span id="compteurTotalSemaine" style="color:#1d4ed8; font-weight:700; font-size:0.88rem;"></span>
+                </div>
+                <div id="compteurExcedentRow" style="display:none; justify-content:space-between; margin-top:0.4rem;">
+                    <span style="color:#374151; font-size:0.88rem; font-weight:600;">Excédent disponible</span>
+                    <span id="compteurExcedent" style="color:#10b981; font-weight:700; font-size:0.88rem;"></span>
+                </div>
+            </div>
+
+            <!-- Saisie montant -->
+            <div style="margin-bottom:1.25rem;">
+                <label id="compteurMontantLabel"
+                    style="font-weight:600; font-size:0.82rem; color:#374151; display:block; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Nombre
+                    d'heures</label>
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <input type="number" id="compteurMontantInput" min="0.25" step="0.25" placeholder="ex: 2"
+                        style="flex:1; padding:0.75rem; border:1.5px solid #e5e7eb; border-radius:10px; font-size:1.1rem; font-weight:700; text-align:center; outline:none;">
+                    <span style="font-weight:700; color:#374151; font-size:1.1rem;">h</span>
+                </div>
+                <p id="compteurMontantHint" style="margin:0.4rem 0 0; font-size:0.78rem; color:#6b7280;"></p>
+            </div>
+
+            <!-- Nouveau solde preview -->
+            <div id="compteurPreview"
+                style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:0.75rem 1.25rem; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:600; color:#374151; font-size:0.9rem;">Nouveau solde</span>
+                <span id="compteurNouveauSolde" style="font-size:1.2rem; font-weight:800; color:#10b981;"></span>
             </div>
 
             <!-- Actions -->
             <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
-                <button onclick="fermerModalSaisieHeures()"
+                <button onclick="fermerModalCompteur()"
                     style="background:#f3f4f6; color:#374151; border:none; padding:0.75rem 1.5rem; border-radius:10px; font-weight:600; cursor:pointer; font-size:0.95rem;">
                     Annuler
                 </button>
-                <button onclick="sauvegarderSaisieHeures()"
-                    style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; padding:0.75rem 1.75rem; border-radius:10px; font-weight:600; cursor:pointer; font-size:0.95rem; display:flex; align-items:center; gap:0.5rem;">
-                    <i class="fas fa-save"></i> Enregistrer
+                <button id="compteurConfirmBtn" onclick="confirmerActionCompteur()"
+                    style="color:white; border:none; padding:0.75rem 1.75rem; border-radius:10px; font-weight:600; cursor:pointer; font-size:0.95rem; display:flex; align-items:center; gap:0.5rem;">
+                    <i id="compteurConfirmIcon" class="fas fa-check"></i>
+                    <span id="compteurConfirmLabel">Confirmer</span>
                 </button>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Modale historique compteur -->
+    <div id="modalHistoriqueCompteur"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div
+            style="background:white; border-radius:20px; padding:2rem; max-width:560px; width:100%; margin:auto; box-shadow:0 25px 80px rgba(0,0,0,0.35); max-height:80vh; overflow-y:auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+                <h3 id="historiqueCompteurTitle" style="margin:0; color:#111827; font-size:1.2rem;"></h3>
+                <button onclick="fermerModalHistorique()"
+                    style="background:#f3f4f6; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; color:#6b7280; font-size:1rem; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="historiqueCompteurBody"></div>
+        </div>
+    </div>
 
     <script type="module" src="../js/dashbord.js"></script>
     <script type="module" src="../js/firebase-copro.js"></script>
 
 
     <script type="module">
+
         import { initNavigation, setActiveNavItem } from '../js/navbar.js';
         initNavigation();
         setActiveNavItem('dashbord.html');

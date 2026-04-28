@@ -1,6 +1,6 @@
 // Import Firebase
 import { db } from './config.js';
-import { collection, getDocs, getDoc, deleteDoc, doc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, getDoc, deleteDoc, doc, updateDoc, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { initCoproManagement } from './dashboard-copro.js';
 //TEMPS PAR DEFAUT POUR LE CHIFFRAGE (en minutes)
 const TEMPS_DEFAUT = {
@@ -2208,74 +2208,370 @@ function getWeeksBetween(weekStart, weekEnd) {
     return weeks;
 }
 
-function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
-    const container = document.getElementById('content-heures');
+// ========== COMPTEUR D'HEURES ==========
+let compteurState = {
+    mode: null,       // 'pioche' | 'ajoute' | 'ajuste'
+    empId: null,
+    empName: null,
+    solde: 0,
+    semaine: null,
+    totalHeureSemaine: 0
+};
 
-    // Afficher le bouton export si des données existent
-    const exportBtn = document.getElementById('btnExportHeures');
-    if (exportBtn) {
-        exportBtn.style.display = employeeData.length > 0 ? 'flex' : 'none';
+window.ouvrirCompteurPiocher = async function(empId, empName, semaine, totalHeureSemaine) {
+    const solde = await fetchSoldeCompteur(empId);
+    compteurState = { mode: 'pioche', empId, empName, solde, semaine, totalHeureSemaine };
+
+    document.getElementById('compteurModalIcon').style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
+    document.getElementById('compteurModalIconI').className = 'fas fa-arrow-down style="color:white; font-size:1rem;"';
+    document.getElementById('compteurModalTitle').textContent = `Piocher — ${empName}`;
+    document.getElementById('compteurModalSub').textContent = 'Combler les heures manquantes depuis le compteur';
+    document.getElementById('compteurSoldeActuel').textContent = formatSolde(solde);
+    document.getElementById('compteurSoldeActuel').style.color = solde >= 0 ? '#10b981' : '#ef4444';
+    document.getElementById('compteurInfoSemaine').style.display = 'block';
+    document.getElementById('compteurSemaineLabel').textContent = semaine;
+    document.getElementById('compteurTotalSemaine').textContent = totalHeureSemaine.toFixed(2) + 'h';
+    document.getElementById('compteurExcedentRow').style.display = 'none';
+    document.getElementById('compteurMontantLabel').textContent = 'Heures à piocher';
+    document.getElementById('compteurMontantHint').textContent = `Max recommandé : ${Math.max(0, solde).toFixed(2)}h (solde disponible)`;
+    document.getElementById('compteurConfirmBtn').style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
+    document.getElementById('compteurConfirmIcon').className = 'fas fa-arrow-down';
+    document.getElementById('compteurConfirmLabel').textContent = 'Piocher';
+    document.getElementById('compteurMontantInput').value = '';
+    document.getElementById('compteurNouveauSolde').textContent = '—';
+
+    document.getElementById('compteurMontantInput').oninput = () => updateCompteurPreview();
+    document.getElementById('modalCompteur').style.display = 'flex';
+};
+
+window.ouvrirCompteurAjouter = async function(empId, empName, semaine, totalHeureSemaine) {
+    const solde = await fetchSoldeCompteur(empId);
+    const excedent = Math.max(0, totalHeureSemaine - 35);
+    compteurState = { mode: 'ajoute', empId, empName, solde, semaine, totalHeureSemaine, excedent };
+
+    document.getElementById('compteurModalIcon').style.background = 'linear-gradient(135deg,#10b981,#059669)';
+    document.getElementById('compteurModalIconI').className = 'fas fa-arrow-up';
+    document.getElementById('compteurModalTitle').textContent = `Ajouter au compteur — ${empName}`;
+    document.getElementById('compteurModalSub').textContent = 'Verser un excédent d\'heures dans le compteur';
+    document.getElementById('compteurSoldeActuel').textContent = formatSolde(solde);
+    document.getElementById('compteurSoldeActuel').style.color = solde >= 0 ? '#10b981' : '#ef4444';
+    document.getElementById('compteurInfoSemaine').style.display = 'block';
+    document.getElementById('compteurSemaineLabel').textContent = semaine;
+    document.getElementById('compteurTotalSemaine').textContent = totalHeureSemaine.toFixed(2) + 'h';
+    document.getElementById('compteurExcedentRow').style.display = 'flex';
+    document.getElementById('compteurExcedent').textContent = excedent.toFixed(2) + 'h';
+    document.getElementById('compteurMontantLabel').textContent = 'Heures à verser au compteur';
+    document.getElementById('compteurMontantHint').textContent = `Excédent max disponible : ${excedent.toFixed(2)}h (base contrat 35h)`;
+    document.getElementById('compteurConfirmBtn').style.background = 'linear-gradient(135deg,#10b981,#059669)';
+    document.getElementById('compteurConfirmIcon').className = 'fas fa-arrow-up';
+    document.getElementById('compteurConfirmLabel').textContent = 'Ajouter';
+    document.getElementById('compteurMontantInput').value = '';
+    document.getElementById('compteurNouveauSolde').textContent = '—';
+
+    document.getElementById('compteurMontantInput').oninput = () => updateCompteurPreview();
+    document.getElementById('modalCompteur').style.display = 'flex';
+};
+
+window.ouvrirCompteurAjuster = async function(empId, empName) {
+    const solde = await fetchSoldeCompteur(empId);
+    compteurState = { mode: 'ajuste', empId, empName, solde, semaine: null, totalHeureSemaine: 0 };
+
+    document.getElementById('compteurModalIcon').style.background = 'linear-gradient(135deg,#6366f1,#4f46e5)';
+    document.getElementById('compteurModalIconI').className = 'fas fa-sliders-h';
+    document.getElementById('compteurModalTitle').textContent = `Ajuster le compteur — ${empName}`;
+    document.getElementById('compteurModalSub').textContent = 'Correction manuelle du solde';
+    document.getElementById('compteurSoldeActuel').textContent = formatSolde(solde);
+    document.getElementById('compteurSoldeActuel').style.color = solde >= 0 ? '#10b981' : '#ef4444';
+    document.getElementById('compteurInfoSemaine').style.display = 'none';
+    document.getElementById('compteurMontantLabel').textContent = 'Nouveau solde (positif ou négatif)';
+    document.getElementById('compteurMontantHint').textContent = 'Entrez le solde exact souhaité (ex: -2 ou 5.5)';
+    document.getElementById('compteurConfirmBtn').style.background = 'linear-gradient(135deg,#6366f1,#4f46e5)';
+    document.getElementById('compteurConfirmIcon').className = 'fas fa-check';
+    document.getElementById('compteurConfirmLabel').textContent = 'Ajuster';
+    document.getElementById('compteurMontantInput').value = solde;
+    document.getElementById('compteurMontantInput').min = '';
+    document.getElementById('compteurNouveauSolde').textContent = formatSolde(solde);
+
+    document.getElementById('compteurMontantInput').oninput = () => updateCompteurPreview();
+    document.getElementById('modalCompteur').style.display = 'flex';
+};
+
+function updateCompteurPreview() {
+    const val = parseFloat(document.getElementById('compteurMontantInput').value);
+    if (isNaN(val)) { document.getElementById('compteurNouveauSolde').textContent = '—'; return; }
+    const { mode, solde } = compteurState;
+    let nouveau;
+    if (mode === 'pioche') nouveau = solde - val;
+    else if (mode === 'ajoute') nouveau = solde + val;
+    else nouveau = val;
+    document.getElementById('compteurNouveauSolde').textContent = formatSolde(nouveau);
+    document.getElementById('compteurNouveauSolde').style.color = nouveau >= 0 ? '#10b981' : '#ef4444';
+}
+window.confirmerActionCompteur = async function() {
+    const val = parseFloat(document.getElementById('compteurMontantInput').value);
+    if (isNaN(val) || val === 0) { showNotification('Entrez un nombre d\'heures valide', 'error'); return; }
+
+    const { mode, empId, empName, solde, semaine } = compteurState;
+console.log('semaine:', semaine, 'empId:', empId, 'val:', val, 'mode:', mode);
+    let nouveauSolde, heuresAction, typeHistorique, commentaire;
+
+    if (mode === 'pioche') {
+        heuresAction = val;
+        nouveauSolde = Math.round((solde - val) * 100) / 100;
+        typeHistorique = 'pioche';
+        commentaire = `Compteur utilisé +${val}h`;
+    } else if (mode === 'ajoute') {
+        heuresAction = val;
+        nouveauSolde = Math.round((solde + val) * 100) / 100;
+        typeHistorique = 'ajout';
+        commentaire = `Ajout compteur +${val}h`;
+    } else {
+        heuresAction = val - solde;
+        nouveauSolde = Math.round(val * 100) / 100;
+        typeHistorique = 'ajustement';
+        commentaire = `Ajustement compteur → ${val}h`;
     }
 
-    // Stocker les données pour l'export
+    try {
+        const empRef = doc(db, 'employees', empId);
+
+        // 1. Mettre à jour le solde
+        await setDoc(empRef, { compteurHeures: nouveauSolde }, { merge: true });
+
+        // 2. Ajouter à l'historique
+        const historiqueRef = collection(db, 'employees', empId, 'compteurHistorique');
+        await addDoc(historiqueRef, {
+            date: new Date().toISOString().split('T')[0],
+            semaine: semaine || null,
+            heures: heuresAction,
+            type: typeHistorique,
+            commentaire,
+            timestamp: new Date()
+        });
+
+        // 3. Modifier le dernier jour travaillé + mettre à jour le total heures
+        if ((mode === 'pioche' || mode === 'ajoute') && semaine) {
+            await ajouterCommentaireDernierJour(empId, semaine, commentaire, mode === 'pioche' ? val : -val);
+        }
+
+        showNotification(`Compteur mis à jour — ${empName} : ${formatSolde(nouveauSolde)}`, 'success');
+        fermerModalCompteur();
+        heuresCache = {};
+        if (currentTab === 'heures') loadHeures();
+
+    } catch (error) {
+        console.error('Erreur compteur:', error);
+        showNotification('Erreur lors de la mise à jour du compteur', 'error');
+    }
+};
+
+async function ajouterCommentaireDernierJour(empId, semaine, commentaire, deltaHeures) {
+    try {
+        const weekRef = doc(db, 'employees', empId, 'weeks', semaine);
+        const weekSnap = await getDoc(weekRef);
+        if (!weekSnap.exists()) return;
+
+        const data = weekSnap.data();
+        const days = data.days || [];
+
+        // Trouver le dernier jour avec des heures
+        let dernierIndex = -1;
+        for (let i = days.length - 1; i >= 0; i--) {
+            if (days[i].hours && parseFloat(days[i].hours) > 0) {
+                dernierIndex = i;
+                break;
+            }
+        }
+        if (dernierIndex === -1) dernierIndex = days.length - 1;
+
+        // Ajouter le commentaire
+        const existingComment = days[dernierIndex].comments || '';
+        days[dernierIndex].comments = existingComment
+            ? `${existingComment} — ${commentaire}`
+            : commentaire;
+
+        // Mettre à jour les heures du dernier jour (pioche = +deltaHeures, ajout = -deltaHeures)
+        const heuresActuelles = parseFloat(days[dernierIndex].hours) || 0;
+        const nouvellesHeures = Math.round((heuresActuelles + deltaHeures) * 100) / 100;
+        days[dernierIndex].hours = nouvellesHeures > 0 ? String(nouvellesHeures) : '0';
+
+        await setDoc(weekRef, { days }, { merge: true });
+    } catch (e) {
+        console.error('Erreur commentaire jour:', e);
+    }
+}
+
+async function fetchSoldeCompteur(empId) {
+    try {
+        const empSnap = await getDoc(doc(db, 'employees', empId));
+        if (empSnap.exists() && typeof empSnap.data().compteurHeures === 'number') {
+            return empSnap.data().compteurHeures;
+        }
+    } catch(e) {}
+    return 0;
+}
+
+function formatSolde(val) {
+    const sign = val > 0 ? '+' : '';
+    return `${sign}${val.toFixed(2)}h`;
+}
+
+window.fermerModalCompteur = function() {
+    document.getElementById('modalCompteur').style.display = 'none';
+};
+
+window.ouvrirHistoriqueCompteur = async function(empId, empName) {
+    document.getElementById('historiqueCompteurTitle').textContent = `Historique compteur — ${empName}`;
+    document.getElementById('historiqueCompteurBody').innerHTML = '<p style="color:#6b7280; text-align:center;">Chargement...</p>';
+    document.getElementById('modalHistoriqueCompteur').style.display = 'flex';
+
+    try {
+        const { query, orderBy, limit } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+        const historiqueRef = collection(db, 'employees', empId, 'compteurHistorique');
+        const q = query(historiqueRef, orderBy('timestamp', 'desc'), limit(20));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+            document.getElementById('historiqueCompteurBody').innerHTML = '<p style="color:#6b7280; text-align:center;">Aucun mouvement enregistré</p>';
+            return;
+        }
+
+        const typeConfig = {
+            pioche: { label: 'Pioche', color: '#f59e0b', icon: 'fa-arrow-down' },
+            ajout: { label: 'Ajout', color: '#10b981', icon: 'fa-arrow-up' },
+            ajustement: { label: 'Ajustement', color: '#6366f1', icon: 'fa-sliders-h' }
+        };
+
+        let html = '<div style="display:flex; flex-direction:column; gap:0.75rem;">';
+        snap.forEach(d => {
+            const mv = d.data();
+            const cfg = typeConfig[mv.type] || typeConfig.ajustement;
+            const sign = mv.type === 'pioche' ? '-' : '+';
+            html += `
+                <div style="background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:10px; padding:0.75rem 1rem; display:flex; align-items:center; gap:0.75rem;">
+                    <div style="background:${cfg.color}20; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <i class="fas ${cfg.icon}" style="color:${cfg.color};"></i>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700; font-size:0.9rem; color:#111827;">${mv.commentaire || cfg.label}</div>
+<div style="font-size:0.78rem; color:#6b7280;">${mv.date ? mv.date.split('-').reverse().join('-') : ''}${mv.semaine ? ` · ${mv.semaine.replace('-W', '-S')}` : ''}</div>                    </div>
+                    <div style="font-weight:800; font-size:1rem; color:${cfg.color};">${sign}${Math.abs(mv.heures).toFixed(2)}h</div>
+                </div>`;
+        });
+        html += '</div>';
+        document.getElementById('historiqueCompteurBody').innerHTML = html;
+
+    } catch(e) {
+        console.error(e);
+        document.getElementById('historiqueCompteurBody').innerHTML = '<p style="color:#ef4444; text-align:center;">Erreur de chargement</p>';
+    }
+};
+
+window.fermerModalHistorique = function() {
+    document.getElementById('modalHistoriqueCompteur').style.display = 'none';
+};
+
+// ========== RENDER HEURES (avec compteur) ==========
+async function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
+    const container = document.getElementById('content-heures');
+
+    const exportBtn = document.getElementById('btnExportHeures');
+    if (exportBtn) exportBtn.style.display = employeeData.length > 0 ? 'flex' : 'none';
+
     window.lastHeuresData = { employeeData, totalHours, totalKm, totalChantiers };
 
+    const soldes = await Promise.all(employeeData.map(emp => fetchSoldeCompteur(emp.id)));
+    const semaine = document.getElementById('filterWeekStart').value;
+
+    const getInitiales = name => name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+    const compteurBadge = (solde) => {
+        if (solde > 0) return `<span class="heures-compteur-badge positif"><i class="fas fa-plus"></i>${solde.toFixed(2)}h</span>`;
+        if (solde < 0) return `<span class="heures-compteur-badge negatif"><i class="fas fa-minus"></i>${Math.abs(solde).toFixed(2)}h</span>`;
+        return `<span class="heures-compteur-badge zero">0.00h</span>`;
+    };
+
     let html = `
-        <div style="padding: 1.5rem;">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fas fa-clock" style="color: #10b981; font-size: 2rem;"></i>
-                    <div>
-                        <div class="stat-value">${totalHours.toFixed(2)}h</div>
-                        <div class="stat-label">Total heures</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-route" style="color: #3b82f6; font-size: 2rem;"></i>
-                    <div>
-                        <div class="stat-value">${totalKm} km</div>
-                        <div class="stat-label">Total kilomètres</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-hard-hat" style="color: #8b5cf6; font-size: 2rem;"></i>
-                    <div>
-                        <div class="stat-value">${totalChantiers}</div>
-                        <div class="stat-label">Chantiers spécifiques</div>
-                    </div>
+        <div class="heures-stats-grid">
+            <div class="heures-stat-card">
+                <div class="heures-stat-icon green"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="heures-stat-value">${totalHours.toFixed(2)}h</div>
+                    <div class="heures-stat-label">Total heures</div>
                 </div>
             </div>
-            
-            <div class="table-responsive" style="margin-top: 2rem;">
-                <table class="data-table">
-                    <thead>
+            <div class="heures-stat-card">
+                <div class="heures-stat-icon blue"><i class="fas fa-route"></i></div>
+                <div>
+                    <div class="heures-stat-value">${totalKm} km</div>
+                    <div class="heures-stat-label">Total kilomètres</div>
+                </div>
+            </div>
+            <div class="heures-stat-card">
+                <div class="heures-stat-icon purple"><i class="fas fa-hard-hat"></i></div>
+                <div>
+                    <div class="heures-stat-value">${totalChantiers}</div>
+                    <div class="heures-stat-label">Chantiers spécifiques</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="heures-table-wrap">
+            <table class="heures-emp-table">
+                <thead>
+                    <tr>
+                        <th>Employé</th>
+                        <th>Semaines</th>
+                        <th>Total heures</th>
+                        <th>Kilomètres</th>
+                        <th>Chantiers</th>
+                        <th>Compteur</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${employeeData.map((emp, i) => {
+                        const solde = soldes[i];
+                        const excedent = Math.max(0, emp.totalHours - 35);
+                        return `
                         <tr>
-                            <th>Employé</th>
-                            <th>Semaines</th>
-                            <th>Total heures</th>
-                            <th>Kilomètres</th>
-                            <th>Chantiers</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${employeeData.map(emp => `
-                            <tr>
-                                <td data-label="Employé"><strong>${emp.name}</strong></td>
-                                <td data-label="Semaines">${emp.weeks} semaine(s)</td>
-                                <td data-label="Total heures" style="color: #10b981; font-weight: 600;">${emp.totalHours.toFixed(2)}h</td>
-                                <td data-label="Kilomètres">${emp.totalKm} km</td>
-                                <td data-label="Chantiers">${emp.totalChantiers} chantier(s)</td>
-                                <td>
-                                    <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="viewEmployeeDetails('${emp.id}')">
+                            <td data-label="Employé">
+                                <div class="heures-emp-name">
+                                    <div class="heures-emp-avatar">${getInitiales(emp.name)}</div>
+                                    <span class="heures-emp-label">${emp.name}</span>
+                                </div>
+                            </td>
+                            <td data-label="Semaines">${emp.weeks} sem.</td>
+                            <td data-label="Total heures">
+                                <span class="heures-badge-hours">${emp.totalHours.toFixed(2)}h</span>
+                            </td>
+                            <td data-label="Kilomètres">${emp.totalKm} km</td>
+                            <td data-label="Chantiers">${emp.totalChantiers}</td>
+                            <td data-label="Compteur">${compteurBadge(solde)}</td>
+                            <td>
+                                <div class="heures-actions">
+                                    <button class="btn-heures-detail" onclick="viewEmployeeDetails('${emp.id}')">
                                         <i class="fas fa-eye"></i> Détails
                                     </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
+                                    <button class="btn-heures-pioche" onclick="ouvrirCompteurPiocher('${emp.id}','${emp.name}','${semaine}',${emp.totalHours})">
+                                        <i class="fas fa-arrow-down"></i> Piocher
+                                    </button>
+                                    ${excedent > 0 ? `
+                                    <button class="btn-heures-ajouter" onclick="ouvrirCompteurAjouter('${emp.id}','${emp.name}','${semaine}',${emp.totalHours})">
+                                        <i class="fas fa-arrow-up"></i> Ajouter
+                                    </button>` : ''}
+                                    <button class="btn-heures-ajuster" onclick="ouvrirCompteurAjuster('${emp.id}','${emp.name}')">
+                                        <i class="fas fa-sliders-h"></i> Ajuster
+                                    </button>
+                                    <button class="btn-heures-historique" onclick="ouvrirHistoriqueCompteur('${emp.id}','${emp.name}')">
+                                        <i class="fas fa-history"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>
         </div>
     `;
 
