@@ -18,6 +18,13 @@
 - `ouvrirRappelModal(id, collection, currentDate)` : Modale date picker pour poser/modifier/supprimer un rappel sur signalement ou consommable.
 - `sauvegarderRappel(id, col)` : `updateDoc` avec `rappelDate` + reset `rappelFait:false`.
 - `marquerRappelFait(id, col)` : `updateDoc rappelFait:true` + reload.
+- `showFacturationView()` / `hideFacturationView()` : Affiche/masque la vue facturation dans l'onglet Heures. `hide` vide aussi le innerHTML du container pour forcer un re-render propre au prochain appel. `switchTab('heures')` fait la même chose pour reset la vue si on navigue via les onglets.
+- `loadFacturationData()` : Interroge `employees/{id}/weeks/{week}` pour tous les employés en parallèle (SDK modular `getDoc`/`doc`). Render le shell si absent du DOM, sinon spinner sur `#fact-cards` uniquement (préserve le focus des filtres). Debounce 400ms sur le champ recherche via `factSearchTimeout`.
+- `groupChantiers(passages[])` : Deux règles de regroupement — (1) même date + 2+ mots significatifs en commun → `uncertain:false` ; (2) distance Levenshtein ≤ 0.3 → `uncertain:true`. Résultat trié par `totalH` desc.
+- `STOPWORDS` : Set de mots ignorés pour le calcul des mots significatifs (articles, prépositions, termes génériques : ext, parking, int, bat, hall, cave…).
+- `formatHeuresFactu(h)` : Affiche les heures sans zéro inutile — entier → `"9h"`, 1 décimale → `"8.5h"`, 2 décimales → `"1.75h"`.
+- `renderFacturationShell()` : Injecte header + filtres (semaine, employé, recherche) + stats + container cards. Réutilise les classes `heures-filters`, `heures-stats-grid`, `heures-stat-card` du module heures.
+- `renderFacturationCards()` : Tableau `heures-emp-table` — colonnes Chantier, Date(s), Passages, Total heures, Détail par employé. Badge cliquable "Regroupé (N noms)" / "⚠ Incertain" qui toggle un div avec les variantes de noms. Détail employé toujours visible inline.
 
 ## TEMPS_DEFAUT
 - Vitres Standard : 3 min, Baies Vitrées : 4 min, Vélux : 5 min, Portes vitrées : 3 min, Vitres Hautes : 5 min.
@@ -37,6 +44,9 @@
 ## badge.js & announcements.js
 - `NotificationService` : Écoute Firestore temps réel pour badge.
 - `showPopupIfNeeded()` : Carousel d'annonces (localStorage sync).
+- `displayPopup(annonce)` : Crée la modale, injecte carousel photos. Timer 5s bloquant avant fermeture — flag `_timerDone` posé sur l'objet à l'expiration. Tant que `_timerDone === false`, tout appel à `closePopup` est bloqué (bouton ✕, Escape, bouton footer).
+- `closePopup(announcementId)` : Guard `if (!this._timerDone) return` — bloque la fermeture pendant le countdown. Retire la popup + `dismissAnnouncement` + chaîne vers l'annonce suivante.
+- `_timerDone` : Flag booléen remis à `false` à chaque `displayPopup`, passé à `true` après les 5s du `setInterval`.
 
 ## firebase-copro.js (Accès Firestore Copros)
 - `addCopropriete()` : Utilise `addDoc` (ID auto Firestore) — jamais `setDoc` pour éviter écrasement silencieux.

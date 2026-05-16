@@ -189,6 +189,14 @@ function switchTab(tab) {
         heuresCache = {};
     }
 
+    // Si on quitte l'onglet heures ou qu'on y revient, reset la vue facturation
+ if (tab === 'heures') {
+        const factView = document.getElementById('facturationView');
+        const heuresNormal = document.getElementById('heuresNormal');
+        if (factView) { factView.style.display = 'none'; factView.innerHTML = ''; }
+        if (heuresNormal) heuresNormal.style.display = 'block';
+    }
+
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tab);
     });
@@ -4727,7 +4735,334 @@ window.sauvegarderSaisieHeures = async function () {
     }
 };
 
+// ─── FACTURATION CHANTIERS SPÉCIFIQUES ───────────────────────────────────────
+
+const STOPWORDS = new Set(['le','la','les','de','du','des','un','une','au','aux','et','en','à','a','l','d','ext','parking','int','bat','bât','appt','app','rez','rdc','entrée','entree','hall','cave','local','passage','bloc']);
+
+function getMotsSignificatifs(name) {
+    return name.toLowerCase().trim().split(/\s+/).filter(w => w.length > 2 && !STOPWORDS.has(w));
+}
+
+function motsEnCommun(a, b) {
+    const setA = new Set(getMotsSignificatifs(a));
+    const setB = new Set(getMotsSignificatifs(b));
+    return [...setA].filter(w => setB.has(w));
+}
+
+function levenshtein(a, b) {
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            dp[i][j] = a[i-1] === b[j-1]
+                ? dp[i-1][j-1]
+                : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+        }
+    }
+    return dp[m][n];
+}
+
+function normalizeChantierName(name) {
+    return name.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+function formatHeuresFactu(h) {
+    if (h % 1 === 0) return h.toFixed(0) + 'h';
+    if ((h * 10) % 1 === 0) return h.toFixed(1) + 'h';
+    return h.toFixed(2) + 'h';
+}
+
+function groupChantiers(allPassages) {
+    const SIMILARITY_THRESHOLD = 0.3;
+    const groups = [];
+
+    for (const passage of allPassages) {
+        const norm = normalizeChantierName(passage.name);
+        let matched = null;
+        let matchCertain = false;
+        let bestRatio = Infinity;
+
+        for (const g of groups) {
+            const canonNorm = normalizeChantierName(g.names[0]);
+            const sameDate = g.passages.some(p => p.date === passage.date);
+            const commun = motsEnCommun(passage.name, g.names[0]);
+            if (sameDate && commun.length >= 2) {
+                matched = g;
+                matchCertain = true;
+                break;
+            }
+            const dist = levenshtein(norm, canonNorm);
+            const ratio = dist / Math.max(norm.length, canonNorm.length);
+            if (ratio < bestRatio) {
+                bestRatio = ratio;
+                if (ratio === 0) { matched = g; matchCertain = true; break; }
+                if (ratio <= SIMILARITY_THRESHOLD) { matched = g; matchCertain = false; }
+            }
+        }
+
+        if (!matched) {
+            groups.push({ key: passage.name, names: [passage.name], passages: [passage], totalH: passage.hours, uncertain: false });
+        } else {
+            matched.passages.push(passage);
+            matched.totalH += passage.hours;
+            if (!matched.names.includes(passage.name)) {
+                matched.names.push(passage.name);
+                if (!matchCertain) matched.uncertain = true;
+            }
+        }
+    }
+
+    return groups.sort((a, b) => b.totalH - a.totalH);
+}
+
+let factSearchTimeout = null;
+
+function showFacturationView() {
+    document.getElementById('facturationView').style.display = 'block';
+    document.getElementById('heuresNormal').style.display = 'none';
+    document.getElementById('facturationView').scrollIntoView({ behavior: 'smooth' });
+    loadFacturationData();
+}
+
+function hideFacturationView() {
+    const factView = document.getElementById('facturationView');
+    factView.style.display = 'none';
+    factView.innerHTML = '';
+    document.getElementById('heuresNormal').style.display = 'block';
+}
+
+async function loadFacturationData() {
+    const container = document.getElementById('facturationView');
+
+    const weekVal = container.querySelector('#fact-week')?.value;
+    const empFilter = container.querySelector('#fact-emp')?.value || '';
+    const searchVal = (container.querySelector('#fact-search')?.value || '').toLowerCase().trim();
+
+    const now = new Date();
+    const y = now.getFullYear();
+    const d = new Date(Date.UTC(y, now.getMonth(), now.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const wn = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    const defaultWeek = `${y}-W${wn.toString().padStart(2, '0')}`;
+    const targetWeek = weekVal || defaultWeek;
+
+  // Toujours re-render le shell si les filtres ne sont pas dans le DOM
+    if (!container.querySelector('#fact-week')) {
+        renderFacturationShell(container, targetWeek, empFilter, searchVal);
+    } else {
+        // Shell déjà en place, juste spinner sur les cards
+    }
+
+    const cardsEl = container.querySelector('#fact-cards');
+    if (cardsEl) cardsEl.innerHTML = `<div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;"><i class="fas fa-spinner fa-spin"></i> Chargement…</div>`;
+
+    const empNames = employeeNames;
+    const employeeIds = Object.keys(empNames);
+    const allPassages = [];
+
+    await Promise.all(employeeIds.map(async (empId) => {
+        if (empFilter && empFilter !== empId) return;
+        try {
+            const snap = await getDoc(doc(db, 'employees', empId, 'weeks', targetWeek));
+            if (!snap.exists()) return;
+            const data = snap.data();
+            if (!data.projects || !data.projects.length) return;
+            data.projects.forEach(p => {
+                if (!p.name || !p.name.trim()) return;
+                const h = parseFloat((p.totalHours || '0').replace('h', '').replace(',', '.')) || 0;
+                allPassages.push({
+                    empId,
+                    empName: empNames[empId] || empId,
+                    date: p.date || '',
+                    name: p.name.trim(),
+                    team: p.team || '',
+                    hours: h
+                });
+            });
+        } catch(e) { console.error(e); }
+    }));
+
+    const filtered = searchVal
+        ? allPassages.filter(p => p.name.toLowerCase().includes(searchVal))
+        : allPassages;
+
+    const groups = groupChantiers(filtered);
+    const totalH = groups.reduce((s, g) => s + g.totalH, 0);
+    const totalPassages = groups.reduce((s, g) => s + g.passages.length, 0);
+
+    renderFacturationCards(container, groups, totalH, totalPassages);
+}
+
+function renderFacturationShell(container, targetWeek, empFilter, searchVal) {
+    const empOptions = Object.entries(employeeNames)
+        .map(([id, n]) => `<option value="${id}" ${empFilter === id ? 'selected' : ''}>${n}</option>`)
+        .join('');
+
+    container.innerHTML = `
+        <div class="card-section" style="margin-bottom:1rem;">
+            <div class="card-section-header">
+                <h2 class="card-section-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Facturation chantiers spécifiques
+                </h2>
+                <button onclick="hideFacturationView()"
+                    style="display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid #d1d5db;color:#6b7280;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;"
+                    onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+
+            <div class="heures-filters">
+                <div class="filter-group">
+                    <label><i class="fas fa-calendar"></i> Semaine</label>
+                    <input id="fact-week" type="week" value="${targetWeek}" class="filter-input"
+                        onchange="loadFacturationData()" />
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-user"></i> Employé</label>
+                    <select id="fact-emp" class="filter-input" onchange="loadFacturationData()">
+                        <option value="">Tous les employés</option>
+                        ${empOptions}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-search"></i> Chantier</label>
+                    <input id="fact-search" type="text" placeholder="Rechercher…" value="${searchVal}" class="filter-input"
+                        oninput="clearTimeout(factSearchTimeout);factSearchTimeout=setTimeout(loadFacturationData,400)" />
+                </div>
+            </div>
+
+            <div id="fact-stats" class="heures-stats-grid" style="margin-bottom:1rem;">
+                <div class="heures-stat-card">
+                    <div class="heures-stat-icon green"><i class="fas fa-hard-hat"></i></div>
+                    <div><div class="heures-stat-value">—</div><div class="heures-stat-label">Chantiers</div></div>
+                </div>
+                <div class="heures-stat-card">
+                    <div class="heures-stat-icon blue"><i class="fas fa-calendar-check"></i></div>
+                    <div><div class="heures-stat-value">—</div><div class="heures-stat-label">Passages</div></div>
+                </div>
+                <div class="heures-stat-card">
+                    <div class="heures-stat-icon purple"><i class="fas fa-clock"></i></div>
+                    <div><div class="heures-stat-value">—</div><div class="heures-stat-label">Total heures</div></div>
+                </div>
+            </div>
+
+            <div id="fact-cards"></div>
+        </div>
+    `;
+}
+
+function getInitialesFactu(name) {
+    return name.split(' ').map(n => n[0]?.toUpperCase() || '').join('').slice(0, 2);
+}
+
+function formatDateFactu(dateStr) {
+    if (!dateStr) return '—';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+}
+
+function renderFacturationCards(container, groups, totalH, totalPassages) {
+    const statsEl = container.querySelector('#fact-stats');
+    if (statsEl) {
+        statsEl.innerHTML = `
+            <div class="heures-stat-card">
+                <div class="heures-stat-icon green"><i class="fas fa-hard-hat"></i></div>
+                <div><div class="heures-stat-value">${groups.length}</div><div class="heures-stat-label">Chantiers</div></div>
+            </div>
+            <div class="heures-stat-card">
+                <div class="heures-stat-icon blue"><i class="fas fa-calendar-check"></i></div>
+                <div><div class="heures-stat-value">${totalPassages}</div><div class="heures-stat-label">Passages</div></div>
+            </div>
+            <div class="heures-stat-card">
+                <div class="heures-stat-icon purple"><i class="fas fa-clock"></i></div>
+                <div><div class="heures-stat-value">${formatHeuresFactu(totalH)}</div><div class="heures-stat-label">Total heures</div></div>
+            </div>
+        `;
+    }
+
+    const cardsEl = container.querySelector('#fact-cards');
+    if (!cardsEl) return;
+
+    if (!groups.length) {
+        cardsEl.innerHTML = `<div class="loading-state"><i class="fas fa-inbox"></i><p>Aucun chantier spécifique pour cette période.</p></div>`;
+        return;
+    }
+
+    cardsEl.innerHTML = `
+        <div class="heures-table-wrap">
+            <table class="heures-emp-table">
+                <thead>
+                    <tr>
+                        <th>Chantier</th>
+                        <th>Date(s)</th>
+                        <th>Passages</th>
+                        <th>Total heures</th>
+                        <th>Détail par employé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${groups.map(g => {
+                        const dates = [...new Set(g.passages.map(p => formatDateFactu(p.date)))].join(', ');
+
+                        const groupId = `fact-noms-${Math.random().toString(36).slice(2, 7)}`;
+                        const badge = g.uncertain
+                            ? `<span class="badge badge-warning" style="font-size:10px;cursor:pointer;"
+                                onclick="const el=document.getElementById('${groupId}');el.style.display=el.style.display==='none'?'block':'none'">
+                                ⚠ Incertain — voir noms</span>`
+                            : g.names.length > 1
+                                ? `<span class="badge badge-success" style="font-size:10px;cursor:pointer;"
+                                    onclick="const el=document.getElementById('${groupId}');el.style.display=el.style.display==='none'?'block':'none'">
+                                    ✓ Regroupé (${g.names.length} noms)</span>`
+                                : `<span class="badge badge-success" style="font-size:10px;">✓ Regroupé</span>`;
+
+                        const nomsDetail = g.names.length > 1
+                            ? `<div id="${groupId}" style="display:none;margin-top:4px;">
+                                ${g.names.map(n => `<div style="font-size:11px;color:${g.uncertain ? '#854F0B' : '#059669'};font-style:italic;">"${n}"</div>`).join('')}
+                               </div>`
+                            : '';
+
+                        const passageRows = g.passages
+                            .sort((a, b) => a.date > b.date ? 1 : -1)
+                            .map(p => `
+                                <div style="display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;">
+                                    <span style="color:#6b7280;min-width:55px;">${formatDateFactu(p.date)}</span>
+                                    <div class="heures-emp-avatar" style="width:20px;height:20px;font-size:9px;display:inline-flex;flex-shrink:0;">${getInitialesFactu(p.empName)}</div>
+                                    <span style="flex:1;color:#374151;">${p.empName}</span>
+                                    <span class="heures-badge-hours" style="font-size:11px;padding:2px 7px;">${formatHeuresFactu(p.hours)}</span>
+                                </div>
+                            `).join('');
+
+                        return `
+                            <tr>
+                                <td data-label="Chantier">
+                                    <strong style="font-size:13px;">${g.names[0]}</strong>
+                                    ${nomsDetail}
+                                    <div style="margin-top:5px;">${badge}</div>
+                                </td>
+                                <td data-label="Date(s)" style="font-size:13px;color:#6b7280;white-space:nowrap;">${dates}</td>
+                                <td data-label="Passages" style="text-align:center;font-weight:600;">${g.passages.length}</td>
+                                <td data-label="Total heures">
+                                    <span class="heures-badge-hours">${formatHeuresFactu(g.totalH)}</span>
+                                </td>
+                                <td data-label="Détail">
+                                    <div style="min-width:180px;">${passageRows}</div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
 // CRUCIAL : Exposer les fonctions au HTML
+window.showFacturationView = showFacturationView;
+window.hideFacturationView = hideFacturationView;
+window.loadFacturationData = loadFacturationData;
 window.openChiffrageModal = openChiffrageModal;
 window.calculerTotalDevis = calculerTotalDevis;
 window.saveChiffrage = saveChiffrage;
