@@ -190,7 +190,7 @@ function switchTab(tab) {
     }
 
     // Si on quitte l'onglet heures ou qu'on y revient, reset la vue facturation
- if (tab === 'heures') {
+    if (tab === 'heures') {
         const factView = document.getElementById('facturationView');
         const heuresNormal = document.getElementById('heuresNormal');
         if (factView) { factView.style.display = 'none'; factView.innerHTML = ''; }
@@ -4737,7 +4737,7 @@ window.sauvegarderSaisieHeures = async function () {
 
 // ─── FACTURATION CHANTIERS SPÉCIFIQUES ───────────────────────────────────────
 
-const STOPWORDS = new Set(['le','la','les','de','du','des','un','une','au','aux','et','en','à','a','l','d','ext','parking','int','bat','bât','appt','app','rez','rdc','entrée','entree','hall','cave','local','passage','bloc']);
+const STOPWORDS = new Set(['le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'au', 'aux', 'et', 'en', 'à', 'a', 'l', 'd', 'ext', 'parking', 'int', 'bat', 'bât', 'appt', 'app', 'rez', 'rdc', 'entrée', 'entree', 'hall', 'cave', 'local', 'passage', 'bloc']);
 
 function getMotsSignificatifs(name) {
     return name.toLowerCase().trim().split(/\s+/).filter(w => w.length > 2 && !STOPWORDS.has(w));
@@ -4755,9 +4755,9 @@ function levenshtein(a, b) {
     for (let j = 0; j <= n; j++) dp[0][j] = j;
     for (let i = 1; i <= m; i++) {
         for (let j = 1; j <= n; j++) {
-            dp[i][j] = a[i-1] === b[j-1]
-                ? dp[i-1][j-1]
-                : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+            dp[i][j] = a[i - 1] === b[j - 1]
+                ? dp[i - 1][j - 1]
+                : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
         }
     }
     return dp[m][n];
@@ -4849,7 +4849,7 @@ async function loadFacturationData() {
     const defaultWeek = `${y}-W${wn.toString().padStart(2, '0')}`;
     const targetWeek = weekVal || defaultWeek;
 
-  // Toujours re-render le shell si les filtres ne sont pas dans le DOM
+    // Toujours re-render le shell si les filtres ne sont pas dans le DOM
     if (!container.querySelector('#fact-week')) {
         renderFacturationShell(container, targetWeek, empFilter, searchVal);
     } else {
@@ -4882,7 +4882,7 @@ async function loadFacturationData() {
                     hours: h
                 });
             });
-        } catch(e) { console.error(e); }
+        } catch (e) { console.error(e); }
     }));
 
     const filtered = searchVal
@@ -4891,8 +4891,7 @@ async function loadFacturationData() {
 
     const groups = groupChantiers(filtered);
     const totalH = groups.reduce((s, g) => s + g.totalH, 0);
-    const totalPassages = groups.reduce((s, g) => s + g.passages.length, 0);
-
+const totalPassages = groups.reduce((s, g) => s + new Set(g.passages.map(p => p.date)).size, 0);
     renderFacturationCards(container, groups, totalH, totalPassages);
 }
 
@@ -5006,28 +5005,28 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
                 </thead>
                 <tbody>
                     ${groups.map(g => {
-                        const dates = [...new Set(g.passages.map(p => formatDateFactu(p.date)))].join(', ');
-
-                        const groupId = `fact-noms-${Math.random().toString(36).slice(2, 7)}`;
-                        const badge = g.uncertain
-                            ? `<span class="badge badge-warning" style="font-size:10px;cursor:pointer;"
+        const dates = [...new Set(g.passages.map(p => formatDateFactu(p.date)))].join(', ');
+        const nbPassages = new Set(g.passages.map(p => p.date)).size;
+        const groupId = `fact-noms-${Math.random().toString(36).slice(2, 7)}`;
+        const badge = g.uncertain
+            ? `<span class="badge badge-warning" style="font-size:10px;cursor:pointer;"
                                 onclick="const el=document.getElementById('${groupId}');el.style.display=el.style.display==='none'?'block':'none'">
                                 ⚠ Incertain — voir noms</span>`
-                            : g.names.length > 1
-                                ? `<span class="badge badge-success" style="font-size:10px;cursor:pointer;"
+            : g.names.length > 1
+                ? `<span class="badge badge-success" style="font-size:10px;cursor:pointer;"
                                     onclick="const el=document.getElementById('${groupId}');el.style.display=el.style.display==='none'?'block':'none'">
                                     ✓ Regroupé (${g.names.length} noms)</span>`
-                                : `<span class="badge badge-success" style="font-size:10px;">✓ Regroupé</span>`;
+                : `<span class="badge badge-success" style="font-size:10px;">✓ Regroupé</span>`;
 
-                        const nomsDetail = g.names.length > 1
-                            ? `<div id="${groupId}" style="display:none;margin-top:4px;">
+        const nomsDetail = g.names.length > 1
+            ? `<div id="${groupId}" style="display:none;margin-top:4px;">
                                 ${g.names.map(n => `<div style="font-size:11px;color:${g.uncertain ? '#854F0B' : '#059669'};font-style:italic;">"${n}"</div>`).join('')}
                                </div>`
-                            : '';
+            : '';
 
-                        const passageRows = g.passages
-                            .sort((a, b) => a.date > b.date ? 1 : -1)
-                            .map(p => `
+        const passageRows = g.passages
+            .sort((a, b) => a.date > b.date ? 1 : -1)
+            .map(p => `
                                 <div style="display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;">
                                     <span style="color:#6b7280;min-width:55px;">${formatDateFactu(p.date)}</span>
                                     <div class="heures-emp-avatar" style="width:20px;height:20px;font-size:9px;display:inline-flex;flex-shrink:0;">${getInitialesFactu(p.empName)}</div>
@@ -5036,7 +5035,7 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
                                 </div>
                             `).join('');
 
-                        return `
+        return `
                             <tr>
                                 <td data-label="Chantier">
                                     <strong style="font-size:13px;">${g.names[0]}</strong>
@@ -5044,8 +5043,7 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
                                     <div style="margin-top:5px;">${badge}</div>
                                 </td>
                                 <td data-label="Date(s)" style="font-size:13px;color:#6b7280;white-space:nowrap;">${dates}</td>
-                                <td data-label="Passages" style="text-align:center;font-weight:600;">${g.passages.length}</td>
-                                <td data-label="Total heures">
+<td data-label="Passages" style="text-align:center;font-weight:600;">${nbPassages}</td>                                <td data-label="Total heures">
                                     <span class="heures-badge-hours">${formatHeuresFactu(g.totalH)}</span>
                                 </td>
                                 <td data-label="Détail">
@@ -5053,7 +5051,7 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
                                 </td>
                             </tr>
                         `;
-                    }).join('')}
+    }).join('')}
                 </tbody>
             </table>
         </div>
