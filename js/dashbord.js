@@ -826,6 +826,8 @@ function renderSignalements() {
 
     container.innerHTML = '';
 
+    const today = new Date().toISOString().split('T')[0];
+
     pageData.forEach((signalement, index) => {
         const globalIndex = start + index;
         const date = formatDate(signalement.createdAt);
@@ -834,8 +836,28 @@ function renderSignalements() {
         const description = signalement.description || '';
         const metaId = `meta-sign-${globalIndex}`;
 
+        const rappelDate = signalement.rappelDate || null;
+        const rappelFait = signalement.rappelFait || false;
+        const isRappelToday = rappelDate === today;
+
+        let rappelBadge = '';
+        if (rappelDate && !rappelFait) {
+            const isPast = rappelDate < today;
+            const color = isRappelToday ? '#f59e0b' : (isPast ? '#ef4444' : '#6b7280');
+            const icon = isPast ? 'fa-exclamation-circle' : 'fa-bell';
+            const label = rappelDate.split('-').reverse().join('/');
+            rappelBadge = `<span style="display:inline-flex;align-items:center;gap:0.3rem;background:${color}18;color:${color};border:1px solid ${color}40;border-radius:20px;padding:0.2rem 0.6rem;font-size:0.75rem;font-weight:700;margin-top:0.3rem;">
+                <i class="fas ${icon}"></i> Rappel ${label}
+            </span>`;
+        } else if (rappelFait) {
+            rappelBadge = `<span style="display:inline-flex;align-items:center;gap:0.3rem;background:#10b98118;color:#10b981;border:1px solid #10b98140;border-radius:20px;padding:0.2rem 0.6rem;font-size:0.75rem;font-weight:700;margin-top:0.3rem;">
+                <i class="fas fa-check-circle"></i> Fait
+            </span>`;
+        }
+
         const div = document.createElement('div');
         div.className = 'chantier-item';
+        if (isRappelToday && !rappelFait) div.style.borderLeft = '3px solid #f59e0b';
 
         div.innerHTML = `
             ${photoCount > 0 ? `
@@ -849,11 +871,19 @@ function renderSignalements() {
                 <div class="chantier-name">${signalement.copro || 'Non spécifiée'}</div>
                 <div class="chantier-meta">
                     ${signalement.employee || 'Employé non spécifié'}${description ? ' - <span id="' + metaId + '">' + escapeHtml(description) + '</span>' : ''}
-                    ${description ? '<button class="btn-show-more" data-expanded="0"">Afficher plus</button>' : ''}
+                    ${description ? '<button class="btn-show-more" data-expanded="0">Afficher plus</button>' : ''}
                 </div>
+                <div style="margin-top:0.25rem;">${rappelBadge}</div>
             </div>
             <div class="chantier-date">${date}</div>
-            <div class="chantier-actions">
+            <div class="chantier-actions" style="flex-direction:column;gap:0.4rem;">
+                <button class="btn-icon" onclick="ouvrirRappelModal('${signalement.id}', 'signalements', '${rappelDate || ''}')" title="Définir rappel">
+                    <i class="fas fa-bell"></i>
+                </button>
+                ${rappelDate && !rappelFait ? `
+                <button class="btn-icon" style="color:#10b981;" onclick="marquerRappelFait('${signalement.id}', 'signalements')" title="Marquer fait">
+                    <i class="fas fa-check"></i>
+                </button>` : ''}
                 <button class="btn-icon danger" onclick="deleteSignalement('${signalement.id}')">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -865,15 +895,9 @@ function renderSignalements() {
         if (description) {
             const btn = div.querySelector('.btn-show-more');
             const meta = div.querySelector('.chantier-meta');
-
-            // Mesure réelle après rendu : est-ce que le texte dépasse la hauteur d'une ligne ?
             requestAnimationFrame(() => requestAnimationFrame(() => {
-                console.log('scrollWidth:', meta.scrollWidth, 'clientWidth:', meta.clientWidth);
-                if (meta.scrollWidth > meta.clientWidth) {
-                    btn.style.display = 'block';
-                }
+                if (meta.scrollWidth > meta.clientWidth) btn.style.display = 'block';
             }));
-
             btn.addEventListener('click', () => {
                 const isExpanded = btn.dataset.expanded === '1';
                 meta.classList.toggle('expanded', !isExpanded);
@@ -1786,6 +1810,61 @@ window.deleteSignalement = async function (id) {
             }
         }
     });
+};
+
+window.ouvrirRappelModal = function (id, collection, currentDate) {
+    const modalHTML = `
+        <div class="confirm-modal" id="rappelModal">
+            <div class="confirm-modal-content">
+                <div class="confirm-modal-header">
+                    <div class="confirm-modal-icon" style="background:#f59e0b20;color:#f59e0b;">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Définir un rappel</h3>
+                </div>
+                <div class="confirm-modal-body">
+                    <p style="margin-bottom:0.75rem;">Date du prochain passage :</p>
+                    <input type="date" id="rappelDateInput" value="${currentDate}"
+                        style="width:100%;padding:0.65rem;border:1.5px solid #e5e7eb;border-radius:10px;font-size:1rem;box-sizing:border-box;">
+                    <p style="margin-top:0.5rem;font-size:0.8rem;color:#6b7280;">Laissez vide pour supprimer le rappel.</p>
+                </div>
+                <div class="confirm-modal-footer">
+                    <button class="confirm-modal-btn confirm-modal-btn-cancel" onclick="document.getElementById('rappelModal').remove()">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                    <button class="confirm-modal-btn confirm-modal-btn-delete" style="background:#f59e0b;"
+                        onclick="sauvegarderRappel('${id}', '${collection}')">
+                        <i class="fas fa-bell"></i> Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+};
+
+window.sauvegarderRappel = async function (id, col) {
+    const dateVal = document.getElementById('rappelDateInput').value || null;
+    document.getElementById('rappelModal').remove();
+    try {
+        await updateDoc(doc(db, col, id), { rappelDate: dateVal, rappelFait: false });
+        showNotification('Rappel enregistré', 'success');
+        if (col === 'signalements') loadSignalements();
+        else loadConsommables();
+    } catch (e) {
+        showNotification('Erreur lors de l\'enregistrement', 'error');
+    }
+};
+
+window.marquerRappelFait = async function (id, col) {
+    try {
+        await updateDoc(doc(db, col, id), { rappelFait: true });
+        showNotification('Rappel marqué comme fait', 'success');
+        if (col === 'signalements') loadSignalements();
+        else loadConsommables();
+    } catch (e) {
+        showNotification('Erreur', 'error');
+    }
 };
 
 window.deleteConsommable = async function (id) {

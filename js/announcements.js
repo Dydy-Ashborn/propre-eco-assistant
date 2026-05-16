@@ -45,7 +45,7 @@ const AnnouncementSystem = {
         await this.fetchAnnonces();
         const dismissed = this.getDismissedIds();
         const unseen = this.annonces.filter(a => !dismissed[a.id]);
-        
+
         if (unseen.length > 0) {
             this.displayPopup(unseen[0]);
         }
@@ -59,7 +59,7 @@ const AnnouncementSystem = {
         this.currentSlide = 0;
         this.totalSlides = photos.length;
 
-        const carouselHtml = photos.length > 0 
+        const carouselHtml = photos.length > 0
             ? `<div class="announcement-carousel">
                 <div class="carousel-container">
                     <div class="carousel-track" id="carousel-track">
@@ -91,8 +91,8 @@ const AnnouncementSystem = {
                </div>`
             : '';
 
-        const date = annonce.createdAt?.toDate ? 
-            annonce.createdAt.toDate().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) 
+        const date = annonce.createdAt?.toDate ?
+            annonce.createdAt.toDate().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
             : '';
 
         const popup = document.createElement('div');
@@ -112,13 +112,34 @@ const AnnouncementSystem = {
                     ${carouselHtml}
                 </div>
                 <div class="announcement-footer">
-                    <button class="announcement-btn" onclick="window._announcementSystem.closePopup('${annonce.id}')">J'ai compris</button>
+                <button class="announcement-btn" id="announcement-close-btn" disabled style="opacity:0.55;cursor:not-allowed;">
+    J'ai compris <span id="announcement-timer" style="font-size:0.82em;opacity:0.8;margin-left:6px;">(5s)</span>
+</button>
                 </div>
             </div>
         `;
         document.body.appendChild(popup);
-        
+
         setTimeout(() => popup.classList.add('show'), 10);
+
+        // Timer 5s avant de pouvoir fermer
+        let secondsLeft = 5;
+        const timerSpan = document.getElementById('announcement-timer');
+        const closeBtn = document.getElementById('announcement-close-btn');
+
+        const countdown = setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft > 0) {
+                timerSpan.textContent = `(${secondsLeft}s)`;
+            } else {
+                clearInterval(countdown);
+                timerSpan.textContent = '';
+                closeBtn.disabled = false;
+                closeBtn.style.opacity = '1';
+                closeBtn.style.cursor = 'pointer';
+                closeBtn.onclick = () => window._announcementSystem.closePopup(annonce.id);
+            }
+        }, 1000);
         this.updateCarousel();
     },
 
@@ -165,7 +186,7 @@ const AnnouncementSystem = {
     showPhotoModal(photoSrc) {
         const modal = document.createElement('div');
         modal.className = 'photo-modal';
-        modal.onclick = function() { this.remove(); };
+        modal.onclick = function () { this.remove(); };
         modal.innerHTML = `<img src="${photoSrc}" alt="Photo">`;
         document.body.appendChild(modal);
     },
@@ -173,12 +194,14 @@ const AnnouncementSystem = {
     // Fermer la popup
     closePopup(announcementId) {
         const popup = document.getElementById('announcement-popup');
+        const closeBtn = document.getElementById('announcement-close-btn');
+        // Bloquer si le timer n'est pas écoulé
+        if (closeBtn && closeBtn.disabled) return;
         if (popup) {
             popup.classList.remove('show');
             setTimeout(() => {
                 popup.remove();
                 this.dismissAnnouncement(announcementId);
-                // Afficher la suivante s'il y en a
                 setTimeout(() => this.showPopupIfNeeded(), 300);
             }, 300);
         }

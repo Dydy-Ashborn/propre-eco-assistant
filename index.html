@@ -38,57 +38,57 @@
 
 <body>
   <!-- Header -->
-<!-- <header class="header">
+  <header class="header">
   <div class="header-content">
     <a href="index.html" class="logo">
       <img src="img/logo.png" width="40px" alt="Logo Propre Eco">
       Propre Eco Assistant
     </a>
   </div>
-</header> -->
+</header> 
 
-<div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
+  <div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
 
-<nav class="bottom-nav">
-  <a href="index.html" class="nav-tab" id="tab-accueil">
-    <i class="fa-solid fa-house"></i>
-    <span>Accueil</span>
-  </a>
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-tab" id="tab-accueil">
+      <i class="fa-solid fa-house"></i>
+      <span>Accueil</span>
+    </a>
 
-  <div class="fab-wrapper">
-    <div class="speed-dial" id="speedDial">
-      <a href="pages/devis.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
-        <span class="sd-label">DEVIS</span>
-      </a>
-      <a href="pages/Specifique.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
-        <span class="sd-label">SPÉCIFIQUE</span>
-      </a>
-      <a href="pages/signaler.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <span class="sd-label">SIGNALER</span>
-      </a>
-      <a href="pages/Feuilles.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
-        <span class="sd-label">FEUILLES</span>
-      </a>
-      <a href="pages/pointeuse.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
-        <span class="sd-label">POINTEUSE</span>
-      </a>
+    <div class="fab-wrapper">
+      <div class="speed-dial" id="speedDial">
+        <a href="pages/devis.html" class="speed-dial-item">
+          <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
+          <span class="sd-label">DEVIS</span>
+        </a>
+        <a href="pages/Specifique.html" class="speed-dial-item">
+          <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+          <span class="sd-label">SPÉCIFIQUE</span>
+        </a>
+        <a href="pages/signaler.html" class="speed-dial-item">
+          <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <span class="sd-label">SIGNALER</span>
+        </a>
+        <a href="pages/Feuilles.html" class="speed-dial-item">
+          <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+          <span class="sd-label">FEUILLES</span>
+        </a>
+        <a href="pages/pointeuse.html" class="speed-dial-item">
+          <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
+          <span class="sd-label">POINTEUSE</span>
+        </a>
+      </div>
+
+      <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+      </button>
     </div>
 
-    <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
-      <i class="fa-solid fa-screwdriver-wrench"></i>
-    </button>
-  </div>
-
-  <a href="pages/dashbord.html" class="nav-tab" id="tab-dashboard">
-    <i class="fa-solid fa-chart-bar"></i>
-    <span>Tableau de bord</span>
-  </a>
-</nav>
+    <a href="pages/dashbord.html" class="nav-tab" id="tab-dashboard">
+      <i class="fa-solid fa-chart-bar"></i>
+      <span>Tableau de bord</span>
+    </a>
+  </nav>
 
   <div class="container">
     <!-- Header de bienvenue -->
@@ -97,6 +97,20 @@
       <p>Gérez vos bÃ¢timents et optimisez vos tournées</p>
     </div> -->
 
+    <!-- Card Tâches du jour -->
+    <div id="taches-du-jour" style="display:none; margin-bottom:1rem;">
+      <div
+        style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #f59e0b40;border-radius:16px;padding:1rem 1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
+          <div
+            style="background:#f59e0b;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-bell" style="color:white;font-size:0.9rem;"></i>
+          </div>
+          <span style="font-weight:700;color:#92400e;font-size:1rem;">Tâches du jour</span>
+        </div>
+        <div id="taches-list" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+      </div>
+    </div>
     <!-- Section Recherche -->
     <section class="section">
       <h2 class="section-title">
@@ -205,6 +219,77 @@
 
 
   <script type="module" src="js/index.js"></script>
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+        authDomain: "copro-256d7.firebaseapp.com",
+        projectId: "copro-256d7",
+        storageBucket: "copro-256d7.firebasestorage.app",
+        messagingSenderId: "665588381388",
+        appId: "1:665588381388:web:a0567533ff1a62407db469"
+    };
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const today = new Date().toISOString().split('T')[0];
+
+    async function chargerTachesJour() {
+        const taches = [];
+
+        const [sigSnap, consoSnap] = await Promise.all([
+            getDocs(collection(db, 'signalements')),
+            getDocs(collection(db, 'consommables'))
+        ]);
+
+        sigSnap.forEach(d => {
+            const data = d.data();
+            if (data.rappelDate === today && !data.rappelFait) {
+                taches.push({
+                    copro: data.copro || '—',
+                    label: data.description || 'Signalement',
+                    type: 'probleme'
+                });
+            }
+        });
+
+        consoSnap.forEach(d => {
+            const data = d.data();
+            if (data.rappelDate === today && !data.rappelFait) {
+                taches.push({
+                    copro: data.copro || '—',
+                    label: `${data.type || 'Consommable'} × ${data.quantite || 1}`,
+                    type: 'consommable'
+                });
+            }
+        });
+
+        if (taches.length === 0) return;
+
+        const card = document.getElementById('taches-du-jour');
+        const list = document.getElementById('taches-list');
+        card.style.display = 'block';
+
+        taches.forEach(t => {
+            const iconColor = t.type === 'consommable' ? '#f97316' : '#ef4444';
+            const icon = t.type === 'consommable' ? 'fa-box' : 'fa-triangle-exclamation';
+            const div = document.createElement('div');
+            div.style.cssText = 'background:white;border-radius:10px;padding:0.65rem 0.9rem;display:flex;align-items:center;gap:0.65rem;box-shadow:0 1px 3px rgba(0,0,0,0.06);';
+            div.innerHTML = `
+                <i class="fas ${icon}" style="color:${iconColor};font-size:0.9rem;flex-shrink:0;"></i>
+                <div>
+                    <div style="font-weight:700;color:#111827;font-size:0.88rem;">${t.copro}</div>
+                    <div style="color:#6b7280;font-size:0.8rem;">${t.label}</div>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    chargerTachesJour();
+</script>
   <script type="module" src="js/firebase-copro.js"></script>
   <script type="module" src="js/announcements.js"></script>
   <script type="module">
@@ -218,8 +303,8 @@
   <!-- toggleFab en script classique — disponible immédiatement -->
   <script>
     function toggleFab() {
-      const fab     = document.getElementById('fabBtn');
-      const dial    = document.getElementById('speedDial');
+      const fab = document.getElementById('fabBtn');
+      const dial = document.getElementById('speedDial');
       const overlay = document.getElementById('sdOverlay');
       if (!fab || !dial || !overlay) return;
       const isOpen = dial.classList.toggle('open');

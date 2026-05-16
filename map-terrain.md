@@ -6,6 +6,8 @@
 - `formSubmitHandler()` : Envoi Firestore + Modales succès/erreur.
 - `selectProperty()` : Liaison avec `loadProperties` (CSV/Firestore).
 - `photoInput.change` : Compression + affichage stats dans `#compressionInfo` (Ko original → compressé, ratio %).
+- Champ `#rappel-date` (optionnel) : date ISO persistée dans Firestore (`rappelDate`, `rappelFait:false`). Présent sur signalements et consommables.
+- Card `#taches-du-jour` dans `index.html` : chargée au démarrage, affiche les rappels dont `rappelDate === today && !rappelFait`, via query parallèle sur `signalements` + `consommables`.
 
 ## pointeuse.js (PWA)
 - `validateCode()` : Validation PIN + Enregistrement pointage.

@@ -14,6 +14,10 @@
 - `downloadDevisPDF()` : Génération PDF via `generateDevisInfos`.
 - `renderSignalements()` : Bouton "Afficher plus" sur `.chantier-meta` — détection DOM `scrollWidth > clientWidth` + toggle classe `expanded`.
 - `renderPhotosChantiers()` : Même logique bouton "Afficher plus" — remplace `toggleMetaDesc` + détection DOM.
+- `renderSignalements()` : Badge rappel coloré (orange=aujourd'hui, rouge=passé, vert=fait). Bordure gauche orange si rappel J. Bouton cloche → `ouvrirRappelModal`, bouton ✓ → `marquerRappelFait`.
+- `ouvrirRappelModal(id, collection, currentDate)` : Modale date picker pour poser/modifier/supprimer un rappel sur signalement ou consommable.
+- `sauvegarderRappel(id, col)` : `updateDoc` avec `rappelDate` + reset `rappelFait:false`.
+- `marquerRappelFait(id, col)` : `updateDoc rappelFait:true` + reload.
 
 ## TEMPS_DEFAUT
 - Vitres Standard : 3 min, Baies Vitrées : 4 min, Vélux : 5 min, Portes vitrées : 3 min, Vitres Hautes : 5 min.

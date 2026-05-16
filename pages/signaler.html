@@ -33,7 +33,7 @@
 </head>
 
 <body>
-      <!-- Header -->
+    <!-- Header -->
     <!-- <header class="header">
   <div class="header-content">
     <a href="../index.html" class="logo">
@@ -43,48 +43,48 @@
   </div>
 </header> -->
 
-<div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
+    <div class="speed-dial-overlay" id="sdOverlay" onclick="toggleFab()"></div>
 
-<nav class="bottom-nav">
-  <a href="../index.html" class="nav-tab" id="tab-accueil">
-    <i class="fa-solid fa-house"></i>
-    <span>Accueil</span>
-  </a>
+    <nav class="bottom-nav">
+        <a href="../index.html" class="nav-tab" id="tab-accueil">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </a>
 
-  <div class="fab-wrapper">
-    <div class="speed-dial" id="speedDial">
-      <a href="../pages/devis.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
-        <span class="sd-label">DEVIS</span>
-      </a>
-      <a href="../pages/Specifique.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
-        <span class="sd-label">SPÉCIFIQUE</span>
-      </a>
-      <a href="../pages/signaler.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <span class="sd-label">SIGNALER</span>
-      </a>
-      <a href="../pages/Feuilles.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
-        <span class="sd-label">FEUILLES</span>
-      </a>
-      <a href="../pages/pointeuse.html" class="speed-dial-item">
-        <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
-        <span class="sd-label">POINTEUSE</span>
-      </a>
-    </div>
+        <div class="fab-wrapper">
+            <div class="speed-dial" id="speedDial">
+                <a href="../pages/devis.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-regular fa-file-lines"></i></div>
+                    <span class="sd-label">DEVIS</span>
+                </a>
+                <a href="../pages/Specifique.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+                    <span class="sd-label">SPÉCIFIQUE</span>
+                </a>
+                <a href="../pages/signaler.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <span class="sd-label">SIGNALER</span>
+                </a>
+                <a href="../pages/Feuilles.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <span class="sd-label">FEUILLES</span>
+                </a>
+                <a href="../pages/pointeuse.html" class="speed-dial-item">
+                    <div class="sd-icon"><i class="fa-regular fa-clock"></i></div>
+                    <span class="sd-label">POINTEUSE</span>
+                </a>
+            </div>
 
-    <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
-      <i class="fa-solid fa-screwdriver-wrench"></i>
-    </button>
-  </div>
+            <button class="fab-btn" id="fabBtn" onclick="toggleFab()">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+            </button>
+        </div>
 
-  <a href="../pages/dashbord.html" class="nav-tab" id="tab-dashboard">
-    <i class="fa-solid fa-chart-bar"></i>
-    <span>Tableau de bord</span>
-  </a>
-</nav>
+        <a href="../pages/dashbord.html" class="nav-tab" id="tab-dashboard">
+            <i class="fa-solid fa-chart-bar"></i>
+            <span>Tableau de bord</span>
+        </a>
+    </nav>
 
     <div class="container">
         <div class="main-card">
@@ -168,6 +168,20 @@
                         </label>
                         <input type="text" id="signature-input" class="form-input" placeholder="Votre prénom"
                             required />
+                    </div>
+                    <!-- Rappel (optionnel) -->
+                    <div class="form-group">
+                        <label for="rappel-date" class="form-label">
+                            <i class="fas fa-bell"></i>
+                            Rappel au prochain passage
+                            <span
+                                style="font-weight:400; color:var(--text-light); font-size:0.82rem;">(optionnel)</span>
+                        </label>
+                        <input type="date" id="rappel-date" class="form-input" />
+                        <div style="font-size:0.78rem; color:var(--text-light); margin-top:0.3rem;">
+                            <i class="fas fa-info-circle"></i>
+                            Laissez vide si la date n'est pas connue
+                        </div>
                     </div>
 
                     <!-- Images -->
@@ -262,16 +276,16 @@
         setActiveNavItem('signaler.html'); 
     </script>
     <script src="../js/sw-update.js"></script>
-        <script>
-               function toggleFab() {
-    const fab     = document.getElementById('fabBtn');
-    const dial    = document.getElementById('speedDial');
-    const overlay = document.getElementById('sdOverlay');
-    if (!fab || !dial || !overlay) return;
-    const isOpen = dial.classList.toggle('open');
-    fab.classList.toggle('open', isOpen);
-    overlay.classList.toggle('open', isOpen);
-  }
+    <script>
+        function toggleFab() {
+            const fab = document.getElementById('fabBtn');
+            const dial = document.getElementById('speedDial');
+            const overlay = document.getElementById('sdOverlay');
+            if (!fab || !dial || !overlay) return;
+            const isOpen = dial.classList.toggle('open');
+            fab.classList.toggle('open', isOpen);
+            overlay.classList.toggle('open', isOpen);
+        }
     </script>
 
 </body>

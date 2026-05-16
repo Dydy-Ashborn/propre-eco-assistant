@@ -535,12 +535,15 @@ form.addEventListener('submit', async (e) => {
         // Enregistrer selon le type
         if (typeSignal === 'probleme') {
             const description = document.getElementById('desc-input').value.trim();
+            const rappelDate = document.getElementById('rappel-date').value || null;
 
             await addDoc(collection(db, "signalements"), {
                 copro,
                 description,
                 employee,
                 images,
+                rappelDate,        // "YYYY-MM-DD" ou null
+                rappelFait: false,
                 createdAt: new Date()
             });
 
@@ -572,6 +575,8 @@ form.addEventListener('submit', async (e) => {
                 employee,
                 images,
                 facture: false,
+                rappelDate,        // même variable lue plus haut
+                rappelFait: false,
                 createdAt: new Date()
             });
 
@@ -623,7 +628,7 @@ form.addEventListener('submit', async (e) => {
         console.error("Erreur:", err);
         hideLoading();
         showError(err.message || 'Erreur lors de l\'envoi');
-        
+
         setTimeout(() => {
             hideError();
         }, 5000);
