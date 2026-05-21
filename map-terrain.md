@@ -27,3 +27,12 @@
 - `toggleFab()` : déclaré en script inline `<script>` classique (non-module) dans chaque HTML pour éviter le timing issue avec `type="module"`.
 - `setActiveNavItem(pageName)` : marque `.active` sur le tab correspondant à la page courante.
 - Chemins `index.html` : `pages/xxx.html`. Chemins `pages/*.html` : `../pages/xxx.html`, accueil → `../index.html`.
+
+## Collection `plannings/`
+- Document ID : `YYYY-MM-DD` (ex: `2026-05-20`)
+- Champs : `date`, `importedAt`, `source` (`'dashboard-paste'` ou `'gmail-auto'`), `employes`
+- Structure `employes` : `{ [prenomNormalisé]: { total, absence, display, chantiers[] } }`
+- Structure `chantiers[]` : `{ nom, heures, binome, binomeDisplay, annotations[], controle, absence }`
+- Import auto : Google Apps Script (`planning-gmail-appscript.js`) — trigger Gmail toutes les heures sur mails de `propre.eco74@outlook.fr`
+- Import manuel : Dashboard onglet Planning — paste Excel → review → publication
+- Règles Firestore : `allow read, write: if true`

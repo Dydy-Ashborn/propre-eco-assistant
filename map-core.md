@@ -25,6 +25,18 @@
 - `formatHeuresFactu(h)` : Affiche les heures sans zéro inutile — entier → `"9h"`, 1 décimale → `"8.5h"`, 2 décimales → `"1.75h"`.
 - `renderFacturationShell()` : Injecte header + filtres (semaine, employé, recherche) + stats + container cards. Réutilise les classes `heures-filters`, `heures-stats-grid`, `heures-stat-card` du module heures.
 - `renderFacturationCards()` : Tableau `heures-emp-table` — colonnes Chantier, Date(s), Passages, Total heures, Détail par employé. Badge cliquable "Regroupé (N noms)" / "⚠ Incertain" qui toggle un div avec les variantes de noms. Détail employé toujours visible inline.
+- `initPlanningTab()` : Init onglet planning — remplit select mois, reset état, charge liste.
+- `parserPlanningTexte(texte)` : Parse texte tabulé collé depuis Excel. Détecte date automatiquement depuis ligne "Prénom et son binôme / 24-mai". Distingue employés (via `PLANNING_EMPLOYEES` + pattern binôme) des chantiers. Zéro détection d'annotations (faite manuellement). Retourne `{ date, employes: { [prenom]: { total, chantiers[], absence, display } } }`.
+- `afficherInterfaceReview(planning)` : Modale de vérification avant publication. Chaque chantier a un bouton "+ Annotation" (champ rouge inline) et une case contrôle qualité (`fa-clipboard-check`). Propagation automatique annotations + contrôle aux chantiers binômes via `trouverChantiersBinomes()`.
+- `trouverChantiersBinomes(prenom, ci)` : Trouve les chantiers miroir d'un binôme (même nom de chantier, binôme = prenom).
+- `publierPlanning(planning)` : Sauvegarde dans Firestore `plannings/{YYYY-MM-DD}` via `setDoc` (annule et remplace automatiquement). Envoie backup mail à `Dylan.propre.eco@gmail.com` via `mailto:`.
+- `loadPlanning()` : Charge tous les docs `plannings/` triés par date desc. Remplit `allPlanningDocs` + `remplirSelectMois()`.
+- `renderPlanningList()` : Affiche les plannings paginés (7/page). Cards employés avec annotations en rouge, badge contrôle jaune, badge binôme bleu. Highlight recherche. Filtre par mois via `window._planningMoisFilter`.
+- `remplirSelectMois()` : Peuple le select de filtre avec les mois disponibles en base.
+- `filtrerPlanningParMois(mois)` : Filtre la liste + affiche bouton "Supprimer ce mois".
+- `supprimerPlanningsMois()` : Modale de confirmation → suppression en parallèle de tous les plannings du mois sélectionné.
+- `PRENOM_DISPLAY` : Dictionnaire `id → nom affiché avec accents` pour tous les employés. Fallback quand `emp.display` absent (anciens plannings).
+- `PLANNING_EMPLOYEES` : Liste des IDs employés normalisés pour détection parser.
 
 ## TEMPS_DEFAUT
 - Vitres Standard : 3 min, Baies Vitrées : 4 min, Vélux : 5 min, Portes vitrées : 3 min, Vitres Hautes : 5 min.
