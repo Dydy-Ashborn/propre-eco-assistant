@@ -567,6 +567,7 @@ form.addEventListener('submit', async (e) => {
         } else if (typeSignal === 'consommable') {
             const consomType = document.getElementById('consommable-type').value.trim();
             const consomQuantite = parseInt(document.getElementById('consommable-quantite').value);
+            const rappelDate = document.getElementById('rappel-date').value || null;
 
             await addDoc(collection(db, "consommables"), {
                 copro,
