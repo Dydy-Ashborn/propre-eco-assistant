@@ -284,11 +284,11 @@
                 </div>
 
                 <!-- Bouton pour afficher le formulaire -->
-               <div style="display:flex; justify-content:center; margin-bottom: 1rem;" id="showFormBtn">
-    <button class="btn btn-secondary" onclick="showProjectForm()" style="width:auto;">
-        <i class="fas fa-plus"></i> Ajouter un chantier
-    </button>
-</div>
+                <div style="display:flex; justify-content:center; margin-bottom: 1rem;" id="showFormBtn">
+                    <button class="btn btn-secondary" onclick="showProjectForm()" style="width:auto;">
+                        <i class="fas fa-plus"></i> Ajouter un chantier
+                    </button>
+                </div>
 
                 <!-- Formulaire de saisie (masqué par défaut) -->
                 <div id="projectFormContainer" style="display: none;">
@@ -524,8 +524,7 @@
             }
 
             let currentEmployeeId = null, currentEmployeeName = null, currentWeek = null, projectRowCounter = 0;
-            const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy', 'maxime': 'Maxime', 'shana': 'Shana' };
-            document.addEventListener('DOMContentLoaded', function () {
+            const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy', 'maxime': 'Maxime', 'shana': 'Shana', 'chloe': 'Chloé bibi love', 'jocelyne': 'Jocelyne', 'mina': 'Mina', 'nadia': 'Nadia' }; document.addEventListener('DOMContentLoaded', function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 currentEmployeeId = urlParams.get('employee');
                 if (!currentEmployeeId) {
@@ -551,7 +550,7 @@
 
                 // Vérifier si samedi → afficher rappel
                 checkSamediRappel();
-                
+
                 //Check compteur d'heures
                 chargerCompteurEmploye();
 
@@ -738,7 +737,7 @@
                 }
             }
 
-       
+
 
             async function chargerCompteurEmploye() {
                 try {

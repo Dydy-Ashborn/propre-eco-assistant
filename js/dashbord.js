@@ -5063,6 +5063,15 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
 // CRUCIAL : Exposer les fonctions au HTML
 window.showFacturationView = showFacturationView;
 // ========== ONGLET PLANNING ==========
+const PRENOM_DISPLAY = {
+    'oceane': 'Océane', 'jeremie': 'Jérémie', 'stephanie': 'Stéphanie',
+    'stephane': 'Stéphane', 'nadjet': 'Nadjet', 'remy': 'Rémy',
+    'chloe': 'Chloé', 'jocelyne': 'Jocelyne', 'nadia': 'Nadia',
+    'mina': 'Mina', 'isabelle': 'Isabelle', 'caroline': 'Caroline',
+    'carlos': 'Carlos', 'sandra': 'Sandra', 'samuel': 'Samuel',
+    'dylan': 'Dylan', 'maxime': 'Maxime', 'manon': 'Manon',
+    'shana': 'Shana', 'oceane': 'Océane'
+};
 
 const PLANNING_EMPLOYEES = [
     'carlos', 'caroline', 'chloe', 'dylan', 'isabelle', 'jeremie',
@@ -5083,72 +5092,21 @@ function parseSectionHeaderPlanning(texte) {
     const t = texte.trim();
     const binomeMatch = t.match(/^(.+?)\s+en\s+bin[oô]me\s+avec\s+(.+)$/i);
     if (binomeMatch) {
-        return { prenom: normalizeNom(binomeMatch[1]), binome: normalizeNom(binomeMatch[2]), label: t };
+        return {
+            prenom: normalizeNom(binomeMatch[1]),
+            prenomDisplay: binomeMatch[1].trim(),
+            binome: normalizeNom(binomeMatch[2]),
+            binomeDisplay: binomeMatch[2].trim(),
+            label: t
+        };
     }
-    return { prenom: normalizeNom(t), binome: null, label: t };
-}
-const ANNOTATION_KEYWORDS = [
-    'accès sous sol',
-    'rdv',
-    'plinthes',
-    'globes',
-    'grilles',
-    'rails ascenseurs',
-    'rails + portes',
-    'vitres mouilleur raclette',
-    'cendrier',
-    'pb',
-    'poubelles',
-    'ta',
-    'toiles d\'araignées',
-    'toiles araignées',
-    'bol',
-    'boites aux lettres',
-    'boîtes aux lettres',
-    'contrôle',
-    'controle',
-    'caves',
-    'poussières',
-    'poussieres',
-    'porche',
-    'rampes',
-    'ext',
-];
-
-// Regex pour détecter "avant Xh" ou "avant X:XX" ou "avant Xh30"
-const AVANT_REGEX = /avant\s+\d+[h:]\d*/i;
-
-function extraireAnnotation(texte) {
-    const t = texte.trim();
-    const tLower = t.toLowerCase();
-
-    // Chercher le premier mot-clé qui apparaît dans le texte
-    let premierIndex = Infinity;
-    let motTrouve = null;
-
-    for (const kw of ANNOTATION_KEYWORDS) {
-        const idx = tLower.indexOf(kw);
-        if (idx !== -1 && idx < premierIndex) {
-            premierIndex = idx;
-            motTrouve = kw;
-        }
-    }
-
-    // Chercher le pattern "avant Xh..."
-    const avantMatch = AVANT_REGEX.exec(t);
-    if (avantMatch && avantMatch.index < premierIndex) {
-        premierIndex = avantMatch.index;
-        motTrouve = avantMatch[0];
-    }
-
-    if (motTrouve === null || premierIndex === 0) {
-        return { nom: t, annotation: null };
-    }
-
-    const nom = t.substring(0, premierIndex).trim();
-    const annotation = t.substring(premierIndex).trim();
-
-    return { nom: nom || t, annotation: annotation || null };
+    return {
+        prenom: normalizeNom(t),
+        prenomDisplay: t.trim(),
+        binome: null,
+        binomeDisplay: null,
+        label: t
+    };
 }
 
 function detectAbsencePlanning(texte) {
@@ -5157,83 +5115,6 @@ function detectAbsencePlanning(texte) {
     if (t.includes('MALADIE')) return 'ABSENCE_MALADIE';
     if (t === 'ABSENT' || t === 'ABSENTE') return 'ABSENT';
     return null;
-}
-
-// Parser le texte tabulé collé depuis Excel
-function parserPlanningTexte(texte) {
-    const result = { date: null, employes: {} };
-    const lines = texte.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-
-    let currentSection = null;
-    let currentChantiers = [];
-
-    const flushSection = () => {
-        if (!currentSection) return;
-        const { prenom, binome } = currentSection;
-        if (!result.employes[prenom]) {
-            result.employes[prenom] = { total: 0, chantiers: [], absence: null };
-        }
-        const emp = result.employes[prenom];
-        emp.total = parseFloat((emp.total + currentSection.total).toFixed(2));
-        for (const c of currentChantiers) {
-            emp.chantiers.push({ ...c, binome: binome || null });
-        }
-        if (currentChantiers.length === 1 && detectAbsencePlanning(currentChantiers[0].nom)) {
-            emp.absence = detectAbsencePlanning(currentChantiers[0].nom);
-        }
-    };
-
-    for (const line of lines) {
-        // Séparer les colonnes (tabulation ou espaces multiples)
-        const parts = line.split(/\t+/).map(p => p.trim());
-        if (parts.length < 2) continue;
-
-        const col1 = parts[0];
-        const col2 = parts[parts.length - 1];
-        const heures = parseHeuresPlanning(col2);
-
-        // Détecter la date dans le header (format "18-mai", "18/05" etc)
-        if (!result.date) {
-            const dateMatch = col2.match(/(\d{1,2}[-\/]\w+)/);
-            if (dateMatch) {
-                const parsed = parseDatePlanning(dateMatch[1]);
-                if (parsed) result.date = parsed;
-            }
-        }
-
-        // Ligne indentée = chantier (commence par espace ou tab dans l'original)
-        const isIndented = line.startsWith(' ') || line.startsWith('\t') || parts.length > 2;
-
-        if (!isIndented && col1 && col1 !== 'Total général' && col1 !== 'Planning jour' && col1 !== 'Date / Nb heures' && col1 !== 'Prénom et son binôme') {
-            // Ligne de section (employé)
-            flushSection();
-            const parsed = parseSectionHeaderPlanning(col1);
-            currentSection = { ...parsed, total: heures };
-            currentChantiers = [];
-        } else if (currentSection && col1 && isIndented) {
-            // Ligne chantier — extraire annotation (texte après tab dans la même cellule)
-         const nomParts = col1.split(/\t/);
-            const texteComplet = nomParts.join(' ').trim();
-            const { nom: nomPrincipal, annotation } = extraireAnnotation(texteComplet);
-            const controle = texteComplet.toLowerCase().includes('contrôle') || texteComplet.toLowerCase().includes('controle');
-            currentChantiers.push({
-                nom: nomPrincipal,
-                heures,
-                annotation: annotation || null,
-                controle,
-                absence: detectAbsencePlanning(nomPrincipal) || null
-            });
-        }
-    }
-    flushSection();
-
-    // Si date non trouvée dans le texte, utiliser la date saisie dans le champ
-    if (!result.date) {
-        const dateInput = document.getElementById('planning-date-input').value;
-        if (dateInput) result.date = dateInput;
-    }
-
-    return result;
 }
 
 function parseDatePlanning(str) {
@@ -5249,152 +5130,430 @@ function parseDatePlanning(str) {
     if (!moisNum) return null;
     return `${new Date().getFullYear()}-${moisNum}-${jour}`;
 }
-window.testerImportPlanning = function() {
-    const texte = document.getElementById('planning-paste-zone').value.trim();
-    const feedback = document.getElementById('planning-import-feedback');
 
-    if (!texte) {
-        showNotification('Collez le tableau Excel avant de tester', 'error');
-        return;
+// Parser épuré — extrait employés + chantiers, zéro détection d'annotations
+function parserPlanningTexte(texte) {
+    const result = { date: null, employes: {} };
+    const lines = texte.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+
+    let currentSection = null;
+    let currentChantiers = [];
+
+    const SKIP = [
+        'planning jour', 'date / nb heures', 'prénom et son binôme',
+        'prenom et son binome', 'total général', 'total general'
+    ];
+
+    const isLigneEmploye = (texte) => {
+        const t = normalizeNom(texte);
+        if (/en\s+bin[oô]me\s+avec/i.test(texte)) return true;
+        return PLANNING_EMPLOYEES.some(emp => t === emp || t.startsWith(emp + ' '));
+    };
+
+    const flushSection = () => {
+        if (!currentSection) return;
+        const { prenom, prenomDisplay, binome, binomeDisplay } = currentSection;
+        if (!result.employes[prenom]) {
+            result.employes[prenom] = { total: 0, chantiers: [], absence: null, display: prenomDisplay };
+        }
+        const emp = result.employes[prenom];
+        emp.total = parseFloat((emp.total + currentSection.total).toFixed(2));
+        for (const c of currentChantiers) {
+            emp.chantiers.push({ ...c, binome: binome || null, binomeDisplay: binomeDisplay || null });
+        }
+        if (currentChantiers.length === 1 && detectAbsencePlanning(currentChantiers[0].nom)) {
+            emp.absence = detectAbsencePlanning(currentChantiers[0].nom);
+        }
+    };
+
+    for (const line of lines) {
+        const parts = line.split(/\t+/).map(p => p.trim());
+        if (parts.length < 2) continue;
+
+        const col1 = parts[0];
+        const col2 = parts[parts.length - 1];
+
+        // Détecter la date EN PREMIER avant tout skip
+        if (!result.date) {
+            const dateMatch = col2.match(/(\d{1,2}[-\/]\w+)/);
+            if (dateMatch) {
+                const parsed = parseDatePlanning(dateMatch[1]);
+                if (parsed) result.date = parsed;
+            }
+        }
+
+        if (SKIP.some(s => col1.toLowerCase().includes(s))) continue;
+
+        const heures = parseHeuresPlanning(col2);
+
+        if (isLigneEmploye(col1)) {
+            flushSection();
+            const parsed = parseSectionHeaderPlanning(col1);
+            currentSection = { ...parsed, total: heures };
+            currentChantiers = [];
+        } else if (currentSection && col1) {
+            currentChantiers.push({
+                nom: col1.trim(),
+                heures,
+                annotations: [],
+                controle: false,
+                absence: detectAbsencePlanning(col1) || null
+            });
+        }
     }
+    flushSection();
+
+    if (!result.date) {
+        const dateInput = document.getElementById('planning-date-input')?.value;
+        if (dateInput) result.date = dateInput;
+    }
+
+    return result;
+}
+
+// ── État temporaire du planning en cours d'édition ──
+let planningEnCours = null;
+
+// ── Tester = parser + afficher l'interface de review ──
+window.testerImportPlanning = function () {
+    const texte = document.getElementById('planning-paste-zone').value.trim();
+    if (!texte) { showNotification('Collez le tableau Excel avant de tester', 'error'); return; }
 
     const planning = parserPlanningTexte(texte);
-    const nbEmployes = Object.keys(planning.employes).length;
-
-    if (nbEmployes === 0) {
-        feedback.style.display = 'block';
-        feedback.innerHTML = `
-            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:0.75rem;">
-                <div style="font-size:0.78rem;color:#ef4444;font-weight:600;">
-                    <i class="fas fa-exclamation-circle"></i> Aucun employé détecté — vérifiez le format collé.
-                </div>
-            </div>`;
+    if (Object.keys(planning.employes).length === 0) {
+        showNotification('Aucun employé détecté — vérifiez le format collé', 'error');
         return;
     }
+
+    planningEnCours = planning;
+    afficherInterfaceReview(planning);
+};
+
+// ── Importer directement sans passer par le test ──
+window.importerPlanning = async function () {
+    const texte = document.getElementById('planning-paste-zone').value.trim();
+    if (!texte) { showNotification('Collez le tableau Excel avant d\'importer', 'error'); return; }
+
+    if (!planningEnCours) {
+        planningEnCours = parserPlanningTexte(texte);
+    }
+    if (Object.keys(planningEnCours.employes).length === 0) {
+        showNotification('Aucun employé détecté', 'error');
+        return;
+    }
+    await publierPlanning(planningEnCours);
+};
+
+// ── Interface review avec ajout d'annotations ──
+function afficherInterfaceReview(planning) {
+    document.getElementById('modal-review-planning')?.remove();
+
+    const dateObj = planning.date ? (() => {
+        const [y, m, d] = planning.date.split('-').map(Number);
+        return new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    })() : 'Date non détectée';
 
     const formatH = h => {
         if (!h) return '0h';
-        const hh = Math.floor(h); const mm = Math.round((h-hh)*60);
-        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2,'0')}`;
+        const hh = Math.floor(h); const mm = Math.round((h - hh) * 60);
+        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2, '0')}`;
     };
 
     const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
     const absColors = { CONGES_PAYES: '#3b82f6', ABSENCE_MALADIE: '#ef4444', ABSENT: '#9ca3af' };
 
-    const empCards = Object.entries(planning.employes).map(([prenom, emp]) => {
-        const nom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
-
-        let borderColor = '#10b981', totalColor = '#10b981';
-        if (emp.absence) {
-            borderColor = absColors[emp.absence] || '#9ca3af';
-            totalColor = borderColor;
-        }
+    let empHTML = '';
+    for (const [prenom, emp] of Object.entries(planning.employes)) {
+        const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
 
         let chantiersHTML = '';
         if (emp.absence) {
-            chantiersHTML = `<div style="font-size:0.75rem;color:${borderColor};font-style:italic;margin-top:0.25rem;">${absLabels[emp.absence] || emp.absence}</div>`;
+            chantiersHTML = `<div style="font-size:0.85rem;color:${absColors[emp.absence] || '#9ca3af'};font-style:italic;padding:8px 0;">${absLabels[emp.absence] || emp.absence}</div>`;
         } else {
-            chantiersHTML = (emp.chantiers || []).map(c => `
-                <div style="padding:3px 0;border-bottom:1px solid #f3f4f6;">
-                    <div style="display:flex;justify-content:space-between;gap:4px;">
-                        <span style="font-size:0.73rem;color:#374151;flex:1;line-height:1.3;">${c.nom}</span>
-                        <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
-                    </div>
-                    ${c.annotation ? `<div style="color:#f97316;font-style:italic;font-size:0.68rem;margin-top:1px;">${c.annotation}</div>` : ''}
-                    ${c.controle ? `<span style="display:inline-flex;align-items:center;gap:2px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;margin-top:2px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> contrôle</span>` : ''}
-                    ${c.binome ? `<div style="font-size:0.68rem;color:#9ca3af;margin-top:1px;"><i class="fas fa-user-friends"></i> avec ${c.binome.charAt(0).toUpperCase() + c.binome.slice(1)}</div>` : ''}
-                </div>`).join('');
-            if (!chantiersHTML) chantiersHTML = '<div style="color:#9ca3af;font-size:0.73rem;padding:2px 0;">Aucun chantier</div>';
+            (emp.chantiers || []).forEach((c, ci) => {
+                const key = `${prenom}__${ci}`;
+                const binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
+                chantiersHTML += `
+                    <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
+                                <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
+                                    <input type="checkbox" ${c.controle ? 'checked' : ''}
+                                        onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
+                                        style="accent-color:#eab308;width:14px;height:14px;">
+                                    <i class="fas fa-clipboard-check" style="font-size:0.78rem;color:${c.controle ? '#d97706' : '#9ca3af'};"></i>
+                                </label>
+                                <button onclick="ajouterAnnotation('${prenom}',${ci})"
+                                    style="background:#f0fdf4;border:1px solid #bbf7d0;color:#10b981;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                                    <i class="fas fa-plus" style="font-size:0.7rem;margin-right:3px;"></i>Annotation
+                                </button>
+                            </div>
+                        </div>
+                        <div id="annotations-${key}" style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
+                            ${(c.annotations || []).map((a, ai) => renderAnnotationTag(prenom, ci, ai, a)).join('')}
+                        </div>
+                    </div>`;
+            });
         }
 
-        return `
-            <div style="background:white;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.7rem;border-left:3px solid ${borderColor};">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
-                    <span style="font-size:0.82rem;font-weight:700;color:#111827;">${nom}</span>
-                    <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatH(emp.total)}</span>
+        empHTML += `
+            <div style="background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${emp.absence ? '0' : '0.5rem'};">
+                    <span style="font-size:1rem;font-weight:700;color:#111827;">${nom}</span>
+                    <span style="font-size:0.9rem;font-weight:700;color:#10b981;">${formatH(emp.total)}</span>
                 </div>
                 ${chantiersHTML}
             </div>`;
-    }).join('');
+    }
 
-    const dateObj = planning.date ? (() => {
-        const [y,m,d] = planning.date.split('-').map(Number);
-        return new Date(y,m-1,d).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    })() : 'Date non détectée';
+    const nbChantiers = Object.values(planning.employes).reduce((s, e) => s + (e.chantiers || []).length, 0);
 
-    feedback.style.display = 'block';
-    feedback.innerHTML = `
-        <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;overflow:hidden;margin-top:0.5rem;">
-            <div style="padding:0.75rem 1rem;border-bottom:1px solid #bbf7d0;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    const modal = document.createElement('div');
+    modal.id = 'modal-review-planning';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    modal.innerHTML = `
+        <div style="background:white;border-radius:20px;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+
+            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-bottom:1px solid #bbf7d0;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
                 <div>
-                    <div style="font-size:0.8rem;font-weight:700;color:#10b981;display:flex;align-items:center;gap:6px;">
-                        <i class="fas fa-eye"></i> Prévisualisation — ${nbEmployes} employés
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+                        <i class="fas fa-edit" style="color:#10b981;font-size:1rem;"></i>
+                        <span style="font-size:1.05rem;font-weight:700;color:#111827;">Vérification du planning</span>
                     </div>
-                    <div style="font-size:0.72rem;color:#6b7280;margin-top:2px;text-transform:capitalize;">${dateObj}</div>
+                    <div style="font-size:0.82rem;color:#6b7280;text-transform:capitalize;">${dateObj}</div>
                 </div>
-                <span style="background:#10b981;color:white;padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;">
-                    ${planning.date || '?'}
-                </span>
+                <button onclick="document.getElementById('modal-review-planning').remove();planningEnCours=null;"
+                    style="background:#f3f4f6;border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;color:#6b7280;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div style="padding:0.75rem;max-height:400px;overflow-y:auto;">
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem;">
-                    ${empCards}
+
+            <div style="padding:0.75rem 1.5rem;background:#fffbeb;border-bottom:1px solid #fef3c7;flex-shrink:0;display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-lightbulb" style="color:#f59e0b;font-size:0.85rem;flex-shrink:0;"></i>
+                <span style="font-size:0.78rem;color:#92400e;">Ajoutez des <strong>annotations</strong> (affichées en rouge) · Cochez <i class="fas fa-clipboard-check" style="color:#d97706;"></i> pour une visite de contrôle qualité</span>
+            </div>
+
+            <div style="padding:1.25rem 1.5rem;overflow-y:auto;flex:1;" id="review-body">
+                <div style="font-size:0.8rem;color:#9ca3af;margin-bottom:1rem;">
+                    ${Object.keys(planning.employes).length} employé${Object.keys(planning.employes).length > 1 ? 's' : ''} · ${nbChantiers} chantier${nbChantiers > 1 ? 's' : ''}
                 </div>
+                ${empHTML}
             </div>
-            <div style="padding:0.5rem 1rem;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:0.7rem;color:#6b7280;display:flex;align-items:center;gap:5px;">
-                <i class="fas fa-info-circle" style="color:#10b981;"></i>
-                Mode test — aucune donnée envoyée. Cliquez "Importer" pour publier.
+
+            <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;flex-shrink:0;background:white;">
+                <button onclick="publierPlanningDepuisReview()"
+                    style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.8rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                    <i class="fas fa-paper-plane"></i> Envoyer le planning
+                </button>
+                <button onclick="document.getElementById('modal-review-planning').remove();planningEnCours=null;"
+                    style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.8rem 1.5rem;font-weight:600;font-size:0.88rem;cursor:pointer;">
+                    Annuler
+                </button>
             </div>
         </div>`;
-};
-window.importerPlanning = async function () {
-    const dateInput = document.getElementById('planning-date-input').value;
-    const texte = document.getElementById('planning-paste-zone').value.trim();
-    const annuleRemplace = document.getElementById('planning-annule-remplace').checked;
+
+    modal.addEventListener('click', e => {
+        if (e.target === modal) { modal.remove(); planningEnCours = null; }
+    });
+
+    document.body.appendChild(modal);
+
     const feedback = document.getElementById('planning-import-feedback');
+    if (feedback) feedback.style.display = 'none';
+}
 
-    if (!texte) {
-        showNotification('Collez le tableau Excel avant d\'importer', 'error');
-        return;
+function renderAnnotationTag(prenom, ci, ai, texte) {
+    const safePrenom = prenom.replace(/'/g, "\\'");
+    return `
+        <div style="display:flex;align-items:center;gap:4px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:3px 8px;" id="ann-${prenom}-${ci}-${ai}">
+            <i class="fas fa-circle-exclamation" style="color:#ef4444;font-size:0.65rem;flex-shrink:0;"></i>
+            <input type="text" value="${escapeHtml(texte)}"
+                onchange="modifierAnnotation('${safePrenom}', ${ci}, ${ai}, this.value)"
+                placeholder="Décrivez l'annotation..."
+                style="flex:1;border:none;background:transparent;font-size:0.75rem;color:#ef4444;font-style:italic;outline:none;min-width:0;">
+            <button onclick="supprimerAnnotation('${safePrenom}', ${ci}, ${ai})"
+                style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:0.75rem;flex-shrink:0;padding:0 2px;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`;
+}
+
+// Trouve les chantiers binômes correspondants (même nom de chantier, binôme = prenom)
+function trouverChantiersBinomes(prenom, ci) {
+    if (!planningEnCours) return [];
+    const chantier = planningEnCours.employes[prenom]?.chantiers[ci];
+    if (!chantier?.binome) return [];
+
+    const binomePrenom = chantier.binome;
+    const binomeEmp = planningEnCours.employes[binomePrenom];
+    if (!binomeEmp) return [];
+
+    const results = [];
+    (binomeEmp.chantiers || []).forEach((c, ciBinome) => {
+        // Même nom de chantier ET binôme = prenom
+        if (c.nom === chantier.nom && c.binome === prenom) {
+            results.push({ prenom: binomePrenom, ci: ciBinome });
+        }
+    });
+    return results;
+}
+
+window.ajouterAnnotation = function (prenom, ci) {
+    if (!planningEnCours?.employes[prenom]?.chantiers[ci]) return;
+    const c = planningEnCours.employes[prenom].chantiers[ci];
+    if (!c.annotations) c.annotations = [];
+    const ai = c.annotations.length;
+    c.annotations.push('');
+
+    const container = document.getElementById(`annotations-${prenom}__${ci}`);
+    if (container) {
+        container.insertAdjacentHTML('beforeend', renderAnnotationTag(prenom, ci, ai, ''));
+        const inputs = container.querySelectorAll('input[type=text]');
+        if (inputs.length) {
+            const newInput = inputs[inputs.length - 1];
+            newInput.focus();
+
+            // Propagation en temps réel aux binômes
+            newInput.addEventListener('input', (e) => {
+                const valeur = e.target.value;
+                modifierAnnotation(prenom, ci, ai, valeur);
+
+                trouverChantiersBinomes(prenom, ci).forEach(({ prenom: bp, ci: bci }) => {
+                    const bc = planningEnCours.employes[bp]?.chantiers[bci];
+                    if (!bc) return;
+                    if (!bc.annotations) bc.annotations = [];
+                    // Synchroniser à l'index ai
+                    while (bc.annotations.length <= ai) bc.annotations.push('');
+                    bc.annotations[ai] = valeur;
+                    // Mettre à jour l'input du binôme si visible
+                    const bContainer = document.getElementById(`annotations-${bp}__${bci}`);
+                    if (bContainer) {
+                        const bInputs = bContainer.querySelectorAll('input[type=text]');
+                        if (bInputs[ai]) {
+                            bInputs[ai].value = valeur;
+                        } else {
+                            // Ajouter le tag si pas encore présent
+                            if (bc.annotations.length > bContainer.querySelectorAll('[id^="ann-"]').length) {
+                                bContainer.insertAdjacentHTML('beforeend', renderAnnotationTag(bp, bci, ai, valeur));
+                            }
+                        }
+                    }
+                });
+            });
+        }
     }
 
-    const planning = parserPlanningTexte(texte);
+    // Ajouter le slot annotation aux binômes aussi
+    trouverChantiersBinomes(prenom, ci).forEach(({ prenom: bp, ci: bci }) => {
+        const bc = planningEnCours.employes[bp]?.chantiers[bci];
+        if (!bc) return;
+        if (!bc.annotations) bc.annotations = [];
+        while (bc.annotations.length <= ai) bc.annotations.push('');
+        const bContainer = document.getElementById(`annotations-${bp}__${bci}`);
+        if (bContainer && bContainer.querySelectorAll('[id^="ann-"]').length <= ai) {
+            bContainer.insertAdjacentHTML('beforeend', renderAnnotationTag(bp, bci, ai, ''));
+        }
+    });
+};
 
-    if (!planning.date && !dateInput) {
-        showNotification('Impossible de détecter la date — saisissez-la manuellement', 'error');
-        return;
+window.modifierAnnotation = function (prenom, ci, ai, valeur) {
+    if (!planningEnCours?.employes[prenom]?.chantiers[ci]) return;
+    planningEnCours.employes[prenom].chantiers[ci].annotations[ai] = valeur;
+};
+
+window.supprimerAnnotation = function (prenom, ci, ai) {
+    if (!planningEnCours?.employes[prenom]?.chantiers[ci]) return;
+    planningEnCours.employes[prenom].chantiers[ci].annotations.splice(ai, 1);
+
+    // Propager la suppression aux binômes
+    trouverChantiersBinomes(prenom, ci).forEach(({ prenom: bp, ci: bci }) => {
+        const bc = planningEnCours.employes[bp]?.chantiers[bci];
+        if (!bc) return;
+        bc.annotations.splice(ai, 1);
+        const bContainer = document.getElementById(`annotations-${bp}__${bci}`);
+        if (bContainer) {
+            bContainer.innerHTML = bc.annotations
+                .map((a, newAi) => renderAnnotationTag(bp, bci, newAi, a)).join('');
+        }
+    });
+
+    // Re-render annotations de ce chantier
+    const container = document.getElementById(`annotations-${prenom}__${ci}`);
+    if (container) {
+        container.innerHTML = planningEnCours.employes[prenom].chantiers[ci].annotations
+            .map((a, newAi) => renderAnnotationTag(prenom, ci, newAi, a)).join('');
     }
+};
 
-    const date = planning.date || dateInput;
-    const nbEmployes = Object.keys(planning.employes).length;
+window.toggleControle = function (prenom, ci, checked) {
+    if (!planningEnCours?.employes[prenom]?.chantiers[ci]) return;
+    planningEnCours.employes[prenom].chantiers[ci].controle = checked;
 
-    if (nbEmployes === 0) {
-        showNotification('Aucun employé détecté — vérifiez le format collé', 'error');
-        return;
-    }
+    // Propager aux binômes
+    trouverChantiersBinomes(prenom, ci).forEach(({ prenom: bp, ci: bci }) => {
+        const bc = planningEnCours.employes[bp]?.chantiers[bci];
+        if (!bc) return;
+        bc.controle = checked;
+
+        // Mettre à jour visuellement la checkbox du binôme
+        const bKey = `${bp}__${bci}`;
+        const bLabel = document.getElementById(`controle-label-${bKey}`);
+        const bCheckbox = bLabel?.querySelector('input[type=checkbox]');
+        const bIcon = bLabel?.querySelector('i');
+        if (bCheckbox) bCheckbox.checked = checked;
+        if (bLabel) {
+            bLabel.style.borderColor = checked ? '#fbbf24' : '#e5e7eb';
+            bLabel.style.background = checked ? '#fef9c3' : '#f9fafb';
+        }
+        if (bIcon) bIcon.style.color = checked ? '#d97706' : '#9ca3af';
+    });
+};
+window.publierPlanningDepuisReview = async function () {
+    if (!planningEnCours) return;
+    // Synchroniser les valeurs des inputs avant publication
+    document.querySelectorAll('#review-body input[type=text]').forEach(input => {
+        const annEl = input.closest('[id^="ann-"]');
+        if (!annEl) return;
+        const id = annEl.id.replace('ann-', '');
+        const lastDash1 = id.lastIndexOf('-');
+        const lastDash2 = id.lastIndexOf('-', lastDash1 - 1);
+        const ai = parseInt(id.substring(lastDash1 + 1));
+        const ci = parseInt(id.substring(lastDash2 + 1, lastDash1));
+        const prenom = id.substring(0, lastDash2);
+        if (planningEnCours.employes[prenom]?.chantiers[ci]) {
+            if (!planningEnCours.employes[prenom].chantiers[ci].annotations) {
+                planningEnCours.employes[prenom].chantiers[ci].annotations = [];
+            }
+            planningEnCours.employes[prenom].chantiers[ci].annotations[ai] = input.value;
+        }
+    });
+    await publierPlanning(planningEnCours);
+};
+
+async function publierPlanning(planning) {
+    const annuleRemplace = true; // Forcer annule et remplace pour éviter les erreurs de date déjà existante, vu que le parsing est assez basique
+    const date = planning.date || document.getElementById('planning-date-input').value;
+    if (!date) { showNotification('Date manquante', 'error'); return; }
 
     try {
-        // Vérifier si planning existant
-        if (!annuleRemplace) {
-            const existing = await getDoc(doc(db, 'plannings', date));
-            if (existing.exists()) {
-                showNotification(`Un planning existe déjà pour le ${date}. Cochez "Annule et remplace" pour écraser.`, 'error');
-                return;
-            }
-        }
 
-        // Convertir pour Firestore
+
         const employesData = {};
-        for (const [prenom, data] of Object.entries(planning.employes)) {
+        for (const [prenom, emp] of Object.entries(planning.employes)) {
             employesData[prenom] = {
-                total: data.total,
-                absence: data.absence || null,
-                chantiers: data.chantiers.map(c => ({
+                total: emp.total,
+                absence: emp.absence || null,
+                chantiers: (emp.chantiers || []).map(c => ({
                     nom: c.nom,
                     heures: c.heures,
                     binome: c.binome || null,
                     absence: c.absence || null,
-                    annotation: c.annotation || null,
+                    annotations: (c.annotations || []).filter(a => a && a.trim().length > 0),
                     controle: c.controle || false
                 }))
             };
@@ -5408,43 +5567,31 @@ window.importerPlanning = async function () {
             employes: employesData
         });
 
-        // Backup mail
-        envoyerBackupMail(date, nbEmployes, texte);
+        const texte = document.getElementById('planning-paste-zone').value;
+        envoyerBackupMail(date, Object.keys(planning.employes).length, texte);
 
-        feedback.style.display = 'block';
-        feedback.innerHTML = `
-            <div style="background:#10b98115;border:1px solid #10b98130;border-radius:8px;padding:0.6rem 0.75rem;">
-                <div style="font-size:0.75rem;color:#10b981;font-weight:600;display:flex;align-items:center;gap:5px;">
-                    <i class="fas fa-check-circle"></i>
-                    Planning ${date} importé — ${nbEmployes} employés
-                </div>
-                <div style="font-size:0.68rem;color:#475569;margin-top:2px;">Backup envoyé à Dylan.propre.eco@gmail.com</div>
-            </div>`;
-
-        // Vider le formulaire
+        // Reset
+        planningEnCours = null;
         document.getElementById('planning-paste-zone').value = '';
-        document.getElementById('planning-annule-remplace').checked = false;
+        document.getElementById('planning-import-feedback').style.display = 'none';
 
-        showNotification(`Planning ${date} importé avec succès`, 'success');
+        showNotification(`Planning ${date} publié — ${Object.keys(planning.employes).length} employés`, 'success');
         loadPlanning();
 
     } catch (e) {
-        console.error('Erreur import planning:', e);
-        showNotification('Erreur lors de l\'import : ' + e.message, 'error');
+        console.error('Erreur publication:', e);
+        showNotification('Erreur : ' + e.message, 'error');
     }
-};
+}
 
 function envoyerBackupMail(date, nbEmployes, texte) {
-    // Backup via mailto (ouvre le client mail)
     const sujet = encodeURIComponent(`[Backup] Planning Propre Eco — ${date}`);
     const corps = encodeURIComponent(
         `Planning importé le ${new Date().toLocaleString('fr-FR')}\n` +
         `Date : ${date}\n` +
-        `Employés : ${nbEmployes}\n\n` +
-        `---\n\n` +
+        `Employés : ${nbEmployes}\n\n---\n\n` +
         texte.substring(0, 2000)
     );
-    // Ouvrir en background sans déranger l'utilisateur
     const a = document.createElement('a');
     a.href = `mailto:Dylan.propre.eco@gmail.com?subject=${sujet}&body=${corps}`;
     a.style.display = 'none';
@@ -5453,37 +5600,31 @@ function envoyerBackupMail(date, nbEmployes, texte) {
     setTimeout(() => a.remove(), 1000);
 }
 
+// ── État pagination + recherche ──
+let allPlanningDocs = [];
+let planningPage = 1;
+const PLANNING_PER_PAGE = 7;
+let planningSearchTerm = '';
+
 async function loadPlanning() {
     const container = document.getElementById('planning-list-container');
     if (!container) return;
-
     container.innerHTML = `<div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>`;
-
     try {
         const { query: fsQuery, orderBy: fsOrderBy } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
         const snap = await getDocs(fsQuery(collection(db, 'plannings'), fsOrderBy('date', 'desc')));
-
         allPlanningDocs = [];
-        snap.forEach(docSnap => {
-            allPlanningDocs.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
+        snap.forEach(docSnap => allPlanningDocs.push({ id: docSnap.id, ...docSnap.data() }));
         planningPage = 1;
+        remplirSelectMois();
         renderPlanningList();
-
     } catch (e) {
         console.error('Erreur chargement plannings:', e);
         container.innerHTML = `<div style="color:#ef4444;padding:1rem;">Erreur : ${e.message}</div>`;
     }
 }
 
-// État pagination + recherche planning
-let allPlanningDocs = []; // cache des docs Firestore
-let planningPage = 1;
-const PLANNING_PER_PAGE = 7;
-let planningSearchTerm = '';
-
-window.togglePlanningCard = function(date) {
+window.togglePlanningCard = function (date) {
     const body = document.getElementById(`planning-body-${date}`);
     const chevron = document.getElementById(`chevron-${date}`);
     if (!body) return;
@@ -5492,24 +5633,28 @@ window.togglePlanningCard = function(date) {
     if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
 };
 
-window.rechercherPlanning = function(term) {
+window.rechercherPlanning = function (term) {
     planningSearchTerm = term.toLowerCase().trim();
     planningPage = 1;
     renderPlanningList();
 };
 
 function getPlanningFiltered() {
-    if (!planningSearchTerm) return allPlanningDocs;
-    return allPlanningDocs.filter(data => {
-        // Chercher dans les noms d'employés
-        const empMatch = Object.keys(data.employes || {}).some(prenom =>
-            prenom.includes(planningSearchTerm)
-        );
-        // Chercher dans les chantiers
+    let docs = allPlanningDocs;
+
+    // Filtre par mois
+    if (window._planningMoisFilter) {
+        docs = docs.filter(d => d.date.startsWith(window._planningMoisFilter));
+    }
+
+    // Filtre par recherche texte
+    if (!planningSearchTerm) return docs;
+    return docs.filter(data => {
+        const empMatch = Object.keys(data.employes || {}).some(p => p.includes(planningSearchTerm));
         const chantierMatch = Object.values(data.employes || {}).some(emp =>
             (emp.chantiers || []).some(c =>
                 c.nom.toLowerCase().includes(planningSearchTerm) ||
-                (c.annotation || '').toLowerCase().includes(planningSearchTerm)
+                (c.annotations || []).some(a => a.toLowerCase().includes(planningSearchTerm))
             )
         );
         return empMatch || chantierMatch;
@@ -5529,21 +5674,24 @@ function renderPlanningList() {
 
     if (total === 0) {
         container.innerHTML = `<div style="text-align:center;padding:2rem;color:#6b7280;">Aucun planning trouvé.</div>`;
-        paginationEl.style.display = 'none';
+        if (paginationEl) paginationEl.style.display = 'none';
         return;
     }
 
     const formatH = h => {
         if (!h) return '0h';
-        const hh = Math.floor(h); const mm = Math.round((h-hh)*60);
-        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2,'0')}`;
+        const hh = Math.floor(h); const mm = Math.round((h - hh) * 60);
+        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2, '0')}`;
     };
 
-    const highlight = (text) => {
-        if (!planningSearchTerm) return text;
+    const highlight = text => {
+        if (!planningSearchTerm || !text) return text;
         const re = new RegExp(`(${planningSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
         return text.replace(re, '<mark style="background:#fef08a;border-radius:2px;padding:0 2px;">$1</mark>');
     };
+
+    const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
+    const autoOpen = !!planningSearchTerm;
 
     let html = '';
     pageData.forEach(data => {
@@ -5554,26 +5702,24 @@ function renderPlanningList() {
             ? `importé ${importedAt.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })} à ${importedAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
             : 'importé';
 
-        const dateObj = (() => { const [y,m,d] = date.split('-').map(Number); return new Date(y,m-1,d); })();
-        const dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const [y, m, d] = date.split('-').map(Number);
+        const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         const isToday = date === new Date().toISOString().split('T')[0];
         const pillBg = isToday ? '#10b981' : '#6b7280';
 
-        // Filtrer les employés selon la recherche
         const empEntries = Object.entries(data.employes || {}).filter(([prenom, emp]) => {
             if (!planningSearchTerm) return true;
-            const empMatch = prenom.includes(planningSearchTerm);
-            const chantierMatch = (emp.chantiers || []).some(c =>
-                c.nom.toLowerCase().includes(planningSearchTerm) ||
-                (c.annotation || '').toLowerCase().includes(planningSearchTerm)
-            );
-            return empMatch || chantierMatch;
+            const displayNorm = normalizeNom(emp.display || prenom);
+            return displayNorm.includes(planningSearchTerm) ||
+                prenom.includes(planningSearchTerm) ||
+                (emp.chantiers || []).some(c =>
+                    c.nom.toLowerCase().includes(planningSearchTerm) ||
+                    (c.annotations || []).some(a => a.toLowerCase().includes(planningSearchTerm))
+                );
         });
 
         const empCards = empEntries.map(([prenom, emp]) => {
-            const nom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
-            const total = emp.total || 0;
-
+            const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
             let borderColor = '#10b981', totalColor = '#10b981';
             if (emp.absence === 'CONGES_PAYES') { borderColor = '#3b82f6'; totalColor = '#3b82f6'; }
             else if (emp.absence === 'ABSENCE_MALADIE') { borderColor = '#ef4444'; totalColor = '#ef4444'; }
@@ -5581,43 +5727,43 @@ function renderPlanningList() {
 
             let chantiersHTML = '';
             if (emp.absence) {
-                const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
                 chantiersHTML = `<div style="font-size:0.75rem;color:${borderColor};font-style:italic;margin-top:0.25rem;">${absLabels[emp.absence] || emp.absence}</div>`;
             } else {
-                // Filtrer les chantiers si recherche active
                 const chantiers = planningSearchTerm
                     ? (emp.chantiers || []).filter(c =>
                         c.nom.toLowerCase().includes(planningSearchTerm) ||
-                        (c.annotation || '').toLowerCase().includes(planningSearchTerm) ||
-                        prenom.includes(planningSearchTerm)
-                      )
+                        (c.annotations || []).some(a => a.toLowerCase().includes(planningSearchTerm)) ||
+                        prenom.includes(planningSearchTerm) ||
+                        normalizeNom(emp.display || prenom).includes(planningSearchTerm)
+                    )
                     : (emp.chantiers || []);
 
-                chantiersHTML = chantiers.map(c => `
-                    <div style="padding:3px 0;border-bottom:1px solid #f3f4f6;">
-                        <div style="display:flex;justify-content:space-between;gap:4px;">
-                            <span style="font-size:0.73rem;color:#374151;flex:1;line-height:1.3;">${highlight(c.nom)}</span>
-                            <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
-                        </div>
-                        ${c.annotation ? `<div style="color:#f97316;font-style:italic;font-size:0.68rem;margin-top:1px;">${highlight(c.annotation)}</div>` : ''}
-                        ${c.controle ? `<span style="display:inline-flex;align-items:center;gap:2px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;margin-top:2px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> contrôle</span>` : ''}
-                    </div>`).join('');
+                chantiersHTML = chantiers.map(c => {
+                    const annotations = (c.annotations || []).filter(a => a && a.trim());
+                    const binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null); return `
+                        <div style="padding:3px 0;border-bottom:1px solid #f3f4f6;">
+                            <div style="display:flex;justify-content:space-between;gap:4px;">
+                                <span style="font-size:0.73rem;color:#374151;flex:1;line-height:1.3;">${highlight(c.nom)}</span>
+                                <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                            </div>
+                            ${binomeLabel ? `<div style="font-size:0.68rem;color:#9ca3af;margin-top:1px;"><i class="fas fa-user-friends"></i> avec ${highlight(binomeLabel)}</div>` : ''}
+                            ${annotations.map(a => `<div style="color:#ef4444;font-style:italic;font-size:0.68rem;margin-top:1px;">• ${highlight(a)}</div>`).join('')}
+                            ${c.controle ? `<span style="display:inline-flex;align-items:center;gap:2px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;margin-top:2px;"><i class="fas fa-clipboard-check" style="font-size:0.6rem;"></i> contrôle</span>` : ''}
+                        </div>`;
+                }).join('');
 
-                if (!chantiersHTML) chantiersHTML = '<div style="color:#9ca3af;font-size:0.73rem;padding:2px 0;">Aucun chantier correspondant</div>';
+                if (!chantiersHTML) chantiersHTML = '<div style="color:#9ca3af;font-size:0.73rem;padding:2px 0;">Aucun chantier</div>';
             }
 
             return `
                 <div style="background:white;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.7rem;border-left:3px solid ${borderColor};">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
                         <span style="font-size:0.82rem;font-weight:700;color:#111827;">${highlight(nom)}</span>
-                        <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatH(total)}</span>
+                        <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatH(emp.total || 0)}</span>
                     </div>
                     ${chantiersHTML}
                 </div>`;
         }).join('');
-
-        // Auto-ouvrir si recherche active
-        const autoOpen = !!planningSearchTerm;
 
         html += `
             <div style="background:white;border:1.5px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-bottom:0.75rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
@@ -5625,7 +5771,7 @@ function renderPlanningList() {
                      onclick="togglePlanningCard('${date}')">
                     <div style="display:flex;align-items:center;gap:0.6rem;">
                         <div style="background:${pillBg};color:white;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:700;white-space:nowrap;">
-                            ${date.split('-').reverse().slice(0,2).join(' ')}
+                            ${date.split('-').reverse().slice(0, 2).join(' ')}
                         </div>
                         <div>
                             <div style="font-size:0.88rem;font-weight:600;color:#111827;text-transform:capitalize;">${dateLabel}</div>
@@ -5650,7 +5796,7 @@ function renderPlanningList() {
 
     container.innerHTML = html;
 
-    // Pagination
+    if (!paginationEl) return;
     if (totalPages <= 1) {
         paginationEl.style.display = 'none';
     } else {
@@ -5664,9 +5810,9 @@ function renderPlanningList() {
                     <i class="fas fa-chevron-left"></i> Précédent
                 </button>
                 <div class="page-numbers">
-                    ${Array.from({length: totalPages}, (_, i) => i + 1).map(i =>
-                        `<button class="page-number ${i === planningPage ? 'active' : ''}" onclick="allerPagePlanning(${i})">${i}</button>`
-                    ).join('')}
+                    ${Array.from({ length: totalPages }, (_, i) => i + 1).map(i =>
+            `<button class="page-number ${i === planningPage ? 'active' : ''}" onclick="allerPagePlanning(${i})">${i}</button>`
+        ).join('')}
                 </div>
                 <button class="btn-pagination" ${planningPage === totalPages ? 'disabled' : ''} onclick="changerPagePlanning(1)">
                     Suivant <i class="fas fa-chevron-right"></i>
@@ -5675,9 +5821,8 @@ function renderPlanningList() {
     }
 }
 
-window.changerPagePlanning = function(delta) {
-    const filtered = getPlanningFiltered();
-    const totalPages = Math.ceil(filtered.length / PLANNING_PER_PAGE);
+window.changerPagePlanning = function (delta) {
+    const totalPages = Math.ceil(getPlanningFiltered().length / PLANNING_PER_PAGE);
     const newPage = planningPage + delta;
     if (newPage >= 1 && newPage <= totalPages) {
         planningPage = newPage;
@@ -5686,19 +5831,120 @@ window.changerPagePlanning = function(delta) {
     }
 };
 
-window.allerPagePlanning = function(page) {
+window.allerPagePlanning = function (page) {
     planningPage = page;
     renderPlanningList();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+function remplirSelectMois() {
+    const select = document.getElementById('planning-filter-mois');
+    if (!select) return;
 
-// Pré-remplir la date du jour à l'ouverture de l'onglet
+    const moisSet = new Set();
+    allPlanningDocs.forEach(d => {
+        const [y, m] = d.date.split('-');
+        moisSet.add(`${y}-${m}`);
+    });
+
+    const moisTries = [...moisSet].sort((a, b) => b.localeCompare(a));
+    const currentVal = select.value;
+
+    select.innerHTML = '<option value="">Tous les mois</option>';
+    moisTries.forEach(ym => {
+        const [y, m] = ym.split('-').map(Number);
+        const label = new Date(y, m-1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+        const opt = document.createElement('option');
+        opt.value = ym;
+        opt.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+        if (ym === currentVal) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+window.filtrerPlanningParMois = function(mois) {
+    const btn = document.getElementById('btn-supprimer-mois');
+    if (btn) btn.style.display = mois ? 'inline-flex' : 'none';
+    planningSearchTerm = '';
+    const searchInput = document.getElementById('planning-search');
+    if (searchInput) searchInput.value = '';
+
+    if (!mois) {
+        // Réinitialiser le filtre
+        planningPage = 1;
+        renderPlanningList();
+        return;
+    }
+
+    // Filtrer par mois sélectionné
+    const filtered = allPlanningDocs.filter(d => d.date.startsWith(mois));
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / PLANNING_PER_PAGE);
+    planningPage = 1;
+
+    // Override temporaire du filtre
+    window._planningMoisFilter = mois;
+    renderPlanningList();
+};
+
+window.supprimerPlanningsMois = async function() {
+    const mois = document.getElementById('planning-filter-mois')?.value;
+    if (!mois) return;
+
+    const [y, m] = mois.split('-').map(Number);
+    const label = new Date(y, m-1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    const planningsASupprimer = allPlanningDocs.filter(d => d.date.startsWith(mois));
+
+    if (planningsASupprimer.length === 0) {
+        showNotification('Aucun planning pour ce mois', 'error');
+        return;
+    }
+
+    showConfirmModal({
+        title: `Supprimer ${planningsASupprimer.length} planning${planningsASupprimer.length > 1 ? 's' : ''} ?`,
+        message: `Tous les plannings de ${label} seront définitivement supprimés. Cette action est irréversible.`,
+        confirmText: 'Supprimer',
+        cancelText: 'Annuler',
+        onConfirm: async () => {
+            try {
+                await Promise.all(planningsASupprimer.map(p => deleteDoc(doc(db, 'plannings', p.date))));
+                showNotification(`${planningsASupprimer.length} planning${planningsASupprimer.length > 1 ? 's' : ''} supprimé${planningsASupprimer.length > 1 ? 's' : ''}`, 'success');
+                document.getElementById('planning-filter-mois').value = '';
+                document.getElementById('btn-supprimer-mois').style.display = 'none';
+                window._planningMoisFilter = null;
+                loadPlanning();
+            } catch (e) {
+                showNotification('Erreur lors de la suppression', 'error');
+            }
+        }
+    });
+};
+
+window.supprimerPlanning = async function (date) {
+    showConfirmModal({
+        title: `Supprimer le planning du ${date} ?`,
+        message: 'Cette action est irréversible.',
+        confirmText: 'Supprimer',
+        cancelText: 'Annuler',
+        onConfirm: async () => {
+            try {
+                await deleteDoc(doc(db, 'plannings', date));
+                showNotification('Planning supprimé', 'success');
+                loadPlanning();
+            } catch (e) {
+                showNotification('Erreur lors de la suppression', 'error');
+            }
+        }
+    });
+};
+
 function initPlanningTab() {
     const dateInput = document.getElementById('planning-date-input');
     if (dateInput && !dateInput.value) {
         const d = new Date();
         dateInput.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
+    planningEnCours = null;
+    document.getElementById('planning-import-feedback').style.display = 'none';
     loadPlanning();
 }
 window.hideFacturationView = hideFacturationView;

@@ -20,7 +20,9 @@ const employees = [
     { name: "Nadjet", sheet: "https://docs.google.com/spreadsheets/d/1EzjtqScNUVD-dpbgm3XCiJdhQloOgTlM1Q1f1wV6-sA/edit?usp=sharing", code: "1079", id: "nadjet" },
     { name: "Remy", sheet: "", code: "0582", id: "remy" },
     { name: "Maxime", sheet: "", code: "0808", id: "maxime" },
-    { name: "Shana", sheet: "", code: "0308", id: "shana" }
+    { name: "Shana", sheet: "", code: "0308", id: "shana" },
+    { name: "Chloe", sheet: "", code: "1412", id: "chloe" }
+
 ];
 
 // Elements DOM
@@ -129,10 +131,10 @@ function checkSavedSession() {
             if (isSessionValid && employeeId) {
                 console.log('Session valide trouvee pour:', employeeName);
                 showNotification(`Connexion automatique en cours pour ${employeeName}...`, 'info');
-                
-            
-                    window.location.href = `heures.html?employee=${employeeId}`;
-             
+
+
+                window.location.href = `heures.html?employee=${employeeId}`;
+
                 return true;
             } else {
                 console.log('Session expiree, suppression');
@@ -191,11 +193,11 @@ function loadEmployees() {
     });
 }
 // Debug localStorage
-window.debugSession = function() {
+window.debugSession = function () {
     console.log('=== DEBUG SESSION ===');
     console.log('Favori actuel:', localStorage.getItem(FAVORITE_KEY));
     console.log('Session sauvegardee:', localStorage.getItem(SAVED_SESSION_KEY));
-    
+
     const session = localStorage.getItem(SAVED_SESSION_KEY);
     if (session) {
         const data = JSON.parse(session);
@@ -204,7 +206,7 @@ window.debugSession = function() {
     }
 };
 
-window.clearSession = function() {
+window.clearSession = function () {
     localStorage.removeItem(SAVED_SESSION_KEY);
     console.log('Session supprimee');
 };
@@ -320,10 +322,10 @@ function validateCode() {
                     employeeName: currentEmployee.name,
                     timestamp: Date.now()
                 };
-                
+
                 localStorage.setItem(SAVED_SESSION_KEY, JSON.stringify(sessionData));
                 console.log('Session sauvegardee:', sessionData);
-                
+
                 showNotification('Session sauvegardee ! Prochaine connexion automatique', 'success');
             }
 
