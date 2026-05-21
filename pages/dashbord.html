@@ -21,6 +21,11 @@
     <link rel="stylesheet" href="../css/chiffrage-modal.css">
     <link rel="stylesheet" href="../css/navbar.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@media (max-width: 768px) {
+    .planning-import-panel { display: none !important; }
+}
+</style>
 </head>
 
 <body>
@@ -479,7 +484,7 @@
 
                     <!-- Panneau import -->
                     <div
-                        style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:14px;padding:1.25rem;width:280px;flex-shrink:0;">
+                        class="planning-import-panel" style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:14px;padding:1.25rem;width:280px;flex-shrink:0;">
 
                         <div
                             style="font-size:0.78rem;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">

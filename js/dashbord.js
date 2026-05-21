@@ -5203,40 +5203,88 @@ window.testerImportPlanning = function() {
         feedback.style.display = 'block';
         feedback.innerHTML = `
             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:0.75rem;">
-                <div style="font-size:0.78rem;color:#ef4444;font-weight:600;margin-bottom:0.5rem;">
-                    <i class="fas fa-exclamation-circle"></i> Aucun employé détecté
+                <div style="font-size:0.78rem;color:#ef4444;font-weight:600;">
+                    <i class="fas fa-exclamation-circle"></i> Aucun employé détecté — vérifiez le format collé.
                 </div>
-                <div style="font-size:0.72rem;color:#6b7280;">Vérifiez le format du tableau collé.</div>
             </div>`;
         return;
     }
 
-    let detailHTML = Object.entries(planning.employes).map(([prenom, emp]) => {
+    const formatH = h => {
+        if (!h) return '0h';
+        const hh = Math.floor(h); const mm = Math.round((h-hh)*60);
+        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2,'0')}`;
+    };
+
+    const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
+    const absColors = { CONGES_PAYES: '#3b82f6', ABSENCE_MALADIE: '#ef4444', ABSENT: '#9ca3af' };
+
+    const empCards = Object.entries(planning.employes).map(([prenom, emp]) => {
         const nom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
-        const formatH = h => { const hh = Math.floor(h); const mm = Math.round((h-hh)*60); return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2,'0')}`; };
-        const chantiers = emp.absence
-            ? `<span style="color:#6b7280;font-style:italic;">${emp.absence}</span>`
-            : (emp.chantiers || []).map(c => `<div style="color:#6b7280;">${c.nom} — ${formatH(c.heures)}</div>`).join('');
+
+        let borderColor = '#10b981', totalColor = '#10b981';
+        if (emp.absence) {
+            borderColor = absColors[emp.absence] || '#9ca3af';
+            totalColor = borderColor;
+        }
+
+        let chantiersHTML = '';
+        if (emp.absence) {
+            chantiersHTML = `<div style="font-size:0.75rem;color:${borderColor};font-style:italic;margin-top:0.25rem;">${absLabels[emp.absence] || emp.absence}</div>`;
+        } else {
+            chantiersHTML = (emp.chantiers || []).map(c => `
+                <div style="padding:3px 0;border-bottom:1px solid #f3f4f6;">
+                    <div style="display:flex;justify-content:space-between;gap:4px;">
+                        <span style="font-size:0.73rem;color:#374151;flex:1;line-height:1.3;">${c.nom}</span>
+                        <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                    </div>
+                    ${c.annotation ? `<div style="color:#f97316;font-style:italic;font-size:0.68rem;margin-top:1px;">${c.annotation}</div>` : ''}
+                    ${c.controle ? `<span style="display:inline-flex;align-items:center;gap:2px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;margin-top:2px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> contrôle</span>` : ''}
+                    ${c.binome ? `<div style="font-size:0.68rem;color:#9ca3af;margin-top:1px;"><i class="fas fa-user-friends"></i> avec ${c.binome.charAt(0).toUpperCase() + c.binome.slice(1)}</div>` : ''}
+                </div>`).join('');
+            if (!chantiersHTML) chantiersHTML = '<div style="color:#9ca3af;font-size:0.73rem;padding:2px 0;">Aucun chantier</div>';
+        }
+
         return `
-            <div style="padding:0.4rem 0;border-bottom:1px solid #f3f4f6;">
-                <div style="font-weight:600;font-size:0.8rem;color:#111827;">${nom} — ${formatH(emp.total)}</div>
-                <div style="font-size:0.72rem;margin-top:2px;">${chantiers}</div>
+            <div style="background:white;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.7rem;border-left:3px solid ${borderColor};">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
+                    <span style="font-size:0.82rem;font-weight:700;color:#111827;">${nom}</span>
+                    <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatH(emp.total)}</span>
+                </div>
+                ${chantiersHTML}
             </div>`;
     }).join('');
 
+    const dateObj = planning.date ? (() => {
+        const [y,m,d] = planning.date.split('-').map(Number);
+        return new Date(y,m-1,d).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    })() : 'Date non détectée';
+
     feedback.style.display = 'block';
     feedback.innerHTML = `
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:0.75rem;max-height:300px;overflow-y:auto;">
-            <div style="font-size:0.78rem;color:#10b981;font-weight:700;margin-bottom:0.5rem;">
-                <i class="fas fa-check-circle"></i> Aperçu — ${nbEmployes} employés détectés · Date : ${planning.date || 'non détectée'}
+        <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;overflow:hidden;margin-top:0.5rem;">
+            <div style="padding:0.75rem 1rem;border-bottom:1px solid #bbf7d0;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="font-size:0.8rem;font-weight:700;color:#10b981;display:flex;align-items:center;gap:6px;">
+                        <i class="fas fa-eye"></i> Prévisualisation — ${nbEmployes} employés
+                    </div>
+                    <div style="font-size:0.72rem;color:#6b7280;margin-top:2px;text-transform:capitalize;">${dateObj}</div>
+                </div>
+                <span style="background:#10b981;color:white;padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;">
+                    ${planning.date || '?'}
+                </span>
             </div>
-            <div style="font-size:0.72rem;">${detailHTML}</div>
-            <div style="margin-top:0.6rem;font-size:0.72rem;color:#6b7280;font-style:italic;">
-                <i class="fas fa-info-circle"></i> Mode test — aucune donnée envoyée à Firestore ni aux employés.
+            <div style="padding:0.75rem;max-height:400px;overflow-y:auto;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem;">
+                    ${empCards}
+                </div>
+            </div>
+            <div style="padding:0.5rem 1rem;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:0.7rem;color:#6b7280;display:flex;align-items:center;gap:5px;">
+                <i class="fas fa-info-circle" style="color:#10b981;"></i>
+                Mode test — aucune donnée envoyée. Cliquez "Importer" pour publier.
             </div>
         </div>`;
 };
-
 window.importerPlanning = async function () {
     const dateInput = document.getElementById('planning-date-input').value;
     const texte = document.getElementById('planning-paste-zone').value.trim();
