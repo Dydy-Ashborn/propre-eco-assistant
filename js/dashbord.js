@@ -5087,6 +5087,69 @@ function parseSectionHeaderPlanning(texte) {
     }
     return { prenom: normalizeNom(t), binome: null, label: t };
 }
+const ANNOTATION_KEYWORDS = [
+    'accès sous sol',
+    'rdv',
+    'plinthes',
+    'globes',
+    'grilles',
+    'rails ascenseurs',
+    'rails + portes',
+    'vitres mouilleur raclette',
+    'cendrier',
+    'pb',
+    'poubelles',
+    'ta',
+    'toiles d\'araignées',
+    'toiles araignées',
+    'bol',
+    'boites aux lettres',
+    'boîtes aux lettres',
+    'contrôle',
+    'controle',
+    'caves',
+    'poussières',
+    'poussieres',
+    'porche',
+    'rampes',
+    'ext',
+];
+
+// Regex pour détecter "avant Xh" ou "avant X:XX" ou "avant Xh30"
+const AVANT_REGEX = /avant\s+\d+[h:]\d*/i;
+
+function extraireAnnotation(texte) {
+    const t = texte.trim();
+    const tLower = t.toLowerCase();
+
+    // Chercher le premier mot-clé qui apparaît dans le texte
+    let premierIndex = Infinity;
+    let motTrouve = null;
+
+    for (const kw of ANNOTATION_KEYWORDS) {
+        const idx = tLower.indexOf(kw);
+        if (idx !== -1 && idx < premierIndex) {
+            premierIndex = idx;
+            motTrouve = kw;
+        }
+    }
+
+    // Chercher le pattern "avant Xh..."
+    const avantMatch = AVANT_REGEX.exec(t);
+    if (avantMatch && avantMatch.index < premierIndex) {
+        premierIndex = avantMatch.index;
+        motTrouve = avantMatch[0];
+    }
+
+    if (motTrouve === null || premierIndex === 0) {
+        return { nom: t, annotation: null };
+    }
+
+    const nom = t.substring(0, premierIndex).trim();
+    const annotation = t.substring(premierIndex).trim();
+
+    return { nom: nom || t, annotation: annotation || null };
+}
 
 function detectAbsencePlanning(texte) {
     const t = texte.toUpperCase().trim();
@@ -5149,11 +5212,10 @@ function parserPlanningTexte(texte) {
             currentChantiers = [];
         } else if (currentSection && col1 && isIndented) {
             // Ligne chantier — extraire annotation (texte après tab dans la même cellule)
-            const nomParts = col1.split(/\t/);
-            const nomPrincipal = nomParts[0].trim();
-            const annotation = nomParts.slice(1).join(' ').trim() || null;
-            const controle = col1.toLowerCase().includes('contrôle') || col1.toLowerCase().includes('controle');
-
+         const nomParts = col1.split(/\t/);
+            const texteComplet = nomParts.join(' ').trim();
+            const { nom: nomPrincipal, annotation } = extraireAnnotation(texteComplet);
+            const controle = texteComplet.toLowerCase().includes('contrôle') || texteComplet.toLowerCase().includes('controle');
             currentChantiers.push({
                 nom: nomPrincipal,
                 heures,
