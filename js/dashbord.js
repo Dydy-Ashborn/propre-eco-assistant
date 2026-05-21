@@ -78,7 +78,7 @@ function init() {
     const loginModal = document.getElementById('loginModal');
     const dashboardContent = document.getElementById('dashboardContent');
 
-    if (sessionStorage.getItem('dashboard_auth') === 'true') {
+    if (localStorage.getItem('dashboard_auth') === 'true') {
         loginModal.style.display = 'none';
         dashboardContent.style.display = 'block';
         setupDashboard();
@@ -92,7 +92,7 @@ function init() {
         e.preventDefault();
         const input = document.getElementById('passwordInput');
         if (input.value === PASSWORD) {
-            sessionStorage.setItem('dashboard_auth', 'true');
+            localStorage.setItem('dashboard_auth', 'true');
             loginModal.style.display = 'none';
             dashboardContent.style.display = 'block';
             setupDashboard();
@@ -127,7 +127,7 @@ function getWeekNumber(date) {
 
 // ========== AUTH ==========
 function checkAuth() {
-    if (sessionStorage.getItem('dashboard_auth') === 'true') {
+    if (localStorage.getItem('dashboard_auth') === 'true') {
         showDashboard();
     } else {
         showLogin();
@@ -150,7 +150,7 @@ function handleLogin(e) {
     const password = document.getElementById('passwordInput').value;
 
     if (password === PASSWORD) {
-        sessionStorage.setItem('dashboard_auth', 'true');
+        localStorage.setItem('dashboard_auth', 'true');
         showDashboard();
     } else {
         const errorDiv = document.getElementById('loginError');
@@ -160,7 +160,7 @@ function handleLogin(e) {
 }
 
 function handleLogout() {
-    sessionStorage.removeItem('dashboard_auth');
+    localStorage.removeItem('dashboard_auth');
     showLogin();
 }
 
