@@ -241,6 +241,9 @@ function loadCurrentTab() {
         case 'copro':
             initCoproManagement();
             break;
+        case 'planning':
+            initPlanningTab();
+            break;
     }
 }
 // ========== VUE D'ENSEMBLE ==========
@@ -4891,7 +4894,7 @@ async function loadFacturationData() {
 
     const groups = groupChantiers(filtered);
     const totalH = groups.reduce((s, g) => s + g.totalH, 0);
-const totalPassages = groups.reduce((s, g) => s + new Set(g.passages.map(p => p.date)).size, 0);
+    const totalPassages = groups.reduce((s, g) => s + new Set(g.passages.map(p => p.date)).size, 0);
     renderFacturationCards(container, groups, totalH, totalPassages);
 }
 
@@ -5059,6 +5062,535 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
 }
 // CRUCIAL : Exposer les fonctions au HTML
 window.showFacturationView = showFacturationView;
+// ========== ONGLET PLANNING ==========
+
+const PLANNING_EMPLOYEES = [
+    'carlos', 'caroline', 'chloe', 'dylan', 'isabelle', 'jeremie',
+    'jocelyne', 'manon', 'maxime', 'mina', 'nadia', 'nadjet',
+    'oceane', 'remy', 'samuel', 'sandra', 'stephane', 'shana'
+];
+
+function normalizeNom(str) {
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function parseHeuresPlanning(str) {
+    if (!str) return 0;
+    return parseFloat(str.replace(',', '.').trim()) || 0;
+}
+
+function parseSectionHeaderPlanning(texte) {
+    const t = texte.trim();
+    const binomeMatch = t.match(/^(.+?)\s+en\s+bin[oô]me\s+avec\s+(.+)$/i);
+    if (binomeMatch) {
+        return { prenom: normalizeNom(binomeMatch[1]), binome: normalizeNom(binomeMatch[2]), label: t };
+    }
+    return { prenom: normalizeNom(t), binome: null, label: t };
+}
+
+function detectAbsencePlanning(texte) {
+    const t = texte.toUpperCase().trim();
+    if (t.includes('CONGES') || t.includes('CONGÉS')) return 'CONGES_PAYES';
+    if (t.includes('MALADIE')) return 'ABSENCE_MALADIE';
+    if (t === 'ABSENT' || t === 'ABSENTE') return 'ABSENT';
+    return null;
+}
+
+// Parser le texte tabulé collé depuis Excel
+function parserPlanningTexte(texte) {
+    const result = { date: null, employes: {} };
+    const lines = texte.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+
+    let currentSection = null;
+    let currentChantiers = [];
+
+    const flushSection = () => {
+        if (!currentSection) return;
+        const { prenom, binome } = currentSection;
+        if (!result.employes[prenom]) {
+            result.employes[prenom] = { total: 0, chantiers: [], absence: null };
+        }
+        const emp = result.employes[prenom];
+        emp.total = parseFloat((emp.total + currentSection.total).toFixed(2));
+        for (const c of currentChantiers) {
+            emp.chantiers.push({ ...c, binome: binome || null });
+        }
+        if (currentChantiers.length === 1 && detectAbsencePlanning(currentChantiers[0].nom)) {
+            emp.absence = detectAbsencePlanning(currentChantiers[0].nom);
+        }
+    };
+
+    for (const line of lines) {
+        // Séparer les colonnes (tabulation ou espaces multiples)
+        const parts = line.split(/\t+/).map(p => p.trim());
+        if (parts.length < 2) continue;
+
+        const col1 = parts[0];
+        const col2 = parts[parts.length - 1];
+        const heures = parseHeuresPlanning(col2);
+
+        // Détecter la date dans le header (format "18-mai", "18/05" etc)
+        if (!result.date) {
+            const dateMatch = col2.match(/(\d{1,2}[-\/]\w+)/);
+            if (dateMatch) {
+                const parsed = parseDatePlanning(dateMatch[1]);
+                if (parsed) result.date = parsed;
+            }
+        }
+
+        // Ligne indentée = chantier (commence par espace ou tab dans l'original)
+        const isIndented = line.startsWith(' ') || line.startsWith('\t') || parts.length > 2;
+
+        if (!isIndented && col1 && col1 !== 'Total général' && col1 !== 'Planning jour' && col1 !== 'Date / Nb heures' && col1 !== 'Prénom et son binôme') {
+            // Ligne de section (employé)
+            flushSection();
+            const parsed = parseSectionHeaderPlanning(col1);
+            currentSection = { ...parsed, total: heures };
+            currentChantiers = [];
+        } else if (currentSection && col1 && isIndented) {
+            // Ligne chantier — extraire annotation (texte après tab dans la même cellule)
+            const nomParts = col1.split(/\t/);
+            const nomPrincipal = nomParts[0].trim();
+            const annotation = nomParts.slice(1).join(' ').trim() || null;
+            const controle = col1.toLowerCase().includes('contrôle') || col1.toLowerCase().includes('controle');
+
+            currentChantiers.push({
+                nom: nomPrincipal,
+                heures,
+                annotation: annotation || null,
+                controle,
+                absence: detectAbsencePlanning(nomPrincipal) || null
+            });
+        }
+    }
+    flushSection();
+
+    // Si date non trouvée dans le texte, utiliser la date saisie dans le champ
+    if (!result.date) {
+        const dateInput = document.getElementById('planning-date-input').value;
+        if (dateInput) result.date = dateInput;
+    }
+
+    return result;
+}
+
+function parseDatePlanning(str) {
+    const mois = {
+        'jan': '01', 'fév': '02', 'fev': '02', 'mar': '03', 'avr': '04',
+        'mai': '05', 'jun': '06', 'jui': '07', 'aoû': '08', 'aou': '08',
+        'sep': '09', 'oct': '10', 'nov': '11', 'déc': '12', 'dec': '12'
+    };
+    const parts = str.toLowerCase().replace(/\s/g, '').split(/[-\/]/);
+    if (parts.length !== 2) return null;
+    const jour = parts[0].padStart(2, '0');
+    const moisNum = mois[parts[1].substring(0, 3)];
+    if (!moisNum) return null;
+    return `${new Date().getFullYear()}-${moisNum}-${jour}`;
+}
+window.testerImportPlanning = function() {
+    const texte = document.getElementById('planning-paste-zone').value.trim();
+    const feedback = document.getElementById('planning-import-feedback');
+
+    if (!texte) {
+        showNotification('Collez le tableau Excel avant de tester', 'error');
+        return;
+    }
+
+    const planning = parserPlanningTexte(texte);
+    const nbEmployes = Object.keys(planning.employes).length;
+
+    if (nbEmployes === 0) {
+        feedback.style.display = 'block';
+        feedback.innerHTML = `
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:0.75rem;">
+                <div style="font-size:0.78rem;color:#ef4444;font-weight:600;margin-bottom:0.5rem;">
+                    <i class="fas fa-exclamation-circle"></i> Aucun employé détecté
+                </div>
+                <div style="font-size:0.72rem;color:#6b7280;">Vérifiez le format du tableau collé.</div>
+            </div>`;
+        return;
+    }
+
+    let detailHTML = Object.entries(planning.employes).map(([prenom, emp]) => {
+        const nom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
+        const formatH = h => { const hh = Math.floor(h); const mm = Math.round((h-hh)*60); return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2,'0')}`; };
+        const chantiers = emp.absence
+            ? `<span style="color:#6b7280;font-style:italic;">${emp.absence}</span>`
+            : (emp.chantiers || []).map(c => `<div style="color:#6b7280;">${c.nom} — ${formatH(c.heures)}</div>`).join('');
+        return `
+            <div style="padding:0.4rem 0;border-bottom:1px solid #f3f4f6;">
+                <div style="font-weight:600;font-size:0.8rem;color:#111827;">${nom} — ${formatH(emp.total)}</div>
+                <div style="font-size:0.72rem;margin-top:2px;">${chantiers}</div>
+            </div>`;
+    }).join('');
+
+    feedback.style.display = 'block';
+    feedback.innerHTML = `
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:0.75rem;max-height:300px;overflow-y:auto;">
+            <div style="font-size:0.78rem;color:#10b981;font-weight:700;margin-bottom:0.5rem;">
+                <i class="fas fa-check-circle"></i> Aperçu — ${nbEmployes} employés détectés · Date : ${planning.date || 'non détectée'}
+            </div>
+            <div style="font-size:0.72rem;">${detailHTML}</div>
+            <div style="margin-top:0.6rem;font-size:0.72rem;color:#6b7280;font-style:italic;">
+                <i class="fas fa-info-circle"></i> Mode test — aucune donnée envoyée à Firestore ni aux employés.
+            </div>
+        </div>`;
+};
+
+window.importerPlanning = async function () {
+    const dateInput = document.getElementById('planning-date-input').value;
+    const texte = document.getElementById('planning-paste-zone').value.trim();
+    const annuleRemplace = document.getElementById('planning-annule-remplace').checked;
+    const feedback = document.getElementById('planning-import-feedback');
+
+    if (!texte) {
+        showNotification('Collez le tableau Excel avant d\'importer', 'error');
+        return;
+    }
+
+    const planning = parserPlanningTexte(texte);
+
+    if (!planning.date && !dateInput) {
+        showNotification('Impossible de détecter la date — saisissez-la manuellement', 'error');
+        return;
+    }
+
+    const date = planning.date || dateInput;
+    const nbEmployes = Object.keys(planning.employes).length;
+
+    if (nbEmployes === 0) {
+        showNotification('Aucun employé détecté — vérifiez le format collé', 'error');
+        return;
+    }
+
+    try {
+        // Vérifier si planning existant
+        if (!annuleRemplace) {
+            const existing = await getDoc(doc(db, 'plannings', date));
+            if (existing.exists()) {
+                showNotification(`Un planning existe déjà pour le ${date}. Cochez "Annule et remplace" pour écraser.`, 'error');
+                return;
+            }
+        }
+
+        // Convertir pour Firestore
+        const employesData = {};
+        for (const [prenom, data] of Object.entries(planning.employes)) {
+            employesData[prenom] = {
+                total: data.total,
+                absence: data.absence || null,
+                chantiers: data.chantiers.map(c => ({
+                    nom: c.nom,
+                    heures: c.heures,
+                    binome: c.binome || null,
+                    absence: c.absence || null,
+                    annotation: c.annotation || null,
+                    controle: c.controle || false
+                }))
+            };
+        }
+
+        await setDoc(doc(db, 'plannings', date), {
+            date,
+            importedAt: new Date(),
+            source: 'dashboard-paste',
+            annuleRemplace,
+            employes: employesData
+        });
+
+        // Backup mail
+        envoyerBackupMail(date, nbEmployes, texte);
+
+        feedback.style.display = 'block';
+        feedback.innerHTML = `
+            <div style="background:#10b98115;border:1px solid #10b98130;border-radius:8px;padding:0.6rem 0.75rem;">
+                <div style="font-size:0.75rem;color:#10b981;font-weight:600;display:flex;align-items:center;gap:5px;">
+                    <i class="fas fa-check-circle"></i>
+                    Planning ${date} importé — ${nbEmployes} employés
+                </div>
+                <div style="font-size:0.68rem;color:#475569;margin-top:2px;">Backup envoyé à Dylan.propre.eco@gmail.com</div>
+            </div>`;
+
+        // Vider le formulaire
+        document.getElementById('planning-paste-zone').value = '';
+        document.getElementById('planning-annule-remplace').checked = false;
+
+        showNotification(`Planning ${date} importé avec succès`, 'success');
+        loadPlanning();
+
+    } catch (e) {
+        console.error('Erreur import planning:', e);
+        showNotification('Erreur lors de l\'import : ' + e.message, 'error');
+    }
+};
+
+function envoyerBackupMail(date, nbEmployes, texte) {
+    // Backup via mailto (ouvre le client mail)
+    const sujet = encodeURIComponent(`[Backup] Planning Propre Eco — ${date}`);
+    const corps = encodeURIComponent(
+        `Planning importé le ${new Date().toLocaleString('fr-FR')}\n` +
+        `Date : ${date}\n` +
+        `Employés : ${nbEmployes}\n\n` +
+        `---\n\n` +
+        texte.substring(0, 2000)
+    );
+    // Ouvrir en background sans déranger l'utilisateur
+    const a = document.createElement('a');
+    a.href = `mailto:Dylan.propre.eco@gmail.com?subject=${sujet}&body=${corps}`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => a.remove(), 1000);
+}
+
+async function loadPlanning() {
+    const container = document.getElementById('planning-list-container');
+    if (!container) return;
+
+    container.innerHTML = `<div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>`;
+
+    try {
+        const { query: fsQuery, orderBy: fsOrderBy } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+        const snap = await getDocs(fsQuery(collection(db, 'plannings'), fsOrderBy('date', 'desc')));
+
+        allPlanningDocs = [];
+        snap.forEach(docSnap => {
+            allPlanningDocs.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        planningPage = 1;
+        renderPlanningList();
+
+    } catch (e) {
+        console.error('Erreur chargement plannings:', e);
+        container.innerHTML = `<div style="color:#ef4444;padding:1rem;">Erreur : ${e.message}</div>`;
+    }
+}
+
+// État pagination + recherche planning
+let allPlanningDocs = []; // cache des docs Firestore
+let planningPage = 1;
+const PLANNING_PER_PAGE = 7;
+let planningSearchTerm = '';
+
+window.togglePlanningCard = function(date) {
+    const body = document.getElementById(`planning-body-${date}`);
+    const chevron = document.getElementById(`chevron-${date}`);
+    if (!body) return;
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+};
+
+window.rechercherPlanning = function(term) {
+    planningSearchTerm = term.toLowerCase().trim();
+    planningPage = 1;
+    renderPlanningList();
+};
+
+function getPlanningFiltered() {
+    if (!planningSearchTerm) return allPlanningDocs;
+    return allPlanningDocs.filter(data => {
+        // Chercher dans les noms d'employés
+        const empMatch = Object.keys(data.employes || {}).some(prenom =>
+            prenom.includes(planningSearchTerm)
+        );
+        // Chercher dans les chantiers
+        const chantierMatch = Object.values(data.employes || {}).some(emp =>
+            (emp.chantiers || []).some(c =>
+                c.nom.toLowerCase().includes(planningSearchTerm) ||
+                (c.annotation || '').toLowerCase().includes(planningSearchTerm)
+            )
+        );
+        return empMatch || chantierMatch;
+    });
+}
+
+function renderPlanningList() {
+    const container = document.getElementById('planning-list-container');
+    const paginationEl = document.getElementById('planning-pagination');
+    if (!container) return;
+
+    const filtered = getPlanningFiltered();
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / PLANNING_PER_PAGE);
+    const start = (planningPage - 1) * PLANNING_PER_PAGE;
+    const pageData = filtered.slice(start, start + PLANNING_PER_PAGE);
+
+    if (total === 0) {
+        container.innerHTML = `<div style="text-align:center;padding:2rem;color:#6b7280;">Aucun planning trouvé.</div>`;
+        paginationEl.style.display = 'none';
+        return;
+    }
+
+    const formatH = h => {
+        if (!h) return '0h';
+        const hh = Math.floor(h); const mm = Math.round((h-hh)*60);
+        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2,'0')}`;
+    };
+
+    const highlight = (text) => {
+        if (!planningSearchTerm) return text;
+        const re = new RegExp(`(${planningSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(re, '<mark style="background:#fef08a;border-radius:2px;padding:0 2px;">$1</mark>');
+    };
+
+    let html = '';
+    pageData.forEach(data => {
+        const date = data.date;
+        const nbEmployes = Object.keys(data.employes || {}).length;
+        const importedAt = data.importedAt?.toDate?.() || null;
+        const importLabel = importedAt
+            ? `importé ${importedAt.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })} à ${importedAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
+            : 'importé';
+
+        const dateObj = (() => { const [y,m,d] = date.split('-').map(Number); return new Date(y,m-1,d); })();
+        const dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const isToday = date === new Date().toISOString().split('T')[0];
+        const pillBg = isToday ? '#10b981' : '#6b7280';
+
+        // Filtrer les employés selon la recherche
+        const empEntries = Object.entries(data.employes || {}).filter(([prenom, emp]) => {
+            if (!planningSearchTerm) return true;
+            const empMatch = prenom.includes(planningSearchTerm);
+            const chantierMatch = (emp.chantiers || []).some(c =>
+                c.nom.toLowerCase().includes(planningSearchTerm) ||
+                (c.annotation || '').toLowerCase().includes(planningSearchTerm)
+            );
+            return empMatch || chantierMatch;
+        });
+
+        const empCards = empEntries.map(([prenom, emp]) => {
+            const nom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
+            const total = emp.total || 0;
+
+            let borderColor = '#10b981', totalColor = '#10b981';
+            if (emp.absence === 'CONGES_PAYES') { borderColor = '#3b82f6'; totalColor = '#3b82f6'; }
+            else if (emp.absence === 'ABSENCE_MALADIE') { borderColor = '#ef4444'; totalColor = '#ef4444'; }
+            else if (emp.absence === 'ABSENT') { borderColor = '#9ca3af'; totalColor = '#9ca3af'; }
+
+            let chantiersHTML = '';
+            if (emp.absence) {
+                const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
+                chantiersHTML = `<div style="font-size:0.75rem;color:${borderColor};font-style:italic;margin-top:0.25rem;">${absLabels[emp.absence] || emp.absence}</div>`;
+            } else {
+                // Filtrer les chantiers si recherche active
+                const chantiers = planningSearchTerm
+                    ? (emp.chantiers || []).filter(c =>
+                        c.nom.toLowerCase().includes(planningSearchTerm) ||
+                        (c.annotation || '').toLowerCase().includes(planningSearchTerm) ||
+                        prenom.includes(planningSearchTerm)
+                      )
+                    : (emp.chantiers || []);
+
+                chantiersHTML = chantiers.map(c => `
+                    <div style="padding:3px 0;border-bottom:1px solid #f3f4f6;">
+                        <div style="display:flex;justify-content:space-between;gap:4px;">
+                            <span style="font-size:0.73rem;color:#374151;flex:1;line-height:1.3;">${highlight(c.nom)}</span>
+                            <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                        </div>
+                        ${c.annotation ? `<div style="color:#f97316;font-style:italic;font-size:0.68rem;margin-top:1px;">${highlight(c.annotation)}</div>` : ''}
+                        ${c.controle ? `<span style="display:inline-flex;align-items:center;gap:2px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;margin-top:2px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> contrôle</span>` : ''}
+                    </div>`).join('');
+
+                if (!chantiersHTML) chantiersHTML = '<div style="color:#9ca3af;font-size:0.73rem;padding:2px 0;">Aucun chantier correspondant</div>';
+            }
+
+            return `
+                <div style="background:white;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.7rem;border-left:3px solid ${borderColor};">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
+                        <span style="font-size:0.82rem;font-weight:700;color:#111827;">${highlight(nom)}</span>
+                        <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatH(total)}</span>
+                    </div>
+                    ${chantiersHTML}
+                </div>`;
+        }).join('');
+
+        // Auto-ouvrir si recherche active
+        const autoOpen = !!planningSearchTerm;
+
+        html += `
+            <div style="background:white;border:1.5px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-bottom:0.75rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+                <div style="padding:0.85rem 1.1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;"
+                     onclick="togglePlanningCard('${date}')">
+                    <div style="display:flex;align-items:center;gap:0.6rem;">
+                        <div style="background:${pillBg};color:white;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:700;white-space:nowrap;">
+                            ${date.split('-').reverse().slice(0,2).join(' ')}
+                        </div>
+                        <div>
+                            <div style="font-size:0.88rem;font-weight:600;color:#111827;text-transform:capitalize;">${dateLabel}</div>
+                            <div style="font-size:0.72rem;color:#9ca3af;">${nbEmployes} employés · ${importLabel}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <button onclick="event.stopPropagation();supprimerPlanning('${date}')"
+                            style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:6px;padding:4px 8px;font-size:0.72rem;cursor:pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <i class="fas fa-chevron-down" id="chevron-${date}" style="color:#9ca3af;font-size:0.75rem;transition:transform 0.2s;${autoOpen ? 'transform:rotate(180deg);' : ''}"></i>
+                    </div>
+                </div>
+                <div id="planning-body-${date}" style="display:${autoOpen ? 'block' : 'none'};padding:0.75rem 1rem;border-top:1px solid #f3f4f6;background:#fafafa;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0.6rem;">
+                        ${empCards}
+                    </div>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+
+    // Pagination
+    if (totalPages <= 1) {
+        paginationEl.style.display = 'none';
+    } else {
+        paginationEl.style.display = 'flex';
+        const startIdx = start + 1;
+        const endIdx = Math.min(start + PLANNING_PER_PAGE, total);
+        paginationEl.innerHTML = `
+            <div class="pagination-info">Affichage de ${startIdx} à ${endIdx} sur ${total} planning${total > 1 ? 's' : ''}</div>
+            <div class="pagination-controls">
+                <button class="btn-pagination" ${planningPage === 1 ? 'disabled' : ''} onclick="changerPagePlanning(-1)">
+                    <i class="fas fa-chevron-left"></i> Précédent
+                </button>
+                <div class="page-numbers">
+                    ${Array.from({length: totalPages}, (_, i) => i + 1).map(i =>
+                        `<button class="page-number ${i === planningPage ? 'active' : ''}" onclick="allerPagePlanning(${i})">${i}</button>`
+                    ).join('')}
+                </div>
+                <button class="btn-pagination" ${planningPage === totalPages ? 'disabled' : ''} onclick="changerPagePlanning(1)">
+                    Suivant <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>`;
+    }
+}
+
+window.changerPagePlanning = function(delta) {
+    const filtered = getPlanningFiltered();
+    const totalPages = Math.ceil(filtered.length / PLANNING_PER_PAGE);
+    const newPage = planningPage + delta;
+    if (newPage >= 1 && newPage <= totalPages) {
+        planningPage = newPage;
+        renderPlanningList();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+};
+
+window.allerPagePlanning = function(page) {
+    planningPage = page;
+    renderPlanningList();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// Pré-remplir la date du jour à l'ouverture de l'onglet
+function initPlanningTab() {
+    const dateInput = document.getElementById('planning-date-input');
+    if (dateInput && !dateInput.value) {
+        const d = new Date();
+        dateInput.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+    loadPlanning();
+}
 window.hideFacturationView = hideFacturationView;
 window.loadFacturationData = loadFacturationData;
 window.openChiffrageModal = openChiffrageModal;
