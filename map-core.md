@@ -37,6 +37,17 @@
 - `supprimerPlanningsMois()` : Modale de confirmation → suppression en parallèle de tous les plannings du mois sélectionné.
 - `PRENOM_DISPLAY` : Dictionnaire `id → nom affiché avec accents` pour tous les employés. Fallback quand `emp.display` absent (anciens plannings).
 - `PLANNING_EMPLOYEES` : Liste des IDs employés normalisés pour détection parser.
+- `formatHeuresFactu(h)` : Format décimal français — entier → `"2"`, décimal → `"1,5"` / `"1,25"`. Pas de suffixe `h`. Utilisé partout dans les tableaux heures, planning, facturation.
+- `ouvrirModalImportPlanning()` : Ouvre une grande modale plein écran (max-width:960px, hauteur 100vh) avec textarea Excel. Étape 1 du flux import planning.
+- `testerImportPlanning()` : Parse le texte collé via `parserPlanningTexte`, injecte la review directement dans la modale existante (body + footer remplacés in-place). Pas de modale séparée.
+- `publierPlanningDepuisReview()` : Synchronise annotations depuis inputs DOM, anime le bouton `#btn-envoyer-planning` (spinner), appelle `publierPlanning`.
+- `publierPlanning(planning)` : Sauvegarde Firestore `plannings/{date}`, appelle `envoyerNotifPlanning`, ferme `#modal-import-planning`, affiche `afficherModalPlanningPublie`. Plus d'envoi mail backup.
+- `afficherModalPlanningPublie(date, nbEmployes)` : Grande modale animée (slideUp + scale + bounce icône) confirmant l'envoi — bandeau vert, stat employés, info ntfy, bouton "Parfait !".
+- `envoyerNotifPlanning(date, nbEmployes, employes)` : Calcule `emojiSaison` en local depuis le mois. `formatH` local format décimal avec `h` suffixe pour le corps du message ntfy. Log console par topic.
+- `renderPlanningList()` : Tri alpha des employés par `localeCompare('fr')`. `emojiSaison` calculé dans le `forEach` depuis `data.date`. Plannings triés par date asc.
+- `getPlanningFiltered()` : Recherche normalisée sans accents (NFD) sur date (format FR + ISO + JJ/MM), prénom employé, chantier, annotation.
+- `rechercherPlanning(term)` : Normalise le terme (NFD, lowercase) avant stockage dans `planningSearchTerm`.
+- `initPlanningTab()` : Reset `planningEnCours = null` + appel `loadPlanning()`. Plus de référence à `planning-date-input` ni `planning-import-feedback`.
 
 ## TEMPS_DEFAUT
 - Vitres Standard : 3 min, Baies Vitrées : 4 min, Vélux : 5 min, Portes vitrées : 3 min, Vitres Hautes : 5 min.

@@ -4,31 +4,31 @@ import { collection, getDocs, query, orderBy } from 'https://www.gstatic.com/fir
 
 // Section 1
 // Variables globales
-    let properties = [];
-    let procedures = {};
-    let currentItinerary = [];
-    let userLocation = null;
-    let displayedProperties = 0;
-    const propertiesPerPage = 12;
-    let selectedProperty = null;
+let properties = [];
+let procedures = {};
+let currentItinerary = [];
+let userLocation = null;
+let displayedProperties = 0;
+const propertiesPerPage = 12;
+let selectedProperty = null;
 
-    // Éléments DOM
-    const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
-    const propertyDetails = document.getElementById('propertyDetails');
-    const propertyInfo = document.getElementById('propertyInfo');
-    const addToItineraryBtn = document.getElementById('addToItinerary');
-    const showProcedureBtn = document.getElementById('showProcedureBtn');
-    const itineraryList = document.getElementById('itineraryList');
-    const optimizeBtn = document.getElementById('optimizeItinerary');
-    const clearBtn = document.getElementById('clearItinerary');
-    const propertiesList = document.getElementById('propertiesList');
-    const showMoreBtn = document.getElementById('showMoreBtn');
-    const procedureModal = document.getElementById('procedureModal');
-    const locationStatus = document.getElementById('locationStatus');
+// Éléments DOM
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const propertyDetails = document.getElementById('propertyDetails');
+const propertyInfo = document.getElementById('propertyInfo');
+const addToItineraryBtn = document.getElementById('addToItinerary');
+const showProcedureBtn = document.getElementById('showProcedureBtn');
+const itineraryList = document.getElementById('itineraryList');
+const optimizeBtn = document.getElementById('optimizeItinerary');
+const clearBtn = document.getElementById('clearItinerary');
+const propertiesList = null;
+const showMoreBtn = null;
+const procedureModal = document.getElementById('procedureModal');
+const locationStatus = document.getElementById('locationStatus');
 
 
-  // Initialisation au chargement de la page
+// Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function () {
   loadStoredData();
   getCurrentLocation();
@@ -37,104 +37,104 @@ document.addEventListener('DOMContentLoaded', function () {
     updateItineraryDisplay();
   });
 });
-    // Chargement des données depuis le stockage local
-    function loadStoredData() {
-      const stored = localStorage.getItem('itinerary');
-      if (stored) {
-        try {
-          currentItinerary = JSON.parse(stored);
-        } catch (error) {
-          console.error('Erreur lors du chargement de l\'itinéraire:', error);
-          currentItinerary = [];
-        }
-      }
+// Chargement des données depuis le stockage local
+function loadStoredData() {
+  const stored = localStorage.getItem('itinerary');
+  if (stored) {
+    try {
+      currentItinerary = JSON.parse(stored);
+    } catch (error) {
+      console.error('Erreur lors du chargement de l\'itinéraire:', error);
+      currentItinerary = [];
     }
+  }
+}
 
-    // Géolocalisation
-    function getCurrentLocation() {
-      // Vérifier d'abord si on a une position récente en cache
-      const cachedLocation = localStorage.getItem('userLocation');
-      const cacheTime = localStorage.getItem('userLocationTime');
-      const now = Date.now();
+// Géolocalisation
+function getCurrentLocation() {
+  // Vérifier d'abord si on a une position récente en cache
+  const cachedLocation = localStorage.getItem('userLocation');
+  const cacheTime = localStorage.getItem('userLocationTime');
+  const now = Date.now();
 
-      // Si on a une position de moins de 10 minutes, l'utiliser
-      if (cachedLocation && cacheTime && (now - parseInt(cacheTime)) < 600000) { // 10 minutes au lieu de 30
-        try {
-          const cached = JSON.parse(cachedLocation);
-          userLocation = cached;
-          updateLocationStatus('success', 'Position utilisée depuis le cache');
-          return;
-        } catch (e) {
-          // Nettoyer le cache corrompu
-          localStorage.removeItem('userLocation');
-          localStorage.removeItem('userLocationTime');
-        }
-      }
-
-      if (!navigator.geolocation) {
-        updateLocationStatus('error', 'Géolocalisation non supportée par votre navigateur');
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          userLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-
-          // Sauvegarder en cache
-          localStorage.setItem('userLocation', JSON.stringify(userLocation));
-          localStorage.setItem('userLocationTime', now.toString());
-
-          updateLocationStatus('success', `Position détectée (Â±${Math.round(position.coords.accuracy)}m)`);
-        },
-        (error) => {
-          // Nettoyer le cache en cas d'erreur
-          localStorage.removeItem('userLocation');
-          localStorage.removeItem('userLocationTime');
-
-          let errorMessage = 'Erreur de géolocalisation';
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              errorMessage = 'Autorisation de géolocalisation refusée';
-              break;
-            case error.POSITION_UNAVAILABLE:
-              errorMessage = 'Position non disponible';
-              break;
-            case error.TIMEOUT:
-              errorMessage = 'Délai de géolocalisation dépassé';
-              break;
-          }
-          updateLocationStatus('error', errorMessage);
-        },
-        {
-          enableHighAccuracy: true, // Remis Ã  true
-          timeout: 10000,
-          maximumAge: 600000 // 10 minutes
-        }
-      );
-    }
-    // Fonction utilitaire pour forcer une nouvelle géolocalisation
-    function forceLocationRefresh() {
+  // Si on a une position de moins de 10 minutes, l'utiliser
+  if (cachedLocation && cacheTime && (now - parseInt(cacheTime)) < 600000) { // 10 minutes au lieu de 30
+    try {
+      const cached = JSON.parse(cachedLocation);
+      userLocation = cached;
+      updateLocationStatus('success', 'Position utilisée depuis le cache');
+      return;
+    } catch (e) {
+      // Nettoyer le cache corrompu
       localStorage.removeItem('userLocation');
       localStorage.removeItem('userLocationTime');
-      getCurrentLocation();
     }
+  }
 
-    function updateLocationStatus(type, message) {
-      locationStatus.className = `geolocation-status ${type}`;
+  if (!navigator.geolocation) {
+    updateLocationStatus('error', 'Géolocalisation non supportée par votre navigateur');
+    return;
+  }
 
-      const icons = {
-        success: 'fas fa-map-marker-alt',
-        error: 'fas fa-exclamation-triangle',
-        loading: 'fas fa-spinner fa-spin'
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      userLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
       };
 
-      locationStatus.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
-    }
+      // Sauvegarder en cache
+      localStorage.setItem('userLocation', JSON.stringify(userLocation));
+      localStorage.setItem('userLocationTime', now.toString());
 
-    // Chargement des données depuis firebase
+      updateLocationStatus('success', `Position détectée (Â±${Math.round(position.coords.accuracy)}m)`);
+    },
+    (error) => {
+      // Nettoyer le cache en cas d'erreur
+      localStorage.removeItem('userLocation');
+      localStorage.removeItem('userLocationTime');
+
+      let errorMessage = 'Erreur de géolocalisation';
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          errorMessage = 'Autorisation de géolocalisation refusée';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          errorMessage = 'Position non disponible';
+          break;
+        case error.TIMEOUT:
+          errorMessage = 'Délai de géolocalisation dépassé';
+          break;
+      }
+      updateLocationStatus('error', errorMessage);
+    },
+    {
+      enableHighAccuracy: true, // Remis Ã  true
+      timeout: 10000,
+      maximumAge: 600000 // 10 minutes
+    }
+  );
+}
+// Fonction utilitaire pour forcer une nouvelle géolocalisation
+function forceLocationRefresh() {
+  localStorage.removeItem('userLocation');
+  localStorage.removeItem('userLocationTime');
+  getCurrentLocation();
+}
+
+function updateLocationStatus(type, message) {
+  locationStatus.className = `geolocation-status ${type}`;
+
+  const icons = {
+    success: 'fas fa-map-marker-alt',
+    error: 'fas fa-exclamation-triangle',
+    loading: 'fas fa-spinner fa-spin'
+  };
+
+  locationStatus.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
+}
+
+// Chargement des données depuis firebase
 import { getAllCoproprietes } from './firebase-copro.js';
 
 async function loadProperties() {
@@ -162,53 +162,24 @@ async function loadProperties() {
 
   } catch (error) {
     console.error('Erreur:', error);
-    showMessage('Erreur lors du chargement des copropriétés', 'error');
   }
 }
-  
 
-    function showLoadingState() {
-      propertiesList.innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-          Chargement des copropriétés...
-        </div>
-      `;
-    }
 
-    function showErrorState(message) {
-      propertiesList.innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--accent);"></i>
-          ${message}
-        </div>
-      `;
-    }
+function showLoadingState() {
+      // propertiesList supprimé du HTML
 
-    // Affichage des propriétés
-    function displayProperties() {
-      const startIndex = displayedProperties;
-      const endIndex = Math.min(startIndex + propertiesPerPage, properties.length);
+}
 
-      if (startIndex === 0) {
-        propertiesList.innerHTML = '';
-      }
+function showErrorState(message) {
+  console.error(message);
+}
 
-      for (let i = startIndex; i < endIndex; i++) {
-        const property = properties[i];
-        const card = createPropertyCard(property);
-        propertiesList.appendChild(card);
-      }
+// Affichage des propriétés
+function displayProperties() {
+    // Liste complète supprimée du HTML — no-op
 
-      displayedProperties = endIndex;
-
-      // Gestion du bouton "Afficher plus"
-      if (displayedProperties < properties.length) {
-        showMoreBtn.style.display = 'inline-flex';
-      } else {
-        showMoreBtn.style.display = 'none';
-      }
-    }
+}
 
 function createPropertyCard(property) {
   const card = document.createElement('div');
@@ -232,40 +203,40 @@ function createPropertyCard(property) {
   return card;
 }
 
-    // Recherche
-    let searchTimeout;
-    searchInput.addEventListener('input', function () {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        const query = this.value.toLowerCase().trim();
+// Recherche
+let searchTimeout;
+searchInput.addEventListener('input', function () {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const query = this.value.toLowerCase().trim();
 
-        if (query.length < 2) {
-          searchResults.style.display = 'none';
-          propertyDetails.style.display = 'none';
-          return;
-        }
+    if (query.length < 2) {
+      searchResults.style.display = 'none';
+      propertyDetails.style.display = 'none';
+      return;
+    }
 
-        const matches = properties.filter(prop =>
-          (prop.nom || '').toLowerCase().includes(query) ||
-          (prop.adresse || '').toLowerCase().includes(query) ||
-          (prop.code || '').toLowerCase().includes(query)
-        );
+    const matches = properties.filter(prop =>
+      (prop.nom || '').toLowerCase().includes(query) ||
+      (prop.adresse || '').toLowerCase().includes(query) ||
+      (prop.code || '').toLowerCase().includes(query)
+    );
 
-        displaySearchResults(matches);
-      }, 300);
-    });
+    displaySearchResults(matches);
+  }, 300);
+});
 
-    function displaySearchResults(matches) {
-      if (matches.length === 0) {
-        searchResults.innerHTML = `
+function displaySearchResults(matches) {
+  if (matches.length === 0) {
+    searchResults.innerHTML = `
           <div class="search-result-item" style="text-align: center; color: var(--text-light);">
             <i class="fas fa-search"></i> Aucun résultat trouvé
           </div>
         `;
-        searchResults.style.display = 'block';
-        return;
-      }
-      searchResults.innerHTML = matches.slice(0, 5).map(property => `
+    searchResults.style.display = 'block';
+    return;
+  }
+  searchResults.innerHTML = matches.slice(0, 5).map(property => `
   <div class="search-result-item" data-value="${property.nom}">
     <strong>${property.nom || 'Nom non défini'}</strong>
     <br>
@@ -273,18 +244,18 @@ function createPropertyCard(property) {
   </div>
 `).join('');
 
-      // Attache les événements après l'injection
-      document.querySelectorAll('.search-result-item').forEach(item => {
-        item.addEventListener('click', () => {
-          selectProperty(item.dataset.value);
-        });
-      });
+  // Attache les événements après l'injection
+  document.querySelectorAll('.search-result-item').forEach(item => {
+    item.addEventListener('click', () => {
+      selectProperty(item.dataset.value);
+    });
+  });
 
 
-      searchResults.style.display = 'block';
-    }
+  searchResults.style.display = 'block';
+}
 
-    // Sélection d'une propriété
+// Sélection d'une propriété
 window.selectProperty = function (propertyName) {
   const property = properties.find(p => p.nom === propertyName);
   if (!property) return;
@@ -313,23 +284,23 @@ window.selectProperty = function (propertyName) {
   searchInput.value = propertyName;
 };
 
-    // Gestion de l'itinéraire
-    window.addPropertyToItinerary = function (propertyName) {
-      const property = properties.find(p => p.nom === propertyName);
-      if (!property) return;
+// Gestion de l'itinéraire
+window.addPropertyToItinerary = function (propertyName) {
+  const property = properties.find(p => p.nom === propertyName);
+  if (!property) return;
 
-      if (currentItinerary.some(item => item.nom === propertyName)) {
-        showNotification('Cette copropriété est déjà dans votre itinéraire', 'warning');
-        return;
-      }
+  if (currentItinerary.some(item => item.nom === propertyName)) {
+    showNotification('Cette copropriété est déjà dans votre itinéraire', 'warning');
+    return;
+  }
 
-      currentItinerary.push(property);
-      localStorage.setItem('itinerary', JSON.stringify(currentItinerary));
-      updateItineraryDisplay();
-      showNotification('Copropriété ajoutée à l\'itinéraire', 'success');
-    };
+  currentItinerary.push(property);
+  localStorage.setItem('itinerary', JSON.stringify(currentItinerary));
+  updateItineraryDisplay();
+  showNotification('Copropriété ajoutée à l\'itinéraire', 'success');
+};
 
- function updateItineraryDisplay() {
+function updateItineraryDisplay() {
   if (currentItinerary.length === 0) {
     itineraryList.innerHTML = `
       <div class="empty-state">
@@ -367,14 +338,14 @@ window.selectProperty = function (propertyName) {
     `;
   }).join('');
 }
-    window.removeFromItinerary = function (index) {
-      currentItinerary.splice(index, 1);
-      localStorage.setItem('itinerary', JSON.stringify(currentItinerary));
-      updateItineraryDisplay();
-      showNotification('Copropriété supprimée de l\'itinéraire', 'success');
-    };
+window.removeFromItinerary = function (index) {
+  currentItinerary.splice(index, 1);
+  localStorage.setItem('itinerary', JSON.stringify(currentItinerary));
+  updateItineraryDisplay();
+  showNotification('Copropriété supprimée de l\'itinéraire', 'success');
+};
 
-    window.copyAddress = async function(address, index) {
+window.copyAddress = async function (address, index) {
   if (!address || address === 'Adresse non définie') {
     showNotification('Aucune adresse à copier', 'warning');
     return;
@@ -382,7 +353,7 @@ window.selectProperty = function (propertyName) {
 
   try {
     await navigator.clipboard.writeText(address);
-    
+
     const icon = document.getElementById(`copy-icon-${index}`);
     if (icon) {
       icon.className = 'fas fa-check';
@@ -390,7 +361,7 @@ window.selectProperty = function (propertyName) {
         icon.className = 'fas fa-copy';
       }, 2000);
     }
-    
+
     showNotification('Adresse copiée dans le presse-papier', 'success');
   } catch (err) {
     console.error('Erreur lors de la copie:', err);
@@ -398,99 +369,96 @@ window.selectProperty = function (propertyName) {
   }
 };
 
-    // Actions sur l'itinéraire avec géolocalisation
-    optimizeBtn.addEventListener('click', function () {
-      if (currentItinerary.length === 0) {
-        showNotification('Votre itinéraire est vide', 'warning');
-        return;
+// Actions sur l'itinéraire avec géolocalisation
+optimizeBtn.addEventListener('click', function () {
+  if (currentItinerary.length === 0) {
+    showNotification('Votre itinéraire est vide', 'warning');
+    return;
+  }
+
+  optimizeBtn.disabled = true;
+  optimizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+
+  // Construction de l'URL Google Maps avec la position actuelle comme point de départ
+  let googleMapsUrl = 'https://www.google.com/maps/dir/';
+
+  // Ajouter la position actuelle si disponible
+  if (userLocation) {
+    googleMapsUrl += `${userLocation.lat},${userLocation.lng}/`;
+    showNotification('Itinéraire généré depuis votre position actuelle', 'success');
+  } else {
+    showNotification('Position non disponible, itinéraire généré sans point de départ', 'warning');
+  }
+
+  // Ajouter toutes les adresses des copropriétés
+  const addresses = currentItinerary
+    .map(prop => encodeURIComponent(prop.adresse || prop.nom))
+    .join('/');
+
+  googleMapsUrl += addresses;
+
+  // Ouvrir dans un nouvel onglet
+  window.open(googleMapsUrl, '_blank');
+
+  // Remettre le bouton Ã  l'état normal
+  setTimeout(() => {
+    optimizeBtn.disabled = false;
+    optimizeBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Ouvrir dans Google Maps';
+  }, 1000);
+});
+
+clearBtn.addEventListener('click', function () {
+  if (currentItinerary.length === 0) {
+    showNotification('Votre itinéraire est déjà  vide', 'warning');
+    return;
+  }
+
+  if (confirm('ÃŠtes-vous sûr de vouloir vider votre itinéraire ?')) {
+    currentItinerary = [];
+    localStorage.removeItem('itinerary');
+    updateItineraryDisplay();
+    showNotification('Itinéraire vidé', 'success');
+  }
+});
+
+
+
+// Procédures - Modal moderne
+window.showProcedure = function (propertyName) {
+  const procedure = procedures[propertyName];
+  if (!procedure) {
+    showNotification('Aucune procédure disponible pour cette copropriété', 'warning');
+    return;
+  }
+
+  // Créer une modal moderne
+  const modal = document.createElement('div');
+  modal.className = 'procedure-modal-modern';
+
+  // Formater le texte (remplacer \n par <br>, sections par puces)
+  const formattedText = procedure
+    .split('\n')
+    .map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+
+      // Détecter les sections (avec ->)
+      if (trimmed.startsWith('->')) {
+        return `<div class="procedure-item"><i class="fas fa-check-circle"></i>${trimmed.substring(2)}</div>`;
       }
-
-      optimizeBtn.disabled = true;
-      optimizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
-
-      // Construction de l'URL Google Maps avec la position actuelle comme point de départ
-      let googleMapsUrl = 'https://www.google.com/maps/dir/';
-
-      // Ajouter la position actuelle si disponible
-      if (userLocation) {
-        googleMapsUrl += `${userLocation.lat},${userLocation.lng}/`;
-        showNotification('Itinéraire généré depuis votre position actuelle', 'success');
-      } else {
-        showNotification('Position non disponible, itinéraire généré sans point de départ', 'warning');
+      // Titres (texte en majuscules ou se terminant par :)
+      else if (trimmed === trimmed.toUpperCase() || trimmed.endsWith(':')) {
+        return `<h4 class="procedure-section">${trimmed}</h4>`;
       }
-
-      // Ajouter toutes les adresses des copropriétés
-      const addresses = currentItinerary
-        .map(prop => encodeURIComponent(prop.adresse || prop.nom))
-        .join('/');
-
-      googleMapsUrl += addresses;
-
-      // Ouvrir dans un nouvel onglet
-      window.open(googleMapsUrl, '_blank');
-
-      // Remettre le bouton Ã  l'état normal
-      setTimeout(() => {
-        optimizeBtn.disabled = false;
-        optimizeBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Ouvrir dans Google Maps';
-      }, 1000);
-    });
-
-    clearBtn.addEventListener('click', function () {
-      if (currentItinerary.length === 0) {
-        showNotification('Votre itinéraire est déjà  vide', 'warning');
-        return;
+      // Texte normal
+      else {
+        return `<p class="procedure-text">${trimmed}</p>`;
       }
+    })
+    .filter(line => line)
+    .join('');
 
-      if (confirm('ÃŠtes-vous sûr de vouloir vider votre itinéraire ?')) {
-        currentItinerary = [];
-        localStorage.removeItem('itinerary');
-        updateItineraryDisplay();
-        showNotification('Itinéraire vidé', 'success');
-      }
-    });
-
-
-
-    // Bouton "Afficher plus"
-    showMoreBtn.addEventListener('click', displayProperties);
-
-    // Procédures - Modal moderne
-    window.showProcedure = function (propertyName) {
-      const procedure = procedures[propertyName];
-      if (!procedure) {
-        showNotification('Aucune procédure disponible pour cette copropriété', 'warning');
-        return;
-      }
-
-      // Créer une modal moderne
-      const modal = document.createElement('div');
-      modal.className = 'procedure-modal-modern';
-      
-      // Formater le texte (remplacer \n par <br>, sections par puces)
-      const formattedText = procedure
-        .split('\n')
-        .map(line => {
-          const trimmed = line.trim();
-          if (!trimmed) return '';
-          
-          // Détecter les sections (avec ->)
-          if (trimmed.startsWith('->')) {
-            return `<div class="procedure-item"><i class="fas fa-check-circle"></i>${trimmed.substring(2)}</div>`;
-          }
-          // Titres (texte en majuscules ou se terminant par :)
-          else if (trimmed === trimmed.toUpperCase() || trimmed.endsWith(':')) {
-            return `<h4 class="procedure-section">${trimmed}</h4>`;
-          }
-          // Texte normal
-          else {
-            return `<p class="procedure-text">${trimmed}</p>`;
-          }
-        })
-        .filter(line => line)
-        .join('');
-      
-      modal.innerHTML = `
+  modal.innerHTML = `
         <div class="modal-overlay-procedure" onclick="this.parentElement.remove()"></div>
         <div class="modal-content-procedure" onclick="event.stopPropagation()">
           <div class="modal-header-procedure">
@@ -507,32 +475,32 @@ window.selectProperty = function (propertyName) {
           </div>
         </div>
       `;
-      
-      document.body.appendChild(modal);
-    };
 
-    // Fermeture de l'ancienne modale (garder pour compatibilité)
-    document.querySelector('.close-btn')?.addEventListener('click', function () {
-      procedureModal.style.display = 'none';
-    });
+  document.body.appendChild(modal);
+};
 
-    procedureModal?.addEventListener('click', function (e) {
-      if (e.target === procedureModal) {
-        procedureModal.style.display = 'none';
-      }
-    });
+// Fermeture de l'ancienne modale (garder pour compatibilité)
+document.querySelector('.close-btn')?.addEventListener('click', function () {
+  procedureModal.style.display = 'none';
+});
 
-    // Notifications
-    function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.style.cssText = `
+procedureModal?.addEventListener('click', function (e) {
+  if (e.target === procedureModal) {
+    procedureModal.style.display = 'none';
+  }
+});
+
+// Notifications
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
         position: fixed;
         top: 2rem;
         right: 2rem;
         background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' :
-          type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' :
-            type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
-              'linear-gradient(135deg, #3b82f6, #2563eb)'};
+      type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' :
+        type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+          'linear-gradient(135deg, #3b82f6, #2563eb)'};
         color: white;
         padding: 1rem 1.5rem;
         border-radius: 12px;
@@ -543,25 +511,25 @@ window.selectProperty = function (propertyName) {
         max-width: 300px;
       `;
 
-      const icons = {
-        success: 'fas fa-check-circle',
-        warning: 'fas fa-exclamation-triangle',
-        error: 'fas fa-times-circle',
-        info: 'fas fa-info-circle'
-      };
+  const icons = {
+    success: 'fas fa-check-circle',
+    warning: 'fas fa-exclamation-triangle',
+    error: 'fas fa-times-circle',
+    info: 'fas fa-info-circle'
+  };
 
-      notification.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
-      document.body.appendChild(notification);
+  notification.innerHTML = `<i class="${icons[type]}"></i> ${message}`;
+  document.body.appendChild(notification);
 
-      setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease-out forwards';
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
-    }
+  setTimeout(() => {
+    notification.style.animation = 'slideOutRight 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
 
-    // Styles pour les animations de notification
-    const style = document.createElement('style');
-    style.textContent = `
+// Styles pour les animations de notification
+const style = document.createElement('style');
+style.textContent = `
       @keyframes slideInRight {
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
@@ -571,26 +539,26 @@ window.selectProperty = function (propertyName) {
         to { transform: translateX(100%); opacity: 0; }
       }
     `;
-    document.head.appendChild(style);
+document.head.appendChild(style);
 
-    // Fermer les résultats de recherche en cliquant ailleurs
-    document.addEventListener('click', function (e) {
-      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-        searchResults.style.display = 'none';
-      }
-    });
+// Fermer les résultats de recherche en cliquant ailleurs
+document.addEventListener('click', function (e) {
+  if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+    searchResults.style.display = 'none';
+  }
+});
 
-    // Gestion des erreurs de géolocalisation en arrière-plan
-    window.addEventListener('online', () => {
-      if (!userLocation) {
-        getCurrentLocation();
-      }
-    });
+// Gestion des erreurs de géolocalisation en arrière-plan
+window.addEventListener('online', () => {
+  if (!userLocation) {
+    getCurrentLocation();
+  }
+});
 
 // Section 2
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('âœ… Service Worker enregistré', reg))
-      .catch(err => console.error('âŒ Erreur Service Worker', err));
-  }
+  navigator.serviceWorker.register('service-worker.js')
+    .then(reg => console.log('âœ… Service Worker enregistré', reg))
+    .catch(err => console.error('âŒ Erreur Service Worker', err));
+}
 

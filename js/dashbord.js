@@ -2595,7 +2595,7 @@ async function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
             <div class="heures-stat-card">
                 <div class="heures-stat-icon green"><i class="fas fa-clock"></i></div>
                 <div>
-                    <div class="heures-stat-value">${totalHours.toFixed(2)}h</div>
+                    <div class="heures-stat-value">${formatHeuresFactu(totalHours)}</div>
                     <div class="heures-stat-label">Total heures</div>
                 </div>
             </div>
@@ -2642,7 +2642,7 @@ async function renderHeures(employeeData, totalHours, totalKm, totalChantiers) {
                             </td>
                             <td data-label="Semaines">${emp.weeks} sem.</td>
                             <td data-label="Total heures">
-                                <span class="heures-badge-hours">${emp.totalHours.toFixed(2)}h</span>
+                                <span class="heures-badge-hours">${formatHeuresFactu(emp.totalHours)}</span>
                             </td>
                             <td data-label="Kilomètres">${emp.totalKm} km</td>
                             <td data-label="Chantiers">${emp.totalChantiers}</td>
@@ -3170,13 +3170,12 @@ function renderEmployeeDetails(weeksData, totalHours, firstKm, lastKm, parcourus
                             ${weekData.days.map(day => `
                                 <tr>
                                     <td data-label="Jour"><strong>${day.day}</strong></td>
-                                    <td data-label="Heures" style="color: #10b981; font-weight: 600;">${day.hours}h</td>
-                                    <td data-label="Commentaires">${day.comments}</td>
+<td data-label="Heures" style="color: #10b981; font-weight: 600;">${formatHeuresFactu(parseFloat(day.hours) || 0)}</td>                                    <td data-label="Commentaires">${day.comments}</td>
                                 </tr>
                             `).join('')}
                             <tr class="total-row">
                                 <td data-label="Total"><strong>TOTAL</strong></td>
-                                <td data-label="Heures" style="font-size: 1.1rem;">${weekData.totalHours}h</td>
+                                <td data-label="Heures" style="font-size: 1.1rem;">${formatHeuresFactu(weekData.totalHours)}</td>
                                 <td data-label="Kilometres"><strong>${weekData.km} km</strong></td>
                             </tr>
                         </tbody>
@@ -4769,11 +4768,11 @@ function levenshtein(a, b) {
 function normalizeChantierName(name) {
     return name.toLowerCase().trim().replace(/\s+/g, ' ');
 }
-
 function formatHeuresFactu(h) {
-    if (h % 1 === 0) return h.toFixed(0) + 'h';
-    if ((h * 10) % 1 === 0) return h.toFixed(1) + 'h';
-    return h.toFixed(2) + 'h';
+    if (!h || h === 0) return '0';
+    const rounded = Math.round(h * 100) / 100;
+    if (rounded % 1 === 0) return String(rounded);
+    return rounded.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
 }
 
 function groupChantiers(allPassages) {
@@ -5214,10 +5213,67 @@ function parserPlanningTexte(texte) {
 // ── État temporaire du planning en cours d'édition ──
 let planningEnCours = null;
 
+window.ouvrirModalImportPlanning = function () {
+    document.getElementById('modal-import-planning')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-import-planning';
+modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:0.75rem;';
+    modal.innerHTML = `
+<div id="import-planning-card" style="background:white;border-radius:20px;width:100%;max-width:960px;height:calc(100vh - 1.5rem);display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+            <!-- Header -->
+            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-bottom:1px solid #bbf7d0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div style="background:#10b981;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-paper-plane" style="color:white;font-size:0.9rem;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:700;color:#111827;font-size:1rem;">Envoyer un planning</div>
+                        <div style="font-size:0.75rem;color:#6b7280;" id="import-modal-subtitle">Collez le tableau Excel</div>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('modal-import-planning').remove();planningEnCours=null;"
+                    style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;color:#6b7280;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Body dynamique -->
+            <div id="import-modal-body" style="padding:1.5rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;">
+                <div style="font-size:0.75rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">
+                    Coller le tableau Excel (Ctrl+V)
+                </div>
+                <textarea id="planning-paste-zone"
+                    placeholder="Collez ici votre planning copié depuis Excel..."
+                    style="width:100%;height:100%;min-height:200px;border:2px dashed #d1d5db;border-radius:12px;padding:0.85rem;color:#6b7280;font-size:0.85rem;resize:none;box-sizing:border-box;transition:border-color 0.2s;background:#fafafa;outline:none;font-family:monospace;"
+                    onfocus="this.style.borderColor='#10b981';this.style.color='#111827';this.style.background='white';"
+                    onblur="this.style.borderColor='#d1d5db';"></textarea>
+                <p style="font-size:0.75rem;color:#9ca3af;margin-top:0.5rem;">
+                    <i class="fas fa-info-circle" style="margin-right:4px;"></i>
+                    Copiez le tableau directement depuis Excel ou Google Sheets avec Ctrl+A puis Ctrl+C.
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div id="import-modal-footer" style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;flex-shrink:0;background:white;">
+                <button id="btn-verifier-planning" onclick="testerImportPlanning()"
+                    style="width:100%;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:12px;padding:0.9rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                    <i class="fas fa-eye"></i> Vérifier et annoter
+                </button>
+            </div>
+        </div>
+    `;
+
+    modal.addEventListener('click', e => {
+        if (e.target === modal) { modal.remove(); planningEnCours = null; }
+    });
+    document.body.appendChild(modal);
+    setTimeout(() => document.getElementById('planning-paste-zone')?.focus(), 100);
+};
 // ── Tester = parser + afficher l'interface de review ──
 window.testerImportPlanning = function () {
     const texte = document.getElementById('planning-paste-zone').value.trim();
-    if (!texte) { showNotification('Collez le tableau Excel avant de tester', 'error'); return; }
+    if (!texte) { showNotification('Collez le tableau Excel avant de vérifier', 'error'); return; }
 
     const planning = parserPlanningTexte(texte);
     if (Object.keys(planning.employes).length === 0) {
@@ -5226,7 +5282,109 @@ window.testerImportPlanning = function () {
     }
 
     planningEnCours = planning;
-    afficherInterfaceReview(planning);
+
+    // Mettre à jour le subtitle de la modale
+    const subtitle = document.getElementById('import-modal-subtitle');
+    if (subtitle) subtitle.textContent = 'Vérification & annotations';
+
+    // Injecter la review dans le body de la modale existante
+    const body = document.getElementById('import-modal-body');
+    const footer = document.getElementById('import-modal-footer');
+    if (!body || !footer) {
+        // Fallback : ancienne modale séparée
+        afficherInterfaceReview(planning);
+        return;
+    }
+
+    const [y, m, d] = (planning.date || '').split('-').map(Number);
+    const dateObj = planning.date
+        ? new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+        : 'Date non détectée';
+
+    const formatH = h => {
+        if (!h) return '0h';
+        const hh = Math.floor(h); const mm = Math.round((h - hh) * 60);
+        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2, '0')}`;
+    };
+
+    const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
+    const absColors = { CONGES_PAYES: '#3b82f6', ABSENCE_MALADIE: '#ef4444', ABSENT: '#9ca3af' };
+    const nbChantiers = Object.values(planning.employes).reduce((s, e) => s + (e.chantiers || []).length, 0);
+
+    let empHTML = '';
+    for (const [prenom, emp] of Object.entries(planning.employes)) {
+        const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
+
+        let chantiersHTML = '';
+        if (emp.absence) {
+            chantiersHTML = `<div style="font-size:0.85rem;color:${absColors[emp.absence] || '#9ca3af'};font-style:italic;padding:8px 0;">${absLabels[emp.absence] || emp.absence}</div>`;
+        } else {
+            (emp.chantiers || []).forEach((c, ci) => {
+                const key = `${prenom}__${ci}`;
+                const binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
+                chantiersHTML += `
+                    <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
+                                <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
+                                    <input type="checkbox" ${c.controle ? 'checked' : ''}
+                                        onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
+                                        style="accent-color:#eab308;width:14px;height:14px;">
+                                    <i class="fas fa-clipboard-check" style="font-size:0.78rem;color:${c.controle ? '#d97706' : '#9ca3af'};"></i>
+                                </label>
+                                <button onclick="ajouterAnnotation('${prenom}',${ci})"
+                                    style="background:#f0fdf4;border:1px solid #bbf7d0;color:#10b981;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                                    <i class="fas fa-plus" style="font-size:0.7rem;margin-right:3px;"></i>Annotation
+                                </button>
+                            </div>
+                        </div>
+                        <div id="annotations-${key}" style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
+                            ${(c.annotations || []).map((a, ai) => renderAnnotationTag(prenom, ci, ai, a)).join('')}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        empHTML += `
+            <div style="background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${emp.absence ? '0' : '0.5rem'};">
+                    <span style="font-size:1rem;font-weight:700;color:#111827;">${nom}</span>
+                    <span style="font-size:0.9rem;font-weight:700;color:#10b981;">${formatH(emp.total)}</span>
+                </div>
+                ${chantiersHTML}
+            </div>`;
+    }
+
+    body.innerHTML = `
+        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.6rem 0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-calendar-day" style="color:#f59e0b;font-size:0.85rem;flex-shrink:0;"></i>
+            <span style="font-size:0.8rem;color:#92400e;font-weight:600;text-transform:capitalize;">${dateObj}</span>
+            <span style="margin-left:auto;font-size:0.75rem;color:#9ca3af;">${Object.keys(planning.employes).length} employés · ${nbChantiers} chantiers</span>
+        </div>
+        <div style="font-size:0.72rem;color:#6b7280;margin-bottom:0.75rem;">
+            <i class="fas fa-lightbulb" style="color:#f59e0b;margin-right:4px;"></i>
+            Ajoutez des <strong>annotations</strong> (rouge) · Cochez <i class="fas fa-clipboard-check" style="color:#d97706;"></i> pour une visite de contrôle
+        </div>
+        <div id="review-body">${empHTML}</div>
+    `;
+
+    footer.innerHTML = `
+        <div style="display:flex;gap:0.75rem;">
+            <button onclick="planningEnCours=null;ouvrirModalImportPlanning()"
+                style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.75rem 1rem;font-weight:600;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                <i class="fas fa-arrow-left"></i> Retour
+            </button>
+            <button id="btn-envoyer-planning" onclick="publierPlanningDepuisReview()"
+                style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.75rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                <i class="fas fa-paper-plane"></i> Envoyer le planning
+            </button>
+        </div>
+    `;
 };
 
 // ── Importer directement sans passer par le test ──
@@ -5315,9 +5473,9 @@ function afficherInterfaceReview(planning) {
 
     const modal = document.createElement('div');
     modal.id = 'modal-review-planning';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:0.5rem;';
     modal.innerHTML = `
-        <div style="background:white;border-radius:20px;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+        <div style="background:white;border-radius:16px;width:100%;max-width:960px;max-height:97vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
 
             <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-bottom:1px solid #bbf7d0;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
                 <div>
@@ -5515,7 +5673,8 @@ window.toggleControle = function (prenom, ci, checked) {
 };
 window.publierPlanningDepuisReview = async function () {
     if (!planningEnCours) return;
-    // Synchroniser les valeurs des inputs avant publication
+
+    // Synchroniser les annotations depuis les inputs
     document.querySelectorAll('#review-body input[type=text]').forEach(input => {
         const annEl = input.closest('[id^="ann-"]');
         if (!annEl) return;
@@ -5526,32 +5685,39 @@ window.publierPlanningDepuisReview = async function () {
         const ci = parseInt(id.substring(lastDash2 + 1, lastDash1));
         const prenom = id.substring(0, lastDash2);
         if (planningEnCours.employes[prenom]?.chantiers[ci]) {
-            if (!planningEnCours.employes[prenom].chantiers[ci].annotations) {
+            if (!planningEnCours.employes[prenom].chantiers[ci].annotations)
                 planningEnCours.employes[prenom].chantiers[ci].annotations = [];
-            }
             planningEnCours.employes[prenom].chantiers[ci].annotations[ai] = input.value;
         }
     });
+
+    // Animation bouton
+    const btn = document.getElementById('btn-envoyer-planning');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Envoi en cours…`;
+        btn.style.opacity = '0.85';
+    }
+
     await publierPlanning(planningEnCours);
 };
 
 async function publierPlanning(planning) {
-    const annuleRemplace = true; // Forcer annule et remplace pour éviter les erreurs de date déjà existante, vu que le parsing est assez basique
-    const date = planning.date || document.getElementById('planning-date-input').value;
+    const date = planning.date || null;
     if (!date) { showNotification('Date manquante', 'error'); return; }
 
     try {
-
-
         const employesData = {};
         for (const [prenom, emp] of Object.entries(planning.employes)) {
             employesData[prenom] = {
                 total: emp.total,
                 absence: emp.absence || null,
+                display: emp.display || null,
                 chantiers: (emp.chantiers || []).map(c => ({
                     nom: c.nom,
                     heures: c.heures,
                     binome: c.binome || null,
+                    binomeDisplay: c.binomeDisplay || null,
                     absence: c.absence || null,
                     annotations: (c.annotations || []).filter(a => a && a.trim().length > 0),
                     controle: c.controle || false
@@ -5563,19 +5729,21 @@ async function publierPlanning(planning) {
             date,
             importedAt: new Date(),
             source: 'dashboard-paste',
-            annuleRemplace,
+            annuleRemplace: true,
             employes: employesData
         });
 
-        const texte = document.getElementById('planning-paste-zone').value;
-        envoyerBackupMail(date, Object.keys(planning.employes).length, texte);
+        envoyerNotifPlanning(date, Object.keys(planning.employes).length, planning.employes);
 
         // Reset
         planningEnCours = null;
-        document.getElementById('planning-paste-zone').value = '';
-        document.getElementById('planning-import-feedback').style.display = 'none';
+        const pasteZone = document.getElementById('planning-paste-zone');
+if (pasteZone) pasteZone.value = '';
+        document.getElementById('planning-import-feedback')?.style && (document.getElementById('planning-import-feedback').style.display = 'none');
+        document.getElementById('modal-import-planning')?.remove();
+        document.getElementById('modal-review-planning')?.remove();
 
-        showNotification(`Planning ${date} publié — ${Object.keys(planning.employes).length} employés`, 'success');
+        afficherModalPlanningPublie(date, Object.keys(planning.employes).length);
         loadPlanning();
 
     } catch (e) {
@@ -5583,22 +5751,238 @@ async function publierPlanning(planning) {
         showNotification('Erreur : ' + e.message, 'error');
     }
 }
+function afficherModalPlanningPublie(date, nbEmployes) {
+    const [y, m, d] = date.split('-').map(Number);
+    const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+    const dateTitre = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1);
 
-function envoyerBackupMail(date, nbEmployes, texte) {
-    const sujet = encodeURIComponent(`[Backup] Planning Propre Eco — ${date}`);
-    const corps = encodeURIComponent(
-        `Planning importé le ${new Date().toLocaleString('fr-FR')}\n` +
-        `Date : ${date}\n` +
-        `Employés : ${nbEmployes}\n\n---\n\n` +
-        texte.substring(0, 2000)
-    );
-    const a = document.createElement('a');
-    a.href = `mailto:Dylan.propre.eco@gmail.com?subject=${sujet}&body=${corps}`;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => a.remove(), 1000);
+    // Supprimer ancienne si présente
+    document.getElementById('modal-planning-publie')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-planning-publie';
+    modal.style.cssText = `
+        position:fixed;inset:0;
+        background:rgba(0,0,0,0.7);
+        z-index:10000;
+        display:flex;align-items:center;justify-content:center;
+        padding:1rem;
+        opacity:0;
+        transition:opacity 0.25s ease;
+    `;
+
+    modal.innerHTML = `
+        <div id="modal-publie-card" style="
+            background:white;
+            border-radius:24px;
+            width:100%;max-width:480px;
+            overflow:hidden;
+            box-shadow:0 30px 100px rgba(0,0,0,0.3);
+            transform:translateY(40px) scale(0.96);
+            transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+            opacity:0;
+        ">
+            <!-- Bandeau vert animé -->
+            <div style="
+                background:linear-gradient(135deg,#10b981,#059669);
+                padding:2.5rem 2rem 2rem;
+                text-align:center;
+                position:relative;
+                overflow:hidden;
+            ">
+                <!-- Cercles décoratifs -->
+                <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+                <div style="position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.06);"></div>
+
+                <!-- Icône avec animation pulse -->
+                <div id="publie-icon" style="
+                    background:white;
+                    width:80px;height:80px;
+                    border-radius:50%;
+                    display:flex;align-items:center;justify-content:center;
+                    margin:0 auto 1.25rem;
+                    box-shadow:0 8px 25px rgba(0,0,0,0.15);
+                    transform:scale(0);
+                    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.2s;
+                ">
+                    <i class="fas fa-paper-plane" style="color:#10b981;font-size:1.8rem;"></i>
+                </div>
+
+                <h2 style="color:white;font-size:1.5rem;font-weight:800;margin-bottom:0.4rem;text-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    Planning envoyé !
+                </h2>
+                <p style="color:rgba(255,255,255,0.85);font-size:0.9rem;text-transform:capitalize;font-weight:500;">
+                    ${dateTitre}
+                </p>
+            </div>
+
+            <!-- Corps -->
+            <div style="padding:1.75rem 2rem;">
+
+                <!-- Stat employés -->
+                <div style="
+                    display:flex;align-items:center;justify-content:center;gap:0.75rem;
+                    background:#f0fdf4;border:1.5px solid #bbf7d0;
+                    border-radius:14px;padding:1rem 1.25rem;
+                    margin-bottom:1.25rem;
+                ">
+                    <div style="background:#10b981;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-users" style="color:white;font-size:1rem;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size:1.2rem;font-weight:800;color:#065f46;">${nbEmployes} employé${nbEmployes > 1 ? 's' : ''}</div>
+                        <div style="font-size:0.8rem;color:#6b7280;">notification${nbEmployes > 1 ? 's' : ''} envoyée${nbEmployes > 1 ? 's' : ''} via ntfy</div>
+                    </div>
+                </div>
+
+                <!-- Info ntfy -->
+                <div style="
+                    display:flex;align-items:flex-start;gap:0.6rem;
+                    background:#fffbeb;border:1.5px solid #fde68a;
+                    border-radius:12px;padding:0.85rem 1rem;
+                    margin-bottom:1.5rem;
+                ">
+                    <i class="fas fa-bell" style="color:#f59e0b;font-size:0.9rem;margin-top:2px;flex-shrink:0;"></i>
+                    <span style="font-size:0.8rem;color:#92400e;line-height:1.5;">
+                        Chaque employé concerné recevra une notification sur son téléphone avec le détail de sa journée.
+                    </span>
+                </div>
+
+                <!-- Bouton fermer -->
+                <button onclick="document.getElementById('modal-planning-publie').remove()" style="
+                    width:100%;
+                    background:linear-gradient(135deg,#10b981,#059669);
+                    color:white;border:none;
+                    border-radius:14px;
+                    padding:1rem;
+                    font-weight:700;font-size:1rem;
+                    cursor:pointer;
+                    box-shadow:0 4px 15px rgba(16,185,129,0.4);
+                    transition:transform 0.15s, box-shadow 0.15s;
+                    display:flex;align-items:center;justify-content:center;gap:8px;
+                " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.5)'"
+                   onmouseout="this.style.transform='';this.style.boxShadow='0 4px 15px rgba(16,185,129,0.4)'">
+                    <i class="fas fa-check"></i> Parfait !
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Séquence d'animation
+    requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+        const card = document.getElementById('modal-publie-card');
+        if (card) {
+            card.style.transform = 'translateY(0) scale(1)';
+            card.style.opacity = '1';
+        }
+        setTimeout(() => {
+            const icon = document.getElementById('publie-icon');
+            if (icon) icon.style.transform = 'scale(1)';
+        }, 150);
+    });
+
+    modal.addEventListener('click', e => {
+        if (e.target === modal) modal.remove();
+    });
 }
+async function envoyerNotifPlanning(date, nbEmployes, employes) {
+    try {
+        const [y, m, d] = date.split('-').map(Number);
+        const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', {
+            weekday: 'long', day: 'numeric', month: 'long'
+        });
+        const dateTitre = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1);
+
+        const moisNum = m;
+        const emojiSaison = moisNum >= 3 && moisNum <= 5 ? '🌸' :
+            moisNum >= 6 && moisNum <= 8 ? '☀️' :
+                moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
+
+        const formatH = h => {
+            if (!h || h === 0) return '0';
+            const rounded = Math.round(h * 100) / 100;
+            if (rounded % 1 === 0) return String(rounded);
+            return rounded.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+        };
+
+        const promises = Object.entries(employes).map(async ([prenom, emp]) => {
+            const topic = `planning-${prenom}`;
+            const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
+
+            let message = '';
+
+            if (emp.absence) {
+                const absLabels = {
+                    CONGES_PAYES: 'Congés payés',
+                    ABSENCE_MALADIE: 'Absence maladie',
+                    ABSENT: 'Absent'
+                };
+                message = absLabels[emp.absence] || emp.absence;
+            } else {
+                const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
+                const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
+
+                if (chantiersSolo.length > 0) {
+                    message += chantiersSolo.map(c => {
+                        let ligne = `• ${c.nom} — ${formatH(c.heures)}h`;
+                        if (c.annotations?.length) ligne += `\n  ↳ ${c.annotations.join(', ')}`;
+                        if (c.controle) ligne += ' 🔍';
+                        return ligne;
+                    }).join('\n');
+                }
+
+                if (chantiersAvecBinome.length > 0) {
+                    const binomeGroups = {};
+                    chantiersAvecBinome.forEach(c => {
+                        if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
+                        binomeGroups[c.binome].push(c);
+                    });
+                    for (const [binome, chantiers] of Object.entries(binomeGroups)) {
+                        const binomeDisplay = chantiers[0].binomeDisplay || PRENOM_DISPLAY[binome] || binome.charAt(0).toUpperCase() + binome.slice(1);
+                        message += `\n\nAvec ${binomeDisplay} :\n`;
+                        message += chantiers.map(c => {
+                            let ligne = `• ${c.nom} — ${formatH(c.heures)}h`;
+                            if (c.annotations?.length) ligne += `\n  ↳ ${c.annotations.join(', ')}`;
+                            if (c.controle) ligne += ' 🔍';
+                            return ligne;
+                        }).join('\n');
+                    }
+                }
+
+                message += `\n\nTotal : ${formatH(emp.total)}h`;
+            }
+
+            const response = await fetch(`https://ntfy.sh/${topic}`, {
+                method: 'POST',
+                headers: {
+                    'Title': `Planning - ${dateTitre}`,
+                    'Priority': 'default',
+                    'Tags': 'calendar',
+                    'Content-Type': 'text/plain; charset=utf-8'
+                },
+                body: `Bonjour ${nom},\n\n${message}\n\nBonne journée ! ${emojiSaison}`
+            });
+
+            if (!response.ok) {
+                console.error(`Erreur ntfy pour ${prenom}: ${response.status}`);
+            } else {
+                console.log(`✅ Notif envoyée → ${topic}`);
+            }
+        });
+
+        await Promise.all(promises);
+        console.log('✅ Toutes les notifs ntfy envoyées');
+    } catch (e) {
+        console.error('Erreur notif ntfy:', e);
+    }
+}
+
+
 
 // ── État pagination + recherche ──
 let allPlanningDocs = [];
@@ -5634,7 +6018,7 @@ window.togglePlanningCard = function (date) {
 };
 
 window.rechercherPlanning = function (term) {
-    planningSearchTerm = term.toLowerCase().trim();
+    planningSearchTerm = term.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
     planningPage = 1;
     renderPlanningList();
 };
@@ -5642,22 +6026,38 @@ window.rechercherPlanning = function (term) {
 function getPlanningFiltered() {
     let docs = allPlanningDocs;
 
-    // Filtre par mois
     if (window._planningMoisFilter) {
         docs = docs.filter(d => d.date.startsWith(window._planningMoisFilter));
     }
 
-    // Filtre par recherche texte
     if (!planningSearchTerm) return docs;
+
+    const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    const term = norm(planningSearchTerm);
+
     return docs.filter(data => {
-        const empMatch = Object.keys(data.employes || {}).some(p => p.includes(planningSearchTerm));
-        const chantierMatch = Object.values(data.employes || {}).some(emp =>
+        // Recherche par date
+        const [y, m, d] = data.date.split('-').map(Number);
+        const dateFr = norm(new Date(y, m - 1, d).toLocaleDateString('fr-FR', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        }));
+        const dateCompact = `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`;
+        if (dateFr.includes(term) || data.date.includes(term) || dateCompact.includes(term)) return true;
+
+        // Recherche par prénom employé
+        const empMatch = Object.entries(data.employes || {}).some(([prenom, emp]) => {
+            const nom = norm(emp.display || PRENOM_DISPLAY[prenom] || prenom);
+            return nom.includes(term) || norm(prenom).includes(term);
+        });
+        if (empMatch) return true;
+
+        // Recherche par chantier / annotation
+        return Object.values(data.employes || {}).some(emp =>
             (emp.chantiers || []).some(c =>
-                c.nom.toLowerCase().includes(planningSearchTerm) ||
-                (c.annotations || []).some(a => a.toLowerCase().includes(planningSearchTerm))
+                norm(c.nom).includes(term) ||
+                (c.annotations || []).some(a => norm(a).includes(term))
             )
         );
-        return empMatch || chantierMatch;
     });
 }
 
@@ -5678,6 +6078,7 @@ function renderPlanningList() {
         return;
     }
 
+
     const formatH = h => {
         if (!h) return '0h';
         const hh = Math.floor(h); const mm = Math.round((h - hh) * 60);
@@ -5696,6 +6097,10 @@ function renderPlanningList() {
     let html = '';
     pageData.forEach(data => {
         const date = data.date;
+        const moisNum = parseInt(date.split('-')[1]);
+        const emojiSaison = moisNum >= 3 && moisNum <= 5 ? '🌸' :
+            moisNum >= 6 && moisNum <= 8 ? '☀️' :
+                moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
         const nbEmployes = Object.keys(data.employes || {}).length;
         const importedAt = data.importedAt?.toDate?.() || null;
         const importLabel = importedAt
@@ -5707,7 +6112,7 @@ function renderPlanningList() {
         const isToday = date === new Date().toISOString().split('T')[0];
         const pillBg = isToday ? '#10b981' : '#6b7280';
 
-        const empEntries = Object.entries(data.employes || {}).filter(([prenom, emp]) => {
+       const empEntries = Object.entries(data.employes || {}).filter(([prenom, emp]) => {
             if (!planningSearchTerm) return true;
             const displayNorm = normalizeNom(emp.display || prenom);
             return displayNorm.includes(planningSearchTerm) ||
@@ -5716,6 +6121,10 @@ function renderPlanningList() {
                     c.nom.toLowerCase().includes(planningSearchTerm) ||
                     (c.annotations || []).some(a => a.toLowerCase().includes(planningSearchTerm))
                 );
+        }).sort(([aPrenom, aEmp], [bPrenom, bEmp]) => {
+            const aNom = (aEmp.display || PRENOM_DISPLAY[aPrenom] || aPrenom).toLowerCase();
+            const bNom = (bEmp.display || PRENOM_DISPLAY[bPrenom] || bPrenom).toLowerCase();
+            return aNom.localeCompare(bNom, 'fr');
         });
 
         const empCards = empEntries.map(([prenom, emp]) => {
@@ -5744,7 +6153,7 @@ function renderPlanningList() {
                         <div style="padding:3px 0;border-bottom:1px solid #f3f4f6;">
                             <div style="display:flex;justify-content:space-between;gap:4px;">
                                 <span style="font-size:0.73rem;color:#374151;flex:1;line-height:1.3;">${highlight(c.nom)}</span>
-                                <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                <span style="font-size:0.72rem;font-weight:600;color:#6b7280;white-space:nowrap;">${formatHeuresFactu(c.heures)}</span>
                             </div>
                             ${binomeLabel ? `<div style="font-size:0.68rem;color:#9ca3af;margin-top:1px;"><i class="fas fa-user-friends"></i> avec ${highlight(binomeLabel)}</div>` : ''}
                             ${annotations.map(a => `<div style="color:#ef4444;font-style:italic;font-size:0.68rem;margin-top:1px;">• ${highlight(a)}</div>`).join('')}
@@ -5759,7 +6168,7 @@ function renderPlanningList() {
                 <div style="background:white;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.7rem;border-left:3px solid ${borderColor};">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
                         <span style="font-size:0.82rem;font-weight:700;color:#111827;">${highlight(nom)}</span>
-                        <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatH(emp.total || 0)}</span>
+                        <span style="font-size:0.78rem;font-weight:700;color:${totalColor};">${formatHeuresFactu(emp.total || 0)}</span>
                     </div>
                     ${chantiersHTML}
                 </div>`;
@@ -5852,7 +6261,7 @@ function remplirSelectMois() {
     select.innerHTML = '<option value="">Tous les mois</option>';
     moisTries.forEach(ym => {
         const [y, m] = ym.split('-').map(Number);
-        const label = new Date(y, m-1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+        const label = new Date(y, m - 1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
         const opt = document.createElement('option');
         opt.value = ym;
         opt.textContent = label.charAt(0).toUpperCase() + label.slice(1);
@@ -5861,7 +6270,7 @@ function remplirSelectMois() {
     });
 }
 
-window.filtrerPlanningParMois = function(mois) {
+window.filtrerPlanningParMois = function (mois) {
     const btn = document.getElementById('btn-supprimer-mois');
     if (btn) btn.style.display = mois ? 'inline-flex' : 'none';
     planningSearchTerm = '';
@@ -5886,12 +6295,12 @@ window.filtrerPlanningParMois = function(mois) {
     renderPlanningList();
 };
 
-window.supprimerPlanningsMois = async function() {
+window.supprimerPlanningsMois = async function () {
     const mois = document.getElementById('planning-filter-mois')?.value;
     if (!mois) return;
 
     const [y, m] = mois.split('-').map(Number);
-    const label = new Date(y, m-1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    const label = new Date(y, m - 1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
     const planningsASupprimer = allPlanningDocs.filter(d => d.date.startsWith(mois));
 
     if (planningsASupprimer.length === 0) {
@@ -5938,13 +6347,7 @@ window.supprimerPlanning = async function (date) {
 };
 
 function initPlanningTab() {
-    const dateInput = document.getElementById('planning-date-input');
-    if (dateInput && !dateInput.value) {
-        const d = new Date();
-        dateInput.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
     planningEnCours = null;
-    document.getElementById('planning-import-feedback').style.display = 'none';
     loadPlanning();
 }
 window.hideFacturationView = hideFacturationView;

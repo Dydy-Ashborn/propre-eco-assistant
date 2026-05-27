@@ -36,3 +36,7 @@
 - Import auto : Google Apps Script (`planning-gmail-appscript.js`) — trigger Gmail toutes les heures sur mails de `propre.eco74@outlook.fr`
 - Import manuel : Dashboard onglet Planning — paste Excel → review → publication
 - Règles Firestore : `allow read, write: if true`
+
+## index.js (PWA accueil)
+- Section "Toutes mes copropriétés" supprimée du HTML — `propertiesList` et `showMoreBtn` mis à `null`, `displayProperties()` et `showLoadingState()` vidées. La recherche reste fonctionnelle via `searchResults` + `propertyDetails`.
+- `showMessage` remplacé par `showNotification` dans le catch de `loadProperties`.

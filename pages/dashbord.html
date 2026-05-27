@@ -474,73 +474,47 @@
             </div>
 
             <!-- Section Planning -->
-            <div id="section-planning" class="card-section" style="display:none;">
-                <div class="card-section-header">
-                    <h2 class="card-section-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        Planning
-                    </h2>
-                </div>
+           <!-- Section Planning -->
+<div id="section-planning" class="card-section" style="display:none;">
+    <div class="card-section-header">
+        <h2 class="card-section-title">
+            <i class="fas fa-calendar-alt"></i>
+            Planning
+        </h2>
+        <button onclick="ouvrirModalImportPlanning()"
+            style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:12px;padding:0.7rem 1.25rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;box-shadow:0 4px 12px rgba(16,185,129,0.3);transition:transform 0.15s,box-shadow 0.15s;"
+            onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 18px rgba(16,185,129,0.45)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(16,185,129,0.3)'">
+            <i class="fas fa-paper-plane"></i> Envoyer un planning
+        </button>
+    </div>
 
-                <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;">
+    <!-- Filtres -->
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <div class="search-bar" style="flex:1;min-width:200px;">
+            <i class="fas fa-search"></i>
+            <input type="text" id="planning-search"
+                placeholder="Rechercher un chantier, un employé..."
+                oninput="rechercherPlanning(this.value)">
+        </div>
+        <select id="planning-filter-mois" class="filter-input" style="max-width:180px;"
+            onchange="filtrerPlanningParMois(this.value)">
+            <option value="">Tous les mois</option>
+        </select>
+        <button id="btn-supprimer-mois" onclick="supprimerPlanningsMois()"
+            style="display:none;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;align-items:center;gap:6px;">
+            <i class="fas fa-trash"></i> Supprimer ce mois
+        </button>
+    </div>
 
-                    <!-- Panneau import -->
-                    <div class="planning-import-panel"
-                        style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:14px;padding:1.25rem;width:280px;flex-shrink:0;">
-
-                        <div
-                            style="font-size:0.78rem;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-                            <i class="fas fa-file-import"></i> Importer un planning
-                        </div>
-
-
-                        <div
-                            style="font-size:0.72rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.35rem;">
-                            Coller le tableau Excel (Ctrl+V)</div>
-                        <textarea id="planning-paste-zone" placeholder="Collez ici votre planning copié depuis Excel..."
-                            style="width:100%;height:130px;border:2px dashed #d1d5db;border-radius:10px;padding:0.75rem;color:#6b7280;font-size:0.82rem;resize:none;margin-bottom:0.85rem;box-sizing:border-box;transition:border-color 0.2s;background:white;outline:none;"
-                            onfocus="this.style.borderColor='#10b981';this.style.color='#111827';"
-                            onblur="this.style.borderColor='#d1d5db';"></textarea>
-
-
-
-                        <button onclick="testerImportPlanning()"
-                            style="width:100%;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.75rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
-                            <i class="fas fa-eye"></i> Vérifier et annoter
-                        </button>
-                        <div id="planning-import-feedback" style="display:none;margin-top:0.75rem;"></div>
-                    </div>
-
-                    <!-- Liste des plannings -->
-                    <div style="flex:1;min-width:300px;">
-                        <div style="margin-bottom:1rem;">
-                            <div class="search-bar">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="planning-search"
-                                    placeholder="Rechercher un chantier, un employé..."
-                                    oninput="rechercherPlanning(this.value)">
-                            </div>
-                            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
-                                <select id="planning-filter-mois" class="filter-input" style="max-width:200px;"
-                                    onchange="filtrerPlanningParMois(this.value)">
-                                    <option value="">Tous les mois</option>
-                                </select>
-                                <button id="btn-supprimer-mois" onclick="supprimerPlanningsMois()"
-                                    style="display:none;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;display:none;align-items:center;gap:6px;">
-                                    <i class="fas fa-trash"></i> Supprimer ce mois
-                                </button>
-                            </div>
-                        </div>
-                        <div id="planning-list-container">
-                            <div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;">
-                                <i class="fas fa-spinner fa-spin"></i> Chargement...
-                            </div>
-                        </div>
-                        <div id="planning-pagination" style="display:none;margin-top:1rem;"></div>
-                    </div>
-
-                </div>
-            </div>
+    <!-- Liste -->
+    <div id="planning-list-container">
+        <div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;">
+            <i class="fas fa-spinner fa-spin"></i> Chargement...
+        </div>
+    </div>
+    <div id="planning-pagination" style="display:none;margin-top:1rem;"></div>
+</div>
             <div id="section-copro" class="card-section" style="display: none;">
                 <div class="card-section-header">
                     <h2 class="card-section-title">
