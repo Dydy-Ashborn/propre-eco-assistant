@@ -942,6 +942,13 @@
             box-shadow: none !important;
             font-size: 13px !important;
         }
+        #modaleChantier input:focus {
+    border-color: var(--green) !important;
+    background: var(--green-light) !important;
+    box-shadow: 0 0 0 3px rgba(13,158,110,.12);
+}
+#modaleChantier input[type=number]::-webkit-outer-spin-button,
+#modaleChantier input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
     </style>
 </head>
 
@@ -1192,32 +1199,38 @@
                     </button>
                 </div>
                 <!-- Champs -->
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                        <div>
-                            <label style="font-size:11px;color:#6b7280;font-weight:500;display:block;margin-bottom:4px;">Date</label>
-                            <input type="date" id="mc-date" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;color:#111827;outline:none;">
-                        </div>
-                        <div>
-                            <label style="font-size:11px;color:#6b7280;font-weight:500;display:block;margin-bottom:4px;">Total heures</label>
-                            <input type="text" id="mc-total" placeholder="ex: 8h" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;color:#111827;font-weight:600;text-align:center;outline:none;">
-                        </div>
-                    </div>
-                    <div>
-                        <label style="font-size:11px;color:#6b7280;font-weight:500;display:block;margin-bottom:4px;">Nom du chantier</label>
-                        <input type="text" id="mc-name" placeholder="Résidence, immeuble…" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;color:#111827;outline:none;">
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                        <div>
-                            <label style="font-size:11px;color:#6b7280;font-weight:500;display:block;margin-bottom:4px;">Nb employés</label>
-                            <input type="number" id="mc-employees" min="1" placeholder="1" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;color:#111827;outline:none;">
-                        </div>
-                        <div>
-                            <label style="font-size:11px;color:#6b7280;font-weight:500;display:block;margin-bottom:4px;">Équipe</label>
-                            <input type="text" id="mc-team" placeholder="Shana, Max…" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;color:#111827;outline:none;">
-                        </div>
-                    </div>
-                </div>
+                <!-- Champs -->
+<div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Date</label>
+            <input type="date" id="mc-date"
+                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;-webkit-appearance:none;appearance:none;font-family:inherit;transition:border-color .15s;">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Total heures</label>
+            <input type="text" id="mc-total" placeholder="ex: 8h"
+                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;font-weight:600;text-align:center;outline:none;font-family:inherit;transition:border-color .15s;">
+        </div>
+    </div>
+    <div>
+        <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Nom du chantier</label>
+        <input type="text" id="mc-name" placeholder="Résidence, immeuble…"
+            style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;font-size:16px;color:#111827;outline:none;font-family:inherit;transition:border-color .15s;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Nb employés</label>
+            <input type="number" id="mc-employees" min="1" placeholder="1"
+                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;text-align:center;font-family:inherit;transition:border-color .15s;-moz-appearance:textfield;">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Équipe</label>
+            <input type="text" id="mc-team" placeholder="Shana, Max…"
+                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;font-family:inherit;transition:border-color .15s;">
+        </div>
+    </div>
+</div>
                 <!-- Actions -->
                 <div style="display:flex;gap:8px;margin-top:18px;">
                     <button onclick="fermerModaleChantier()" style="flex:1;background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb;border-radius:10px;padding:13px;font-size:13px;cursor:pointer;">
