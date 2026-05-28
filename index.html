@@ -357,16 +357,17 @@ const formatH = h => {
 
   // Grouper les chantiers solo par collègues détectés automatiquement
   // Pour chaque chantier sans binôme, cherche qui d'autre a le même chantier
-  const getCollègues = (nomChantier) => {
+const getCollègues = (nomChantier) => {
+    const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
     const collègues = [];
     for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
       if (autreId === employeId) continue;
-      if ((autreEmp.chantiers || []).some(c => c.nom === nomChantier)) {
+      if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
         collègues.push(autreEmp.display || capitalizeFirst(autreId));
       }
     }
     return collègues;
-  };
+};
 
   // Regrouper les chantiers solo qui partagent les mêmes collègues
   // clé = collègues triés joints, valeur = chantiers[]
@@ -586,16 +587,17 @@ const formatH = h => {
       ${chantiers.map(c => renderLigne(c, couleurH)).join('')}
     </div>`;
 
-  const getCollègues = (allEmployes, nomChantier) => {
+const getCollègues = (allEmployes, nomChantier) => {
+    const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
     const collègues = [];
     for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
       if (autreId === employeId) continue;
-      if ((autreEmp.chantiers || []).some(c => c.nom === nomChantier)) {
+      if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
         collègues.push(autreEmp.display || capFirst(autreId));
       }
     }
     return collègues;
-  };
+};
 
   const buildBody = (emp, allEmployes) => {
     if (emp.absence) {

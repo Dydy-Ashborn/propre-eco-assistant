@@ -5295,30 +5295,7 @@ window.ouvrirModalImportPlanning = function () {
 
     const textarea = document.getElementById('planning-paste-zone');
 
-    // Formater le texte collé : prénoms en gras
-    const formaterTexte = (texte) => {
-        return texte.split('\n').map(ligne => {
-            const trimmed = ligne.trimStart();
-            // Vérifie si la ligne commence par un prénom connu (PLANNING_EMPLOYEES)
-            const prenomMatch = PLANNING_EMPLOYEES.find(p => {
-                const re = new RegExp(`^${p}\\b`, 'i');
-                return re.test(trimmed.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-            });
-            if (prenomMatch) {
-                // Met le premier mot (prénom) en gras, le reste normal
-                const motsBruts = ligne.split(/(\s+)/);
-                let trouve = false;
-                return motsBruts.map(mot => {
-                    if (!trouve && mot.trim().length > 0) {
-                        trouve = true;
-                        return `<strong style="color:#111827;font-weight:700;font-size:1rem;">${mot}</strong>`;
-                    }
-                    return mot;
-                }).join('');
-            }
-            return ligne;
-        }).join('\n');
-    };
+ const formaterTexte = (texte) => texte;
 
     textarea.addEventListener('paste', () => {
         setTimeout(() => {
@@ -5350,6 +5327,26 @@ window.ouvrirModalImportPlanning = function () {
     setTimeout(() => textarea.focus(), 100);
 };
 // ── Tester = parser + afficher l'interface de review ──
+const TRAVAUX_GENERIQUES = ['travaux à définir', 'travaux a definir', 'à définir', 'a definir'];
+
+function detecterTravauxGeneriques(planning) {
+    const resultats = [];
+    // Détecte : "travaux à définir", "travaux a definir", "travaux 4", "travaux 14", "travaux" seul
+    const re = /^travaux(\s+\d+|\s+[àa]\s+d[ée]finir)?$/i;
+    for (const [prenom, emp] of Object.entries(planning.employes)) {
+        if (emp.absence) continue;
+        (emp.chantiers || []).forEach((c, ci) => {
+            const nomNorm = c.nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+            const estGenerique = re.test(nomNorm) || TRAVAUX_GENERIQUES.some(t => nomNorm === t);
+            if (estGenerique) {
+                const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
+                resultats.push({ prenom, ci, nom, nomActuel: c.nom });
+            }
+        });
+    }
+    return resultats;
+}
+
 window.testerImportPlanning = function () {
     const texte = document.getElementById('planning-paste-zone').value.trim();
     if (!texte) { showNotification('Collez le tableau Excel avant de vérifier', 'error'); return; }
@@ -5362,15 +5359,90 @@ window.testerImportPlanning = function () {
 
     planningEnCours = planning;
 
-    // Mettre à jour le subtitle de la modale
+    const travauxGeneriques = detecterTravauxGeneriques(planning);
+    if (travauxGeneriques.length > 0) {
+        afficherModalTravaux(planning, travauxGeneriques);
+    } else {
+        afficherReviewDansModal(planning);
+    }
+};
+
+function afficherModalTravaux(planning, travaux) {
+    document.getElementById('modal-travaux-definir')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-travaux-definir';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:0.75rem;';
+
+    const lignesHTML = travaux.map((t, i) => `
+        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.5rem;">
+            <div style="font-size:0.78rem;font-weight:600;color:#6b7280;margin-bottom:0.4rem;">
+                <i class="fas fa-user" style="color:#10b981;margin-right:5px;"></i>${t.nom}
+            </div>
+            <input
+                id="travaux-input-${i}"
+                type="text"
+                value="Travaux "
+                placeholder="Nom du chantier..."
+                style="width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:0.55rem 0.75rem;font-size:0.9rem;font-weight:600;color:#111827;box-sizing:border-box;outline:none;"
+                onfocus="this.style.borderColor='#10b981'"
+                onblur="this.style.borderColor='#d1d5db'"
+            />
+        </div>
+    `).join('');
+
+    modal.innerHTML = `
+        <div style="background:white;border-radius:16px;width:100%;max-width:480px;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#fffbeb,#fef3c7);border-bottom:1px solid #fde68a;display:flex;align-items:center;gap:0.75rem;">
+                <div style="background:#f59e0b;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-hard-hat" style="color:white;font-size:0.9rem;"></i>
+                </div>
+                <div>
+                    <div style="font-weight:700;color:#111827;font-size:1rem;">Chantiers à préciser</div>
+                    <div style="font-size:0.75rem;color:#92400e;">${travaux.length} chantier${travaux.length > 1 ? 's' : ''} avec un nom générique détecté</div>
+                </div>
+            </div>
+            <div style="padding:1.25rem 1.5rem;">
+                ${lignesHTML}
+            </div>
+            <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;background:white;">
+                <button id="btn-confirmer-travaux"
+                    style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.8rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                    <i class="fas fa-eye"></i> Vérifier et annoter
+                </button>
+                <button id="btn-ignorer-travaux"
+                    style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.8rem 1rem;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;">
+                    Ignorer
+                </button>
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('btn-confirmer-travaux').addEventListener('click', () => {
+        travaux.forEach((t, i) => {
+            const val = document.getElementById(`travaux-input-${i}`)?.value.trim();
+            if (val) planningEnCours.employes[t.prenom].chantiers[t.ci].nom = val;
+        });
+        modal.remove();
+        afficherReviewDansModal(planningEnCours);
+    });
+
+    document.getElementById('btn-ignorer-travaux').addEventListener('click', () => {
+        modal.remove();
+        afficherReviewDansModal(planningEnCours);
+    });
+
+    setTimeout(() => document.getElementById('travaux-input-0')?.focus(), 100);
+}
+
+function afficherReviewDansModal(planning) {
     const subtitle = document.getElementById('import-modal-subtitle');
     if (subtitle) subtitle.textContent = 'Vérification & annotations';
 
-    // Injecter la review dans le body de la modale existante
     const body = document.getElementById('import-modal-body');
     const footer = document.getElementById('import-modal-footer');
     if (!body || !footer) {
-        // Fallback : ancienne modale séparée
         afficherInterfaceReview(planning);
         return;
     }
@@ -5398,35 +5470,50 @@ window.testerImportPlanning = function () {
         if (emp.absence) {
             chantiersHTML = `<div style="font-size:0.85rem;color:${absColors[emp.absence] || '#9ca3af'};font-style:italic;padding:8px 0;">${absLabels[emp.absence] || emp.absence}</div>`;
         } else {
-            (emp.chantiers || []).forEach((c, ci) => {
-                const key = `${prenom}__${ci}`;
-                const binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
-                chantiersHTML += `
-                    <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                            <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                                ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
-                                <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
-                                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
-                                    <input type="checkbox" ${c.controle ? 'checked' : ''}
-                                        onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
-                                        style="accent-color:#eab308;width:14px;height:14px;">
-                                    <i class="fas fa-clipboard-check" style="font-size:0.78rem;color:${c.controle ? '#d97706' : '#9ca3af'};"></i>
-                                </label>
-                                <button onclick="ajouterAnnotation('${prenom}',${ci})"
-                                    style="background:#f0fdf4;border:1px solid #bbf7d0;color:#10b981;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
-                                    <i class="fas fa-plus" style="font-size:0.7rem;margin-right:3px;"></i>Annotation
-                                </button>
-                            </div>
-                        </div>
-                        <div id="annotations-${key}" style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
-                            ${(c.annotations || []).map((a, ai) => renderAnnotationTag(prenom, ci, ai, a)).join('')}
-                        </div>
-                    </div>`;
-            });
+           (emp.chantiers || []).forEach((c, ci) => {
+    const key = `${prenom}__${ci}`;
+
+    // Binôme déclaré OU détecté automatiquement
+    let binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
+   const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
+if (!binomeLabel) {
+    const collègues = [];
+    for (const [autrePrenom, autreEmp] of Object.entries(planning.employes)) {
+        if (autrePrenom === prenom) continue;
+        if ((autreEmp.chantiers || []).some(ac => norm(ac.nom) === norm(c.nom))) {
+            collègues.push(autreEmp.display || PRENOM_DISPLAY[autrePrenom] || autrePrenom.charAt(0).toUpperCase() + autrePrenom.slice(1));
+        }
+    }
+    if (collègues.length > 0) binomeLabel = collègues.join(', ');
+}
+
+    chantiersHTML += `
+        <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                    ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
+                    <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                    <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
+                        <input type="checkbox" ${c.controle ? 'checked' : ''}
+                            onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
+                            style="accent-color:#eab308;width:14px;height:14px;">
+                        <i class="fas fa-clipboard-check" style="font-size:0.78rem;color:${c.controle ? '#d97706' : '#9ca3af'};"></i>
+                    </label>
+                    <button onclick="ajouterAnnotation('${prenom}',${ci})"
+                        style="background:#f0fdf4;border:1px solid #bbf7d0;color:#10b981;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                        <i class="fas fa-plus" style="font-size:0.7rem;margin-right:3px;"></i>Annotation
+                    </button>
+                </div>
+            </div>
+            <div id="annotations-${key}" style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
+                ${(c.annotations || []).map((a, ai) => renderAnnotationTag(prenom, ci, ai, a)).join('')}
+            </div>
+        </div>`;
+});
         }
 
         empHTML += `
@@ -5464,7 +5551,7 @@ window.testerImportPlanning = function () {
             </button>
         </div>
     `;
-};
+}
 
 // ── Importer directement sans passer par le test ──
 window.importerPlanning = async function () {
@@ -5985,7 +6072,6 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
                 moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
 
 const titre = 'Propre Eco Assistant';
-
         const corps = isUpdate
             ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
             : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
