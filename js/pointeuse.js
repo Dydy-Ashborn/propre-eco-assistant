@@ -21,7 +21,9 @@ const employees = [
     { name: "Remy", sheet: "", code: "0582", id: "remy" },
     { name: "Maxime", sheet: "", code: "0808", id: "maxime" },
     { name: "Shana", sheet: "", code: "0308", id: "shana" },
-    { name: "Chloe", sheet: "", code: "1412", id: "chloe" }
+    { name: "Chloe", sheet: "", code: "1412", id: "chloe" },
+    { name: "Jocelyne", sheet: "", code: "0507", id: "jocelyne" }
+
 
 ];
 

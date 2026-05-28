@@ -5118,14 +5118,25 @@ function detectAbsencePlanning(texte) {
 
 function parseDatePlanning(str) {
     const mois = {
-        'jan': '01', 'fév': '02', 'fev': '02', 'mar': '03', 'avr': '04',
-        'mai': '05', 'jun': '06', 'jui': '07', 'aoû': '08', 'aou': '08',
-        'sep': '09', 'oct': '10', 'nov': '11', 'déc': '12', 'dec': '12'
+        'jan': '01',
+        'fév': '02', 'fev': '02',
+        'mar': '03',
+        'avr': '04',
+        'mai': '05',
+        'juin': '06', 'jun': '06',
+        'juil': '07', 'jul': '07',
+        'aoû': '08', 'aou': '08',
+        'sep': '09',
+        'oct': '10',
+        'nov': '11',
+        'déc': '12', 'dec': '12'
     };
     const parts = str.toLowerCase().replace(/\s/g, '').split(/[-\/]/);
     if (parts.length !== 2) return null;
     const jour = parts[0].padStart(2, '0');
-    const moisNum = mois[parts[1].substring(0, 3)];
+    const moisStr = parts[1];
+    // Tester 4 chars en priorité pour lever l'ambiguïté juin/juillet
+    const moisNum = mois[moisStr.substring(0, 4)] || mois[moisStr.substring(0, 3)];
     if (!moisNum) return null;
     return `${new Date().getFullYear()}-${moisNum}-${jour}`;
 }
