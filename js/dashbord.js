@@ -5786,6 +5786,10 @@ async function publierPlanning(planning) {
     if (!date) { showNotification('Date manquante', 'error'); return; }
 
     try {
+        // Détecte si le planning existait déjà avant d'écraser
+        const existingSnap = await getDoc(doc(db, 'plannings', date));
+        const isUpdate = existingSnap.exists();
+
         const employesData = {};
         for (const [prenom, emp] of Object.entries(planning.employes)) {
             employesData[prenom] = {
@@ -5812,12 +5816,11 @@ async function publierPlanning(planning) {
             employes: employesData
         });
 
-        envoyerNotifPlanning(date, Object.keys(planning.employes).length, planning.employes);
+        envoyerNotifPlanning(date, Object.keys(planning.employes).length, planning.employes, isUpdate);
 
-        // Reset
         planningEnCours = null;
         const pasteZone = document.getElementById('planning-paste-zone');
-if (pasteZone) pasteZone.value = '';
+        if (pasteZone) pasteZone.value = '';
         document.getElementById('planning-import-feedback')?.style && (document.getElementById('planning-import-feedback').style.display = 'none');
         document.getElementById('modal-import-planning')?.remove();
         document.getElementById('modal-review-planning')?.remove();
@@ -5969,82 +5972,35 @@ function afficherModalPlanningPublie(date, nbEmployes) {
         if (e.target === modal) modal.remove();
     });
 }
-async function envoyerNotifPlanning(date, nbEmployes, employes) {
+async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false) {
     try {
         const [y, m, d] = date.split('-').map(Number);
         const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', {
             weekday: 'long', day: 'numeric', month: 'long'
         });
-        const dateTitre = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1);
 
         const moisNum = m;
         const emojiSaison = moisNum >= 3 && moisNum <= 5 ? '🌸' :
             moisNum >= 6 && moisNum <= 8 ? '☀️' :
                 moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
 
-        const formatH = h => {
-            if (!h || h === 0) return '0';
-            const rounded = Math.round(h * 100) / 100;
-            if (rounded % 1 === 0) return String(rounded);
-            return rounded.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
-        };
+const titre = 'Propre Eco Assistant';
 
-        const promises = Object.entries(employes).map(async ([prenom, emp]) => {
+        const corps = isUpdate
+            ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
+            : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
+
+        const promises = Object.keys(employes).map(async prenom => {
             const topic = `planning-${prenom}`;
-            const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
-
-            let message = '';
-
-            if (emp.absence) {
-                const absLabels = {
-                    CONGES_PAYES: 'Congés payés',
-                    ABSENCE_MALADIE: 'Absence maladie',
-                    ABSENT: 'Absent'
-                };
-                message = absLabels[emp.absence] || emp.absence;
-            } else {
-                const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
-                const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
-
-                if (chantiersSolo.length > 0) {
-                    message += chantiersSolo.map(c => {
-                        let ligne = `• ${c.nom} — ${formatH(c.heures)}h`;
-                        if (c.annotations?.length) ligne += `\n  ↳ ${c.annotations.join(', ')}`;
-                        if (c.controle) ligne += ' 🔍';
-                        return ligne;
-                    }).join('\n');
-                }
-
-                if (chantiersAvecBinome.length > 0) {
-                    const binomeGroups = {};
-                    chantiersAvecBinome.forEach(c => {
-                        if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
-                        binomeGroups[c.binome].push(c);
-                    });
-                    for (const [binome, chantiers] of Object.entries(binomeGroups)) {
-                        const binomeDisplay = chantiers[0].binomeDisplay || PRENOM_DISPLAY[binome] || binome.charAt(0).toUpperCase() + binome.slice(1);
-                        message += `\n\nAvec ${binomeDisplay} :\n`;
-                        message += chantiers.map(c => {
-                            let ligne = `• ${c.nom} — ${formatH(c.heures)}h`;
-                            if (c.annotations?.length) ligne += `\n  ↳ ${c.annotations.join(', ')}`;
-                            if (c.controle) ligne += ' 🔍';
-                            return ligne;
-                        }).join('\n');
-                    }
-                }
-
-                message += `\n\nTotal : ${formatH(emp.total)}h`;
-            }
-
             const response = await fetch(`https://ntfy.sh/${topic}`, {
                 method: 'POST',
                 headers: {
-                    'Title': `Planning - ${dateTitre}`,
+                    'Title': titre,
                     'Priority': 'default',
-                    'Tags': 'calendar',
+                    'Tags': isUpdate ? 'repeat' : 'calendar',
                     'Content-Type': 'text/plain; charset=utf-8'
                 },
-                body: `Bonjour ${nom},\n\n${message}\n\nBonne journée ! ${emojiSaison}`
+                body: corps
             });
 
             if (!response.ok) {

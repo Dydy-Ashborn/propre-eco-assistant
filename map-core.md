@@ -42,12 +42,15 @@
 - `testerImportPlanning()` : Parse le texte collé via `parserPlanningTexte`, injecte la review directement dans la modale existante (body + footer remplacés in-place). Pas de modale séparée.
 - `publierPlanningDepuisReview()` : Synchronise annotations depuis inputs DOM, anime le bouton `#btn-envoyer-planning` (spinner), appelle `publierPlanning`.
 - `publierPlanning(planning)` : Sauvegarde Firestore `plannings/{date}`, appelle `envoyerNotifPlanning`, ferme `#modal-import-planning`, affiche `afficherModalPlanningPublie`. Plus d'envoi mail backup.
+- `envoyerNotifPlanning(date, nbEmployes, employes, isUpdate)` : Envoie un ping ntfy par employé sur `planning-{prenom}`. Titre fixe `'Propre Eco Assistant'`. Corps : "Ton planning du {dateLabel} est disponible…" ou "…a été modifié…" selon `isUpdate`. Emoji saison en fin de message. Tag `calendar` (nouveau) ou `repeat` (annulé-remplacé). Pas de contenu du planning dans la notif — l'employé consulte PEA.
 - `afficherModalPlanningPublie(date, nbEmployes)` : Grande modale animée (slideUp + scale + bounce icône) confirmant l'envoi — bandeau vert, stat employés, info ntfy, bouton "Parfait !".
 - `envoyerNotifPlanning(date, nbEmployes, employes)` : Calcule `emojiSaison` en local depuis le mois. `formatH` local format décimal avec `h` suffixe pour le corps du message ntfy. Log console par topic.
 - `renderPlanningList()` : Tri alpha des employés par `localeCompare('fr')`. `emojiSaison` calculé dans le `forEach` depuis `data.date`. Plannings triés par date asc.
 - `getPlanningFiltered()` : Recherche normalisée sans accents (NFD) sur date (format FR + ISO + JJ/MM), prénom employé, chantier, annotation.
 - `rechercherPlanning(term)` : Normalise le terme (NFD, lowercase) avant stockage dans `planningSearchTerm`.
 - `initPlanningTab()` : Reset `planningEnCours = null` + appel `loadPlanning()`. Plus de référence à `planning-date-input` ni `planning-import-feedback`.
+- `ouvrirModalImportPlanning()` : Après collage (`paste` event), la textarea est masquée et remplacée par un `div#planning-paste-preview` qui affiche le texte formaté — prénoms reconnus (via `PLANNING_EMPLOYEES`) mis en `<strong>` 1rem/700. `window._resetPlanningPaste()` permet de revenir à la textarea. La valeur de la textarea reste inchangée et est lue normalement par `testerImportPlanning()`.
+- `publierPlanning(planning)` : Fait un `getDoc` avant le `setDoc` pour détecter si le planning existait déjà → passe `isUpdate` à `envoyerNotifPlanning`.Vous avez dit : refaisons un test de nouveau planning et un annule remplace sur dylan
 
 ## TEMPS_DEFAUT
 - Vitres Standard : 3 min, Baies Vitrées : 4 min, Vélux : 5 min, Portes vitrées : 3 min, Vitres Hautes : 5 min.
