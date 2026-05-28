@@ -7,6 +7,22 @@
 - `checkSamediRappel()` : Modale rappel repos (sessionStorage).
 - `loadWeekDataAuto()` : Calcule les dates de la semaine depuis `YYYY-Www` en **heure locale** (pas UTC) et pose `data-date` sur chaque `<tr>`. Charge Firestore. Verrouille (`disabled` + `opacity:0.4`) les inputs hors fenêtre (aujourd'hui + hier uniquement). Pose un `div` overlay par-dessus chaque input verrouillé pour intercepter les clics et afficher la modale `#saisieInterditeModal` (rouge — message différent selon futur ou trop ancien).
 
+## heures.html — UI redesign 2026
+- **Pas de `heures.js` séparé** : tout le JS est inline dans `heures.html` (compat SDK compat Firebase).
+- **Header** : supprimé. Remplacé par une barre verte 4px sticky. Infos employé dans la `user-info-card`.
+- **`user-info-card`** : avatar vert initiales, nom, widget compteur `#compteurWidget` (cliquable → `ouvrirHistoriqueCompteurHeures()`), bouton déconnexion `#logoutBtn`.
+- **`week-card`** : sélecteur semaine `#weekInput` + total pill `#totalWeeklyHours`.
+- **`#weeklyTable tbody tr`** : rendu en flex row via CSS — col1 jour+date (`day-date-sub` injectée dynamiquement), col2 input heures 62×46px, col3 textarea flex:1, col4 boutons Repos/Férié 34×32px. Classe `row-today` ajoutée par JS sur le tr du jour courant (barre verte top + bordure verte).
+- **`loadWeekDataAuto()`** : pose `data-date` + `.day-date-sub` (JJ/MM) sur chaque `<tr>`. Ajoute `.row-today` si `rowDate === today`. Verrouille inputs hors fenêtre via `pointerEvents:none` + overlay `.lock-overlay` → modale `#saisieInterditeModal`.
+- **`saveWeeklyData()`** : **LOGIQUE CRITIQUE** — vérifie `data-date` sur chaque `<tr>`, bloque futur (`#futurInterdictionModal`) et trop ancien. Préserve les jours verrouillés depuis Firestore. Admin `dylan` bypass toutes les restrictions. `merge:true`.
+- **`checkSamediRappel()`** : modale rappel repos (sessionStorage, 1×/jour).
+- **`chargerCompteurEmploye()`** : charge `compteurHeures` depuis Firestore, colorise le widget (vert/rouge/gris).
+- **`ouvrirHistoriqueCompteurHeures()`** : modale dynamique avec solde + historique `compteurHistorique` (20 derniers mouvements).
+- **Modale chantier spécifique** `#modaleChantier` : bottom-sheet (border-radius top, handle, backdrop). Ouverte par `ouvrirModaleChantier(index?)`. Création + édition dans la même modale. Sauvegarde via `sauvegarderModaleChantier()` → Firestore `merge:true`.
+- **`editProject(index)`** : délègue à `ouvrirModaleChantier(index)` — pré-remplit les champs depuis Firestore.
+- **`deleteProject(index)`** : splice + `setDoc merge:true`.
+- **`displaySavedProjects()`** : chaque chantier = flex row inline — nom+date à gauche, total pill, btn Modifier, btn corbeille.
+- **CSS clés** : `#weeklyTable tbody tr` → `display:flex`, 4 cols fixes. `.row-today::before` → barre verte 3px. `.day-date-sub` → date JJ/MM sous le nom du jour. Tous les styles hardcodés (pas de CSS variables mode sombre).
 
 ## devis.js & voir.js
 - `setupPhotoPreview()` : Gestion UI photos devis.
