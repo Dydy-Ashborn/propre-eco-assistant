@@ -5229,9 +5229,9 @@ window.ouvrirModalImportPlanning = function () {
 
     const modal = document.createElement('div');
     modal.id = 'modal-import-planning';
-modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:0.75rem;';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:0.75rem;';
     modal.innerHTML = `
-<div id="import-planning-card" style="background:white;border-radius:20px;width:100%;max-width:960px;height:calc(100vh - 1.5rem);display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+        <div id="import-planning-card" style="background:white;border-radius:20px;width:100%;max-width:960px;height:calc(100vh - 1.5rem);display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
             <!-- Header -->
             <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-bottom:1px solid #bbf7d0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
                 <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -5254,12 +5254,25 @@ modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index
                 <div style="font-size:0.75rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">
                     Coller le tableau Excel (Ctrl+V)
                 </div>
+
+                <!-- Textarea cachée après paste — valeur lue par testerImportPlanning -->
                 <textarea id="planning-paste-zone"
                     placeholder="Collez ici votre planning copié depuis Excel..."
                     style="width:100%;height:100%;min-height:200px;border:2px dashed #d1d5db;border-radius:12px;padding:0.85rem;color:#6b7280;font-size:0.85rem;resize:none;box-sizing:border-box;transition:border-color 0.2s;background:#fafafa;outline:none;font-family:monospace;"
                     onfocus="this.style.borderColor='#10b981';this.style.color='#111827';this.style.background='white';"
                     onblur="this.style.borderColor='#d1d5db';"></textarea>
-                <p style="font-size:0.75rem;color:#9ca3af;margin-top:0.5rem;">
+
+                <!-- Preview formatée — affichée après paste -->
+                <div id="planning-paste-preview" style="display:none;flex:1;flex-direction:column;gap:0.5rem;">
+                    <div id="planning-paste-preview-content"
+                        style="flex:1;border:2px solid #10b981;border-radius:12px;padding:0.85rem;font-size:0.85rem;font-family:monospace;background:white;white-space:pre-wrap;word-break:break-word;line-height:1.7;overflow-y:auto;min-height:200px;"></div>
+                    <button onclick="window._resetPlanningPaste()"
+                        style="align-self:flex-start;background:none;border:none;color:#9ca3af;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:5px;padding:2px 0;">
+                        <i class="fas fa-pen"></i> Modifier le texte
+                    </button>
+                </div>
+
+                <p style="font-size:0.75rem;color:#9ca3af;margin-top:0.5rem;" id="planning-paste-hint">
                     <i class="fas fa-info-circle" style="margin-right:4px;"></i>
                     Copiez le tableau directement depuis Excel ou Google Sheets avec Ctrl+A puis Ctrl+C.
                 </p>
@@ -5279,7 +5292,62 @@ modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index
         if (e.target === modal) { modal.remove(); planningEnCours = null; }
     });
     document.body.appendChild(modal);
-    setTimeout(() => document.getElementById('planning-paste-zone')?.focus(), 100);
+
+    const textarea = document.getElementById('planning-paste-zone');
+
+    // Formater le texte collé : prénoms en gras
+    const formaterTexte = (texte) => {
+        return texte.split('\n').map(ligne => {
+            const trimmed = ligne.trimStart();
+            // Vérifie si la ligne commence par un prénom connu (PLANNING_EMPLOYEES)
+            const prenomMatch = PLANNING_EMPLOYEES.find(p => {
+                const re = new RegExp(`^${p}\\b`, 'i');
+                return re.test(trimmed.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+            });
+            if (prenomMatch) {
+                // Met le premier mot (prénom) en gras, le reste normal
+                const motsBruts = ligne.split(/(\s+)/);
+                let trouve = false;
+                return motsBruts.map(mot => {
+                    if (!trouve && mot.trim().length > 0) {
+                        trouve = true;
+                        return `<strong style="color:#111827;font-weight:700;font-size:1rem;">${mot}</strong>`;
+                    }
+                    return mot;
+                }).join('');
+            }
+            return ligne;
+        }).join('\n');
+    };
+
+    textarea.addEventListener('paste', () => {
+        setTimeout(() => {
+            const texte = textarea.value;
+            if (!texte.trim()) return;
+
+            const preview = document.getElementById('planning-paste-preview');
+            const content = document.getElementById('planning-paste-preview-content');
+            content.innerHTML = formaterTexte(texte);
+
+            textarea.style.display = 'none';
+            preview.style.display = 'flex';
+            document.getElementById('planning-paste-hint').style.display = 'none';
+        }, 0);
+    });
+
+    // Reset : revenir à la textarea
+    window._resetPlanningPaste = function () {
+        const textarea = document.getElementById('planning-paste-zone');
+        const preview = document.getElementById('planning-paste-preview');
+        textarea.style.display = 'block';
+        textarea.style.height = '100%';
+        preview.style.display = 'none';
+        document.getElementById('planning-paste-hint').style.display = 'block';
+        textarea.focus();
+        textarea.select();
+    };
+
+    setTimeout(() => textarea.focus(), 100);
 };
 // ── Tester = parser + afficher l'interface de review ──
 window.testerImportPlanning = function () {
@@ -5447,7 +5515,7 @@ function afficherInterfaceReview(planning) {
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
                             <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                                 ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
-                                <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
+                                <span style="font-size:0.9rem;color:#111827;font-weight:700;">${c.nom}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
                                 <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
