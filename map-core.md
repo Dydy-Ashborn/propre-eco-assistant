@@ -85,3 +85,11 @@
 - `getAllCoproprietes()` : Query ordonnée par `nom`.
 - `getCoproByCode()` : Recherche linéaire sur collection complète — usage rare uniquement.
 - `updateCopropriete()` / `deleteCopropriete()` : Opérations standard par ID Firestore.
+
+## fiches/ (nouvelle collection Firestore)
+- Document ID : slug normalisé du nom de chantier (ex: `fin-de-chantier-mieussy`)
+- Champs : `nomChantier`, `slug`, `adresse`, `texteLibre`, `taches[]` (`{label, faite, faitePar, faiteAt}`), `photos[]` (`{url, delete_url}`), `updatedAt`
+- Tâches partagées entre employés — liste globale, coches persistées en temps réel
+- Dashboard : création/édition via `ouvrirModaleFiche(nomChantier)` depuis `afficherInterfaceReview`
+- PWA : lecture + coches via `ouvrirFichePWA(slug, nomChantier)` depuis `renderChantierLigne`
+- Détection chantier éligible : `estChantierFiche(nom)` — exclut mots-clés copro

@@ -97,74 +97,77 @@
       <p>Gérez vos bÃ¢timents et optimisez vos tournées</p>
     </div> -->
 
-<!-- Bannière ntfy -->
-<div id="banniere-ntfy" style="background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:16px;padding:1rem 1.25rem;margin-bottom:1rem;color:white;position:relative;box-shadow:0 4px 15px rgba(99,102,241,0.35);">
+    <!-- Bannière ntfy -->
+    <div id="banniere-ntfy"
+      style="background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:16px;padding:1rem 1.25rem;margin-bottom:1rem;color:white;position:relative;box-shadow:0 4px 15px rgba(99,102,241,0.35);">
 
-    <!-- Bouton fermeture -->
-    <button onclick="confirmerFermetureBanniere()"
+      <!-- Bouton fermeture -->
+      <button onclick="confirmerFermetureBanniere()"
         style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.15);border:none;color:white;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;line-height:1;">
         <i class="fas fa-times"></i>
-    </button>
+      </button>
 
-    <!-- Header -->
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">
-        <div style="background:rgba(255,255,255,0.2);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="fas fa-bell" style="font-size:1rem;"></i>
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">
+        <div
+          style="background:rgba(255,255,255,0.2);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-bell" style="font-size:1rem;"></i>
         </div>
         <div>
-            <div style="font-weight:700;font-size:0.95rem;line-height:1.2;">Activez les notifications planning</div>
-            <div style="font-size:0.72rem;opacity:0.8;margin-top:2px;">Recevez une alerte dès qu'un planning vous concerne</div>
+          <div style="font-weight:700;font-size:0.95rem;line-height:1.2;">Activez les notifications planning</div>
+          <div style="font-size:0.72rem;opacity:0.8;margin-top:2px;">Recevez une alerte dès qu'un planning vous concerne
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Instructions -->
-    <div id="ntfy-instructions" style="font-size:0.8rem;line-height:1.9;margin-bottom:0.85rem;"></div>
+      <!-- Instructions -->
+      <div id="ntfy-instructions" style="font-size:0.8rem;line-height:1.9;margin-bottom:0.85rem;"></div>
 
-    <!-- Boutons stores -->
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <!-- Boutons stores -->
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
         <a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank"
-            style="background:white;color:#4f46e5;border-radius:8px;padding:6px 14px;font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
-            <i class="fab fa-apple"></i> App Store
+          style="background:white;color:#4f46e5;border-radius:8px;padding:6px 14px;font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+          <i class="fab fa-apple"></i> App Store
         </a>
         <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank"
-            style="background:white;color:#4f46e5;border-radius:8px;padding:6px 14px;font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
-            <i class="fab fa-google-play"></i> Google Play
+          style="background:white;color:#4f46e5;border-radius:8px;padding:6px 14px;font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+          <i class="fab fa-google-play"></i> Google Play
         </a>
+      </div>
     </div>
-</div>
 
-<script>
-(function() {
-    if (localStorage.getItem('ntfy_banner_dismissed') === '1') {
-        const b = document.getElementById('banniere-ntfy');
-        if (b) b.style.display = 'none';
-        return;
-    }
+    <script>
+      (function () {
+        if (localStorage.getItem('ntfy_banner_dismissed') === '1') {
+          const b = document.getElementById('banniere-ntfy');
+          if (b) b.style.display = 'none';
+          return;
+        }
 
-    const raw = localStorage.getItem('favoriteEmployee');
-    const prenom = raw ? raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : null;
-    const topic = prenom ? `planning-${prenom}` : 'planning-VOTREPRENOM';
+        const raw = localStorage.getItem('favoriteEmployee');
+        const prenom = raw ? raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : null;
+        const topic = prenom ? `planning-${prenom}` : 'planning-VOTREPRENOM';
 
-    const topicHTML = `
+        const topicHTML = `
         <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:5px;font-family:monospace;font-size:0.78rem;letter-spacing:0.3px;">${topic}</span>
         <button onclick="navigator.clipboard.writeText('${topic}').then(()=>{this.innerHTML='<i class=\\'fas fa-check\\'></i> Copié !';this.style.background='rgba(255,255,255,0.35)';setTimeout(()=>{this.innerHTML='<i class=\\'fas fa-copy\\'></i> Copier';this.style.background='rgba(255,255,255,0.2)'},2000)})"
             style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:6px;padding:2px 9px;font-size:0.72rem;font-weight:600;cursor:pointer;margin-left:5px;display:inline-flex;align-items:center;gap:4px;vertical-align:middle;transition:background 0.2s;">
             <i class="fas fa-copy"></i> Copier
         </button>`;
 
-    document.getElementById('ntfy-instructions').innerHTML = `
+        document.getElementById('ntfy-instructions').innerHTML = `
         <strong>①</strong> Installez l'app <strong>ntfy</strong> sur votre téléphone<br>
         <strong>②</strong> Ouvrez l'app et appuyez sur le <strong style="background:rgba(255,255,255,0.2);padding:0 5px;border-radius:4px;">+</strong> en haut à droite<br>
         <strong>③</strong> Dans <strong>"Topic name"</strong>, écrivez : ${topicHTML}<br>
         <strong>④</strong> Appuyez sur <strong>"Subscribe"</strong> en haut à droite<br>
         <br>
         <span style="opacity:0.85;font-size:0.75rem;">✅ C'est tout ! Vous recevrez une notification à chaque nouveau planning.</span>`;
-})();
+      })();
 
-window.confirmerFermetureBanniere = function() {
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
-    modal.innerHTML = `
+      window.confirmerFermetureBanniere = function () {
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+        modal.innerHTML = `
         <div style="background:white;border-radius:16px;padding:1.5rem;max-width:320px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.25);text-align:center;">
             <div style="background:linear-gradient(135deg,#6366f1,#4f46e5);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                 <i class="fas fa-bell" style="color:white;font-size:1.1rem;"></i>
@@ -185,10 +188,10 @@ window.confirmerFermetureBanniere = function() {
                 </button>
             </div>
         </div>`;
-    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-    document.body.appendChild(modal);
-};
-</script>
+        modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+        document.body.appendChild(modal);
+      };
+    </script>
 
     <!-- Card Planning du jour -->
     <div id="planning-du-jour" style="margin: 0 0 1rem 0;"></div>
@@ -272,189 +275,424 @@ window.confirmerFermetureBanniere = function() {
 
 
 
-  <!-- Modale pour les procédures -->
-  <div id="procedureModal" class="modal">
-    <div class="modal-content">
-      <button class="close-btn">&times;</button>
-      <h2 id="procedureTitle"></h2>
-      <div class="procedure-content" id="procedureText"></div>
-      <div class="procedure-footer">
-        <i class="fas fa-star"></i>
-        Merci pour votre travail, n'oubliez pas que chaque geste compte !
+    <!-- Modale pour les procédures -->
+    <div id="procedureModal" class="modal">
+      <div class="modal-content">
+        <button class="close-btn">&times;</button>
+        <h2 id="procedureTitle"></h2>
+        <div class="procedure-content" id="procedureText"></div>
+        <div class="procedure-footer">
+          <i class="fas fa-star"></i>
+          Merci pour votre travail, n'oubliez pas que chaque geste compte !
+        </div>
       </div>
     </div>
-  </div>
 
-  <footer class="app-footer">
-    Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
-  </footer>
-
-
-
-
-  <script type="module" src="js/index.js"></script>
-  <script type="module">
-    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
-      authDomain: "copro-256d7.firebaseapp.com",
-      projectId: "copro-256d7",
-      storageBucket: "copro-256d7.firebasestorage.app",
-      messagingSenderId: "665588381388",
-      appId: "1:665588381388:web:a0567533ff1a62407db469"
-    };
-    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-
-    const today = new Date().toISOString().split('T')[0];
+    <footer class="app-footer">
+      Developed with <span style="color: #ff6b6b;">❤️</span> by Ashborn
+    </footer>
 
 
 
 
-    const capitalizeFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
-const formatH = h => {
-    if (!h || h === 0) return '0';
-    const rounded = Math.round(h * 100) / 100;
-    if (rounded % 1 === 0) return String(rounded);
-    return rounded.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
-};
-    const formatDateFr = s => {
-      const [y, m, j] = s.split('-').map(Number);
-      return new Date(y, m - 1, j).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-    };
+    <script type="module" src="js/index.js"></script>
+    <script type="module">
+      import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyBzXEN0e-4dgh9NVVF7JGzpKtJrPnuzo0Y",
+        authDomain: "copro-256d7.firebaseapp.com",
+        projectId: "copro-256d7",
+        storageBucket: "copro-256d7.firebasestorage.app",
+        messagingSenderId: "665588381388",
+        appId: "1:665588381388:web:a0567533ff1a62407db469"
+      };
+      const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+      const db = getFirestore(app);
 
- const renderChantierLigne = (c, couleurH = '#10b981') => {
-    const annotations = (c.annotations || []).filter(a => a && a.trim().length > 0);
-    const controle = c.controle || false;
-    return `
+
+      const today = new Date().toISOString().split('T')[0];
+
+
+
+
+      const capitalizeFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+      const formatH = h => {
+        if (!h || h === 0) return '0';
+        const rounded = Math.round(h * 100) / 100;
+        if (rounded % 1 === 0) return String(rounded);
+        return rounded.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+      };
+      const formatDateFr = s => {
+        const [y, m, j] = s.split('-').map(Number);
+        return new Date(y, m - 1, j).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+      };
+
+
+      // ── Cache des fiches existantes (slug → bool) ──
+      const _fichesCache = {};
+
+      // ── Vérifie en batch quels chantiers ont une fiche et révèle les boutons ──
+      async function _verifierFiches(slugs) {
+        const aVerifier = slugs.filter(s => !(s in _fichesCache));
+        if (aVerifier.length) {
+          await Promise.all(aVerifier.map(async slug => {
+            try {
+              const snap = await getDoc(doc(db, 'fiches', slug));
+              _fichesCache[slug] = snap.exists();
+            } catch {
+              _fichesCache[slug] = false;
+            }
+          }));
+        }
+        slugs.forEach(slug => {
+          if (_fichesCache[slug]) {
+            document.querySelectorAll(`.btn-fiche-pwa[data-slug="${slug}"]`).forEach(btn => {
+              btn.style.display = 'inline-flex';
+            });
+          }
+        });
+      }
+
+      // ── Slugifie un nom de chantier ──
+      function _slugFiche(nom) {
+        return nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+
+      // ── Détecte si un chantier est éligible à une fiche (pas copro) ──
+      function _isFicheEligible(nom) {
+        const motsCopro = ['residence', 'bat ', 'batiment', 'immeuble', 'copro', 'hall', 'escalier', 'parking'];
+        const n = nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return !motsCopro.some(m => n.includes(m));
+      }
+
+      // ── Extrait les slugs éligibles d'un tableau de chantiers ──
+      function _extraireSlugs(chantiers) {
+        return [...new Set(
+          (chantiers || [])
+            .filter(c => _isFicheEligible(c.nom))
+            .map(c => _slugFiche(c.nom))
+        )];
+      }
+
+      // ── Ouvre la fiche d'intervention en bottom-sheet (PWA) ──
+      async function ouvrirFichePWA(slug, nomChantier) {
+        document.getElementById('fiche-pwa-sheet')?.remove();
+
+        const sheet = document.createElement('div');
+        sheet.id = 'fiche-pwa-sheet';
+        sheet.style.cssText = 'position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;justify-content:flex-end;';
+        sheet.innerHTML = `
+        <div onclick="document.getElementById('fiche-pwa-sheet').remove()"
+            style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+        <div style="position:relative;background:white;border-radius:20px 20px 0 0;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -8px 40px rgba(0,0,0,0.25);">
+            <div style="width:40px;height:4px;background:#d1d5db;border-radius:2px;margin:12px auto 0;flex-shrink:0;"></div>
+            <div style="padding:1rem 1.25rem 0.75rem;border-bottom:1px solid #f3f4f6;flex-shrink:0;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:36px;height:36px;border-radius:10px;background:#fff7ed;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-file-alt" style="color:#ea580c;font-size:1rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.95rem;font-weight:700;color:#111827;">Fiche d'intervention</div>
+                            <div style="font-size:0.75rem;color:#9a3412;font-weight:600;">${nomChantier}</div>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('fiche-pwa-sheet').remove()"
+                        style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;color:#6b7280;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="fiche-pwa-body" style="overflow-y:auto;flex:1;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:1rem;">
+                <div style="text-align:center;padding:2rem;color:#9ca3af;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i>
+                </div>
+            </div>
+        </div>`;
+
+        document.body.appendChild(sheet);
+
+        try {
+          const snap = await getDoc(doc(db, 'fiches', slug));
+          const body = document.getElementById('fiche-pwa-body');
+          if (!body) return;
+
+          if (!snap.exists()) {
+            body.innerHTML = `<div style="text-align:center;padding:2rem;color:#9ca3af;">
+                <i class="fas fa-folder-open" style="font-size:2rem;margin-bottom:0.5rem;display:block;"></i>
+                Aucune fiche pour ce chantier.
+            </div>`;
+            return;
+          }
+
+          const fiche = snap.data();
+          let html = '';
+
+          if (fiche.adresse) {
+            const gMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fiche.adresse)}`;
+            const mapsUrl = `https://maps.apple.com/?q=${encodeURIComponent(fiche.adresse)}`;
+            html += `
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:0.85rem 1rem;">
+                    <div style="font-size:0.75rem;font-weight:700;color:#065f46;margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-map-marker-alt" style="color:#10b981;"></i> ADRESSE
+                    </div>
+                    <div style="font-size:0.88rem;color:#111827;margin-bottom:8px;">${fiche.adresse}</div>
+                    <div style="display:flex;gap:6px;">
+                        <a href="${gMapsUrl}" target="_blank"
+                            style="flex:1;background:#10b981;color:white;border-radius:8px;padding:7px;font-size:0.78rem;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;">
+                            <i class="fas fa-map"></i> Google Maps
+                        </a>
+                        <a href="${mapsUrl}" target="_blank"
+                            style="flex:1;background:#3b82f6;color:white;border-radius:8px;padding:7px;font-size:0.78rem;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;">
+                            <i class="fas fa-location-arrow"></i> Plans
+                        </a>
+                    </div>
+                </div>`;
+          }
+
+          if (fiche.texteLibre) {
+            html += `
+                <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:0.85rem 1rem;">
+                    <div style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-info-circle" style="color:#6b7280;"></i> INFORMATIONS
+                    </div>
+                    <div style="font-size:0.85rem;color:#374151;white-space:pre-wrap;line-height:1.55;">${fiche.texteLibre}</div>
+                </div>`;
+          }
+
+          if (fiche.taches?.length) {
+            const employeId = localStorage.getItem('favoriteEmployee') || 'inconnu';
+            html += `
+                <div style="background:white;border:1.5px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                    <div style="padding:0.75rem 1rem;background:#f9fafb;border-bottom:1px solid #e5e7eb;">
+                        <div style="font-size:0.75rem;font-weight:700;color:#374151;display:flex;align-items:center;gap:5px;">
+                            <i class="fas fa-tasks" style="color:#ea580c;"></i> TÂCHES
+                            <span id="fiche-taches-compteur" style="margin-left:auto;font-size:0.72rem;color:#9ca3af;"></span>
+                        </div>
+                    </div>
+                    <div id="fiche-taches-container" style="padding:0.5rem 0;">
+                        ${fiche.taches.map((t, i) => `
+                            <label style="display:flex;align-items:center;gap:10px;padding:10px 1rem;cursor:pointer;border-bottom:1px solid #f9fafb;" id="tache-row-${i}">
+                                <input type="checkbox" ${t.faite ? 'checked' : ''} data-index="${i}"
+                                    onchange="toggleTacheFiche('${slug}', ${i}, this.checked, '${employeId}')"
+                                    style="width:18px;height:18px;accent-color:#ea580c;flex-shrink:0;cursor:pointer;">
+                                <span style="font-size:0.88rem;color:${t.faite ? '#9ca3af' : '#111827'};${t.faite ? 'text-decoration:line-through;' : ''}flex:1;line-height:1.4;" id="tache-label-${i}">${t.label}</span>
+                                ${t.faite && t.faitePar ? `<span style="font-size:0.68rem;color:#9ca3af;flex-shrink:0;">${t.faitePar}</span>` : ''}
+                            </label>`).join('')}
+                    </div>
+                </div>`;
+
+            const faites = fiche.taches.filter(t => t.faite).length;
+            setTimeout(() => {
+              const compteur = document.getElementById('fiche-taches-compteur');
+              if (compteur) {
+                compteur.textContent = `${faites}/${fiche.taches.length} faites`;
+                compteur.style.color = faites === fiche.taches.length ? '#10b981' : '#9ca3af';
+              }
+            }, 0);
+          }
+
+          if (fiche.photos?.length) {
+            html += `
+                <div>
+                    <div style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-images" style="color:#6b7280;"></i> PHOTOS (${fiche.photos.length})
+                    </div>
+                    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">
+                        ${fiche.photos.map(p => `
+                            <div style="flex-shrink:0;width:200px;height:150px;border-radius:10px;overflow:hidden;scroll-snap-align:start;cursor:pointer;"
+                                onclick="_ouvrirPhotoFiche('${p.url}')">
+                                <img src="${p.url}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+                            </div>`).join('')}
+                    </div>
+                </div>`;
+          }
+
+          body.innerHTML = html || `<div style="text-align:center;padding:2rem;color:#9ca3af;">Fiche vide.</div>`;
+
+        } catch (err) {
+          console.error('Erreur chargement fiche PWA:', err);
+          const body = document.getElementById('fiche-pwa-body');
+          if (body) body.innerHTML = `<div style="text-align:center;color:#ef4444;padding:2rem;">Erreur de chargement.</div>`;
+        }
+      }
+
+      // ── Coche/décoche une tâche et sauvegarde Firestore ──
+      window.toggleTacheFiche = async function (slug, index, checked, employeId) {
+        const label = document.getElementById(`tache-label-${index}`);
+        if (label) {
+          label.style.textDecoration = checked ? 'line-through' : 'none';
+          label.style.color = checked ? '#9ca3af' : '#111827';
+        }
+        try {
+          const ref = doc(db, 'fiches', slug);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) return;
+          const fiche = snap.data();
+          if (fiche.taches[index]) {
+            fiche.taches[index].faite = checked;
+            fiche.taches[index].faitePar = checked ? (employeId.charAt(0).toUpperCase() + employeId.slice(1)) : null;
+            fiche.taches[index].faiteAt = checked ? new Date().toISOString() : null;
+          }
+          const { setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+          await setDoc(ref, fiche);
+          const faites = fiche.taches.filter(t => t.faite).length;
+          const compteur = document.getElementById('fiche-taches-compteur');
+          if (compteur) {
+            compteur.textContent = `${faites}/${fiche.taches.length} faites`;
+            compteur.style.color = faites === fiche.taches.length ? '#10b981' : '#9ca3af';
+          }
+        } catch (err) {
+          console.error('Erreur toggle tâche:', err);
+        }
+      };
+
+      // ── Ouvre une photo en plein écran ──
+      window._ouvrirPhotoFiche = function (url) {
+        const viewer = document.createElement('div');
+        viewer.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        viewer.innerHTML = `
+        <img src="${url}" style="max-width:100%;max-height:100%;object-fit:contain;">
+        <button onclick="this.parentElement.remove()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:40px;height:40px;color:white;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-times"></i>
+        </button>`;
+        viewer.onclick = e => { if (e.target === viewer) viewer.remove(); };
+        document.body.appendChild(viewer);
+      };
+
+      const renderChantierLigne = (c, couleurH = '#10b981') => {
+        const annotations = (c.annotations || []).filter(a => a && a.trim().length > 0);
+        const controle = c.controle || false;
+        const slug = _slugFiche(c.nom);
+        const eligible = _isFicheEligible(c.nom);
+
+        return `
         <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.55rem 0;border-bottom:1px solid #f3f4f6;gap:8px;">
             <div style="flex:1;">
-                <span style="font-size:0.875rem;color:#374151;line-height:1.3;">${c.nom}</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                    <span style="font-size:0.875rem;color:#374151;line-height:1.3;">${c.nom}</span>
+                    ${eligible ? `<button class="btn-fiche-pwa" data-slug="${slug}"
+                        onclick="ouvrirFichePWA('${slug}', '${c.nom.replace(/'/g, "\\'")}')"
+                        style="display:none;align-items:center;background:#fff7ed;border:1px solid #fed7aa;color:#ea580c;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700;cursor:pointer;white-space:nowrap;">
+                        <i class="fas fa-file-alt" style="margin-right:3px;"></i>Fiche
+                    </button>` : ''}
+                </div>
                 ${annotations.map(a => `<div style="font-size:0.78rem;color:#ef4444;font-style:italic;margin-top:2px;">• ${a}</div>`).join('')}
                 ${controle ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 6px;font-size:0.68rem;font-weight:700;margin-top:3px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> Contrôle</span>` : ''}
             </div>
             <span style="font-size:0.85rem;font-weight:700;color:${couleurH};white-space:nowrap;flex-shrink:0;">${formatH(c.heures)}</span>
         </div>`;
-};
- const buildChantiersHTML = (emp, allEmployes, employeId) => {
-  if (emp.absence) {
-    const absMap = {
-      CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
-      ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
-      ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
-    };
-    const a = absMap[emp.absence] || absMap.ABSENT;
-    return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
-        <i class="fas ${a.icon}" style="color:${a.color};"></i>
-        <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
-    </div>`;
-  }
+      };
 
-  const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
-  const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
-
-  // Grouper les chantiers solo par collègues détectés automatiquement
-  // Pour chaque chantier sans binôme, cherche qui d'autre a le même chantier
-const getCollègues = (nomChantier) => {
-    const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-    const collègues = [];
-    for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
-      if (autreId === employeId) continue;
-      if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
-        collègues.push(autreEmp.display || capitalizeFirst(autreId));
-      }
-    }
-    return collègues;
-};
-
-  // Regrouper les chantiers solo qui partagent les mêmes collègues
-  // clé = collègues triés joints, valeur = chantiers[]
-  const groupesAuto = {};
-  const chantiersPurementSolo = [];
-
-  for (const c of chantiersSolo) {
-    const collègues = getCollègues(c.nom);
-    if (collègues.length === 0) {
-      chantiersPurementSolo.push(c);
-    } else {
-      const key = [...collègues].sort().join('|');
-      if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
-      groupesAuto[key].chantiers.push(c);
-    }
-  }
-
-  // Grouper les chantiers avec binôme déclaré
-  const binomeGroups = {};
-  for (const c of chantiersAvecBinome) {
-    if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
-    binomeGroups[c.binome].push(c);
-  }
-
-  let html = '';
-
-  // 1. Chantiers purement solo
-  if (chantiersPurementSolo.length > 0) {
-    html += chantiersPurementSolo.map(c => renderChantierLigne(c, '#10b981')).join('');
-  }
-
-  // 2. Chantiers solo mais avec collègues détectés automatiquement
-  for (const { collègues, chantiers } of Object.values(groupesAuto)) {
-    const totalGroupe = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-    const label = collègues.join(', ');
-    html += `
-        <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
-                <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
-                <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${label}</span>
-                <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalGroupe)}</span>
-            </div>
-            ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
+      const buildChantiersHTML = (emp, allEmployes, employeId) => {
+        if (emp.absence) {
+          const absMap = {
+            CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
+            ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
+            ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
+          };
+          const a = absMap[emp.absence] || absMap.ABSENT;
+          return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
+            <i class="fas ${a.icon}" style="color:${a.color};"></i>
+            <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
         </div>`;
-  }
+        }
 
-  // 3. Chantiers avec binôme déclaré (inchangé)
-  for (const [binome, chantiers] of Object.entries(binomeGroups)) {
-    const totalBinome = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-    const binomeDisplay = chantiers[0]?.binomeDisplay || capitalizeFirst(binome);
-    html += `
-        <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
-                <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
-                <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${binomeDisplay}</span>
-                <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalBinome)}</span>
-            </div>
-            ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
-        </div>`;
-  }
+        const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
+        const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
 
-  return html || '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem 0;">Aucun chantier</div>';
-};
-    async function chargerPlanningDuJour() {
-      const container = document.getElementById('planning-du-jour');
-      if (!container) return;
+        const getCollègues = (nomChantier) => {
+          const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+          const collègues = [];
+          for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
+            if (autreId === employeId) continue;
+            if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
+              collègues.push(autreEmp.display || capitalizeFirst(autreId));
+            }
+          }
+          return collègues;
+        };
 
-      const employeRaw = localStorage.getItem('favoriteEmployee');
-      if (!employeRaw) return;
-      const employeId = employeRaw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-      if (!employeId) return;
+        const groupesAuto = {};
+        const chantiersPurementSolo = [];
+        for (const c of chantiersSolo) {
+          const collègues = getCollègues(c.nom);
+          if (collègues.length === 0) {
+            chantiersPurementSolo.push(c);
+          } else {
+            const key = [...collègues].sort().join('|');
+            if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
+            groupesAuto[key].chantiers.push(c);
+          }
+        }
 
-      const d = new Date();
-      const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const binomeGroups = {};
+        for (const c of chantiersAvecBinome) {
+          if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
+          binomeGroups[c.binome].push(c);
+        }
 
-      const btnHTML = `
+        let html = '';
+
+        if (chantiersPurementSolo.length > 0) {
+          html += chantiersPurementSolo.map(c => renderChantierLigne(c, '#10b981')).join('');
+        }
+
+        for (const { collègues, chantiers } of Object.values(groupesAuto)) {
+          const totalGroupe = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+          html += `
+            <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
+                    <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
+                    <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${collègues.join(', ')}</span>
+                    <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalGroupe)}</span>
+                </div>
+                ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
+            </div>`;
+        }
+
+        for (const [binome, chantiers] of Object.entries(binomeGroups)) {
+          const totalBinome = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+          const binomeDisplay = chantiers[0]?.binomeDisplay || capitalizeFirst(binome);
+          html += `
+            <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
+                    <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
+                    <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${binomeDisplay}</span>
+                    <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalBinome)}</span>
+                </div>
+                ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
+            </div>`;
+        }
+
+        return html || '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem 0;">Aucun chantier</div>';
+      };
+
+      async function chargerPlanningDuJour() {
+        const container = document.getElementById('planning-du-jour');
+        if (!container) return;
+
+        const employeRaw = localStorage.getItem('favoriteEmployee');
+        if (!employeRaw) return;
+        const employeId = employeRaw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        if (!employeId) return;
+
+        const d = new Date();
+        const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+        const btnHTML = `
         <div style="margin-top:0.6rem;text-align:right;">
             <button onclick="ouvrirProchainsJours()" style="background:none;border:none;color:#10b981;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;">
                 <i class="fas fa-calendar-days"></i> Voir les prochains jours
             </button>
         </div>`;
 
-      try {
-        const snap = await getDoc(doc(db, 'plannings', todayLocal));
+        try {
+          const snap = await getDoc(doc(db, 'plannings', todayLocal));
 
-        if (!snap.exists()) {
-          container.innerHTML = `
+          if (!snap.exists()) {
+            container.innerHTML = `
                 <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:16px;padding:0.9rem 1.25rem;">
                     <div style="font-weight:700;color:#111827;font-size:1rem;margin-bottom:0.2rem;">Bonjour ${capitalizeFirst(employeId)} 👋</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.3rem;">
@@ -463,21 +701,22 @@ const getCollègues = (nomChantier) => {
                     </div>
                     ${btnHTML}
                 </div>`;
-          return;
-        }
+            return;
+          }
 
-        const data = snap.data();
-        const emp = data.employes?.[employeId];
-        if (!emp) {
-          container.innerHTML = `
+          const data = snap.data();
+          const emp = data.employes?.[employeId];
+
+          if (!emp) {
+            container.innerHTML = `
                 <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:16px;padding:0.9rem 1.25rem;">
                     <span style="color:#6b7280;font-size:0.88rem;">Aucun planning trouvé pour vous aujourd'hui.</span>
                     ${btnHTML}
                 </div>`;
-          return;
-        }
+            return;
+          }
 
-        container.innerHTML = `
+          container.innerHTML = `
             <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:16px;overflow:hidden;">
                 <div style="padding:0.9rem 1.25rem 0.7rem;display:flex;align-items:center;justify-content:space-between;gap:8px;">
                     <div>
@@ -496,283 +735,293 @@ const getCollègues = (nomChantier) => {
                 </div>
             </div>`;
 
-      } catch (e) {
-        console.error('Erreur planning :', e);
+          // Révèle les boutons Fiche uniquement si la fiche existe
+          const slugs = _extraireSlugs(emp.chantiers || []);
+          if (slugs.length) _verifierFiches(slugs);
+
+        } catch (e) {
+          console.error('Erreur planning :', e);
+        }
       }
-    }
-    // ── Modale prochains jours ────────────────────────────────
-   window.ouvrirProchainsJours = async function () {
-  const employeRaw = localStorage.getItem('favoriteEmployee');
-  if (!employeRaw) return;
-  const employeId = employeRaw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
-  const d = new Date();
-  const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      window.ouvrirProchainsJours = async function () {
+        const employeRaw = localStorage.getItem('favoriteEmployee');
+        if (!employeRaw) return;
+        const employeId = employeRaw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
-  let overlay = document.getElementById('modal-prochains-jours');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'modal-prochains-jours';
-    overlay.className = 'pwa-modal-overlay';
-    overlay.innerHTML = `
-      <div class="pwa-modal">
-        <div class="pwa-modal-header">
-          <div class="pwa-modal-logo">
-            <img src="img/logo.png" alt="Propre Eco" width="48">
-          </div>
-          <div>
-            <h2>Propre Eco Assistant</h2>
-            <p><i class="fas fa-calendar-days" style="color:#10b981;margin-right:5px;"></i>Prochains jours</p>
-          </div>
-          <button class="pwa-modal-close" onclick="document.getElementById('modal-prochains-jours').remove()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="pwa-modal-body">
-          <div id="prochains-jours-content">
-            <div style="text-align:center;padding:2rem 0;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
-          </div>
-        </div>
-        <div class="pwa-modal-footer">
-          <button class="pwa-btn-dismiss" onclick="document.getElementById('modal-prochains-jours').remove()">
-            Fermer
-          </button>
-        </div>
-      </div>`;
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-  }
+        const d = new Date();
+        const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  const content = document.getElementById('prochains-jours-content');
+        let overlay = document.getElementById('modal-prochains-jours');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.id = 'modal-prochains-jours';
+          overlay.className = 'pwa-modal-overlay';
+          overlay.innerHTML = `
+            <div class="pwa-modal">
+                <div class="pwa-modal-header">
+                    <div class="pwa-modal-logo">
+                        <img src="img/logo.png" alt="Propre Eco" width="48">
+                    </div>
+                    <div>
+                        <h2>Propre Eco Assistant</h2>
+                        <p><i class="fas fa-calendar-days" style="color:#10b981;margin-right:5px;"></i>Prochains jours</p>
+                    </div>
+                    <button class="pwa-modal-close" onclick="document.getElementById('modal-prochains-jours').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="pwa-modal-body">
+                    <div id="prochains-jours-content">
+                        <div style="text-align:center;padding:2rem 0;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+                    </div>
+                </div>
+                <div class="pwa-modal-footer">
+                    <button class="pwa-btn-dismiss" onclick="document.getElementById('modal-prochains-jours').remove()">Fermer</button>
+                </div>
+            </div>`;
+          document.body.appendChild(overlay);
+          overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        }
 
-  const absMap = {
-    CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
-    ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
-    ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
-  };
+        const content = document.getElementById('prochains-jours-content');
 
-  const fmtH = h => {
-    if (!h || h === 0) return '0';
-    const r = Math.round(h * 100) / 100;
-    if (r % 1 === 0) return String(r);
-    return r.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
-  };
-  const capFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
-  const fmtDate = s => {
-    const [y, m, j] = s.split('-').map(Number);
-    return new Date(y, m - 1, j).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-  };
+        const absMap = {
+          CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
+          ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
+          ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
+        };
 
-  const renderLigne = (c, couleurH = '#10b981') => {
-    const annotations = (c.annotations || []).filter(a => a && a.trim().length > 0);
-    const controle = c.controle || false;
-    return `
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.45rem 0;border-bottom:1px solid rgba(255,255,255,0.06);gap:8px;">
-        <div style="flex:1;">
-          <span style="font-size:0.85rem;color:#374151;line-height:1.3;">${c.nom}</span>
-          ${annotations.map(a => `<div style="font-size:0.78rem;color:#ef4444;font-style:italic;margin-top:2px;">• ${a}</div>`).join('')}
-          ${controle ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 6px;font-size:0.68rem;font-weight:700;margin-top:3px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> Contrôle</span>` : ''}
-        </div>
-        <span style="font-size:0.85rem;font-weight:700;color:${couleurH};white-space:nowrap;">${fmtH(c.heures)}</span>
-      </div>`;
-  };
+        const fmtH = h => {
+          if (!h || h === 0) return '0';
+          const r = Math.round(h * 100) / 100;
+          if (r % 1 === 0) return String(r);
+          return r.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+        };
+        const capFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+        const fmtDate = s => {
+          const [y, m, j] = s.split('-').map(Number);
+          return new Date(y, m - 1, j).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+        };
 
-  const renderGroupe = (label, chantiers, total, couleurH = '#94a3b8') => `
-    <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed rgba(16,185,129,0.3);">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
-        <i class="fas fa-user-friends" style="color:#94a3b8;font-size:0.75rem;"></i>
-        <span style="font-size:0.75rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.4px;">Avec ${label}</span>
-        <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#94a3b8;">${fmtH(total)}</span>
-      </div>
-      ${chantiers.map(c => renderLigne(c, couleurH)).join('')}
-    </div>`;
+        const renderLigne = (c, couleurH = '#10b981') => {
+          const annotations = (c.annotations || []).filter(a => a && a.trim().length > 0);
+          const controle = c.controle || false;
+          const slug = _slugFiche(c.nom);
+          const eligible = _isFicheEligible(c.nom);
+          return `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.45rem 0;border-bottom:1px solid rgba(255,255,255,0.06);gap:8px;">
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                        <span style="font-size:0.85rem;color:#374151;line-height:1.3;">${c.nom}</span>
+                        ${eligible ? `<button class="btn-fiche-pwa" data-slug="${slug}"
+                            onclick="ouvrirFichePWA('${slug}', '${c.nom.replace(/'/g, "\\'")}')"
+                            style="display:none;align-items:center;background:#fff7ed;border:1px solid #fed7aa;color:#ea580c;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700;cursor:pointer;white-space:nowrap;">
+                            <i class="fas fa-file-alt" style="margin-right:3px;"></i>Fiche
+                        </button>` : ''}
+                    </div>
+                    ${annotations.map(a => `<div style="font-size:0.78rem;color:#ef4444;font-style:italic;margin-top:2px;">• ${a}</div>`).join('')}
+                    ${controle ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#fef9c3;color:#a16207;border-radius:4px;padding:1px 6px;font-size:0.68rem;font-weight:700;margin-top:3px;"><i class="fas fa-search" style="font-size:0.6rem;"></i> Contrôle</span>` : ''}
+                </div>
+                <span style="font-size:0.85rem;font-weight:700;color:${couleurH};white-space:nowrap;">${fmtH(c.heures)}</span>
+            </div>`;
+        };
 
-const getCollègues = (allEmployes, nomChantier) => {
-    const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-    const collègues = [];
-    for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
-      if (autreId === employeId) continue;
-      if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
-        collègues.push(autreEmp.display || capFirst(autreId));
-      }
-    }
-    return collègues;
-};
-
-  const buildBody = (emp, allEmployes) => {
-    if (emp.absence) {
-      const a = absMap[emp.absence] || absMap.ABSENT;
-      return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
-        <i class="fas ${a.icon}" style="color:${a.color};"></i>
-        <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
-      </div>`;
-    }
-
-    const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
-    const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
-
-    // Grouper chantiers solo par collègues détectés automatiquement
-    const groupesAuto = {};
-    const purementSolo = [];
-    for (const c of chantiersSolo) {
-      const collègues = getCollègues(allEmployes, c.nom);
-      if (collègues.length === 0) {
-        purementSolo.push(c);
-      } else {
-        const key = [...collègues].sort().join('|');
-        if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
-        groupesAuto[key].chantiers.push(c);
-      }
-    }
-
-    // Grouper chantiers avec binôme déclaré
-    const binomeGroups = {};
-    for (const c of chantiersAvecBinome) {
-      if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
-      binomeGroups[c.binome].push(c);
-    }
-
-    let html = '';
-
-    // 1. Chantiers purement solo
-    html += purementSolo.map(c => renderLigne(c, '#10b981')).join('');
-
-    // 2. Groupes détectés automatiquement (trinôme+)
-    for (const { collègues, chantiers } of Object.values(groupesAuto)) {
-      const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-      html += renderGroupe(collègues.join(', '), chantiers, total);
-    }
-
-    // 3. Binômes déclarés
-    for (const [binome, chantiers] of Object.entries(binomeGroups)) {
-      const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-      const label = chantiers[0]?.binomeDisplay || capFirst(binome);
-      html += renderGroupe(label, chantiers, total);
-    }
-
-    return html || '<div style="color:#94a3b8;font-size:0.85rem;padding:0.3rem 0;">Aucun chantier</div>';
-  };
-
-  try {
-    const snap = await getDocs(query(
-      collection(db, 'plannings'),
-      where('date', '>', todayLocal),
-      orderBy('date', 'asc')
-    ));
-
-    if (snap.empty) {
-      content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#94a3b8;">Aucun planning à venir.</div>';
-      return;
-    }
-
-    let html = '';
-    snap.forEach(docSnap => {
-      const data = docSnap.data();
-      const emp = data.employes?.[employeId];
-      if (!emp) return;
-
-      const bodyHTML = buildBody(emp, data.employes);
-
-      html += `
-        <div style="margin-bottom:1rem;">
-          <div class="pwa-intro" style="margin-bottom:0.75rem;justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-              <i class="fas fa-calendar-day" style="font-size:1.1rem;"></i>
-              <p style="text-transform:capitalize;font-weight:700;">${fmtDate(data.date)}</p>
+        const renderGroupe = (label, chantiers, total, couleurH = '#94a3b8') => `
+        <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed rgba(16,185,129,0.3);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
+                <i class="fas fa-user-friends" style="color:#94a3b8;font-size:0.75rem;"></i>
+                <span style="font-size:0.75rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.4px;">Avec ${label}</span>
+                <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#94a3b8;">${fmtH(total)}</span>
             </div>
-            ${!emp.absence ? `<span style="background:#10b981;color:white;padding:3px 12px;border-radius:20px;font-size:0.82rem;font-weight:700;white-space:nowrap;">${fmtH(emp.total)}</span>` : ''}
-          </div>
-          <div style="padding:0 0.25rem;">${bodyHTML}</div>
+            ${chantiers.map(c => renderLigne(c, couleurH)).join('')}
         </div>`;
-    });
 
-    content.innerHTML = html || '<div style="text-align:center;padding:2rem 0;color:#94a3b8;">Aucun planning vous concernant à venir.</div>';
+        const getCollègues = (allEmployes, nomChantier) => {
+          const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+          const collègues = [];
+          for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
+            if (autreId === employeId) continue;
+            if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
+              collègues.push(autreEmp.display || capFirst(autreId));
+            }
+          }
+          return collègues;
+        };
 
-  } catch (e) {
-    console.error('Erreur prochains jours :', e);
-    content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#ef4444;">Erreur de chargement.</div>';
-  }
-};
-    chargerPlanningDuJour();
+        const buildBody = (emp, allEmployes) => {
+          if (emp.absence) {
+            const a = absMap[emp.absence] || absMap.ABSENT;
+            return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
+                <i class="fas ${a.icon}" style="color:${a.color};"></i>
+                <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
+            </div>`;
+          }
 
-    async function chargerTachesJour() {
-      const taches = [];
+          const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
+          const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
 
-      const [sigSnap, consoSnap] = await Promise.all([
-        getDocs(collection(db, 'signalements')),
-        getDocs(collection(db, 'consommables'))
-      ]);
+          const groupesAuto = {};
+          const purementSolo = [];
+          for (const c of chantiersSolo) {
+            const collègues = getCollègues(allEmployes, c.nom);
+            if (collègues.length === 0) {
+              purementSolo.push(c);
+            } else {
+              const key = [...collègues].sort().join('|');
+              if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
+              groupesAuto[key].chantiers.push(c);
+            }
+          }
 
-      sigSnap.forEach(d => {
-        const data = d.data();
-        if (data.rappelDate === today && !data.rappelFait) {
-          taches.push({
-            copro: data.copro || '—',
-            label: data.description || 'Signalement',
-            type: 'probleme'
+          const binomeGroups = {};
+          for (const c of chantiersAvecBinome) {
+            if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
+            binomeGroups[c.binome].push(c);
+          }
+
+          let html = '';
+          html += purementSolo.map(c => renderLigne(c, '#10b981')).join('');
+          for (const { collègues, chantiers } of Object.values(groupesAuto)) {
+            const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+            html += renderGroupe(collègues.join(', '), chantiers, total);
+          }
+          for (const [binome, chantiers] of Object.entries(binomeGroups)) {
+            const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+            const label = chantiers[0]?.binomeDisplay || capFirst(binome);
+            html += renderGroupe(label, chantiers, total);
+          }
+          return html || '<div style="color:#94a3b8;font-size:0.85rem;padding:0.3rem 0;">Aucun chantier</div>';
+        };
+
+        try {
+          const snap = await getDocs(query(
+            collection(db, 'plannings'),
+            where('date', '>', todayLocal),
+            orderBy('date', 'asc')
+          ));
+
+          if (snap.empty) {
+            content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#94a3b8;">Aucun planning à venir.</div>';
+            return;
+          }
+
+          let html = '';
+          const tousLesChantiers = [];
+
+          snap.forEach(docSnap => {
+            const data = docSnap.data();
+            const emp = data.employes?.[employeId];
+            if (!emp) return;
+
+            html += `
+                <div style="margin-bottom:1rem;">
+                    <div class="pwa-intro" style="margin-bottom:0.75rem;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            <i class="fas fa-calendar-day" style="font-size:1.1rem;"></i>
+                            <p style="text-transform:capitalize;font-weight:700;">${fmtDate(data.date)}</p>
+                        </div>
+                        ${!emp.absence ? `<span style="background:#10b981;color:white;padding:3px 12px;border-radius:20px;font-size:0.82rem;font-weight:700;white-space:nowrap;">${fmtH(emp.total)}</span>` : ''}
+                    </div>
+                    <div style="padding:0 0.25rem;">${buildBody(emp, data.employes)}</div>
+                </div>`;
+
+            if (!emp.absence) {
+              tousLesChantiers.push(...(emp.chantiers || []));
+            }
           });
+
+          content.innerHTML = html || '<div style="text-align:center;padding:2rem 0;color:#94a3b8;">Aucun planning vous concernant à venir.</div>';
+
+          // Révèle les boutons Fiche uniquement si la fiche existe
+          const slugs = _extraireSlugs(tousLesChantiers);
+          if (slugs.length) _verifierFiches(slugs);
+
+        } catch (e) {
+          console.error('Erreur prochains jours :', e);
+          content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#ef4444;">Erreur de chargement.</div>';
         }
-      });
+      };
+      chargerPlanningDuJour();
 
-      consoSnap.forEach(d => {
-        const data = d.data();
-        if (data.rappelDate === today && !data.rappelFait) {
-          taches.push({
-            copro: data.copro || '—',
-            label: `${data.type || 'Consommable'} × ${data.quantite || 1}`,
-            type: 'consommable'
-          });
-        }
-      });
+      async function chargerTachesJour() {
+        const taches = [];
 
-      if (taches.length === 0) return;
+        const [sigSnap, consoSnap] = await Promise.all([
+          getDocs(collection(db, 'signalements')),
+          getDocs(collection(db, 'consommables'))
+        ]);
 
-      const card = document.getElementById('taches-du-jour');
-      const list = document.getElementById('taches-list');
-      card.style.display = 'block';
+        sigSnap.forEach(d => {
+          const data = d.data();
+          if (data.rappelDate === today && !data.rappelFait) {
+            taches.push({
+              copro: data.copro || '—',
+              label: data.description || 'Signalement',
+              type: 'probleme'
+            });
+          }
+        });
 
-      taches.forEach(t => {
-        const iconColor = t.type === 'consommable' ? '#f97316' : '#ef4444';
-        const icon = t.type === 'consommable' ? 'fa-box' : 'fa-triangle-exclamation';
-        const div = document.createElement('div');
-        div.style.cssText = 'background:white;border-radius:10px;padding:0.65rem 0.9rem;display:flex;align-items:center;gap:0.65rem;box-shadow:0 1px 3px rgba(0,0,0,0.06);';
-        div.innerHTML = `
+        consoSnap.forEach(d => {
+          const data = d.data();
+          if (data.rappelDate === today && !data.rappelFait) {
+            taches.push({
+              copro: data.copro || '—',
+              label: `${data.type || 'Consommable'} × ${data.quantite || 1}`,
+              type: 'consommable'
+            });
+          }
+        });
+
+        if (taches.length === 0) return;
+
+        const card = document.getElementById('taches-du-jour');
+        const list = document.getElementById('taches-list');
+        card.style.display = 'block';
+
+        taches.forEach(t => {
+          const iconColor = t.type === 'consommable' ? '#f97316' : '#ef4444';
+          const icon = t.type === 'consommable' ? 'fa-box' : 'fa-triangle-exclamation';
+          const div = document.createElement('div');
+          div.style.cssText = 'background:white;border-radius:10px;padding:0.65rem 0.9rem;display:flex;align-items:center;gap:0.65rem;box-shadow:0 1px 3px rgba(0,0,0,0.06);';
+          div.innerHTML = `
                 <i class="fas ${icon}" style="color:${iconColor};font-size:0.9rem;flex-shrink:0;"></i>
                 <div>
                     <div style="font-weight:700;color:#111827;font-size:0.88rem;">${t.copro}</div>
                     <div style="color:#6b7280;font-size:0.8rem;">${t.label}</div>
                 </div>
             `;
-        list.appendChild(div);
-      });
-    }
+          list.appendChild(div);
+        });
+      }
 
-    chargerTachesJour();
+      chargerTachesJour();
 
-  </script>
+    </script>
 
-  <script type="module" src="js/firebase-copro.js"></script>
-  <script type="module" src="js/announcements.js"></script>
-  <script type="module">
-    import { initNavigation, setActiveNavItem } from './js/navbar.js';
-    initNavigation();
-    setActiveNavItem('index.html');
-  </script>
-  <!-- <script type="module" src="js/pwa-install.js"></script> -->
-  <script src="js/sw-update.js"></script>
+    <script type="module" src="js/firebase-copro.js"></script>
+    <script type="module" src="js/announcements.js"></script>
+    <script type="module">
+      import { initNavigation, setActiveNavItem } from './js/navbar.js';
+      initNavigation();
+      setActiveNavItem('index.html');
+    </script>
+    <!-- <script type="module" src="js/pwa-install.js"></script> -->
+    <script src="js/sw-update.js"></script>
 
-  <!-- toggleFab en script classique — disponible immédiatement -->
-  <script>
-    function toggleFab() {
-      const fab = document.getElementById('fabBtn');
-      const dial = document.getElementById('speedDial');
-      const overlay = document.getElementById('sdOverlay');
-      if (!fab || !dial || !overlay) return;
-      const isOpen = dial.classList.toggle('open');
-      fab.classList.toggle('open', isOpen);
-      overlay.classList.toggle('open', isOpen);
-    }
-  </script>
+    <!-- toggleFab en script classique — disponible immédiatement -->
+    <script>
+      function toggleFab() {
+        const fab = document.getElementById('fabBtn');
+        const dial = document.getElementById('speedDial');
+        const overlay = document.getElementById('sdOverlay');
+        if (!fab || !dial || !overlay) return;
+        const isOpen = dial.classList.toggle('open');
+        fab.classList.toggle('open', isOpen);
+        overlay.classList.toggle('open', isOpen);
+      }
+    </script>
 </body>
 
 </html>

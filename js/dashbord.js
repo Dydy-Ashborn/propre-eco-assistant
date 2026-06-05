@@ -5392,8 +5392,8 @@ function afficherModalTravaux(planning, travaux) {
     `).join('');
 
     modal.innerHTML = `
-        <div style="background:white;border-radius:16px;width:100%;max-width:480px;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
-            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#fffbeb,#fef3c7);border-bottom:1px solid #fde68a;display:flex;align-items:center;gap:0.75rem;">
+        <div style="background:white;border-radius:16px;width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#fffbeb,#fef3c7);border-bottom:1px solid #fde68a;display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
                 <div style="background:#f59e0b;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <i class="fas fa-hard-hat" style="color:white;font-size:0.9rem;"></i>
                 </div>
@@ -5402,10 +5402,10 @@ function afficherModalTravaux(planning, travaux) {
                     <div style="font-size:0.75rem;color:#92400e;">${travaux.length} chantier${travaux.length > 1 ? 's' : ''} avec un nom générique détecté</div>
                 </div>
             </div>
-            <div style="padding:1.25rem 1.5rem;">
+            <div style="padding:1.25rem 1.5rem;overflow-y:auto;flex:1;">
                 ${lignesHTML}
             </div>
-            <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;background:white;">
+            <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;background:white;flex-shrink:0;">
                 <button id="btn-confirmer-travaux"
                     style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.8rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
                     <i class="fas fa-eye"></i> Vérifier et annoter
@@ -5461,6 +5461,7 @@ function afficherReviewDansModal(planning) {
     const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
     const absColors = { CONGES_PAYES: '#3b82f6', ABSENCE_MALADIE: '#ef4444', ABSENT: '#9ca3af' };
     const nbChantiers = Object.values(planning.employes).reduce((s, e) => s + (e.chantiers || []).length, 0);
+    const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
     let empHTML = '';
     for (const [prenom, emp] of Object.entries(planning.employes)) {
@@ -5470,50 +5471,54 @@ function afficherReviewDansModal(planning) {
         if (emp.absence) {
             chantiersHTML = `<div style="font-size:0.85rem;color:${absColors[emp.absence] || '#9ca3af'};font-style:italic;padding:8px 0;">${absLabels[emp.absence] || emp.absence}</div>`;
         } else {
-           (emp.chantiers || []).forEach((c, ci) => {
-    const key = `${prenom}__${ci}`;
+            (emp.chantiers || []).forEach((c, ci) => {
+                const key = `${prenom}__${ci}`;
 
-    // Binôme déclaré OU détecté automatiquement
-    let binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
-   const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                let binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
+                if (!binomeLabel) {
+                    const collègues = [];
+                    for (const [autrePrenom, autreEmp] of Object.entries(planning.employes)) {
+                        if (autrePrenom === prenom) continue;
+                        if ((autreEmp.chantiers || []).some(ac => norm(ac.nom) === norm(c.nom))) {
+                            collègues.push(autreEmp.display || PRENOM_DISPLAY[autrePrenom] || autrePrenom.charAt(0).toUpperCase() + autrePrenom.slice(1));
+                        }
+                    }
+                    if (collègues.length > 0) binomeLabel = collègues.join(', ');
+                }
 
-if (!binomeLabel) {
-    const collègues = [];
-    for (const [autrePrenom, autreEmp] of Object.entries(planning.employes)) {
-        if (autrePrenom === prenom) continue;
-        if ((autreEmp.chantiers || []).some(ac => norm(ac.nom) === norm(c.nom))) {
-            collègues.push(autreEmp.display || PRENOM_DISPLAY[autrePrenom] || autrePrenom.charAt(0).toUpperCase() + autrePrenom.slice(1));
-        }
-    }
-    if (collègues.length > 0) binomeLabel = collègues.join(', ');
-}
+                const isFiche = estChantierFiche(c.nom);
 
-    chantiersHTML += `
-        <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                    ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
-                    <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-                    <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
-                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
-                        <input type="checkbox" ${c.controle ? 'checked' : ''}
-                            onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
-                            style="accent-color:#eab308;width:14px;height:14px;">
-                        <i class="fas fa-clipboard-check" style="font-size:0.78rem;color:${c.controle ? '#d97706' : '#9ca3af'};"></i>
-                    </label>
-                    <button onclick="ajouterAnnotation('${prenom}',${ci})"
-                        style="background:#f0fdf4;border:1px solid #bbf7d0;color:#10b981;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
-                        <i class="fas fa-plus" style="font-size:0.7rem;margin-right:3px;"></i>Annotation
-                    </button>
-                </div>
-            </div>
-            <div id="annotations-${key}" style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
-                ${(c.annotations || []).map((a, ai) => renderAnnotationTag(prenom, ci, ai, a)).join('')}
-            </div>
-        </div>`;
-});
+                chantiersHTML += `
+                    <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
+                                <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;">
+                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                ${isFiche ? `
+                                <button onclick="ouvrirModaleFiche('${c.nom.replace(/'/g, "\\'")}')"
+                                    style="background:#fff7ed;border:1.5px solid #fed7aa;color:#ea580c;border-radius:7px;padding:5px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap;">
+                                    <i class="fas fa-file-alt" style="margin-right:3px;"></i>Fiche
+                                </button>` : ''}
+                                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
+                                    <input type="checkbox" ${c.controle ? 'checked' : ''}
+                                        onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
+                                        style="accent-color:#eab308;width:14px;height:14px;">
+                                    <i class="fas fa-clipboard-check" style="font-size:0.78rem;color:${c.controle ? '#d97706' : '#9ca3af'};"></i>
+                                </label>
+                                <button onclick="ajouterAnnotation('${prenom}',${ci})"
+                                    style="background:#f0fdf4;border:1px solid #bbf7d0;color:#10b981;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                                    <i class="fas fa-plus" style="font-size:0.7rem;margin-right:3px;"></i>Annotation
+                                </button>
+                            </div>
+                        </div>
+                        <div id="annotations-${key}" style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
+                            ${(c.annotations || []).map((a, ai) => renderAnnotationTag(prenom, ci, ai, a)).join('')}
+                        </div>
+                    </div>`;
+            });
         }
 
         empHTML += `
@@ -5526,17 +5531,24 @@ if (!binomeLabel) {
             </div>`;
     }
 
+    // Reset styles body pour scroll correct
+    body.style.cssText = 'padding:0;overflow:hidden;flex:1;display:flex;flex-direction:column;';
+
     body.innerHTML = `
-        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.6rem 0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:8px;">
-            <i class="fas fa-calendar-day" style="color:#f59e0b;font-size:0.85rem;flex-shrink:0;"></i>
-            <span style="font-size:0.8rem;color:#92400e;font-weight:600;text-transform:capitalize;">${dateObj}</span>
-            <span style="margin-left:auto;font-size:0.75rem;color:#9ca3af;">${Object.keys(planning.employes).length} employés · ${nbChantiers} chantiers</span>
+        <div style="padding:1rem 1.5rem;flex-shrink:0;border-bottom:1px solid #f3f4f6;">
+            <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.6rem 0.85rem;display:flex;align-items:center;gap:8px;margin-bottom:0.6rem;">
+                <i class="fas fa-calendar-day" style="color:#f59e0b;font-size:0.85rem;flex-shrink:0;"></i>
+                <span style="font-size:0.8rem;color:#92400e;font-weight:600;text-transform:capitalize;">${dateObj}</span>
+                <span style="margin-left:auto;font-size:0.75rem;color:#9ca3af;">${Object.keys(planning.employes).length} employé${Object.keys(planning.employes).length > 1 ? 's' : ''} · ${nbChantiers} chantier${nbChantiers > 1 ? 's' : ''}</span>
+            </div>
+            <div style="font-size:0.72rem;color:#6b7280;">
+                <i class="fas fa-lightbulb" style="color:#f59e0b;margin-right:4px;"></i>
+                Ajoutez des <strong>annotations</strong> (rouge) · Cochez <i class="fas fa-clipboard-check" style="color:#d97706;"></i> pour contrôle · <i class="fas fa-file-alt" style="color:#ea580c;margin-left:3px;"></i> pour créer une fiche
+            </div>
         </div>
-        <div style="font-size:0.72rem;color:#6b7280;margin-bottom:0.75rem;">
-            <i class="fas fa-lightbulb" style="color:#f59e0b;margin-right:4px;"></i>
-            Ajoutez des <strong>annotations</strong> (rouge) · Cochez <i class="fas fa-clipboard-check" style="color:#d97706;"></i> pour une visite de contrôle
+        <div id="review-body" style="overflow-y:auto;flex:1;padding:1rem 1.5rem;">
+            ${empHTML}
         </div>
-        <div id="review-body">${empHTML}</div>
     `;
 
     footer.innerHTML = `
@@ -5569,6 +5581,321 @@ window.importerPlanning = async function () {
 };
 
 // ── Interface review avec ajout d'annotations ──
+// ── Détecte si un chantier est un débarras / fin de chantier (pas copro) ──
+function estChantierFiche(nomChantier) {
+    return false;
+}
+
+// ── Normalise un nom de chantier en slug Firestore ──
+function slugFiche(nom) {
+    return nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ── Ouvre la modale de création/édition de fiche d'intervention ──
+async function ouvrirModaleFiche(nomChantier) {
+    const slug = slugFiche(nomChantier);
+    const ref = doc(db, 'fiches', slug);
+    const snap = await getDoc(ref);
+    const existante = snap.exists() ? snap.data() : null;
+
+    if (existante) {
+        const choix = await new Promise(resolve => {
+            const d = document.createElement('div');
+            d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center;padding:1rem;';
+            d.innerHTML = `
+                <div style="background:white;border-radius:16px;padding:1.5rem;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+                        <div style="width:40px;height:40px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-folder-open" style="color:#d97706;font-size:1.1rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;color:#111827;font-size:0.95rem;">Fiche existante</div>
+                            <div style="font-size:0.8rem;color:#6b7280;">${nomChantier}</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem;color:#374151;margin-bottom:1.25rem;">Une fiche d'intervention existe déjà pour ce chantier. Que souhaitez-vous faire ?</p>
+                    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                        <button id="choix-modifier" style="background:#f0fdf4;border:1.5px solid #bbf7d0;color:#065f46;border-radius:10px;padding:0.7rem;font-weight:700;cursor:pointer;font-size:0.88rem;">
+                            <i class="fas fa-edit" style="margin-right:6px;"></i>Modifier la fiche existante
+                        </button>
+                        <button id="choix-remplacer" style="background:#fff7ed;border:1.5px solid #fed7aa;color:#9a3412;border-radius:10px;padding:0.7rem;font-weight:700;cursor:pointer;font-size:0.88rem;">
+                            <i class="fas fa-sync-alt" style="margin-right:6px;"></i>Remplacer par une nouvelle fiche
+                        </button>
+                        <button id="choix-annuler" style="background:#f3f4f6;border:none;color:#6b7280;border-radius:10px;padding:0.7rem;font-weight:600;cursor:pointer;font-size:0.88rem;">
+                            Annuler
+                        </button>
+                    </div>
+                </div>`;
+            document.body.appendChild(d);
+            d.querySelector('#choix-modifier').onclick = () => { d.remove(); resolve('modifier'); };
+            d.querySelector('#choix-remplacer').onclick = () => { d.remove(); resolve('remplacer'); };
+            d.querySelector('#choix-annuler').onclick = () => { d.remove(); resolve(null); };
+        });
+        if (!choix) return;
+        _afficherFormFiche(nomChantier, slug, choix === 'modifier' ? existante : null);
+    } else {
+        _afficherFormFiche(nomChantier, slug, null);
+    }
+}
+
+// ── Formulaire de création/édition fiche ──
+function _afficherFormFiche(nomChantier, slug, existante) {
+    document.getElementById('modal-fiche-intervention')?.remove();
+
+    const tachesExistantes = (existante?.taches || []).map(t =>
+        `<div class="fiche-tache-row" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <input type="text" value="${t.label.replace(/"/g, '&quot;')}" placeholder="Tâche..."
+                style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:7px 10px;font-size:0.88rem;">
+            <button onclick="this.parentElement.remove()" style="background:#fee2e2;border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;color:#ef4444;font-size:0.9rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`
+    ).join('');
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-fiche-intervention';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10001;display:flex;align-items:center;justify-content:center;padding:0.5rem;';
+    modal.innerHTML = `
+        <div style="background:white;border-radius:16px;width:100%;max-width:680px;max-height:95vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.35);overflow:hidden;">
+
+            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#fff7ed,#ffedd5);border-bottom:1px solid #fed7aa;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+                        <i class="fas fa-file-alt" style="color:#ea580c;font-size:1rem;"></i>
+                        <span style="font-size:1rem;font-weight:700;color:#111827;">Fiche d'intervention</span>
+                    </div>
+                    <div style="font-size:0.8rem;color:#9a3412;font-weight:600;">${nomChantier}</div>
+                </div>
+                <button onclick="document.getElementById('modal-fiche-intervention').remove()"
+                    style="background:#f3f4f6;border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;color:#6b7280;font-size:1rem;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div style="padding:1.25rem 1.5rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1.25rem;">
+
+                <!-- Adresse -->
+                <div>
+                    <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:5px;">
+                        <i class="fas fa-map-marker-alt" style="color:#ea580c;margin-right:5px;"></i>Adresse
+                    </label>
+                    <input type="text" id="fiche-adresse" value="${existante?.adresse || ''}"
+                        placeholder="12 rue des Lilas, 74000 Annecy"
+                        style="width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 12px;font-size:0.88rem;box-sizing:border-box;">
+                </div>
+
+                <!-- Texte libre collé -->
+                <div>
+                    <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:5px;">
+                        <i class="fas fa-paste" style="color:#ea580c;margin-right:5px;"></i>Informations (devis, mail, notes…)
+                    </label>
+                    <textarea id="fiche-texte" rows="6"
+                        placeholder="Collez ici le contenu du devis, mail ou toute information utile…"
+                        style="width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 12px;font-size:0.85rem;resize:vertical;font-family:inherit;box-sizing:border-box;">${existante?.texteLibre || ''}</textarea>
+                </div>
+
+                <!-- Tâches -->
+                <div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <label style="font-size:0.8rem;font-weight:700;color:#374151;">
+                            <i class="fas fa-tasks" style="color:#ea580c;margin-right:5px;"></i>Tâches à réaliser
+                        </label>
+                        <button onclick="_ficheParseTaches()" style="background:#fff7ed;border:1px solid #fed7aa;color:#ea580c;border-radius:7px;padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+                            <i class="fas fa-magic" style="margin-right:4px;"></i>Extraire du texte
+                        </button>
+                    </div>
+                    <div id="fiche-taches-list">${tachesExistantes}</div>
+                    <button onclick="_ficheAjouterTache()" style="background:#f9fafb;border:1.5px dashed #d1d5db;color:#6b7280;border-radius:10px;padding:8px;width:100%;cursor:pointer;font-size:0.83rem;margin-top:4px;">
+                        <i class="fas fa-plus" style="margin-right:5px;"></i>Ajouter une tâche
+                    </button>
+                </div>
+
+                <!-- Photos -->
+                <div>
+                    <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:8px;">
+                        <i class="fas fa-images" style="color:#ea580c;margin-right:5px;"></i>Photos
+                    </label>
+                    <div id="fiche-photos-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+                        ${(existante?.photos || []).map((p, i) => `
+                            <div style="position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;" data-url="${p.url}" data-delete="${p.delete_url || ''}">
+                                <img src="${p.url}" style="width:100%;height:100%;object-fit:cover;">
+                                <button onclick="this.parentElement.remove()" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:20px;height:20px;color:white;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>`).join('')}
+                    </div>
+                    <label style="display:flex;align-items:center;gap:8px;background:#f9fafb;border:1.5px dashed #d1d5db;border-radius:10px;padding:10px 14px;cursor:pointer;">
+                        <i class="fas fa-camera" style="color:#ea580c;"></i>
+                        <span style="font-size:0.83rem;color:#6b7280;">Ajouter des photos</span>
+                        <input type="file" id="fiche-photos-input" accept="image/*" multiple style="display:none;" onchange="_fichePreviewPhotos(this)">
+                    </label>
+                    <div id="fiche-upload-progress" style="display:none;font-size:0.78rem;color:#6b7280;margin-top:6px;text-align:center;"></div>
+                </div>
+
+            </div>
+
+            <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;flex-shrink:0;background:white;">
+                <button onclick="_sauvegarderFiche('${slug}', '${nomChantier.replace(/'/g, "\\'")}')"
+                    style="flex:1;background:linear-gradient(135deg,#ea580c,#c2410c);color:white;border:none;border-radius:10px;padding:0.8rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <i class="fas fa-save"></i> Enregistrer la fiche
+                </button>
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+// ── Ajoute une ligne tâche vide ──
+window._ficheAjouterTache = function(label = '') {
+    const list = document.getElementById('fiche-taches-list');
+    const row = document.createElement('div');
+    row.className = 'fiche-tache-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px;';
+    row.innerHTML = `
+        <input type="text" value="${label.replace(/"/g, '&quot;')}" placeholder="Tâche..."
+            style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:7px 10px;font-size:0.88rem;">
+        <button onclick="this.parentElement.remove()" style="background:#fee2e2;border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;color:#ef4444;font-size:0.9rem;">
+            <i class="fas fa-times"></i>
+        </button>`;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+};
+
+// ── Extrait les tâches depuis le texte collé ──
+window._ficheParseTaches = function() {
+    const texte = document.getElementById('fiche-texte').value;
+    if (!texte.trim()) return;
+
+    const ignorer = /^(bonjour|cordialement|merci|objet|de\s*:|à\s*:|cc\s*:|les zones|en tenir compte|je rappelle|camille|gros|\s*$)/i;
+    const tachesMotsCles = /^(afonso|a tous|tissot|cornillon|vernis|smc|scm|cuvettes|dépose|achèvement|jardinières)/i;
+
+    const lignes = texte.split('\n').map(l => l.trim()).filter(l => l.length > 5);
+
+    const taches = [];
+    for (const ligne of lignes) {
+        if (ignorer.test(ligne)) continue;
+
+        // Lignes avec puce explicite
+        const matchPuce = ligne.match(/^[\*\-•·➢➤→✓✗]\s+(.+)/);
+        const matchNum  = ligne.match(/^\d+[\.\)]\s+(.+)/);
+
+        if (matchPuce) {
+            taches.push(matchPuce[1].trim());
+        } else if (matchNum) {
+            taches.push(matchNum[1].trim());
+        } else if (tachesMotsCles.test(ligne)) {
+            // Lignes sans puce mais qui commencent par un nom d'intervenant ou une action
+            taches.push(ligne);
+        } else if (ligne.length > 10 && ligne.length < 120 && !ligne.endsWith(':')) {
+            // Lignes courtes qui ressemblent à des tâches (pas des paragraphes)
+            taches.push(ligne);
+        }
+    }
+
+    if (!taches.length) {
+        alert('Aucune tâche détectée.');
+        return;
+    }
+
+    document.getElementById('fiche-taches-list').innerHTML = '';
+    taches.forEach(t => window._ficheAjouterTache(t));
+};
+
+// ── Preview photos sélectionnées ──
+window._fichePreviewPhotos = function(input) {
+    const preview = document.getElementById('fiche-photos-preview');
+    Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const div = document.createElement('div');
+            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;';
+            div.dataset.file = file.name;
+            div.dataset.newFile = '1';
+            div.innerHTML = `
+                <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" data-blob="${e.target.result}">
+                <button onclick="this.parentElement.remove()" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:20px;height:20px;color:white;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>`;
+            preview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+    input.value = '';
+};
+
+// ── Upload ImgBB ──
+async function _ficheUploadImgBB(base64) {
+    const IMGBB_KEY = '0cdd5d2bedcb6d1f2c838c4e5ecc1e59';
+    const data = base64.includes(',') ? base64.split(',')[1] : base64;
+    const form = new FormData();
+    form.append('image', data);
+    const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: form });
+    const j = await r.json();
+    return { url: j.data.url, delete_url: j.data.delete_url };
+}
+
+// ── Sauvegarde Firestore ──
+window._sauvegarderFiche = async function(slug, nomChantier) {
+    const btn = document.querySelector('#modal-fiche-intervention button[onclick*="_sauvegarderFiche"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
+
+    try {
+        const adresse = document.getElementById('fiche-adresse').value.trim();
+        const texteLibre = document.getElementById('fiche-texte').value.trim();
+
+        // Tâches
+        const taches = Array.from(document.querySelectorAll('#fiche-taches-list .fiche-tache-row input'))
+            .map(i => ({ label: i.value.trim(), faite: false }))
+            .filter(t => t.label);
+
+        // Photos — upload les nouvelles
+        const prog = document.getElementById('fiche-upload-progress');
+        const photoDivs = Array.from(document.querySelectorAll('#fiche-photos-preview > div'));
+        const photos = [];
+
+        for (let i = 0; i < photoDivs.length; i++) {
+            const div = photoDivs[i];
+            if (div.dataset.newFile) {
+                prog.style.display = 'block';
+                prog.textContent = `Upload photo ${i + 1}/${photoDivs.length}…`;
+                const blob = div.querySelector('img').dataset.blob;
+                const uploaded = await _ficheUploadImgBB(blob);
+                photos.push(uploaded);
+            } else {
+                photos.push({ url: div.dataset.url, delete_url: div.dataset.delete || '' });
+            }
+        }
+        prog.style.display = 'none';
+
+        const fiche = {
+            nomChantier,
+            slug,
+            adresse,
+            texteLibre,
+            taches,
+            photos,
+            updatedAt: new Date().toISOString()
+        };
+
+        await setDoc(doc(db, 'fiches', slug), fiche);
+
+        btn.innerHTML = '<i class="fas fa-check"></i> Enregistré !';
+        btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+        setTimeout(() => document.getElementById('modal-fiche-intervention')?.remove(), 800);
+
+    } catch (err) {
+        console.error('Erreur sauvegarde fiche:', err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Enregistrer la fiche';
+        alert('Erreur lors de l\'enregistrement.');
+    }
+};
+window.ouvrirModaleFiche = ouvrirModaleFiche;
+
+// ── Interface review avec ajout d'annotations ──
 function afficherInterfaceReview(planning) {
     document.getElementById('modal-review-planning')?.remove();
 
@@ -5597,6 +5924,8 @@ function afficherInterfaceReview(planning) {
             (emp.chantiers || []).forEach((c, ci) => {
                 const key = `${prenom}__${ci}`;
                 const binomeLabel = c.binomeDisplay || (c.binome ? (PRENOM_DISPLAY[c.binome] || c.binome.charAt(0).toUpperCase() + c.binome.slice(1)) : null);
+                const isFiche = estChantierFiche(c.nom);
+
                 chantiersHTML += `
                     <div style="border-bottom:1px solid #f3f4f6;padding:10px 0;" id="chantier-block-${key}">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
@@ -5604,8 +5933,14 @@ function afficherInterfaceReview(planning) {
                                 ${binomeLabel ? `<span style="font-size:0.7rem;background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 7px;font-weight:600;white-space:nowrap;flex-shrink:0;">avec ${binomeLabel}</span>` : ''}
                                 <span style="font-size:0.9rem;color:#111827;font-weight:700;">${c.nom}</span>
                             </div>
-                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
                                 <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                ${isFiche ? `
+                                <button onclick="ouvrirModaleFiche('${c.nom.replace(/'/g, "\\'")}')"
+                                    title="Fiche d'intervention"
+                                    style="background:#fff7ed;border:1.5px solid #fed7aa;color:#ea580c;border-radius:7px;padding:5px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap;">
+                                    <i class="fas fa-file-alt" style="margin-right:3px;"></i>Fiche
+                                </button>` : ''}
                                 <label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 9px;border-radius:7px;border:1px solid ${c.controle ? '#fbbf24' : '#e5e7eb'};background:${c.controle ? '#fef9c3' : '#f9fafb'};" title="Visite de contrôle qualité" id="controle-label-${key}">
                                     <input type="checkbox" ${c.controle ? 'checked' : ''}
                                         onchange="toggleControle('${prenom}',${ci},this.checked);const l=document.getElementById('controle-label-${key}');l.style.borderColor=this.checked?'#fbbf24':'#e5e7eb';l.style.background=this.checked?'#fef9c3':'#f9fafb';"
@@ -5659,7 +5994,7 @@ function afficherInterfaceReview(planning) {
 
             <div style="padding:0.75rem 1.5rem;background:#fffbeb;border-bottom:1px solid #fef3c7;flex-shrink:0;display:flex;align-items:center;gap:8px;">
                 <i class="fas fa-lightbulb" style="color:#f59e0b;font-size:0.85rem;flex-shrink:0;"></i>
-                <span style="font-size:0.78rem;color:#92400e;">Ajoutez des <strong>annotations</strong> (affichées en rouge) · Cochez <i class="fas fa-clipboard-check" style="color:#d97706;"></i> pour une visite de contrôle qualité</span>
+                <span style="font-size:0.78rem;color:#92400e;">Ajoutez des <strong>annotations</strong> · Cochez <i class="fas fa-clipboard-check" style="color:#d97706;"></i> pour contrôle qualité · <i class="fas fa-file-alt" style="color:#ea580c;"></i> pour créer une fiche d'intervention</span>
             </div>
 
             <div style="padding:1.25rem 1.5rem;overflow-y:auto;flex:1;" id="review-body">
@@ -5670,7 +6005,7 @@ function afficherInterfaceReview(planning) {
             </div>
 
             <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;flex-shrink:0;background:white;">
-                <button onclick="publierPlanningDepuisReview()"
+                <button onclick="publierPlanningDepuisReview()" id="btn-envoyer-planning"
                     style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.8rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
                     <i class="fas fa-paper-plane"></i> Envoyer le planning
                 </button>
