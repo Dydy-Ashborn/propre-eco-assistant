@@ -49,6 +49,10 @@
 - `showToastIndispo(nomJour, label, isSam)` : toast vert centré (bordure + icône verts), badge SAM/DIM rouge, auto-fermeture 7s.
 - `showToastSuppression(nomJour, label, isSam)` : même structure, icône `fa-calendar-minus`, message "Ta disponibilité est rétablie".
 - `showToastRefus(titre, messageHTML)` : toast rouge bloquant avec backdrop blur, icône `fa-ban`, pas d'auto-fermeture.
+- `showToastChantier(nomChantier)` : toast vert centré (bordure #6ee7b7, icône `fa-hard-hat`), affiche le nom du chantier, auto-fermeture 7s. Appelé après `sauvegarderModaleChantier()` en remplacement de `showNotification`.
+- `showToastSuppressionChantier()` : toast rouge centré (bordure #fca5a5, icône `fa-check` rouge), confirme la suppression, auto-fermeture 5s.
+- `deleteProject(index)` : remplace `confirm()` natif par une modale custom rouge (backdrop semi-transparent, boutons Annuler/Supprimer). Suppression effective uniquement si confirmé → `displaySavedProjects` + `showToastSuppressionChantier`. Erreurs gérées via `showNotification`.
+- `sauvegarderModaleChantier()` : appelle `showToastChantier(projectData.name)` après sauvegarde Firestore (plus de `showNotification` succès).
 ## devis.js & voir.js
 - `setupPhotoPreview()` : Gestion UI photos devis.
 - `uploadPhotos()` : Bulk upload ImgBB.

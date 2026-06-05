@@ -2268,13 +2268,54 @@
                 <span style="font-size:10px;font-weight:700;background:${isSam ? '#fee2e2' : '#fce7f3'};color:${isSam ? '#b91c1c' : '#9d174d'};border-radius:5px;padding:2px 8px;">${isSam ? 'SAM' : 'DIM'}</span>
                 <span style="font-size:13px;font-weight:600;color:#374151;">${nomJour} ${label}</span>
             </div>
-            <div style="font-size:12px;color:#9ca3af;margin-top:4px;">Les managers en seront informés</div>
+            <div style="font-size:12px;color:#9ca3af;margin-top:4px;">La direction sera informé</div>
             <button onclick="document.getElementById('toast-indispo').remove()" style="margin-top:14px;width:100%;background:#059669;color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
                 <i class="fas fa-check"></i> Compris
             </button>
         </div>`;
             document.body.appendChild(toast);
             setTimeout(() => toast?.remove(), 7000);
+        }
+
+        function showToastChantier(nomChantier) {
+            document.getElementById('toast-chantier')?.remove();
+            const toast = document.createElement('div');
+            toast.id = 'toast-chantier';
+            toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none;';
+            toast.innerHTML = `
+        <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #6ee7b7;pointer-events:auto;animation:toastPop .25s cubic-bezier(.34,1.56,.64,1) both;max-width:280px;width:90%;">
+            <div style="width:56px;height:56px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                <i class="fas fa-hard-hat" style="font-size:22px;color:#059669;"></i>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:4px;">Chantier enregistré</div>
+            <div style="font-size:13px;font-weight:600;color:#374151;margin:6px 0;">${nomChantier}</div>
+            <div style="font-size:12px;color:#9ca3af;margin-top:4px;">Les informations ont bien été sauvegardées</div>
+            <button onclick="document.getElementById('toast-chantier').remove()" style="margin-top:14px;width:100%;background:#059669;color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
+                <i class="fas fa-check"></i> Compris
+            </button>
+        </div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast?.remove(), 7000);
+        }
+
+        function showToastSuppressionChantier() {
+            document.getElementById('toast-suppression-chantier')?.remove();
+            const toast = document.createElement('div');
+            toast.id = 'toast-suppression-chantier';
+            toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none;';
+            toast.innerHTML = `
+        <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #fca5a5;pointer-events:auto;animation:toastPop .25s cubic-bezier(.34,1.56,.64,1) both;max-width:280px;width:90%;">
+            <div style="width:56px;height:56px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                <i class="fas fa-check" style="font-size:22px;color:#ef4444;"></i>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:4px;">Chantier supprimé</div>
+            <div style="font-size:12px;color:#9ca3af;margin-top:4px;">Le chantier a bien été retiré de la semaine</div>
+            <button onclick="document.getElementById('toast-suppression-chantier').remove()" style="margin-top:14px;width:100%;background:#ef4444;color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
+                <i class="fas fa-check"></i> OK
+            </button>
+        </div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast?.remove(), 5000);
         }
         async function supprimerIndispo(dateStr) {
             const [y, m, d] = dateStr.split('-').map(Number);
@@ -2397,7 +2438,7 @@
                 }
 
                 await weekRef.set({ projects, lastUpdate: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-                showNotification('Chantier enregistré !', 'success');
+                showToastChantier(projectData.name);
                 displaySavedProjects(projects);
                 fermerModaleChantier();
             } catch (e) {
@@ -2912,22 +2953,54 @@
         }
 
         async function deleteProject(index) {
-            if (!confirm('Êtes-vous sûr de vouloir supprimer ce chantier ?')) return;
-            const selectedWeek = document.getElementById('weekInput').value;
-            if (!selectedWeek) { showNotification('Veuillez sélectionner une semaine', 'warning'); return; }
-            showLoading(true);
-            try {
-                const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
-                const weekDoc = await weekRef.get();
-                if (weekDoc.exists && weekDoc.data().projects) {
-                    const projects = weekDoc.data().projects;
-                    projects.splice(index, 1);
-                    await weekRef.set({ projects: projects }, { merge: true });
-                    showNotification('Chantier supprimé !', 'success');
-                    displaySavedProjects(projects);
+            // Modale de confirmation custom
+            await new Promise(resolve => {
+                document.getElementById('toast-confirm-delete')?.remove();
+                const toast = document.createElement('div');
+                toast.id = 'toast-confirm-delete';
+                toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;background:rgba(0,0,0,0.4);';
+                toast.innerHTML = `
+            <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #fca5a5;max-width:280px;width:90%;animation:toastPop .25s cubic-bezier(.34,1.56,.64,1) both;">
+                <div style="width:56px;height:56px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                    <i class="fas fa-trash" style="font-size:22px;color:#ef4444;"></i>
+                </div>
+                <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:6px;">Supprimer le chantier ?</div>
+                <div style="font-size:12px;color:#9ca3af;margin-bottom:18px;">Cette action est irréversible.</div>
+                <div style="display:flex;gap:10px;">
+                    <button id="btn-annuler-delete" style="flex:1;background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
+                        Annuler
+                    </button>
+                    <button id="btn-confirmer-delete" style="flex:1;background:#ef4444;color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </div>
+            </div>`;
+                document.body.appendChild(toast);
+                document.getElementById('btn-annuler-delete').onclick = () => { toast.remove(); resolve(false); };
+                document.getElementById('btn-confirmer-delete').onclick = () => { toast.remove(); resolve(true); };
+            }).then(async confirmed => {
+                if (!confirmed) return;
+
+                const selectedWeek = document.getElementById('weekInput').value;
+                if (!selectedWeek) { showNotification('Veuillez sélectionner une semaine', 'warning'); return; }
+                showLoading(true);
+                try {
+                    const weekRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(selectedWeek);
+                    const weekDoc = await weekRef.get();
+                    if (weekDoc.exists && weekDoc.data().projects) {
+                        const projects = weekDoc.data().projects;
+                        projects.splice(index, 1);
+                        await weekRef.set({ projects }, { merge: true });
+                        displaySavedProjects(projects);
+                        showToastSuppressionChantier();
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    showNotification('Erreur lors de la suppression', 'error');
+                } finally {
+                    showLoading(false);
                 }
-            } catch (error) { console.error('Erreur:', error); showNotification('Erreur lors de la suppression', 'error'); }
-            finally { showLoading(false); }
+            });
         }
     </script>
 

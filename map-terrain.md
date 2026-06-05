@@ -42,3 +42,9 @@
 - `showMessage` remplacé par `showNotification` dans le catch de `loadProperties`.
 - `buildChantiersHTML(emp, allEmployes, employeId)` : Rendu chantiers d'un employé. 3 groupes : (1) chantiers purement solo, (2) chantiers sans binôme déclaré mais où d'autres employés ont le même chantier → détectés automatiquement via `getCollègues()`, label "Avec A, B…" (trinôme+), (3) chantiers avec binôme déclaré explicitement. `allEmployes` = `data.employes` du doc Firestore passé en param.
 - `ouvrirProchainsJours()` : Refactorisé — helpers `fmtH`, `capFirst`, `fmtDate`, `renderLigne`, `renderGroupe`, `getCollègues`, `buildBody` déclarés en scope local. `buildBody` applique la même logique trinôme que `buildChantiersHTML`. Modale créée une seule fois, réutilisée si déjà présente.
+
+## Safe area iOS (base.css)
+- `.header` : `padding-top: env(safe-area-inset-top)` — évite l'encoche iPhone.
+- `.bottom-nav` : `padding-bottom: env(safe-area-inset-bottom)` + `height: calc(64px + env(safe-area-inset-bottom))`.
+- `.speed-dial` : `bottom: calc(80px + env(safe-area-inset-bottom))` — FAB speed dial au-dessus de la nav safe area.
+- Nécessite `viewport-fit=cover` dans le meta viewport (déjà présent dans tous les HTML).
