@@ -5295,7 +5295,7 @@ window.ouvrirModalImportPlanning = function () {
 
     const textarea = document.getElementById('planning-paste-zone');
 
- const formaterTexte = (texte) => texte;
+    const formaterTexte = (texte) => texte;
 
     textarea.addEventListener('paste', () => {
         setTimeout(() => {
@@ -5748,7 +5748,7 @@ function _afficherFormFiche(nomChantier, slug, existante) {
 }
 
 // ── Ajoute une ligne tâche vide ──
-window._ficheAjouterTache = function(label = '') {
+window._ficheAjouterTache = function (label = '') {
     const list = document.getElementById('fiche-taches-list');
     const row = document.createElement('div');
     row.className = 'fiche-tache-row';
@@ -5764,7 +5764,7 @@ window._ficheAjouterTache = function(label = '') {
 };
 
 // ── Extrait les tâches depuis le texte collé ──
-window._ficheParseTaches = function() {
+window._ficheParseTaches = function () {
     const texte = document.getElementById('fiche-texte').value;
     if (!texte.trim()) return;
 
@@ -5779,7 +5779,7 @@ window._ficheParseTaches = function() {
 
         // Lignes avec puce explicite
         const matchPuce = ligne.match(/^[\*\-•·➢➤→✓✗]\s+(.+)/);
-        const matchNum  = ligne.match(/^\d+[\.\)]\s+(.+)/);
+        const matchNum = ligne.match(/^\d+[\.\)]\s+(.+)/);
 
         if (matchPuce) {
             taches.push(matchPuce[1].trim());
@@ -5804,7 +5804,7 @@ window._ficheParseTaches = function() {
 };
 
 // ── Preview photos sélectionnées ──
-window._fichePreviewPhotos = function(input) {
+window._fichePreviewPhotos = function (input) {
     const preview = document.getElementById('fiche-photos-preview');
     Array.from(input.files).forEach(file => {
         const reader = new FileReader();
@@ -5837,7 +5837,7 @@ async function _ficheUploadImgBB(base64) {
 }
 
 // ── Sauvegarde Firestore ──
-window._sauvegarderFiche = async function(slug, nomChantier) {
+window._sauvegarderFiche = async function (slug, nomChantier) {
     const btn = document.querySelector('#modal-fiche-intervention button[onclick*="_sauvegarderFiche"]');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
@@ -6176,8 +6176,8 @@ window.toggleControle = function (prenom, ci, checked) {
 function afficherPopupConflitIndispo(conflits, planningDate) {
     document.getElementById('modal-conflit-indispo')?.remove();
 
-    const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-    const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
     const nomJour = jours[planningDate.getDay()];
     const labelDate = `${nomJour} ${planningDate.getDate()} ${mois[planningDate.getMonth()]} ${planningDate.getFullYear()}`;
 
@@ -6197,8 +6197,8 @@ function afficherPopupConflitIndispo(conflits, planningDate) {
             <div style="padding:1.5rem;">
                 <p style="color:#374151;font-size:0.9rem;line-height:1.6;margin-bottom:1rem;">
                     ${conflits.length === 1
-                        ? `<strong>${conflits[0]}</strong> a signalé ne pas être disponible ce jour.`
-                        : `Les employés suivants ont signalé ne pas être disponibles ce jour :`}
+            ? `<strong>${conflits[0]}</strong> a signalé ne pas être disponible ce jour.`
+            : `Les employés suivants ont signalé ne pas être disponibles ce jour :`}
                 </p>
                 ${conflits.length > 1 ? `
                     <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;">
@@ -6250,7 +6250,7 @@ window.publierPlanningDepuisReview = async function () {
         const dayOfWeek = planningDate.getDay(); // 0=dim, 6=sam
 
         if (dayOfWeek === 0 || dayOfWeek === 6) {
-         // Utiliser getDoc/doc déjà importés en haut de dashboard.js
+            // Utiliser getDoc/doc déjà importés en haut de dashboard.js
             const conflits = [];
 
             await Promise.all(
@@ -6265,7 +6265,7 @@ window.publierPlanningDepuisReview = async function () {
                                 conflits.push(nom);
                             }
                         }
-                    } catch(e) {
+                    } catch (e) {
                         console.warn(`Impossible de vérifier indispos pour ${prenom}`, e);
                     }
                 })
@@ -6492,7 +6492,7 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
             moisNum >= 6 && moisNum <= 8 ? '☀️' :
                 moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
 
-const titre = 'Propre Eco Assistant';
+        const titre = 'Propre Eco Assistant';
         const corps = isUpdate
             ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
             : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
@@ -6538,7 +6538,7 @@ async function chargerBandeauIndispos() {
 
     bandeau.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:13px;padding:4px 0;"><i class="fas fa-spinner fa-spin"></i> Chargement des indisponibilités…</div>`;
 
-    const today = new Date(); today.setHours(0,0,0,0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
     const limite = new Date(today); limite.setDate(today.getDate() + 30);
 
     try {
@@ -6554,13 +6554,13 @@ async function chargerBandeauIndispos() {
                 const snap = await getDoc(indispoRef);
                 if (!snap.exists() || !Array.isArray(snap.data().dates)) return;
                 snap.data().dates.forEach(dateStr => {
-                    const [y,m,d] = dateStr.split('-').map(Number);
-                    const dt = new Date(y, m-1, d);
+                    const [y, m, d] = dateStr.split('-').map(Number);
+                    const dt = new Date(y, m - 1, d);
                     if (dt >= today && dt <= limite) {
                         resultats.push({ dateStr, nom, dt });
                     }
                 });
-            } catch(e) { /* silencieux */ }
+            } catch (e) { /* silencieux */ }
         }));
 
         if (resultats.length === 0) {
@@ -6579,11 +6579,11 @@ async function chargerBandeauIndispos() {
             parDate[dateStr].noms.push(nom);
         });
 
-        const joursStr = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-        const moisStr = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+        const joursStr = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        const moisStr = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'août', 'sep', 'oct', 'nov', 'déc'];
 
         const cardsHTML = Object.entries(parDate)
-            .sort(([a],[b]) => a.localeCompare(b))
+            .sort(([a], [b]) => a.localeCompare(b))
             .map(([dateStr, { dt, noms }]) => {
                 const isSam = dt.getDay() === 6;
                 const labelJour = `${joursStr[dt.getDay()]} ${dt.getDate()} ${moisStr[dt.getMonth()]}`;
@@ -6618,7 +6618,7 @@ async function chargerBandeauIndispos() {
                 ${cardsHTML}
             </div>`;
 
-    } catch(e) {
+    } catch (e) {
         console.error('Erreur bandeau indispos:', e);
         bandeau.innerHTML = `<div style="color:#ef4444;font-size:13px;">Erreur de chargement des indisponibilités.</div>`;
     }
@@ -6674,7 +6674,7 @@ function getPlanningFiltered() {
         const dateFr = norm(new Date(y, m - 1, d).toLocaleDateString('fr-FR', {
             day: 'numeric', month: 'long', year: 'numeric'
         }));
-        const dateCompact = `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`;
+        const dateCompact = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}`;
         if (dateFr.includes(term) || data.date.includes(term) || dateCompact.includes(term)) return true;
 
         // Recherche par prénom employé
@@ -6699,7 +6699,11 @@ function renderPlanningList() {
     const paginationEl = document.getElementById('planning-pagination');
     if (!container) return;
 
-    const filtered = getPlanningFiltered();
+    const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
+    const allFiltered = getPlanningFiltered();
+    const todayItems = allFiltered.filter(d => d.date === todayStr);
+    const restItems = allFiltered.filter(d => d.date !== todayStr);
+    const filtered = [...todayItems, ...restItems];
     const total = filtered.length;
     const totalPages = Math.ceil(total / PLANNING_PER_PAGE);
     const start = (planningPage - 1) * PLANNING_PER_PAGE;
@@ -6745,7 +6749,7 @@ function renderPlanningList() {
         const isToday = date === new Date().toISOString().split('T')[0];
         const pillBg = isToday ? '#10b981' : '#6b7280';
 
-       const empEntries = Object.entries(data.employes || {}).filter(([prenom, emp]) => {
+        const empEntries = Object.entries(data.employes || {}).filter(([prenom, emp]) => {
             if (!planningSearchTerm) return true;
             const displayNorm = normalizeNom(emp.display || prenom);
             return displayNorm.includes(planningSearchTerm) ||
