@@ -40,6 +40,9 @@ body {
     position: sticky;
     top: 0;
     z-index: var(--z-sticky);
+    /* iOS PWA : étend le header jusqu'en haut de l'écran */
+    margin-top: calc(-1 * env(safe-area-inset-top));
+    padding-top: calc(1rem + env(safe-area-inset-top));
 }
 
 .header-content {
