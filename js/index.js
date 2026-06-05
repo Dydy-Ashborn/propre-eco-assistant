@@ -423,6 +423,7 @@ clearBtn.addEventListener('click', function () {
 
 
 
+
 // Procédures - Modal moderne
 window.showProcedure = function (propertyName) {
   const procedure = procedures[propertyName];

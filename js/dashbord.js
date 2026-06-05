@@ -5837,6 +5837,56 @@ window.toggleControle = function (prenom, ci, checked) {
         if (bIcon) bIcon.style.color = checked ? '#d97706' : '#9ca3af';
     });
 };
+
+function afficherPopupConflitIndispo(conflits, planningDate) {
+    document.getElementById('modal-conflit-indispo')?.remove();
+
+    const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    const nomJour = jours[planningDate.getDay()];
+    const labelDate = `${nomJour} ${planningDate.getDate()} ${mois[planningDate.getMonth()]} ${planningDate.getFullYear()}`;
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-conflit-indispo';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);';
+
+    modal.innerHTML = `
+        <div style="background:white;border-radius:20px;max-width:420px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;">
+            <div style="background:linear-gradient(135deg,#ef4444,#dc2626);padding:1.5rem;text-align:center;">
+                <div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                    <i class="fas fa-calendar-xmark" style="color:white;font-size:1.5rem;"></i>
+                </div>
+                <div style="color:white;font-size:1.1rem;font-weight:700;">Conflit d'indisponibilité</div>
+                <div style="color:rgba(255,255,255,0.85);font-size:0.82rem;margin-top:4px;">${labelDate}</div>
+            </div>
+            <div style="padding:1.5rem;">
+                <p style="color:#374151;font-size:0.9rem;line-height:1.6;margin-bottom:1rem;">
+                    ${conflits.length === 1
+                        ? `<strong>${conflits[0]}</strong> a signalé ne pas être disponible ce jour.`
+                        : `Les employés suivants ont signalé ne pas être disponibles ce jour :`}
+                </p>
+                ${conflits.length > 1 ? `
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;">
+                        ${conflits.map(nom => `
+                            <div style="display:flex;align-items:center;gap:8px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;">
+                                <i class="fas fa-user-xmark" style="color:#b91c1c;font-size:0.85rem;flex-shrink:0;"></i>
+                                <span style="font-size:0.9rem;font-weight:600;color:#b91c1c;">${nom}</span>
+                            </div>`).join('')}
+                    </div>` : ''}
+                <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 12px;margin-bottom:1.25rem;display:flex;gap:8px;align-items:flex-start;">
+                    <i class="fas fa-triangle-exclamation" style="color:#d97706;flex-shrink:0;margin-top:1px;"></i>
+                    <span style="font-size:0.82rem;color:#92400e;line-height:1.5;">Retirez ${conflits.length > 1 ? 'ces employés' : 'cet employé'} du planning ou contactez-${conflits.length > 1 ? 'les' : 'le/la'} pour confirmer la disponibilité avant de publier.</span>
+                </div>
+                <button onclick="document.getElementById('modal-conflit-indispo').remove()"
+                    style="width:100%;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;border-radius:10px;padding:0.85rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <i class="fas fa-arrow-left"></i> Retour au planning
+                </button>
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+}
+
 window.publierPlanningDepuisReview = async function () {
     if (!planningEnCours) return;
 
@@ -5856,6 +5906,42 @@ window.publierPlanningDepuisReview = async function () {
             planningEnCours.employes[prenom].chantiers[ci].annotations[ai] = input.value;
         }
     });
+
+    // ── Vérification indisponibilités week-end ──
+    const dateStr = planningEnCours.date; // 'YYYY-MM-DD'
+    if (dateStr) {
+        const [py, pm, pd] = dateStr.split('-').map(Number);
+        const planningDate = new Date(py, pm - 1, pd);
+        const dayOfWeek = planningDate.getDay(); // 0=dim, 6=sam
+
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+         // Utiliser getDoc/doc déjà importés en haut de dashboard.js
+            const conflits = [];
+
+            await Promise.all(
+                Object.entries(planningEnCours.employes).map(async ([prenom, emp]) => {
+                    if (emp.absence) return;
+                    try {
+                        const indispoRef = doc(db, 'employees', prenom, 'indisponibilites', 'weekends');
+                        const snap = await getDoc(indispoRef);
+                        if (snap.exists() && Array.isArray(snap.data().dates)) {
+                            if (snap.data().dates.includes(dateStr)) {
+                                const nom = emp.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
+                                conflits.push(nom);
+                            }
+                        }
+                    } catch(e) {
+                        console.warn(`Impossible de vérifier indispos pour ${prenom}`, e);
+                    }
+                })
+            );
+
+            if (conflits.length > 0) {
+                afficherPopupConflitIndispo(conflits, planningDate);
+                return; // BLOQUANT — on n'envoie pas
+            }
+        }
+    }
 
     // Animation bouton
     const btn = document.getElementById('btn-envoyer-planning');
@@ -6111,6 +6197,97 @@ let planningPage = 1;
 const PLANNING_PER_PAGE = 7;
 let planningSearchTerm = '';
 
+async function chargerBandeauIndispos() {
+    const bandeau = document.getElementById('bandeau-indispos');
+    if (!bandeau) return;
+
+    bandeau.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:13px;padding:4px 0;"><i class="fas fa-spinner fa-spin"></i> Chargement des indisponibilités…</div>`;
+
+    const today = new Date(); today.setHours(0,0,0,0);
+    const limite = new Date(today); limite.setDate(today.getDate() + 30);
+
+    try {
+        // Charger tous les employés
+        const empSnap = await getDocs(collection(db, 'employees'));
+        const resultats = []; // { dateStr, nom, jour }
+
+        await Promise.all(empSnap.docs.map(async empDoc => {
+            const prenom = empDoc.id;
+            const nom = PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
+            try {
+                const indispoRef = doc(db, 'employees', prenom, 'indisponibilites', 'weekends');
+                const snap = await getDoc(indispoRef);
+                if (!snap.exists() || !Array.isArray(snap.data().dates)) return;
+                snap.data().dates.forEach(dateStr => {
+                    const [y,m,d] = dateStr.split('-').map(Number);
+                    const dt = new Date(y, m-1, d);
+                    if (dt >= today && dt <= limite) {
+                        resultats.push({ dateStr, nom, dt });
+                    }
+                });
+            } catch(e) { /* silencieux */ }
+        }));
+
+        if (resultats.length === 0) {
+            bandeau.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0;">
+                    <i class="fas fa-calendar-check" style="color:#10b981;font-size:15px;flex-shrink:0;"></i>
+                    <span style="font-size:13px;color:#065f46;font-weight:500;">Aucune indisponibilité déclarée dans les 30 prochains jours.</span>
+                </div>`;
+            return;
+        }
+
+        // Grouper par date
+        const parDate = {};
+        resultats.forEach(({ dateStr, nom, dt }) => {
+            if (!parDate[dateStr]) parDate[dateStr] = { dt, noms: [] };
+            parDate[dateStr].noms.push(nom);
+        });
+
+        const joursStr = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+        const moisStr = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+
+        const cardsHTML = Object.entries(parDate)
+            .sort(([a],[b]) => a.localeCompare(b))
+            .map(([dateStr, { dt, noms }]) => {
+                const isSam = dt.getDay() === 6;
+                const labelJour = `${joursStr[dt.getDay()]} ${dt.getDate()} ${moisStr[dt.getMonth()]}`;
+                const badgeColor = isSam ? '#b91c1c' : '#9d174d';
+                const badgeBg = isSam ? '#fee2e2' : '#fce7f3';
+                const badgeLabel = isSam ? 'SAM' : 'DIM';
+                return `
+                    <div style="display:flex;align-items:flex-start;gap:10px;background:#fff;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 14px;flex-shrink:0;min-width:180px;max-width:240px;">
+                        <div style="flex-shrink:0;margin-top:1px;">
+                            <span style="font-size:10px;font-weight:700;background:${badgeBg};color:${badgeColor};border-radius:5px;padding:2px 7px;display:block;text-align:center;margin-bottom:4px;">${badgeLabel}</span>
+                            <div style="font-size:12px;font-weight:700;color:#111827;white-space:nowrap;">${labelJour}</div>
+                        </div>
+                        <div style="flex:1;min-width:0;border-left:2px solid #fca5a5;padding-left:10px;">
+                            ${noms.map(n => `
+                                <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+                                    <i class="fas fa-user-xmark" style="color:#b91c1c;font-size:10px;flex-shrink:0;"></i>
+                                    <span style="font-size:12px;font-weight:600;color:#b91c1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</span>
+                                </div>`).join('')}
+                        </div>
+                    </div>`;
+            }).join('');
+
+        bandeau.innerHTML = `
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <div style="width:28px;height:28px;background:#fef2f2;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-calendar-xmark" style="color:#b91c1c;font-size:13px;"></i>
+                </div>
+                <span style="font-size:13px;font-weight:700;color:#111827;">Indisponibilités — 30 prochains jours</span>
+                <span style="font-size:11px;background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;border-radius:20px;padding:2px 9px;font-weight:600;">${resultats.length} déclaration${resultats.length > 1 ? 's' : ''}</span>
+            </div>
+            <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;scrollbar-color:#fca5a5 transparent;">
+                ${cardsHTML}
+            </div>`;
+
+    } catch(e) {
+        console.error('Erreur bandeau indispos:', e);
+        bandeau.innerHTML = `<div style="color:#ef4444;font-size:13px;">Erreur de chargement des indisponibilités.</div>`;
+    }
+}
 async function loadPlanning() {
     const container = document.getElementById('planning-list-container');
     if (!container) return;
@@ -6470,6 +6647,7 @@ window.supprimerPlanning = async function (date) {
 function initPlanningTab() {
     planningEnCours = null;
     loadPlanning();
+    chargerBandeauIndispos();
 }
 window.hideFacturationView = hideFacturationView;
 window.loadFacturationData = loadFacturationData;

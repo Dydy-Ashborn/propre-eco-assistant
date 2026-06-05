@@ -474,47 +474,52 @@
             </div>
 
             <!-- Section Planning -->
-           <!-- Section Planning -->
-<div id="section-planning" class="card-section" style="display:none;">
-    <div class="card-section-header">
-        <h2 class="card-section-title">
-            <i class="fas fa-calendar-alt"></i>
-            Planning
-        </h2>
-        <button onclick="ouvrirModalImportPlanning()"
-            style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:12px;padding:0.7rem 1.25rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;box-shadow:0 4px 12px rgba(16,185,129,0.3);transition:transform 0.15s,box-shadow 0.15s;"
-            onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 18px rgba(16,185,129,0.45)'"
-            onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(16,185,129,0.3)'">
-            <i class="fas fa-paper-plane"></i> Envoyer un planning
-        </button>
-    </div>
+            <!-- Section Planning -->
+            <div id="section-planning" class="card-section" style="display:none;">
+                <div class="card-section-header">
+                    <h2 class="card-section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Planning
+                    </h2>
+                    <button onclick="ouvrirModalImportPlanning()"
+                        style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:12px;padding:0.7rem 1.25rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;box-shadow:0 4px 12px rgba(16,185,129,0.3);transition:transform 0.15s,box-shadow 0.15s;"
+                        onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 18px rgba(16,185,129,0.45)'"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(16,185,129,0.3)'">
+                        <i class="fas fa-paper-plane"></i> Envoyer un planning
+                    </button>
+                </div>
+                <!-- Bandeau indisponibilités -->
+                <div id="bandeau-indispos"
+                    style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:14px 16px;margin-bottom:1rem;">
+                    <div style="display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:13px;">
+                        <i class="fas fa-spinner fa-spin"></i> Chargement des indisponibilités…
+                    </div>
+                </div>
+                <!-- Filtres -->
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+                    <div class="search-bar" style="flex:1;min-width:200px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="planning-search" placeholder="Rechercher un chantier, un employé..."
+                            oninput="rechercherPlanning(this.value)">
+                    </div>
+                    <select id="planning-filter-mois" class="filter-input" style="max-width:180px;"
+                        onchange="filtrerPlanningParMois(this.value)">
+                        <option value="">Tous les mois</option>
+                    </select>
+                    <button id="btn-supprimer-mois" onclick="supprimerPlanningsMois()"
+                        style="display:none;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;align-items:center;gap:6px;">
+                        <i class="fas fa-trash"></i> Supprimer ce mois
+                    </button>
+                </div>
 
-    <!-- Filtres -->
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
-        <div class="search-bar" style="flex:1;min-width:200px;">
-            <i class="fas fa-search"></i>
-            <input type="text" id="planning-search"
-                placeholder="Rechercher un chantier, un employé..."
-                oninput="rechercherPlanning(this.value)">
-        </div>
-        <select id="planning-filter-mois" class="filter-input" style="max-width:180px;"
-            onchange="filtrerPlanningParMois(this.value)">
-            <option value="">Tous les mois</option>
-        </select>
-        <button id="btn-supprimer-mois" onclick="supprimerPlanningsMois()"
-            style="display:none;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;align-items:center;gap:6px;">
-            <i class="fas fa-trash"></i> Supprimer ce mois
-        </button>
-    </div>
-
-    <!-- Liste -->
-    <div id="planning-list-container">
-        <div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;">
-            <i class="fas fa-spinner fa-spin"></i> Chargement...
-        </div>
-    </div>
-    <div id="planning-pagination" style="display:none;margin-top:1rem;"></div>
-</div>
+                <!-- Liste -->
+                <div id="planning-list-container">
+                    <div style="text-align:center;padding:2rem;color:#6b7280;font-size:14px;">
+                        <i class="fas fa-spinner fa-spin"></i> Chargement...
+                    </div>
+                </div>
+                <div id="planning-pagination" style="display:none;margin-top:1rem;"></div>
+            </div>
             <div id="section-copro" class="card-section" style="display: none;">
                 <div class="card-section-header">
                     <h2 class="card-section-title">

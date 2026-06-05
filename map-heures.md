@@ -24,6 +24,31 @@
 - **`displaySavedProjects()`** : chaque chantier = flex row inline — nom+date à gauche, total pill, btn Modifier, btn corbeille.
 - **CSS clés** : `#weeklyTable tbody tr` → `display:flex`, 4 cols fixes. `.row-today::before` → barre verte 3px. `.day-date-sub` → date JJ/MM sous le nom du jour. Tous les styles hardcodés (pas de CSS variables mode sombre).
 
+## heures.html — Indisponibilités week-end
+- Bouton rouge "Mes indisponibilités week-end" sous le bouton vacances → ouvre `#modaleIndispo` (bottom-sheet).
+- `ouvrirModaleIndispo()` : ouvre la modale, pré-remplit le date picker sur le prochain samedi, appelle `chargerIndispos()`.
+- `chargerIndispos()` : lit `employees/{id}/indisponibilites/weekends` (champ `dates: string[]`). Filtre les dates passées. Trie et stocke dans `_indispoList`.
+- `renderIndispoList()` : affiche chaque date avec badge SAM/DIM coloré + bouton suppression.
+- `ajouterIndispo()` : valide que la date est sam/dim + future + non dupliquée → push + `set()` Firestore.
+- `supprimerIndispo(dateStr)` : splice + `set()` Firestore.
+## heures.html — Indisponibilités week-end
+- Bouton rouge "Mes indisponibilités week-end" sous le bouton vacances → ouvre `#modaleIndispo` (bottom-sheet).
+- Firestore : `employees/{id}/indisponibilites/weekends` — champ `dates: string[]` (dates ISO `YYYY-MM-DD`).
+- `ouvrirModaleIndispo()` : ouvre la modale, pré-remplit le date picker sur le prochain samedi, appelle `chargerIndispos()`.
+- `chargerIndispos()` : lit Firestore, filtre les dates passées, trie et stocke dans `_indispoList[]`.
+- `renderIndispoList()` : affiche chaque date avec badge SAM/DIM coloré + bouton suppression.
+- `ajouterIndispo()` : valide dans l'ordre —
+  1. Date obligatoire + sam/dim uniquement.
+  2. Date future uniquement.
+  3. Délai minimum 7 jours avant la date (sinon `showToastRefus`).
+  4. Doublon exact interdit.
+  5. Quota : max 2 week-ends par mois calendaire. Sam + dim du même week-end (même semaine ISO) = 1 seul week-end. Nouveau week-end bloqué si `semainesDejaDeclarees.size >= 2` (sinon `showToastRefus`).
+  6. Push + `set()` Firestore → `showToastIndispo`.
+- `supprimerIndispo(dateStr)` : splice + `set()` Firestore → `showToastSuppression`.
+- `getNumSemaine(date)` : retourne `"YYYY-N"` (semaine ISO) — utilisé pour dédupliquer sam+dim du même week-end dans le quota.
+- `showToastIndispo(nomJour, label, isSam)` : toast vert centré (bordure + icône verts), badge SAM/DIM rouge, auto-fermeture 7s.
+- `showToastSuppression(nomJour, label, isSam)` : même structure, icône `fa-calendar-minus`, message "Ta disponibilité est rétablie".
+- `showToastRefus(titre, messageHTML)` : toast rouge bloquant avec backdrop blur, icône `fa-ban`, pas d'auto-fermeture.
 ## devis.js & voir.js
 - `setupPhotoPreview()` : Gestion UI photos devis.
 - `uploadPhotos()` : Bulk upload ImgBB.

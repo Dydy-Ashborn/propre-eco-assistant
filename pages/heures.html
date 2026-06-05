@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Mes heures - Propre Eco</title>
 
     <link rel="icon" type="image/png" href="../img/logo.png" />
@@ -24,41 +25,49 @@
 
     <style>
         /* ─── RESET & BASE ─── */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --green:       #0d9e6e;
-            --green-dark:  #0d6e4f;
-            --green-mid:   #1ab883;
-            --green-light: #e8f8f2;
-            --green-border:#9fe1cb;
-            --purple:      #5b21b6;
-            --purple-light:#ede9fe;
-            --purple-border:#c4b5fd;
-            --amber-light: #fffbeb;
-            --amber-border:#fcd34d;
-            --amber-text:  #92400e;
-            --red-light:   #fef2f2;
-            --red-border:  #fca5a5;
-            --red-text:    #b91c1c;
-            --bg:          #f4f6f8;
-            --surface:     #ffffff;
-            --surface2:    #f9fafb;
-            --border:      #e5e7eb;
-            --border2:     #d1d5db;
-            --text:        #111827;
-            --text2:       #374151;
-            --text3:       #6b7280;
-            --text4:       #9ca3af;
-            --radius-sm:   8px;
-            --radius-md:   10px;
-            --radius-lg:   12px;
-            --radius-xl:   16px;
-            --shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-            --shadow-md:   0 4px 12px rgba(0,0,0,.08);
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        html { -webkit-text-size-adjust: 100%; }
+        :root {
+            --green: #0d9e6e;
+            --green-dark: #0d6e4f;
+            --green-mid: #1ab883;
+            --green-light: #e8f8f2;
+            --green-border: #9fe1cb;
+            --purple: #5b21b6;
+            --purple-light: #ede9fe;
+            --purple-border: #c4b5fd;
+            --amber-light: #fffbeb;
+            --amber-border: #fcd34d;
+            --amber-text: #92400e;
+            --red-light: #fef2f2;
+            --red-border: #fca5a5;
+            --red-text: #b91c1c;
+            --bg: #f4f6f8;
+            --surface: #ffffff;
+            --surface2: #f9fafb;
+            --border: #e5e7eb;
+            --border2: #d1d5db;
+            --text: #111827;
+            --text2: #374151;
+            --text3: #6b7280;
+            --text4: #9ca3af;
+            --radius-sm: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, .08);
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
 
         body {
             font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
@@ -70,7 +79,9 @@
         }
 
         /* ─── HEADER masqué — info dans user-card ─── */
-        .h-header { display: none; }
+        .h-header {
+            display: none;
+        }
 
         /* ─── MAIN SCROLL AREA ─── */
         .h-content {
@@ -80,7 +91,10 @@
         }
 
         /* ─── COMPTEUR WIDGET ─── */
-        .compteur-widget-wrap { margin-bottom: 12px; }
+        .compteur-widget-wrap {
+            margin-bottom: 12px;
+        }
+
         #compteurWidget {
             width: 100%;
             display: none;
@@ -94,15 +108,29 @@
             cursor: pointer;
             transition: box-shadow .15s;
         }
-        #compteurWidget:hover { box-shadow: var(--shadow-md); }
+
+        #compteurWidget:hover {
+            box-shadow: var(--shadow-md);
+        }
+
         #compteurWidget .cw-icon {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border-radius: 9px;
             background: var(--green-light);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--green); font-size: 16px; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green);
+            font-size: 16px;
+            flex-shrink: 0;
         }
-        #compteurWidget .cw-body { flex: 1; text-align: left; }
+
+        #compteurWidget .cw-body {
+            flex: 1;
+            text-align: left;
+        }
+
         .compteur-widget-label {
             font-size: 11px;
             color: var(--text3);
@@ -111,11 +139,16 @@
             text-transform: uppercase;
             letter-spacing: .04em;
         }
+
         #compteurWidgetVal {
             font-size: 18px;
             font-weight: 600;
         }
-        .compteur-widget-arrow { color: var(--text4); font-size: 13px; }
+
+        .compteur-widget-arrow {
+            color: var(--text4);
+            font-size: 13px;
+        }
 
         /* ─── WEEK CARD ─── */
         .week-card {
@@ -126,13 +159,20 @@
             margin-bottom: 12px;
             box-shadow: var(--shadow-sm);
         }
+
         .week-row {
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
         .week-row label {
-            font-size: 13px; font-weight: 600; color: var(--text2);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
             white-space: nowrap;
         }
+
         #weekInput {
             flex: 1;
             border: 1px solid var(--border);
@@ -144,23 +184,44 @@
             outline: none;
             min-width: 0;
         }
-        #weekInput:focus { border-color: var(--green); }
+
+        #weekInput:focus {
+            border-color: var(--green);
+        }
 
         .week-totals {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-top: 12px;
         }
+
         .total-pill {
             margin: auto;
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: var(--green-light);
             border: 1px solid var(--green-border);
             border-radius: 20px;
             padding: 5px 12px;
         }
-        .total-pill i { color: var(--green); font-size: 13px; }
-        #totalWeeklyHours { font-size: 18px; font-weight: 600; color: var(--green-dark); }
-        .week-count { font-size: 11px; color: var(--text3); }
+
+        .total-pill i {
+            color: var(--green);
+            font-size: 13px;
+        }
+
+        #totalWeeklyHours {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--green-dark);
+        }
+
+        .week-count {
+            font-size: 11px;
+            color: var(--text3);
+        }
 
         /* ─── WARN BANNER ─── */
         .warn-banner {
@@ -168,32 +229,66 @@
             border: 1px solid var(--amber-border);
             border-radius: var(--radius-md);
             padding: 10px 12px;
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             margin-bottom: 12px;
-            font-size: 12px; font-weight: 500;
+            font-size: 12px;
+            font-weight: 500;
             color: var(--amber-text);
         }
-        .warn-banner i { font-size: 14px; color: #d97706; flex-shrink: 0; }
+
+        .warn-banner i {
+            font-size: 14px;
+            color: #d97706;
+            flex-shrink: 0;
+        }
 
         /* ─── SECTION HEADER ─── */
         .section-hdr {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin: 18px 0 10px;
         }
-        .section-hdr-left { display: flex; align-items: center; gap: 8px; }
+
+        .section-hdr-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .section-hdr-icon {
-            width: 28px; height: 28px;
+            width: 28px;
+            height: 28px;
             border-radius: 8px;
             background: var(--green-light);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--green); font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green);
+            font-size: 13px;
         }
-        .section-hdr-title { font-size: 14px; font-weight: 600; color: var(--text); }
+
+        .section-hdr-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
 
         /* ─── DAY CARDS ─── */
-        #weeklyTable { display: flex; flex-direction: column; gap: 8px; }
+        #weeklyTable {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         /* on cache le vrai <table> structure et on redéfinit en cards */
-        #weeklyTable table, #weeklyTable thead, #weeklyTable tfoot { display: none; }
+        #weeklyTable table,
+        #weeklyTable thead,
+        #weeklyTable tfoot {
+            display: none;
+        }
 
         .day-card {
             background: var(--surface);
@@ -203,52 +298,117 @@
             box-shadow: var(--shadow-sm);
             transition: opacity .2s;
         }
-        .day-card.is-today { border-color: var(--green-border); }
-        .day-card.is-locked { opacity: .5; }
-        .day-card.is-future { opacity: .35; }
+
+        .day-card.is-today {
+            border-color: var(--green-border);
+        }
+
+        .day-card.is-locked {
+            opacity: .5;
+        }
+
+        .day-card.is-future {
+            opacity: .35;
+        }
 
         .day-card-header {
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             padding: 9px 12px;
             border-bottom: 1px solid var(--border);
             background: var(--surface2);
         }
-        .day-card.is-today .day-card-header { background: var(--green-light); }
+
+        .day-card.is-today .day-card-header {
+            background: var(--green-light);
+        }
 
         .day-name {
-            font-size: 13px; font-weight: 600;
-            color: var(--text); width: 34px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            width: 34px;
         }
-        .day-card.is-today .day-name { color: var(--green-dark); }
 
-        .day-date-label { font-size: 11px; color: var(--text3); flex: 1; }
+        .day-card.is-today .day-name {
+            color: var(--green-dark);
+        }
+
+        .day-date-label {
+            font-size: 11px;
+            color: var(--text3);
+            flex: 1;
+        }
 
         .day-status-badge {
-            font-size: 10px; font-weight: 500;
-            border-radius: 10px; padding: 2px 8px;
-            display: flex; align-items: center; gap: 3px;
+            font-size: 10px;
+            font-weight: 500;
+            border-radius: 10px;
+            padding: 2px 8px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
         }
-        .badge-today { background: var(--green); color: #fff; }
-        .badge-locked { background: transparent; color: var(--text4); }
-        .badge-future { background: transparent; color: var(--text4); }
+
+        .badge-today {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .badge-locked {
+            background: transparent;
+            color: var(--text4);
+        }
+
+        .badge-future {
+            background: transparent;
+            color: var(--text4);
+        }
 
         .day-card-body {
             padding: 10px 12px;
-            display: flex; align-items: flex-start; gap: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
         }
 
         /* heures block */
-        .hours-block { display: flex; flex-direction: column; gap: 3px; align-items: center; flex-shrink: 0; }
-        .field-label { font-size: 10px; color: var(--text3); text-align: center; }
+        .hours-block {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .field-label {
+            font-size: 10px;
+            color: var(--text3);
+            text-align: center;
+        }
+
         .hours-chip {
-            width: 64px; height: 46px;
+            width: 64px;
+            height: 46px;
             background: var(--surface2);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 600; color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
         }
-        .hours-chip.has-value { background: var(--green-light); border-color: var(--green-border); color: var(--green-dark); font-size: 16px; }
+
+        .hours-chip.has-value {
+            background: var(--green-light);
+            border-color: var(--green-border);
+            color: var(--green-dark);
+            font-size: 16px;
+        }
+
         .hours-chip.editable {
             cursor: text;
             border-color: var(--green-border);
@@ -257,42 +417,70 @@
 
         /* le vrai input heures — invisible, positionné sur le chip */
         .hours-input-real {
-            position: absolute; inset: 0;
-            opacity: 0; width: 100%; height: 100%;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
             cursor: text;
         }
-        .hours-wrap { position: relative; width: 64px; height: 46px; }
+
+        .hours-wrap {
+            position: relative;
+            width: 64px;
+            height: 46px;
+        }
+
         .hours-wrap input.table-input.hours {
-            position: absolute; inset: 0;
-            width: 100%; height: 100%;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             border: none;
             background: transparent;
             text-align: center;
-            font-size: 15px; font-weight: 600;
+            font-size: 15px;
+            font-weight: 600;
             color: var(--text);
             outline: none;
             border-radius: var(--radius-md);
             padding: 0;
         }
+
         .hours-wrap input.table-input.hours:not(:placeholder-shown),
         .hours-wrap input.table-input.hours:focus {
             background: var(--green-light);
             color: var(--green-dark);
         }
+
         .hours-wrap {
             background: var(--surface2);
             border: 1.5px solid var(--border);
             border-radius: var(--radius-md);
         }
-        .day-card.is-today .hours-wrap { border-color: var(--green-border); }
+
+        .day-card.is-today .hours-wrap {
+            border-color: var(--green-border);
+        }
+
         .hours-wrap input.table-input.hours:disabled {
             opacity: 1;
             cursor: default;
         }
 
         /* commentaire */
-        .comment-block { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-        .comment-wrap { position: relative; }
+        .comment-block {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .comment-wrap {
+            position: relative;
+        }
+
         .comment-wrap textarea.table-input {
             width: 100%;
             background: var(--surface2);
@@ -307,33 +495,64 @@
             line-height: 1.4;
             outline: none;
         }
-        .comment-wrap textarea.table-input:focus { border-color: var(--green); }
-        .comment-wrap textarea.table-input:disabled { opacity: 1; cursor: default; }
+
+        .comment-wrap textarea.table-input:focus {
+            border-color: var(--green);
+        }
+
+        .comment-wrap textarea.table-input:disabled {
+            opacity: 1;
+            cursor: default;
+        }
 
         /* quick buttons */
-        .quick-btns { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+        .quick-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
         .qbtn {
-            width: 34px; height: 34px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--surface2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; color: var(--text3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text3);
             cursor: pointer;
             transition: background .12s, border-color .12s;
         }
-        .qbtn.qbtn-rest { background: var(--purple-light); border-color: var(--purple-border); color: var(--purple); }
-        .qbtn.qbtn-ferie { background: var(--amber-light); border-color: var(--amber-border); color: var(--amber-text); }
+
+        .qbtn.qbtn-rest {
+            background: var(--purple-light);
+            border-color: var(--purple-border);
+            color: var(--purple);
+        }
+
+        .qbtn.qbtn-ferie {
+            background: var(--amber-light);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
 
         /* overlay verrouillage */
         .lock-overlay {
-            position: absolute; inset: 0;
-            cursor: not-allowed; z-index: 10;
+            position: absolute;
+            inset: 0;
+            cursor: not-allowed;
+            z-index: 10;
         }
 
         /* km row */
         .km-row {
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-top: 10px;
             padding: 12px 14px;
             background: var(--surface);
@@ -341,7 +560,14 @@
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
         }
-        .km-row label { font-size: 13px; color: var(--text2); font-weight: 500; flex: 1; }
+
+        .km-row label {
+            font-size: 13px;
+            color: var(--text2);
+            font-weight: 500;
+            flex: 1;
+        }
+
         #kilometrage {
             width: 90px;
             background: var(--surface2);
@@ -353,7 +579,10 @@
             color: var(--text);
             outline: none;
         }
-        #kilometrage:focus { border-color: var(--green); }
+
+        #kilometrage:focus {
+            border-color: var(--green);
+        }
 
         /* ─── SAVE BAR ─── */
         .save-bar {
@@ -362,21 +591,36 @@
             border-radius: var(--radius-lg);
             padding: 12px;
             margin-top: 12px;
-            display: flex; gap: 8px;
+            display: flex;
+            gap: 8px;
             box-shadow: var(--shadow-sm);
         }
+
         #saveWeeklyBtn {
             flex: 2;
             background: var(--green);
-            color: #fff; border: none;
+            color: #fff;
+            border: none;
             border-radius: var(--radius-md);
             padding: 13px;
-            font-size: 14px; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; gap: 7px;
-            cursor: pointer; transition: background .15s;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: background .15s;
         }
-        #saveWeeklyBtn:hover { background: var(--green-dark); }
-        #saveWeeklyBtn:disabled { opacity: .6; cursor: not-allowed; }
+
+        #saveWeeklyBtn:hover {
+            background: var(--green-dark);
+        }
+
+        #saveWeeklyBtn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
 
         .btn-reset-week {
             flex: 1;
@@ -386,10 +630,17 @@
             border-radius: var(--radius-md);
             padding: 13px;
             font-size: 13px;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; transition: background .12s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background .12s;
         }
-        .btn-reset-week:hover { background: var(--border); }
+
+        .btn-reset-week:hover {
+            background: var(--border);
+        }
 
         .btn-vacances {
             width: 100%;
@@ -398,22 +649,33 @@
             border: 1px solid var(--purple-border);
             border-radius: var(--radius-md);
             padding: 12px;
-            font-size: 13px; font-weight: 500;
-            display: flex; align-items: center; justify-content: center; gap: 7px;
-            cursor: pointer; margin-top: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            margin-top: 8px;
             transition: background .12s;
         }
-        .btn-vacances:hover { background: #ddd6fe; }
+
+        .btn-vacances:hover {
+            background: #ddd6fe;
+        }
 
         /* ─── SECTION SPECIFIQUE ─── */
         .btn-add-chantier {
-            display: flex; align-items: center; gap: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
             background: var(--green-light);
             color: var(--green-dark);
             border: 1px solid var(--green-border);
             border-radius: var(--radius-sm);
             padding: 6px 10px;
-            font-size: 12px; font-weight: 500;
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
         }
 
@@ -426,15 +688,26 @@
             margin-bottom: 10px;
             box-shadow: var(--shadow-sm);
         }
+
         .form-section-title {
-            font-size: 13px; font-weight: 600; color: var(--green-dark);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--green-dark);
             margin-bottom: 12px;
-            display: flex; align-items: center; gap: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* table projets cachée — on la redéfinit */
-        #projectsTable { width: 100%; }
-        #projectsTable thead { display: none; }
+        #projectsTable {
+            width: 100%;
+        }
+
+        #projectsTable thead {
+            display: none;
+        }
+
         #projectsTable tbody tr {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -443,17 +716,32 @@
             border: none !important;
             background: transparent !important;
         }
+
         #projectsTable tbody td {
             padding: 0 !important;
             border: none !important;
         }
+
         #projectsTable tbody td:last-child {
             grid-column: 1 / -1;
         }
-        #projectsTable tfoot { display: none; }
 
-        .project-field-wrap { display: flex; flex-direction: column; gap: 4px; }
-        .project-field-label { font-size: 10px; color: var(--text3); font-weight: 500; }
+        #projectsTable tfoot {
+            display: none;
+        }
+
+        .project-field-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-field-label {
+            font-size: 10px;
+            color: var(--text3);
+            font-weight: 500;
+        }
+
         #projectsTable .table-input {
             width: 100%;
             background: var(--surface2);
@@ -465,21 +753,33 @@
             font-family: inherit;
             outline: none;
         }
-        #projectsTable .table-input:focus { border-color: var(--green); }
+
+        #projectsTable .table-input:focus {
+            border-color: var(--green);
+        }
 
         .form-actions-row {
-            display: flex; gap: 8px; margin-top: 4px;
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
         }
+
         .btn-save-projects {
             flex: 2;
             background: var(--green);
-            color: #fff; border: none;
+            color: #fff;
+            border: none;
             border-radius: var(--radius-sm);
             padding: 10px;
-            font-size: 13px; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             cursor: pointer;
         }
+
         .btn-cancel-form {
             flex: 1;
             background: var(--surface2);
@@ -488,20 +788,30 @@
             border-radius: var(--radius-sm);
             padding: 10px;
             font-size: 13px;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             cursor: pointer;
         }
 
         /* chantiers enregistrés */
-        #savedProjectsDisplay { margin-top: 4px; }
+        #savedProjectsDisplay {
+            margin-top: 4px;
+        }
+
         .saved-list-header {
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             background: var(--green);
             color: #fff;
             padding: 11px 14px;
             border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            font-size: 13px; font-weight: 600;
+            font-size: 13px;
+            font-weight: 600;
         }
+
         .saved-list-body {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -511,18 +821,32 @@
         }
 
         /* on cache le tableau saved et on garde juste le tbody */
-        #savedProjectsTable { width: 100%; border-collapse: collapse; }
-        #savedProjectsTable thead { display: none; }
-        #savedProjectsTable tfoot { display: none; }
+        #savedProjectsTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #savedProjectsTable thead {
+            display: none;
+        }
+
+        #savedProjectsTable tfoot {
+            display: none;
+        }
+
         #savedProjectsTable tbody tr {
             border-bottom: 1px solid var(--border);
         }
-        #savedProjectsTable tbody tr:last-child { border-bottom: none; }
+
+        #savedProjectsTable tbody tr:last-child {
+            border-bottom: none;
+        }
 
         /* chaque ligne saved = mini card */
         #savedProjectsTable tbody tr td {
             display: none;
         }
+
         /* On laisse le JS injecter du HTML inline — on cible les tds via data-label */
         /* En fait on laisse displaySavedProjects() injecter ses propres rows,
            on surcharge juste le style */
@@ -531,6 +855,7 @@
             padding: 12px 14px !important;
             border-bottom: 1px solid var(--border) !important;
         }
+
         #savedProjectsBody tr td {
             display: inline-block !important;
             border: none !important;
@@ -538,15 +863,22 @@
 
         /* saved total footer */
         .saved-total-bar {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 10px 14px;
             background: var(--green-light);
             border-radius: 0 0 var(--radius-lg) var(--radius-lg);
             border: 1px solid var(--border);
             border-top: none;
-            font-size: 13px; font-weight: 600;
+            font-size: 13px;
+            font-weight: 600;
         }
-        .saved-total-bar span { color: var(--green-dark); font-size: 16px; }
+
+        .saved-total-bar span {
+            color: var(--green-dark);
+            font-size: 16px;
+        }
 
         /* logout btn */
         #logoutBtn {
@@ -565,17 +897,22 @@
             border-color: #9fe1cb;
             border-width: 1.5px;
         }
+
         #weeklyTable tbody tr.row-today::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 3px;
             background: #0d9e6e;
             border-radius: 3px 3px 0 0;
         }
+
         #weeklyTable tbody tr.row-today td:nth-child(1) strong {
             color: #0d6e4f;
         }
+
         /* Date sous le nom du jour */
         .day-date-sub {
             font-size: 10px;
@@ -585,63 +922,121 @@
             margin-top: 1px;
             line-height: 1;
         }
+
         #weeklyTable tbody tr.row-today .day-date-sub {
             color: #0d9e6e;
         }
 
-                /* ─── saveWeeklyBtn states ─── */
-        #saveWeeklyBtn:hover { background: #0d6e4f !important; }
-        #saveWeeklyBtn:disabled { opacity: .6; cursor: not-allowed; }
+        /* ─── saveWeeklyBtn states ─── */
+        #saveWeeklyBtn:hover {
+            background: #0d6e4f !important;
+        }
+
+        #saveWeeklyBtn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
 
         /* ─── MODALS (gardées identiques) ─── */
         /* override juste le border-radius */
-        .modal-inner { border-radius: var(--radius-xl) !important; }
+        .modal-inner {
+            border-radius: var(--radius-xl) !important;
+        }
 
         /* ─── LOADING ─── */
         #loadingOverlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,.55);
-            display: none; align-items: center; justify-content: center;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            display: none;
+            align-items: center;
+            justify-content: center;
             z-index: 2000;
             backdrop-filter: blur(4px);
         }
+
         .loading-content {
             background: var(--surface);
             padding: 24px 32px;
             border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
         }
+
         .spinner {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border: 3px solid var(--border);
             border-top-color: var(--green);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 12px;
         }
-        .loading-content p { font-size: 14px; color: var(--text3); }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-content p {
+            font-size: 14px;
+            color: var(--text3);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes toastPop {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
         /* ─── NOTIFICATIONS ─── */
         .notification {
-            position: fixed; top: 1rem; right: 1rem; left: 1rem;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            left: 1rem;
             color: #fff;
             padding: 12px 16px;
             border-radius: var(--radius-lg);
-            box-shadow: 0 8px 24px rgba(0,0,0,.18);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
             z-index: 3000;
-            font-size: 13px; font-weight: 500;
+            font-size: 13px;
+            font-weight: 500;
             animation: slideInDown .25s ease-out;
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
         @keyframes slideInDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to   { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
         @keyframes slideOutRight {
-            from { transform: translateX(0); opacity: 1; }
-            to   { transform: translateX(110%); opacity: 0; }
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(110%);
+                opacity: 0;
+            }
         }
 
         /* ─── FOOTER ─── */
@@ -665,27 +1060,48 @@
             gap: 6px;
             box-shadow: var(--shadow-sm);
         }
+
         .user-avatar {
-            width: 48px; height: 48px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--green), var(--green-dark));
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 16px; font-weight: 700;
-            box-shadow: 0 4px 12px rgba(13,158,110,.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(13, 158, 110, .25);
         }
+
         .user-name-label {
-            font-size: 16px; font-weight: 700; color: var(--text);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
         }
 
         /* ─── TABLE WRAPPER ─── */
-        .table-wrapper { display: block; }
+        .table-wrapper {
+            display: block;
+        }
 
         /* weeklyTable — on transforme tbody en liste de cards flex */
-        #weeklyTable { width: 100%; border-spacing: 0; }
-        #weeklyTable thead { display: none; }
+        #weeklyTable {
+            width: 100%;
+            border-spacing: 0;
+        }
+
+        #weeklyTable thead {
+            display: none;
+        }
 
         /* tfoot — KM uniquement */
-        #weeklyTable tfoot { display: block; margin-top: 10px; }
+        #weeklyTable tfoot {
+            display: block;
+            margin-top: 10px;
+        }
+
         #weeklyTable tfoot tr {
             display: flex !important;
             align-items: center;
@@ -696,25 +1112,49 @@
             padding: 12px 14px;
             box-shadow: var(--shadow-sm);
         }
-        #weeklyTable tfoot tr.total-row:first-child { display: none !important; }
-        #weeklyTable tfoot tr td { border: none !important; padding: 0 !important; }
-        #weeklyTable tfoot label {
-            font-size: 13px; font-weight: 500; color: var(--text2);
-            display: flex; align-items: center; gap: 6px; flex: 1;
+
+        #weeklyTable tfoot tr.total-row:first-child {
+            display: none !important;
         }
+
+        #weeklyTable tfoot tr td {
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        #weeklyTable tfoot label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
         #kilometrage {
             width: 90px;
             background: var(--surface2);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 7px 8px;
-            font-size: 13px; text-align: center;
-            color: var(--text); outline: none;
+            font-size: 13px;
+            text-align: center;
+            color: var(--text);
+            outline: none;
         }
-        #kilometrage:focus { border-color: var(--green); }
+
+        #kilometrage:focus {
+            border-color: var(--green);
+        }
 
         /* tbody — chaque tr = flex row card */
-        #weeklyTable tbody { display: flex; flex-direction: column; gap: 8px; }
+        #weeklyTable tbody {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         #weeklyTable tbody tr {
             display: flex !important;
             flex-direction: row;
@@ -740,8 +1180,11 @@
             padding: 0 !important;
             border: none !important;
         }
+
         #weeklyTable tbody td:nth-child(1) strong {
-            font-size: 13px; font-weight: 700; color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
         }
 
         /* Col 2 — INPUT HEURES */
@@ -752,36 +1195,46 @@
             border: none !important;
             position: relative;
         }
+
         #weeklyTable tbody td:nth-child(2) input.hours {
             display: block;
-            width: 62px; height: 46px;
+            width: 62px;
+            height: 46px;
             background: var(--surface2);
             border: 1.5px solid var(--border);
             border-radius: var(--radius-md);
             text-align: center;
-            font-size: 15px; font-weight: 600;
+            font-size: 15px;
+            font-weight: 600;
             color: var(--text);
             outline: none;
             padding: 0;
             -moz-appearance: textfield;
         }
+
         #weeklyTable tbody td:nth-child(2) input.hours::-webkit-outer-spin-button,
-        #weeklyTable tbody td:nth-child(2) input.hours::-webkit-inner-spin-button { -webkit-appearance: none; }
+        #weeklyTable tbody td:nth-child(2) input.hours::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
         #weeklyTable tbody td:nth-child(2) input.hours:focus {
             border-color: var(--green);
             background: var(--green-light);
             color: var(--green-dark);
         }
+
         #weeklyTable tbody td:nth-child(2) input.hours:not(:placeholder-shown) {
             background: var(--green-light);
             border-color: var(--green-border);
             color: var(--green-dark);
         }
+
         #weeklyTable tbody td:nth-child(2) input.hours:disabled {
             background: var(--surface2) !important;
             color: var(--text3) !important;
             border-color: var(--border) !important;
-            opacity: 1; cursor: default;
+            opacity: 1;
+            cursor: default;
         }
 
         /* Col 3 — TEXTAREA COMMENTAIRE */
@@ -792,9 +1245,11 @@
             border: none !important;
             background: transparent !important;
         }
+
         #weeklyTable tbody td:nth-child(3) textarea {
             display: block;
-            width: 100%; height: 46px;
+            width: 100%;
+            height: 46px;
             background: var(--surface2);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
@@ -806,8 +1261,15 @@
             outline: none;
             line-height: 1.4;
         }
-        #weeklyTable tbody td:nth-child(3) textarea:focus { border-color: var(--green); }
-        #weeklyTable tbody td:nth-child(3) textarea:disabled { opacity: 1; cursor: default; }
+
+        #weeklyTable tbody td:nth-child(3) textarea:focus {
+            border-color: var(--green);
+        }
+
+        #weeklyTable tbody td:nth-child(3) textarea:disabled {
+            opacity: 1;
+            cursor: default;
+        }
 
         /* Col 4 — BOUTONS REPOS/FERIE */
         #weeklyTable tbody td:nth-child(4) {
@@ -818,8 +1280,10 @@
             padding: 0 !important;
             border: none !important;
         }
+
         #weeklyTable tbody td:nth-child(4) button {
-            width: 34px !important; height: 32px !important;
+            width: 34px !important;
+            height: 32px !important;
             min-height: unset !important;
             padding: 0 !important;
             border-radius: 7px !important;
@@ -833,29 +1297,54 @@
             color: var(--purple) !important;
             box-shadow: none !important;
         }
-        #weeklyTable tbody td:nth-child(4) button + button {
+
+        #weeklyTable tbody td:nth-child(4) button+button {
             border-color: var(--amber-border) !important;
             background: var(--amber-light) !important;
             color: var(--amber-text) !important;
         }
-        #weeklyTable tbody td:nth-child(4) .btn-label-long { display: none !important; }
+
+        #weeklyTable tbody td:nth-child(4) .btn-label-long {
+            display: none !important;
+        }
 
         /* section-actions — géré en inline maintenant */
-        .section-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+        .section-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
 
         /* ─── SPECIFIQUE SECTION ─── */
-        #savedProjectsDisplay .saved-list-header { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+        #savedProjectsDisplay .saved-list-header {
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
 
         /* override table saved */
-        #savedProjectsTable { border-collapse: collapse; width: 100%; }
-        #savedProjectsTable thead { display: none; }
-        #savedProjectsTable tfoot { display: none; }
+        #savedProjectsTable {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #savedProjectsTable thead {
+            display: none;
+        }
+
+        #savedProjectsTable tfoot {
+            display: none;
+        }
+
         #savedProjectsTable tbody tr {
             display: block;
             padding: 12px 14px;
             border-bottom: 1px solid var(--border);
         }
-        #savedProjectsTable tbody tr:last-child { border-bottom: none; }
+
+        #savedProjectsTable tbody tr:last-child {
+            border-bottom: none;
+        }
+
         #savedProjectsTable tbody td {
             display: inline;
             padding: 0;
@@ -882,7 +1371,11 @@
             outline: none;
             width: 100%;
         }
-        #projectsTable .table-input:focus { border-color: var(--green); }
+
+        #projectsTable .table-input:focus {
+            border-color: var(--green);
+        }
+
         #projectsTable tbody tr {
             background: transparent !important;
             border: none !important;
@@ -894,6 +1387,7 @@
             padding: 0 !important;
             box-shadow: none !important;
         }
+
         #projectsTable tbody td {
             padding: 0 !important;
             border: none !important;
@@ -901,9 +1395,11 @@
             flex-direction: column;
             gap: 4px;
         }
+
         #projectsTable tbody td:nth-child(6) {
             grid-column: 1 / -1;
         }
+
         #projectsTable tbody td .btn-danger {
             width: 100% !important;
             background: var(--red-light) !important;
@@ -919,12 +1415,15 @@
         /* add project buttons */
         #saveProjectsBtn {
             background: var(--green) !important;
-            color: #fff !important; border: none !important;
+            color: #fff !important;
+            border: none !important;
             border-radius: var(--radius-sm) !important;
             padding: 10px 16px !important;
-            font-size: 13px !important; font-weight: 600 !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
             box-shadow: none !important;
         }
+
         .btn.btn-secondary[onclick="addProjectRow()"] {
             background: var(--surface2) !important;
             color: var(--text3) !important;
@@ -942,13 +1441,17 @@
             box-shadow: none !important;
             font-size: 13px !important;
         }
+
         #modaleChantier input:focus {
-    border-color: var(--green) !important;
-    background: var(--green-light) !important;
-    box-shadow: 0 0 0 3px rgba(13,158,110,.12);
-}
-#modaleChantier input[type=number]::-webkit-outer-spin-button,
-#modaleChantier input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+            border-color: var(--green) !important;
+            background: var(--green-light) !important;
+            box-shadow: 0 0 0 3px rgba(13, 158, 110, .12);
+        }
+
+        #modaleChantier input[type=number]::-webkit-outer-spin-button,
+        #modaleChantier input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
     </style>
 </head>
 
@@ -1056,52 +1559,72 @@
         <div class="table-wrapper">
             <table id="weeklyTable">
                 <thead>
-                    <tr><th>Jour</th><th>Heures</th><th>Commentaires</th><th></th></tr>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Heures</th>
+                        <th>Commentaires</th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>Lun</strong></td>
-                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0"></td>
+                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0">
+                        </td>
                         <td><textarea class="table-input" placeholder="Commentaires…"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Mar</strong></td>
-                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0"></td>
+                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0">
+                        </td>
                         <td><textarea class="table-input" placeholder="Commentaires…"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Mer</strong></td>
-                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0"></td>
+                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0">
+                        </td>
                         <td><textarea class="table-input" placeholder="Commentaires…"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Jeu</strong></td>
-                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0"></td>
+                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0">
+                        </td>
                         <td><textarea class="table-input" placeholder="Commentaires…"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Ven</strong></td>
-                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0"></td>
+                        <td><input type="number" class="table-input hours" min="0" max="24" step="0.25" placeholder="0">
+                        </td>
                         <td><textarea class="table-input" placeholder="Commentaires…"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                     <tr>
@@ -1109,8 +1632,10 @@
                         <td><input type="text" class="table-input hours" placeholder="0"></td>
                         <td><textarea class="table-input" placeholder="CP = Congés payés"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                     <tr>
@@ -1118,8 +1643,10 @@
                         <td><input type="text" class="table-input hours" placeholder="0"></td>
                         <td><textarea class="table-input" placeholder="CP = Congés payés"></textarea></td>
                         <td style="white-space:nowrap;">
-                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long"> Repos</span></button>
-                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long"> Férié</span></button>
+                            <button onclick="setRepos(this)"><i class="fas fa-bed"></i><span class="btn-label-long">
+                                    Repos</span></button>
+                            <button onclick="setFerie(this)"><i class="fas fa-flag"></i><span class="btn-label-long">
+                                    Férié</span></button>
                         </td>
                     </tr>
                 </tbody>
@@ -1134,7 +1661,8 @@
                             <label style="margin-right:.5rem;font-size:.9rem">
                                 <i class="fas fa-car"></i> <strong>KM :</strong>
                             </label>
-                            <input type="number" class="table-input" id="kilometrage" min="0" placeholder="Kilomètres" style="max-width:120px;display:inline-block">
+                            <input type="number" class="table-input" id="kilometrage" min="0" placeholder="Kilomètres"
+                                style="max-width:120px;display:inline-block">
                         </td>
                     </tr>
                 </tfoot>
@@ -1148,11 +1676,15 @@
                     style="flex:2;background:#0d9e6e;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;">
                     <i class="fas fa-save"></i> Enregistrer
                 </button>
-                
+
             </div>
             <button onclick="confirmerVacances()"
                 style="width:100%;background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd;border-radius:10px;padding:12px;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;">
                 <i class="fas fa-umbrella-beach"></i> Je suis en vacances cette semaine
+            </button>
+            <button onclick="ouvrirModaleIndispo()"
+                style="width:100%;background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;border-radius:10px;padding:12px;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;margin-top:8px;">
+                <i class="fas fa-calendar-xmark"></i> Mes indisponibilités week-end
             </button>
         </div>
 
@@ -1175,65 +1707,94 @@
         <!-- Formulaire saisie (caché, utilisé par le JS) -->
         <div id="projectFormContainer" style="display:none;">
             <table id="projectsTable" style="display:none;">
-                <thead><tr><th>Date</th><th>Chantier</th><th>Nombre d'employés</th><th>Equipe</th><th>Total</th><th></th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Chantier</th>
+                        <th>Nombre d'employés</th>
+                        <th>Equipe</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
                 <tbody id="projectsTableBody"></tbody>
-                <tfoot><tr class="total-row"><td colspan="4"><strong>TOTAL</strong></td><td class="total-value" id="totalProjectsHours">0h</td><td></td></tr></tfoot>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4"><strong>TOTAL</strong></td>
+                        <td class="total-value" id="totalProjectsHours">0h</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 
         <!-- MODALE AJOUT CHANTIER -->
-        <div id="modaleChantier" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center;">
-            <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 32px;width:100%;max-width:520px;box-shadow:0 -8px 32px rgba(0,0,0,0.15);">
+        <div id="modaleChantier"
+            style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center;">
+            <div
+                style="background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 32px;width:100%;max-width:520px;box-shadow:0 -8px 32px rgba(0,0,0,0.15);">
                 <!-- Handle -->
                 <div style="width:40px;height:4px;background:#e5e7eb;border-radius:4px;margin:0 auto 16px;"></div>
                 <!-- Header -->
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
                     <div style="display:flex;align-items:center;gap:8px;">
-                        <div style="width:32px;height:32px;background:#e8f8f2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#0d9e6e;">
+                        <div
+                            style="width:32px;height:32px;background:#e8f8f2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#0d9e6e;">
                             <i class="fas fa-hard-hat" style="font-size:14px;"></i>
                         </div>
-                        <span style="font-size:16px;font-weight:700;color:#111827;" id="modaleChantiierTitre">Nouveau chantier</span>
+                        <span style="font-size:16px;font-weight:700;color:#111827;" id="modaleChantiierTitre">Nouveau
+                            chantier</span>
                     </div>
-                    <button onclick="fermerModaleChantier()" style="width:32px;height:32px;border-radius:50%;border:1px solid #e5e7eb;background:#f9fafb;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7280;font-size:13px;">
+                    <button onclick="fermerModaleChantier()"
+                        style="width:32px;height:32px;border-radius:50%;border:1px solid #e5e7eb;background:#f9fafb;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7280;font-size:13px;">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <!-- Champs -->
                 <!-- Champs -->
-<div style="display:flex;flex-direction:column;gap:14px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Date</label>
-            <input type="date" id="mc-date"
-                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;-webkit-appearance:none;appearance:none;font-family:inherit;transition:border-color .15s;">
-        </div>
-        <div>
-            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Total heures</label>
-            <input type="text" id="mc-total" placeholder="ex: 8h"
-                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;font-weight:600;text-align:center;outline:none;font-family:inherit;transition:border-color .15s;">
-        </div>
-    </div>
-    <div>
-        <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Nom du chantier</label>
-        <input type="text" id="mc-name" placeholder="Résidence, immeuble…"
-            style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;font-size:16px;color:#111827;outline:none;font-family:inherit;transition:border-color .15s;">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Nb employés</label>
-            <input type="number" id="mc-employees" min="1" placeholder="1"
-                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;text-align:center;font-family:inherit;transition:border-color .15s;-moz-appearance:textfield;">
-        </div>
-        <div>
-            <label style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Équipe</label>
-            <input type="text" id="mc-team" placeholder="Shana, Max…"
-                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;font-family:inherit;transition:border-color .15s;">
-        </div>
-    </div>
-</div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div>
+                            <label
+                                style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Date</label>
+                            <input type="date" id="mc-date"
+                                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;-webkit-appearance:none;appearance:none;font-family:inherit;transition:border-color .15s;">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Total
+                                heures</label>
+                            <input type="text" id="mc-total" placeholder="ex: 8h"
+                                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;font-weight:600;text-align:center;outline:none;font-family:inherit;transition:border-color .15s;">
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Nom
+                            du chantier</label>
+                        <input type="text" id="mc-name" placeholder="Résidence, immeuble…"
+                            style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;font-size:16px;color:#111827;outline:none;font-family:inherit;transition:border-color .15s;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div>
+                            <label
+                                style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Nb
+                                employés</label>
+                            <input type="number" id="mc-employees" min="1" placeholder="1"
+                                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;text-align:center;font-family:inherit;transition:border-color .15s;-moz-appearance:textfield;">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size:11px;color:#6b7280;font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">Équipe</label>
+                            <input type="text" id="mc-team" placeholder="Shana, Max…"
+                                style="width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 10px;font-size:16px;color:#111827;outline:none;font-family:inherit;transition:border-color .15s;">
+                        </div>
+                    </div>
+                </div>
                 <!-- Actions -->
                 <div style="display:flex;gap:8px;margin-top:18px;">
-                    <button onclick="fermerModaleChantier()" style="flex:1;background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb;border-radius:10px;padding:13px;font-size:13px;cursor:pointer;">
+                    <button onclick="fermerModaleChantier()"
+                        style="flex:1;background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb;border-radius:10px;padding:13px;font-size:13px;cursor:pointer;">
                         Annuler
                     </button>
                     <button onclick="sauvegarderModaleChantier()" id="saveModaleChantiierBtn"
@@ -1254,8 +1815,12 @@
                 <table id="savedProjectsTable" style="width:100%;border-collapse:collapse;">
                     <thead>
                         <tr>
-                            <th>Date</th><th>Chantier</th><th>Nb employés</th>
-                            <th>Équipe</th><th>Total</th><th>Actions</th>
+                            <th>Date</th>
+                            <th>Chantier</th>
+                            <th>Nb employés</th>
+                            <th>Équipe</th>
+                            <th>Total</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="savedProjectsBody"></tbody>
@@ -1271,25 +1836,33 @@
     </div>
 
     <!-- ═══ MODALES (inchangées) ═══ -->
-    <div id="samediRappelModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-            <div style="background:linear-gradient(135deg,#f59e0b,#d97706);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+    <div id="samediRappelModal"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+        <div
+            style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <div
+                style="background:linear-gradient(135deg,#f59e0b,#d97706);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                 <i class="fas fa-calendar-check" style="color:white;font-size:1.4rem;"></i>
             </div>
             <h3 style="color:#92400e;margin-bottom:1rem;">Rappel jours non travaillés</h3>
             <p style="color:#374151;line-height:1.6;margin-bottom:1.5rem;">
                 Pour tout jour non travaillé, indiquez <strong>0</strong> dans les heures.<br><br>
-                Utilisez les boutons <strong>Repos</strong> ou <strong>Férié</strong> sur chaque ligne, ou le bouton <strong>Vacances</strong> pour toute la semaine.
+                Utilisez les boutons <strong>Repos</strong> ou <strong>Férié</strong> sur chaque ligne, ou le bouton
+                <strong>Vacances</strong> pour toute la semaine.
             </p>
-            <button onclick="closeSamediRappel()" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">
+            <button onclick="closeSamediRappel()"
+                style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">
                 <i class="fas fa-check"></i> Compris
             </button>
         </div>
     </div>
 
-    <div id="futurInterdictionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-            <div style="background:linear-gradient(135deg,#ef4444,#dc2626);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+    <div id="futurInterdictionModal"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+        <div
+            style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <div
+                style="background:linear-gradient(135deg,#ef4444,#dc2626);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                 <i class="fas fa-ban" style="color:white;font-size:1.4rem;"></i>
             </div>
             <h3 style="color:#991b1b;margin-bottom:1rem;">Remplissage interdit</h3>
@@ -1297,28 +1870,37 @@
                 <strong>Il est strictement interdit de remplir ses heures à l'avance.</strong><br><br>
                 Les heures doivent être renseignées chaque jour.
             </p>
-            <button onclick="closeFuturInterdiction()" style="background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">
+            <button onclick="closeFuturInterdiction()"
+                style="background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">
                 <i class="fas fa-times"></i> Fermer
             </button>
         </div>
     </div>
 
-    <div id="saisieInterditeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-            <div id="saisieInterditeIcon" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+    <div id="saisieInterditeModal"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+        <div
+            style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <div id="saisieInterditeIcon"
+                style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                 <i id="saisieInterditeIconI" style="color:white;font-size:1.4rem;"></i>
             </div>
             <h3 id="saisieInterditeTitle" style="margin-bottom:1rem;"></h3>
             <p id="saisieInterditeMsg" style="color:#374151;line-height:1.6;margin-bottom:1.5rem;"></p>
-            <button onclick="document.getElementById('saisieInterditeModal').style.display='none'" id="saisieInterditeBtn" style="color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">
+            <button onclick="document.getElementById('saisieInterditeModal').style.display='none'"
+                id="saisieInterditeBtn"
+                style="color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;">
                 <i class="fas fa-times"></i> Fermer
             </button>
         </div>
     </div>
 
-    <div id="vacancesModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-            <div style="background:linear-gradient(135deg,#7c3aed,#6d28d9);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+    <div id="vacancesModal"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+        <div
+            style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <div
+                style="background:linear-gradient(135deg,#7c3aed,#6d28d9);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                 <i class="fas fa-umbrella-beach" style="color:white;font-size:1.4rem;"></i>
             </div>
             <h3 style="color:#5b21b6;margin-bottom:1rem;">Congés cette semaine ?</h3>
@@ -1327,16 +1909,72 @@
                 Tous les jours seront remplis à <strong>0h</strong> avec le commentaire <strong>CP</strong>.
             </p>
             <div style="display:flex;gap:1rem;">
-                <button onclick="document.getElementById('vacancesModal').style.display='none'" style="flex:1;background:#e5e7eb;color:#374151;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;">
+                <button onclick="document.getElementById('vacancesModal').style.display='none'"
+                    style="flex:1;background:#e5e7eb;color:#374151;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;">
                     <i class="fas fa-times"></i> Annuler
                 </button>
-                <button onclick="appliquerVacances()" style="flex:1;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;">
+                <button onclick="appliquerVacances()"
+                    style="flex:1;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;">
                     <i class="fas fa-check"></i> Confirmer
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- MODALE INDISPONIBILITÉS WEEK-END -->
+    <div id="modaleIndispo"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center;">
+        <div
+            style="background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 36px;width:100%;max-width:520px;box-shadow:0 -8px 32px rgba(0,0,0,0.15);max-height:88vh;display:flex;flex-direction:column;">
+            <div style="width:40px;height:4px;background:#e5e7eb;border-radius:4px;margin:0 auto 16px;flex-shrink:0;">
+            </div>
+            <div
+                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div
+                        style="width:32px;height:32px;background:#fef2f2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#b91c1c;">
+                        <i class="fas fa-calendar-xmark" style="font-size:14px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;color:#111827;">Indisponibilités week-end</div>
+                        <div style="font-size:11px;color:#6b7280;">Samedis et dimanches où tu n'es pas dispo</div>
+                    </div>
+                </div>
+                <button onclick="fermerModaleIndispo()"
+                    style="width:32px;height:32px;border-radius:50%;border:1px solid #e5e7eb;background:#f9fafb;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7280;font-size:13px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Ajout date -->
+            <div
+                style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:14px;margin-bottom:14px;flex-shrink:0;">
+                <div
+                    style="font-size:11px;color:#b91c1c;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;">
+                    Ajouter une date</div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="date" id="indispo-date-input"
+                        style="flex:1;background:#fff;border:1.5px solid #fca5a5;border-radius:10px;padding:11px 12px;font-size:15px;color:#111827;outline:none;font-family:inherit;-webkit-appearance:none;">
+                    <button onclick="ajouterIndispo()"
+                        style="background:#b91c1c;color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <div style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="fas fa-info-circle"></i> Seuls les
+                    samedis et dimanches sont acceptés</div>
+            </div>
+
+            <!-- Liste des indispos -->
+            <div style="flex:1;overflow-y:auto;">
+                <div
+                    style="font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;">
+                    Dates déclarées</div>
+                <div id="indispo-list">
+                    <div style="text-align:center;color:#9ca3af;font-size:13px;padding:20px 0;">Chargement…</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -1348,7 +1986,7 @@
             // Sync userAvatar (header) depuis userAvatarCard (card)
             const obs = new MutationObserver(() => {
                 const card = document.getElementById('userAvatarCard');
-                const hdr  = document.getElementById('userAvatar');
+                const hdr = document.getElementById('userAvatar');
                 if (card && hdr) hdr.textContent = card.textContent;
             });
             const card = document.getElementById('userAvatarCard');
@@ -1377,7 +2015,7 @@
             // Synchronise userAvatar header depuis userName (pour initiales)
             const unObs = new MutationObserver(() => {
                 const name = document.getElementById('userName')?.textContent || '';
-                const initials = name.trim().split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+                const initials = name.trim().split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                 const hdr = document.getElementById('userAvatar');
                 const crd = document.getElementById('userAvatarCard');
                 if (hdr) hdr.textContent = initials;
@@ -1420,6 +2058,269 @@
     </script>
 
     <script>
+        /* ─── INDISPONIBILITÉS WEEK-END ─── */
+        let _indispoList = [];
+
+        async function ouvrirModaleIndispo() {
+            document.getElementById('modaleIndispo').style.display = 'flex';
+            // Pré-remplir avec aujourd'hui si samedi/dimanche, sinon prochain samedi
+            const today = new Date();
+            const day = today.getDay();
+            let defaultDate = new Date(today);
+            if (day !== 0 && day !== 6) {
+                const daysUntilSat = (6 - day + 7) % 7 || 7;
+                defaultDate.setDate(today.getDate() + daysUntilSat);
+            }
+            document.getElementById('indispo-date-input').value = defaultDate.toISOString().split('T')[0];
+            await chargerIndispos();
+        }
+
+        function fermerModaleIndispo() {
+            document.getElementById('modaleIndispo').style.display = 'none';
+        }
+
+        document.getElementById('modaleIndispo').addEventListener('click', function (e) {
+            if (e.target === this) fermerModaleIndispo();
+        });
+
+        async function chargerIndispos() {
+            const listEl = document.getElementById('indispo-list');
+            listEl.innerHTML = '<div style="text-align:center;color:#9ca3af;font-size:13px;padding:20px 0;">Chargement…</div>';
+            try {
+                const snap = await db.collection('employees').doc(currentEmployeeId)
+                    .collection('indisponibilites').doc('weekends').get();
+                _indispoList = (snap.exists && Array.isArray(snap.data().dates)) ? snap.data().dates : [];
+                // Trier par date et ne garder que les futures + aujourd'hui
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                _indispoList = _indispoList
+                    .filter(d => {
+                        const [y, m, dd] = d.split('-').map(Number);
+                        return new Date(y, m - 1, dd) >= today;
+                    })
+                    .sort();
+                renderIndispoList();
+            } catch (e) {
+                console.error(e);
+                listEl.innerHTML = '<div style="text-align:center;color:#ef4444;font-size:13px;padding:20px 0;">Erreur de chargement</div>';
+            }
+        }
+
+        function renderIndispoList() {
+            const listEl = document.getElementById('indispo-list');
+            if (_indispoList.length === 0) {
+                listEl.innerHTML = '<div style="text-align:center;color:#9ca3af;font-size:13px;padding:24px 0;"><i class="fas fa-calendar-check" style="font-size:24px;margin-bottom:8px;display:block;color:#d1d5db;"></i>Aucune indisponibilité déclarée</div>';
+                return;
+            }
+            const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const mois = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'août', 'sep', 'oct', 'nov', 'déc'];
+            listEl.innerHTML = _indispoList.map(dateStr => {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                const dt = new Date(y, m - 1, d);
+                const nomJour = jours[dt.getDay()];
+                const label = `${nomJour} ${d} ${mois[m - 1]} ${y}`;
+                const isSam = dt.getDay() === 6;
+                return `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;background:${isSam ? '#fee2e2' : '#fce7f3'};color:${isSam ? '#b91c1c' : '#9d174d'};">${isSam ? 'SAM' : 'DIM'}</span>
+                    <span style="font-size:13px;font-weight:600;color:#111827;">${label}</span>
+                </div>
+                <button onclick="supprimerIndispo('${dateStr}')"
+                    style="width:30px;height:30px;background:#fff;border:1px solid #fca5a5;border-radius:7px;cursor:pointer;color:#b91c1c;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>`;
+            }).join('');
+        }
+        async function ajouterIndispo() {
+            const input = document.getElementById('indispo-date-input');
+            const dateStr = input.value;
+            if (!dateStr) { showNotification('Sélectionne une date', 'warning'); return; }
+
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const dt = new Date(y, m - 1, d);
+            const dayOfWeek = dt.getDay();
+
+            // Vérif sam/dim
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                showNotification('Seuls les samedis et dimanches sont acceptés', 'warning');
+                return;
+            }
+
+            // Vérif passé
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            if (dt < today) {
+                showNotification('La date doit être dans le futur', 'warning');
+                return;
+            }
+
+            // Vérif délai minimum 7 jours
+            const diffJours = Math.round((dt - today) / (1000 * 60 * 60 * 24));
+            if (diffJours < 7) {
+                showToastRefus(
+                    'Délai insuffisant',
+                    `Tu dois prévenir <strong>au minimum 7 jours à l'avance</strong>.<br><br>Cette date est dans <strong>${diffJours} jour${diffJours > 1 ? 's' : ''}</strong> — trop proche pour être déclarée.`
+                );
+                return;
+            }
+
+            // Vérif doublon
+            if (_indispoList.includes(dateStr)) {
+                showNotification('Cette date est déjà déclarée', 'info');
+                return;
+            }
+
+            // Numéro de semaine ISO d'une date
+            const getNumSemaine = date => {
+                const tmp = new Date(date);
+                const day = tmp.getDay() || 7;
+                tmp.setDate(tmp.getDate() + 4 - day);
+                const jan1 = new Date(tmp.getFullYear(), 0, 1);
+                return `${tmp.getFullYear()}-${Math.ceil(((tmp - jan1) / 86400000 + 1) / 7)}`;
+            };
+
+            const semaineNouvelle = getNumSemaine(dt);
+
+            // Compter les week-ends uniques déjà déclarés ce mois-ci
+            // Un week-end = une semaine ISO unique, peu importe si sam et/ou dim sont déclarés
+            const semainesDejaDeclarees = new Set(
+                _indispoList
+                    .filter(x => {
+                        const [xy, xm] = x.split('-').map(Number);
+                        return xy === y && xm === m;
+                    })
+                    .map(x => {
+                        const [xy, xm, xd] = x.split('-').map(Number);
+                        return getNumSemaine(new Date(xy, xm - 1, xd));
+                    })
+            );
+
+            // Si le sam et dim de ce week-end sont déjà tous les deux déclarés → doublon complet
+            const autreJourWeekend = new Date(dt);
+            autreJourWeekend.setDate(dt.getDate() + (dayOfWeek === 6 ? 1 : -1));
+            const autreJourStr = `${autreJourWeekend.getFullYear()}-${String(autreJourWeekend.getMonth() + 1).padStart(2, '0')}-${String(autreJourWeekend.getDate()).padStart(2, '0')}`;
+            const autreJourDejaDeclare = _indispoList.includes(autreJourStr);
+
+            // Ce week-end est-il déjà compté dans le quota ?
+            const weekendDejaCompte = semainesDejaDeclarees.has(semaineNouvelle);
+
+            // Bloquer seulement si c'est un nouveau week-end ET que le quota de 2 est atteint
+            if (!weekendDejaCompte && semainesDejaDeclarees.size >= 2) {
+                const moisLabel = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                showToastRefus(
+                    'Quota atteint',
+                    `Vois avec ta direction.`
+                );
+                return;
+            }
+
+            const joursLabel = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const moisLabel = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            const nomJour = joursLabel[dayOfWeek];
+            const isSam = dayOfWeek === 6;
+            const label = `${d} ${moisLabel[m - 1]} ${y}`;
+
+            _indispoList.push(dateStr);
+            _indispoList.sort();
+            try {
+                await db.collection('employees').doc(currentEmployeeId)
+                    .collection('indisponibilites').doc('weekends')
+                    .set({ dates: _indispoList, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                renderIndispoList();
+                showToastIndispo(nomJour, label, isSam);
+            } catch (e) {
+                console.error(e);
+                _indispoList = _indispoList.filter(x => x !== dateStr);
+                showNotification('Erreur lors de l\'enregistrement', 'error');
+            }
+        }
+        function showToastRefus(titre, messageHTML) {
+            document.getElementById('toast-indispo')?.remove();
+            const toast = document.createElement('div');
+            toast.id = 'toast-indispo';
+            toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none;background:rgba(0,0,0,0.35);backdrop-filter:blur(2px);';
+            toast.innerHTML = `
+        <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);border:2px solid #fca5a5;pointer-events:auto;animation:toastPop .25s cubic-bezier(.34,1.56,.64,1) both;max-width:300px;width:90%;">
+            <div style="width:56px;height:56px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 4px 16px rgba(239,68,68,0.35);">
+                <i class="fas fa-ban" style="font-size:22px;color:white;"></i>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:10px;">${titre}</div>
+            <div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:16px;">${messageHTML}</div>
+            <button onclick="document.getElementById('toast-indispo').remove()"
+                style="width:100%;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                <i class="fas fa-times"></i> Compris
+            </button>
+        </div>`;
+            document.body.appendChild(toast);
+        }
+        function showToastIndispo(nomJour, label, isSam) {
+            document.getElementById('toast-indispo')?.remove();
+            const toast = document.createElement('div');
+            toast.id = 'toast-indispo';
+            toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none;';
+            toast.innerHTML = `
+        <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #6ee7b7;pointer-events:auto;animation:toastPop .25s cubic-bezier(.34,1.56,.64,1) both;max-width:280px;width:90%;">
+            <div style="width:56px;height:56px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                <i class="fas fa-calendar-check" style="font-size:22px;color:#059669;"></i>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:4px;">Indisponibilité enregistrée</div>
+            <div style="display:inline-flex;align-items:center;gap:6px;margin:6px 0;">
+                <span style="font-size:10px;font-weight:700;background:${isSam ? '#fee2e2' : '#fce7f3'};color:${isSam ? '#b91c1c' : '#9d174d'};border-radius:5px;padding:2px 8px;">${isSam ? 'SAM' : 'DIM'}</span>
+                <span style="font-size:13px;font-weight:600;color:#374151;">${nomJour} ${label}</span>
+            </div>
+            <div style="font-size:12px;color:#9ca3af;margin-top:4px;">Les managers en seront informés</div>
+            <button onclick="document.getElementById('toast-indispo').remove()" style="margin-top:14px;width:100%;background:#059669;color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
+                <i class="fas fa-check"></i> Compris
+            </button>
+        </div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast?.remove(), 7000);
+        }
+        async function supprimerIndispo(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const dt = new Date(y, m - 1, d);
+            const joursLabel = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const moisLabel = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            const nomJour = joursLabel[dt.getDay()];
+            const isSam = dt.getDay() === 6;
+            const label = `${d} ${moisLabel[m - 1]} ${y}`;
+
+            _indispoList = _indispoList.filter(x => x !== dateStr);
+            try {
+                await db.collection('employees').doc(currentEmployeeId)
+                    .collection('indisponibilites').doc('weekends')
+                    .set({ dates: _indispoList, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                renderIndispoList();
+                showToastSuppression(nomJour, label, isSam);
+            } catch (e) {
+                console.error(e);
+                showNotification('Erreur lors de la suppression', 'error');
+            }
+        }
+
+        function showToastSuppression(nomJour, label, isSam) {
+            document.getElementById('toast-indispo')?.remove();
+            const toast = document.createElement('div');
+            toast.id = 'toast-indispo';
+            toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none;';
+            toast.innerHTML = `
+        <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #6ee7b7;pointer-events:auto;animation:toastPop .25s cubic-bezier(.34,1.56,.64,1) both;max-width:280px;width:90%;">
+            <div style="width:56px;height:56px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                <i class="fas fa-calendar-minus" style="font-size:22px;color:#059669;"></i>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:4px;">Indisponibilité supprimée</div>
+            <div style="display:inline-flex;align-items:center;gap:6px;margin:6px 0;">
+                <span style="font-size:10px;font-weight:700;background:${isSam ? '#fee2e2' : '#fce7f3'};color:${isSam ? '#b91c1c' : '#9d174d'};border-radius:5px;padding:2px 8px;">${isSam ? 'SAM' : 'DIM'}</span>
+                <span style="font-size:13px;font-weight:600;color:#374151;">${nomJour} ${label}</span>
+            </div>
+            <div style="font-size:12px;color:#9ca3af;margin-top:4px;">Ta disponibilité est rétablie pour ce jour</div>
+            <button onclick="document.getElementById('toast-indispo').remove()" style="margin-top:14px;width:100%;background:#059669;color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
+                <i class="fas fa-check"></i> Compris
+            </button>
+        </div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast?.remove(), 7000);
+        }
         /* ─── MODALE CHANTIER ─── */
         let _modaleEditIndex = undefined;
 
@@ -1470,10 +2371,10 @@
             if (!name) { showNotification('Indiquez un nom de chantier', 'warning'); return; }
 
             const projectData = {
-                date:       document.getElementById('mc-date').value,
-                name:       name,
-                employees:  document.getElementById('mc-employees').value.trim(),
-                team:       document.getElementById('mc-team').value.trim(),
+                date: document.getElementById('mc-date').value,
+                name: name,
+                employees: document.getElementById('mc-employees').value.trim(),
+                team: document.getElementById('mc-team').value.trim(),
                 totalHours: document.getElementById('mc-total').value.trim()
             };
 
@@ -1509,7 +2410,7 @@
         }
 
         // Fermer au clic sur le backdrop
-        document.getElementById('modaleChantier').addEventListener('click', function(e) {
+        document.getElementById('modaleChantier').addEventListener('click', function (e) {
             if (e.target === this) fermerModaleChantier();
         });
     </script>
@@ -1894,7 +2795,7 @@
                             dateSub.className = 'day-date-sub';
                             dayTd.appendChild(dateSub);
                         }
-                        dateSub.textContent = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+                        dateSub.textContent = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
                     }
                 });
                 const docRef = db.collection('employees').doc(currentEmployeeId).collection('weeks').doc(currentWeek);
@@ -2055,4 +2956,5 @@
     </script>
     <script src="../js/sw-update.js"></script>
 </body>
+
 </html>

@@ -51,6 +51,12 @@
 - `initPlanningTab()` : Reset `planningEnCours = null` + appel `loadPlanning()`. Plus de référence à `planning-date-input` ni `planning-import-feedback`.
 - `ouvrirModalImportPlanning()` : Après collage (`paste` event), la textarea est masquée et remplacée par un `div#planning-paste-preview` qui affiche le texte formaté — prénoms reconnus (via `PLANNING_EMPLOYEES`) mis en `<strong>` 1rem/700. `window._resetPlanningPaste()` permet de revenir à la textarea. La valeur de la textarea reste inchangée et est lue normalement par `testerImportPlanning()`.
 - `publierPlanning(planning)` : Fait un `getDoc` avant le `setDoc` pour détecter si le planning existait déjà → passe `isUpdate` à `envoyerNotifPlanning`.Vous avez dit : refaisons un test de nouveau planning et un annule remplace sur dylan
+- Vérification indisponibilités : si le planning est un sam/dim, lit `employees/{prenom}/indisponibilites/weekends` pour chaque employé non absent. Si conflit → `afficherPopupConflitIndispo(conflits, date)` et retour BLOQUANT (pas de publication).
+- `afficherPopupConflitIndispo(conflits, planningDate)` : modale rouge listant les employés en conflit. Bouton "Retour au planning" uniquement — aucun moyen de forcer la publication.
+- `publierPlanningDepuisReview()` (màj) : avant publication, si le planning est un sam/dim → lit `employees/{prenom}/indisponibilites/weekends` pour chaque employé non absent via `getDoc` modular. Si conflits → `afficherPopupConflitIndispo` + retour BLOQUANT. Sinon animation bouton + `publierPlanning`.
+- `afficherPopupConflitIndispo(conflits[], planningDate)` : modale rouge (z-index 10000, backdrop blur) listant les employés en conflit. Bouton "Retour au planning" uniquement — publication impossible tant que non résolu.
+- `chargerBandeauIndispos()` : lit `indisponibilites/weekends` pour tous les employés en parallèle. Filtre les 30 prochains jours. Groupe par date. Affiche dans `#bandeau-indispos` (haut de l'onglet planning) — cartes horizontales scrollables, badge SAM/DIM, liste des noms par date. Badge compteur total en rouge. Si aucune indispo → bandeau vert "Aucune indisponibilité".
+- `initPlanningTab()` (màj) : appelle `chargerBandeauIndispos()` en plus de `loadPlanning()`.
 
 ## TEMPS_DEFAUT
 - Vitres Standard : 3 min, Baies Vitrées : 4 min, Vélux : 5 min, Portes vitrées : 3 min, Vitres Hautes : 5 min.
