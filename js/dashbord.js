@@ -6536,8 +6536,11 @@ async function chargerBandeauIndispos() {
     const bandeau = document.getElementById('bandeau-indispos');
     if (!bandeau) return;
 
-    bandeau.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:13px;padding:4px 0;"><i class="fas fa-spinner fa-spin"></i> Chargement des indisponibilités…</div>`;
-
+bandeau.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f0fdf4;border-radius:10px;">
+                    <i class="fas fa-calendar-check" style="color:#10b981;font-size:15px;flex-shrink:0;"></i>
+                    <span style="font-size:13px;color:#065f46;font-weight:500;">Aucune indisponibilité déclarée dans les 30 prochains jours.</span>
+                </div>`;
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const limite = new Date(today); limite.setDate(today.getDate() + 30);
 
