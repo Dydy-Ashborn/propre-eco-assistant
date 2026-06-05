@@ -16,6 +16,19 @@ body {
     display: flex;
     flex-direction: column;
 }
+/* Safe area iOS (encoche + home indicator) */
+.header {
+    padding-top: env(safe-area-inset-top);
+}
+
+.bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(64px + env(safe-area-inset-bottom));
+}
+
+.speed-dial {
+    bottom: calc(80px + env(safe-area-inset-bottom));
+}
 
 /* Container principal */
 .container {
