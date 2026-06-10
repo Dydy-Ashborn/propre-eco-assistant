@@ -157,6 +157,10 @@
                     <i class="fas fa-file-alt"></i>
                     <span>Générateur</span>
                 </a>
+                <button class="tab-btn" data-tab="parametres">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Paramètres PEA</span>
+                </button>
             </div>
             <!-- Section Vue d'ensemble -->
             <div id="section-overview" class="card-section">
@@ -807,6 +811,131 @@
         </div>
     </div>
 
+    <!-- Section Paramètres PEA -->
+    <div id="section-parametres" class="card-section" style="display:none;">
+        <div class="card-section-header">
+            <h2 class="card-section-title">
+                <i class="fas fa-sliders-h"></i>
+                Paramètres PEA
+            </h2>
+        </div>
+
+        <!-- Sous-sections nav -->
+        <div
+            style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;border-bottom:2px solid #f3f4f6;padding-bottom:0.75rem;">
+            <button class="param-tab-btn active" data-param="employes" onclick="switchParamTab('employes')">
+                <i class="fas fa-users"></i> Gestion Employés
+            </button>
+        </div>
+
+        <!-- Sous-section : Gestion Employés -->
+        <div id="param-section-employes">
+            <div
+                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
+                <p style="margin:0;color:#6b7280;font-size:0.88rem;">
+                    Liste des employés Propre Eco. Ces données alimentent le planning, les notifications et la
+                    pointeuse.
+                </p>
+                <button onclick="ouvrirModaleAjoutEmploye()"
+                    style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.65rem 1.1rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                    <i class="fas fa-plus"></i> Ajouter un employé
+                </button>
+            </div>
+
+            <div id="loading-employes" style="text-align:center;padding:2rem;color:#9ca3af;">
+                <i class="fas fa-spinner fa-spin"></i> Chargement...
+            </div>
+            <div id="content-employes" style="display:none;">
+                <div style="overflow-x:auto;border-radius:12px;border:1.5px solid #e5e7eb;">
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead style="display:none;"></thead>
+                        <tbody id="employes-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modale ajout/édition employé -->
+    <div id="modaleEmploye"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+        <div
+            style="background:white;border-radius:20px;padding:2rem;max-width:480px;width:100%;margin:auto;box-shadow:0 25px 80px rgba(0,0,0,0.35);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div
+                        style="background:linear-gradient(135deg,#10b981,#059669);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-user-plus" style="color:white;font-size:1rem;"></i>
+                    </div>
+                    <div>
+                        <h3 id="modaleEmployeTitre" style="margin:0;color:#111827;font-size:1.1rem;">Ajouter un employé
+                        </h3>
+                        <p style="margin:0;color:#6b7280;font-size:0.78rem;">Données Firestore</p>
+                    </div>
+                </div>
+                <button onclick="fermerModaleEmploye()"
+                    style="background:#f3f4f6;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;color:#6b7280;font-size:1rem;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <div>
+                    <label
+                        style="font-weight:600;font-size:0.82rem;color:#374151;display:block;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.05em;">Prénom
+                        affiché *</label>
+                    <input type="text" id="empPrenom" placeholder="ex: Océane"
+                        style="width:100%;padding:0.65rem 0.75rem;border:1.5px solid #e5e7eb;border-radius:10px;font-size:0.95rem;color:#111827;box-sizing:border-box;outline:none;">
+                </div>
+                <div>
+                    <label
+                        style="font-weight:600;font-size:0.82rem;color:#374151;display:block;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.05em;">ID
+                        Firestore *</label>
+                    <input type="text" id="empId" placeholder="ex: oceane (sans accent, minuscule)"
+                        style="width:100%;padding:0.65rem 0.75rem;border:1.5px solid #e5e7eb;border-radius:10px;font-size:0.95rem;color:#111827;box-sizing:border-box;outline:none;font-family:monospace;">
+                    <p style="margin:0.3rem 0 0;font-size:0.75rem;color:#9ca3af;">
+                        <i class="fas fa-info-circle"></i> Prénom en minuscules, sans accents, sans espaces.<br>
+                        Ne peut plus être modifier après création.
+                    </p>
+                </div>
+                <div>
+                    <label
+                        style="font-weight:600;font-size:0.82rem;color:#374151;display:block;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.05em;">PIN
+                        Pointeuse (4 chiffres) *</label>
+                    <div style="position:relative;">
+                        <input type="password" id="empPin" placeholder="••••" maxlength="4" inputmode="numeric"
+                            style="width:100%;padding:0.65rem 2.5rem 0.65rem 0.75rem;border:1.5px solid #e5e7eb;border-radius:10px;font-size:1.1rem;font-weight:700;color:#111827;box-sizing:border-box;outline:none;letter-spacing:0.3em;text-align:center;">
+                        <button type="button" onclick="togglePinVisibility('empPin', this)"
+                            style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:0.9rem;padding:0;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <label
+                        style="font-weight:600;font-size:0.82rem;color:#374151;text-transform:uppercase;letter-spacing:0.05em;">Actif</label>
+                    <input type="checkbox" id="empActif" checked
+                        style="width:18px;height:18px;accent-color:#10b981;cursor:pointer;">
+                </div>
+            </div>
+
+            <div id="modaleEmployeError"
+                style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:0.75rem;margin-top:1rem;color:#dc2626;font-size:0.85rem;font-weight:600;">
+            </div>
+
+            <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;">
+                <button onclick="fermerModaleEmploye()"
+                    style="background:#f3f4f6;color:#374151;border:none;padding:0.75rem 1.5rem;border-radius:10px;font-weight:600;cursor:pointer;font-size:0.9rem;">
+                    Annuler
+                </button>
+                <button onclick="sauvegarderEmploye()"
+                    style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:0.75rem 1.75rem;border-radius:10px;font-weight:600;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem;">
+                    <i class="fas fa-save"></i> <span id="modaleEmployeBtnLabel">Enregistrer</span>
+                </button>
+            </div>
+        </div>
+    </div>
     <script type="module" src="../js/dashbord.js"></script>
     <script type="module" src="../js/firebase-copro.js"></script>
 

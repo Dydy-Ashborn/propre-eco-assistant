@@ -2472,53 +2472,62 @@
         let currentEmployeeId = null, currentEmployeeName = null, currentWeek = null, projectRowCounter = 0;
         const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy', 'maxime': 'Maxime', 'shana': 'Shana', 'chloe': 'Chloé bibi love', 'jocelyne': 'Jocelyne', 'mina': 'Mina', 'nadia': 'Nadia' };
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            currentEmployeeId = urlParams.get('employee');
-            if (!currentEmployeeId) {
-                showNotification('Employé non identifié', 'error');
-                setTimeout(() => window.location.href = 'pointeuse.html', 2000);
-                return
+       document.addEventListener('DOMContentLoaded', async function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    currentEmployeeId = urlParams.get('employee');
+    if (!currentEmployeeId) {
+        showNotification('Employé non identifié', 'error');
+        setTimeout(() => window.location.href = 'pointeuse.html', 2000);
+        return;
+    }
+
+    // Chargement prénom depuis Firestore avec fallback dictionnaire
+    try {
+        const snap = await db.collection('employees').doc(currentEmployeeId).get();
+        currentEmployeeName = (snap.exists && snap.data().prenom) ? snap.data().prenom : (employeeNames[currentEmployeeId] || currentEmployeeId);
+    } catch(e) {
+        currentEmployeeName = employeeNames[currentEmployeeId] || currentEmployeeId;
+    }
+
+    document.getElementById('userName').textContent = currentEmployeeName;
+    const initials = getInitials(currentEmployeeName);
+    const _av = document.getElementById('userAvatar'); if (_av) _av.textContent = initials;
+    const _avc = document.getElementById('userAvatarCard'); if (_avc) _avc.textContent = initials;
+
+    checkAndShowLogoutButton();
+
+    const today = new Date();
+    const weekInput = document.getElementById('weekInput');
+    weekInput.value = getWeekString(today);
+    currentWeek = weekInput.value;
+
+    loadWeekDataAuto();
+    loadProjectsData();
+    checkSamediRappel();
+    chargerCompteurEmploye();
+
+    weekInput.addEventListener('change', function () {
+        currentWeek = this.value;
+        loadWeekDataAuto();
+        loadProjectsData();
+        checkSamediRappel();
+    });
+
+    document.querySelectorAll('#weeklyTable .hours').forEach(input => {
+        input.addEventListener('input', calculateWeeklyTotal);
+        input.addEventListener('blur', function () {
+            const value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                const rounded = Math.round(value * 4) / 4;
+                if (rounded !== value) {
+                    this.value = rounded;
+                    calculateWeeklyTotal();
+                    showNotification(`Valeur arrondie à ${rounded}h (multiples de 0.25 uniquement)`, 'info');
+                }
             }
-            currentEmployeeName = employeeNames[currentEmployeeId] || 'Employé';
-            document.getElementById('userName').textContent = currentEmployeeName;
-            const _av = document.getElementById('userAvatar'); if (_av) _av.textContent = getInitials(currentEmployeeName);
-            const _avc = document.getElementById('userAvatarCard'); if (_avc) _avc.textContent = getInitials(currentEmployeeName);
-
-            checkAndShowLogoutButton();
-
-            const today = new Date();
-            const weekInput = document.getElementById('weekInput');
-            weekInput.value = getWeekString(today);
-            currentWeek = weekInput.value;
-
-            loadWeekDataAuto();
-            loadProjectsData();
-            checkSamediRappel();
-            chargerCompteurEmploye();
-
-            weekInput.addEventListener('change', function () {
-                currentWeek = this.value;
-                loadWeekDataAuto();
-                checkSamediRappel();
-            });
-
-            document.querySelectorAll('#weeklyTable .hours').forEach(input => {
-                input.addEventListener('input', calculateWeeklyTotal);
-                input.addEventListener('blur', function () {
-                    const value = parseFloat(this.value);
-                    if (!isNaN(value)) {
-                        const rounded = Math.round(value * 4) / 4;
-                        if (rounded !== value) {
-                            this.value = rounded;
-                            calculateWeeklyTotal();
-                            showNotification(`Valeur arrondie à ${rounded}h (multiples de 0.25 uniquement)`, 'info');
-                        }
-                    }
-                });
-            })
         });
-
+    });
+});
         function checkAndShowLogoutButton() {
             const SAVED_SESSION_KEY = "savedEmployeeSession";
             const savedSession = localStorage.getItem(SAVED_SESSION_KEY);

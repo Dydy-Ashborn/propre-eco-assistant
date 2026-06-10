@@ -88,10 +88,11 @@
     }
 
     /* Container gÃ©nÃ©ral sans limitation */
-    .container {
-      overflow: visible;
-      position: relative;
-    }
+.container {
+    overflow: visible;
+    position: relative;
+    margin-top: 1rem;
+}
 
     * {
       margin: 0;

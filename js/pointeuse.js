@@ -1,3 +1,5 @@
+import { db } from './config.js';
+import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 // Variables globales
 const FAVORITE_KEY = "favoriteEmployee";
 const SAVED_SESSION_KEY = "savedEmployeeSession";
@@ -156,12 +158,30 @@ function getInitials(name) {
 }
 
 // Chargement des employes
-function loadEmployees() {
+async function loadEmployees() {
     const favoriteName = localStorage.getItem(FAVORITE_KEY);
 
-    if (favoriteName) {
-        employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
+    try {
+        const q = query(collection(db, 'employees'), where('actif', '!=', false));
+        const snap = await getDocs(q);
+
+        employees.length = 0;
+        snap.forEach(d => {
+            const data = d.data();
+            employees.push({
+                id: d.id,
+                name: data.prenom || d.id,
+                code: data.pin || '',
+                sheet: data.sheet || ''
+            });
+        });
+
+    } catch(e) {
+        console.error('Erreur chargement employés Firestore:', e);
+        showNotification('Chargement hors-ligne', 'warning');
     }
+
+    employees.sort((a, b) => a.name === favoriteName ? -1 : b.name === favoriteName ? 1 : 0);
 
     employees.forEach((emp, index) => {
         const card = document.createElement('div');
@@ -175,9 +195,7 @@ function loadEmployees() {
 
         card.innerHTML = `
             ${ribbonHTML}
-            <div class="employee-avatar">
-                ${getInitials(emp.name)}
-            </div>
+            <div class="employee-avatar">${getInitials(emp.name)}</div>
             <div class="employee-name">${emp.name}</div>
             <div class="btn-group">
                 <button class="access-btn secondary" onclick="window.openAccessModal('${emp.name}', 'hours')">

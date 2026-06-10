@@ -244,6 +244,9 @@ function loadCurrentTab() {
         case 'planning':
             initPlanningTab();
             break;
+        case 'parametres':
+            initParametresTab();
+            break;
     }
 }
 // ========== VUE D'ENSEMBLE ==========
@@ -6536,7 +6539,7 @@ async function chargerBandeauIndispos() {
     const bandeau = document.getElementById('bandeau-indispos');
     if (!bandeau) return;
 
-bandeau.innerHTML = `
+    bandeau.innerHTML = `
                 <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f0fdf4;border-radius:10px;">
                     <i class="fas fa-calendar-check" style="color:#10b981;font-size:15px;flex-shrink:0;"></i>
                     <span style="font-size:13px;color:#065f46;font-weight:500;">Aucune indisponibilité déclarée dans les 30 prochains jours.</span>
@@ -6984,6 +6987,209 @@ window.supprimerPlanning = async function (date) {
             }
         }
     });
+};
+
+// ══════════════════════════════════════
+// ONGLET PARAMÈTRES PEA
+// ══════════════════════════════════════
+
+let _empEditId = null; // null = création, string = édition
+
+window.switchParamTab = function(tab) {
+    document.querySelectorAll('.param-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.param === tab));
+    document.getElementById('param-section-employes').style.display = '';
+};
+
+async function initParametresTab() {
+    switchParamTab('employes');
+    await chargerEmployes();
+}
+
+async function chargerEmployes() {
+    const loading = document.getElementById('loading-employes');
+    const content = document.getElementById('content-employes');
+    const tbody = document.getElementById('employes-tbody');
+
+    loading.style.display = 'block';
+    content.style.display = 'none';
+
+    try {
+        const snap = await getDocs(collection(db, 'employees'));
+        const employes = [];
+        snap.forEach(d => employes.push({ id: d.id, ...d.data() }));
+        employes.sort((a, b) => (a.prenom || a.id).localeCompare(b.prenom || b.id, 'fr'));
+tbody.innerHTML = employes.map(emp => {
+            const actifBadge = emp.actif !== false
+                ? `<span style="background:#d1fae5;color:#065f46;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Actif</span>`
+                : `<span style="background:#f3f4f6;color:#9ca3af;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Inactif</span>`;
+            const hasPIN = emp.pin
+                ? `<span style="background:#dbeafe;color:#1e40af;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;">••••</span>`
+                : `<span style="color:#d1d5db;font-size:0.82rem;">—</span>`;
+            return `<tr>
+                <td colspan="5" style="padding:0.6rem 0.75rem;">
+                    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                        <!-- Avatar + nom + id -->
+                        <div style="display:flex;align-items:center;gap:0.65rem;flex:1;min-width:140px;">
+                            <div style="background:linear-gradient(135deg,#10b981,#059669);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.85rem;flex-shrink:0;">
+                                ${(emp.prenom || emp.id)[0].toUpperCase()}
+                            </div>
+                            <div>
+                                <div style="font-weight:700;color:#111827;font-size:0.92rem;">${emp.prenom || emp.id}</div>
+                                <code style="background:#f3f4f6;padding:0.1rem 0.4rem;border-radius:5px;font-size:0.75rem;color:#374151;">${emp.id}</code>
+                            </div>
+                        </div>
+                        <!-- PIN + statut -->
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            ${hasPIN}
+                            ${actifBadge}
+                        </div>
+                        <!-- Actions -->
+                        <div style="display:flex;gap:0.4rem;margin-left:auto;">
+                            <button onclick="ouvrirModaleEditionEmploye('${emp.id}')"
+                                style="background:#eff6ff;color:#1d4ed8;border:none;border-radius:8px;padding:0.45rem 0.8rem;font-size:0.85rem;font-weight:600;cursor:pointer;">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button onclick="toggleActifEmploye('${emp.id}', ${emp.actif !== false})"
+                                style="background:${emp.actif !== false ? '#fef3c7' : '#f0fdf4'};color:${emp.actif !== false ? '#92400e' : '#065f46'};border:none;border-radius:8px;padding:0.45rem 0.8rem;font-size:0.85rem;font-weight:600;cursor:pointer;">
+                                <i class="fas fa-${emp.actif !== false ? 'pause' : 'play'}"></i>
+                            </button>
+                            <button onclick="supprimerEmploye('${emp.id}', '${emp.prenom || emp.id}')"
+                                style="background:#fef2f2;color:#dc2626;border:none;border-radius:8px;padding:0.45rem 0.8rem;font-size:0.85rem;font-weight:600;cursor:pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+
+        loading.style.display = 'none';
+        content.style.display = '';
+    } catch (e) {
+        console.error('Erreur chargement employés:', e);
+        loading.innerHTML = `<span style="color:#dc2626;"><i class="fas fa-exclamation-circle"></i> Erreur chargement</span>`;
+    }
+}
+
+window.ouvrirModaleAjoutEmploye = function () {
+    _empEditId = null;
+    document.getElementById('modaleEmployeTitre').textContent = 'Ajouter un employé';
+    document.getElementById('modaleEmployeBtnLabel').textContent = 'Enregistrer';
+    document.getElementById('empPrenom').value = '';
+    document.getElementById('empId').value = '';
+    document.getElementById('empId').disabled = false;
+    document.getElementById('empId').style.opacity = '1';
+    document.getElementById('empPin').value = '';
+    document.getElementById('empActif').checked = true;
+    document.getElementById('modaleEmployeError').style.display = 'none';
+    document.getElementById('modaleEmploye').style.display = 'flex';
+};
+
+window.ouvrirModaleEditionEmploye = async function (id) {
+    _empEditId = id;
+    document.getElementById('modaleEmployeTitre').textContent = 'Modifier l\'employé';
+    document.getElementById('modaleEmployeBtnLabel').textContent = 'Enregistrer';
+    document.getElementById('modaleEmployeError').style.display = 'none';
+
+    const snap = await getDoc(doc(db, 'employees', id));
+    if (!snap.exists()) return;
+    const emp = snap.data();
+
+    document.getElementById('empPrenom').value = emp.prenom || '';
+    document.getElementById('empId').value = id;
+    document.getElementById('empId').disabled = true;
+    document.getElementById('empId').style.opacity = '0.5';
+    document.getElementById('empPin').value = emp.pin || '';
+    document.getElementById('empActif').checked = emp.actif !== false;
+    document.getElementById('modaleEmploye').style.display = 'flex';
+};
+
+window.fermerModaleEmploye = function () {
+    document.getElementById('modaleEmploye').style.display = 'none';
+    _empEditId = null;
+};
+
+window.sauvegarderEmploye = async function () {
+    const prenom = document.getElementById('empPrenom').value.trim();
+    const id = _empEditId || document.getElementById('empId').value.trim().toLowerCase();
+    const pin = document.getElementById('empPin').value.trim();
+    const actif = document.getElementById('empActif').checked;
+    const errEl = document.getElementById('modaleEmployeError');
+
+    const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
+
+    if (!prenom) return showErr('Le prénom est obligatoire.');
+    if (!id) return showErr('L\'ID Firestore est obligatoire.');
+    if (!/^[a-z]+$/.test(id)) return showErr('L\'ID doit être en minuscules sans accents ni espaces.');
+    if (pin && (!/^\d{4}$/.test(pin))) return showErr('Le PIN doit être exactement 4 chiffres.');
+
+    errEl.style.display = 'none';
+
+    const data = { prenom, actif };
+    if (pin) data.pin = pin;
+
+    try {
+        await setDoc(doc(db, 'employees', id), data, { merge: true });
+        fermerModaleEmploye();
+        await chargerEmployes();
+    } catch (e) {
+        showErr('Erreur Firestore : ' + e.message);
+    }
+};
+
+window.toggleActifEmploye = async function (id, estActif) {
+    try {
+        await setDoc(doc(db, 'employees', id), { actif: !estActif }, { merge: true });
+        await chargerEmployes();
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+window.supprimerEmploye = async function(id, prenom) {
+    await new Promise(resolve => {
+        document.getElementById('toast-confirm-delete-emp')?.remove();
+        const toast = document.createElement('div');
+        toast.id = 'toast-confirm-delete-emp';
+        toast.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);';
+        toast.innerHTML = `
+            <div style="background:white;border-radius:20px;padding:28px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.25);border:2px solid #fca5a5;max-width:320px;width:90%;animation:fadeIn .2s ease-out;">
+                <div style="width:56px;height:56px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+                    <i class="fas fa-user-minus" style="font-size:22px;color:#dc2626;"></i>
+                </div>
+                <div style="font-size:16px;font-weight:700;color:#111827;margin-bottom:6px;">Supprimer ${prenom} ?</div>
+                <div style="font-size:13px;color:#6b7280;line-height:1.5;margin-bottom:20px;">
+                    L'employé sera retiré de la pointeuse.<br>
+                    <strong style="color:#374151;">Ses heures et plannings ne seront pas affectés.</strong>
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button id="btn-annuler-emp" style="flex:1;background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;">
+                        Annuler
+                    </button>
+                    <button id="btn-confirmer-emp" style="flex:1;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </div>
+            </div>`;
+        document.body.appendChild(toast);
+        document.getElementById('btn-annuler-emp').onclick = () => { toast.remove(); resolve(false); };
+        document.getElementById('btn-confirmer-emp').onclick = () => { toast.remove(); resolve(true); };
+    }).then(async confirmed => {
+        if (!confirmed) return;
+        try {
+            await deleteDoc(doc(db, 'employees', id));
+            await chargerEmployes();
+        } catch(e) {
+            console.error(e);
+        }
+    });
+};
+
+window.togglePinVisibility = function (inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+    btn.querySelector('i').className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
 };
 
 function initPlanningTab() {
