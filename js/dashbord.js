@@ -102,8 +102,22 @@ function init() {
         }
     });
 }
-function setupDashboard() {
+async function setupDashboard() {
     checkAuth();
+    await loadEmployeesFromFirestore();
+
+// Peupler dynamiquement tous les <select> d'employés
+const empOptions = Object.entries(employeeNames)
+    .sort(([, a], [, b]) => a.localeCompare(b, 'fr'))
+    .map(([id, nom]) => `<option value="${id}">${nom}</option>`)
+    .join('');
+
+['filterEmployee', 'saisieEmp'].forEach(selectId => {
+    const sel = document.getElementById(selectId);
+    if (!sel) return;
+    const firstOption = sel.querySelector('option[value=""]');
+    sel.innerHTML = (firstOption ? firstOption.outerHTML : '<option value="">Tous les employés</option>') + empOptions;
+});
     setupEventListeners();
     setupSearch();
 
@@ -348,22 +362,8 @@ async function loadOverview() {
         const kpiDevisEl = document.getElementById('kpi-devis');
         if (devisEnAttente > 0) kpiDevisEl.closest('.kpi-card').classList.add('kpi-alert');
 
-        const DASHBOARD_EMPLOYEES = [
-            { name: "Dylan", id: "dylan" },
-            { name: "Océane", id: "oceane" },
-            { name: "Samuel", id: "samuel" },
-            { name: "Jérémie", id: "jeremie" },
-            { name: "Carlos", id: "carlos" },
-            { name: "Sandra", id: "sandra" },
-            { name: "Manon", id: "manon" },
-            { name: "Stéphane", id: "stephane" },
-            { name: "Isabelle", id: "isabelle" },
-            { name: "Caroline", id: "caroline" },
-            { name: "Nadjet", id: "nadjet" },
-            { name: "Rémy", id: "remy" },
-            { name: "Maxime", id: "maxime" },
-            { name: "Shana", id: "shana" }
-        ];
+        // Remplacer le bloc const DASHBOARD_EMPLOYEES = [...] par :
+        const DASHBOARD_EMPLOYEES = Object.entries(employeeNames).map(([id, name]) => ({ id, name }));
         // ========== ALERTE HEURES MANQUANTES ==========
         async function checkHeuresManquantes() {
             const today = new Date();
@@ -2138,22 +2138,6 @@ function filterAndRenderChantiers(searchTerm) {
 }
 
 // ========== ONGLET HEURES ==========
-const employeeNames = {
-    'dylan': 'Dylan',
-    'oceane': 'Océane',
-    'samuel': 'Samuel',
-    'jeremie': 'Jérémie',
-    'carlos': 'Carlos',
-    'sandra': 'Sandra',
-    'manon': 'Manon',
-    'stephane': 'Stéphane',
-    'isabelle': 'Isabelle',
-    'caroline': 'Caroline',
-    'nadjet': 'Nadjet',
-    'remy': 'Rémy',
-    'maxime': 'Maxime',
-    'shana': 'Shana'
-};
 
 // Cache pour les heures (évite de recharger les mêmes données)
 let heuresCache = {};
@@ -5065,21 +5049,26 @@ function renderFacturationCards(container, groups, totalH, totalPassages) {
 // CRUCIAL : Exposer les fonctions au HTML
 window.showFacturationView = showFacturationView;
 // ========== ONGLET PLANNING ==========
-const PRENOM_DISPLAY = {
-    'oceane': 'Océane', 'jeremie': 'Jérémie', 'stephanie': 'Stéphanie',
-    'stephane': 'Stéphane', 'nadjet': 'Nadjet', 'remy': 'Rémy',
-    'chloe': 'Chloé', 'jocelyne': 'Jocelyne', 'nadia': 'Nadia',
-    'mina': 'Mina', 'isabelle': 'Isabelle', 'caroline': 'Caroline',
-    'carlos': 'Carlos', 'sandra': 'Sandra', 'samuel': 'Samuel',
-    'dylan': 'Dylan', 'maxime': 'Maxime', 'manon': 'Manon',
-    'shana': 'Shana', 'oceane': 'Océane'
-};
+// ── Source de vérité employés (chargée depuis Firestore au démarrage) ──
+let employeeNames = {};       // { id: 'Prénom affiché' }
+let PLANNING_EMPLOYEES = [];  // ['dylan', 'oceane', ...]
+const PRENOM_DISPLAY = {};    // { id: 'Prénom affiché' } — alias de employeeNames
 
-const PLANNING_EMPLOYEES = [
-    'carlos', 'caroline', 'chloe', 'dylan', 'isabelle', 'jeremie',
-    'jocelyne', 'manon', 'maxime', 'mina', 'nadia', 'nadjet',
-    'oceane', 'remy', 'samuel', 'sandra', 'stephane', 'shana'
-];
+async function loadEmployeesFromFirestore() {
+    try {
+        const snap = await getDocs(collection(db, 'employees'));
+        snap.forEach(d => {
+            const id = d.id;
+            const data = d.data();
+            const prenom = data.prenom || id.charAt(0).toUpperCase() + id.slice(1);
+            employeeNames[id] = prenom;
+            PRENOM_DISPLAY[id] = prenom;
+            if (!PLANNING_EMPLOYEES.includes(id)) PLANNING_EMPLOYEES.push(id);
+        });
+    } catch (e) {
+        console.warn('Erreur chargement employés:', e);
+    }
+}
 
 function normalizeNom(str) {
     return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
@@ -6995,7 +6984,7 @@ window.supprimerPlanning = async function (date) {
 
 let _empEditId = null; // null = création, string = édition
 
-window.switchParamTab = function(tab) {
+window.switchParamTab = function (tab) {
     document.querySelectorAll('.param-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.param === tab));
     document.getElementById('param-section-employes').style.display = '';
 };
@@ -7018,7 +7007,7 @@ async function chargerEmployes() {
         const employes = [];
         snap.forEach(d => employes.push({ id: d.id, ...d.data() }));
         employes.sort((a, b) => (a.prenom || a.id).localeCompare(b.prenom || b.id, 'fr'));
-tbody.innerHTML = employes.map(emp => {
+        tbody.innerHTML = employes.map(emp => {
             const actifBadge = emp.actif !== false
                 ? `<span style="background:#d1fae5;color:#065f46;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Actif</span>`
                 : `<span style="background:#f3f4f6;color:#9ca3af;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Inactif</span>`;
@@ -7146,7 +7135,7 @@ window.toggleActifEmploye = async function (id, estActif) {
     }
 };
 
-window.supprimerEmploye = async function(id, prenom) {
+window.supprimerEmploye = async function (id, prenom) {
     await new Promise(resolve => {
         document.getElementById('toast-confirm-delete-emp')?.remove();
         const toast = document.createElement('div');
@@ -7179,7 +7168,7 @@ window.supprimerEmploye = async function(id, prenom) {
         try {
             await deleteDoc(doc(db, 'employees', id));
             await chargerEmployes();
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
     });
@@ -7191,9 +7180,10 @@ window.togglePinVisibility = function (inputId, btn) {
     input.type = isPassword ? 'text' : 'password';
     btn.querySelector('i').className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
 };
-
-function initPlanningTab() {
+async function initPlanningTab() {
     planningEnCours = null;
+    // PLANNING_EMPLOYEES et PRENOM_DISPLAY déjà alimentés par loadEmployeesFromFirestore()
+    // au démarrage — pas besoin de recharger ici
     loadPlanning();
     chargerBandeauIndispos();
 }
