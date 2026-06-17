@@ -106,18 +106,18 @@ async function setupDashboard() {
     checkAuth();
     await loadEmployeesFromFirestore();
 
-// Peupler dynamiquement tous les <select> d'employés
-const empOptions = Object.entries(employeeNames)
-    .sort(([, a], [, b]) => a.localeCompare(b, 'fr'))
-    .map(([id, nom]) => `<option value="${id}">${nom}</option>`)
-    .join('');
+    // Peupler dynamiquement tous les <select> d'employés
+    const empOptions = Object.entries(employeeNames)
+        .sort(([, a], [, b]) => a.localeCompare(b, 'fr'))
+        .map(([id, nom]) => `<option value="${id}">${nom}</option>`)
+        .join('');
 
-['filterEmployee', 'saisieEmp'].forEach(selectId => {
-    const sel = document.getElementById(selectId);
-    if (!sel) return;
-    const firstOption = sel.querySelector('option[value=""]');
-    sel.innerHTML = (firstOption ? firstOption.outerHTML : '<option value="">Tous les employés</option>') + empOptions;
-});
+    ['filterEmployee', 'saisieEmp'].forEach(selectId => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        const firstOption = sel.querySelector('option[value=""]');
+        sel.innerHTML = (firstOption ? firstOption.outerHTML : '<option value="">Tous les employés</option>') + empOptions;
+    });
     setupEventListeners();
     setupSearch();
 
@@ -5145,11 +5145,16 @@ function parserPlanningTexte(texte) {
         'planning jour', 'date / nb heures', 'prénom et son binôme',
         'prenom et son binome', 'total général', 'total general'
     ];
-
     const isLigneEmploye = (texte) => {
-        const t = normalizeNom(texte);
         if (/en\s+bin[oô]me\s+avec/i.test(texte)) return true;
-        return PLANNING_EMPLOYEES.some(emp => t === emp || t.startsWith(emp + ' '));
+        const t = normalizeNom(texte);
+        // Correspondance exacte sur l'ID Firestore
+        if (PLANNING_EMPLOYEES.some(emp => t === emp || t.startsWith(emp + ' '))) return true;
+        // Correspondance sur le prénom affiché (ex: "Issy" → PRENOM_DISPLAY["issy"] = "Issy")
+        return Object.entries(PRENOM_DISPLAY).some(([id, prenom]) => {
+            const normPrenom = normalizeNom(prenom);
+            return t === normPrenom || t.startsWith(normPrenom + ' ');
+        });
     };
 
     const flushSection = () => {
@@ -5212,7 +5217,26 @@ function parserPlanningTexte(texte) {
 
     return result;
 }
+// ── MODE DEBUG PLANNING ──────────────────────────────────────────────────────
+// true  → console uniquement, aucune écriture Firestore, aucune notif ntfy
+// false → comportement normal (production)
+let DEBUG_PLANNING = false;
 
+window.toggleDebugPlanning = function () {
+    DEBUG_PLANNING = !DEBUG_PLANNING;
+    const btn = document.getElementById('btn-debug-planning');
+    if (btn) {
+        btn.style.background = DEBUG_PLANNING ? 'linear-gradient(135deg,#f59e0b,#d97706)' : '';
+        btn.style.color = DEBUG_PLANNING ? 'white' : '';
+        btn.innerHTML = DEBUG_PLANNING
+            ? '<i class="fas fa-bug"></i> DEBUG ON'
+            : '<i class="fas fa-bug"></i> Debug';
+    }
+    showNotification(
+        DEBUG_PLANNING ? '🐛 Mode debug activé — aucune écriture Firestore' : '✅ Mode debug désactivé — production',
+        DEBUG_PLANNING ? 'error' : 'success'
+    );
+};
 // ── État temporaire du planning en cours d'édition ──
 let planningEnCours = null;
 
@@ -5542,17 +5566,28 @@ function afficherReviewDansModal(planning) {
             ${empHTML}
         </div>
     `;
-
-    footer.innerHTML = `
-        <div style="display:flex;gap:0.75rem;">
-            <button onclick="planningEnCours=null;ouvrirModalImportPlanning()"
-                style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.75rem 1rem;font-weight:600;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;">
-                <i class="fas fa-arrow-left"></i> Retour
-            </button>
-            <button id="btn-envoyer-planning" onclick="publierPlanningDepuisReview()"
-                style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.75rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
-                <i class="fas fa-paper-plane"></i> Envoyer le planning
-            </button>
+footer.innerHTML = `
+        <div style="display:flex;gap:0.75rem;flex-direction:column;">
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fef3c7;border:1.5px solid #fcd34d;border-radius:10px;cursor:pointer;user-select:none;">
+                <input type="checkbox" id="chk-annule-remplace"
+                    style="accent-color:#f59e0b;width:16px;height:16px;cursor:pointer;">
+                <div>
+                    <span style="font-size:0.85rem;font-weight:700;color:#92400e;">Annule et remplace</span>
+                    <span style="font-size:0.75rem;color:#b45309;display:block;margin-top:1px;">
+                        Notifie uniquement les employés dont le planning a changé
+                    </span>
+                </div>
+            </label>
+            <div style="display:flex;gap:0.75rem;">
+                <button onclick="planningEnCours=null;ouvrirModalImportPlanning()"
+                    style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.75rem 1rem;font-weight:600;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+                <button id="btn-envoyer-planning" onclick="publierPlanningDepuisReview()"
+                    style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.75rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                    <i class="fas fa-paper-plane"></i> Envoyer le planning
+                </button>
+            </div>
         </div>
     `;
 }
@@ -6234,17 +6269,17 @@ window.publierPlanningDepuisReview = async function () {
         }
     });
 
+    const annuleRemplace = document.getElementById('chk-annule-remplace')?.checked || false;
+
     // ── Vérification indisponibilités week-end ──
-    const dateStr = planningEnCours.date; // 'YYYY-MM-DD'
+    const dateStr = planningEnCours.date;
     if (dateStr) {
         const [py, pm, pd] = dateStr.split('-').map(Number);
         const planningDate = new Date(py, pm - 1, pd);
-        const dayOfWeek = planningDate.getDay(); // 0=dim, 6=sam
+        const dayOfWeek = planningDate.getDay();
 
         if (dayOfWeek === 0 || dayOfWeek === 6) {
-            // Utiliser getDoc/doc déjà importés en haut de dashboard.js
             const conflits = [];
-
             await Promise.all(
                 Object.entries(planningEnCours.employes).map(async ([prenom, emp]) => {
                     if (emp.absence) return;
@@ -6265,7 +6300,7 @@ window.publierPlanningDepuisReview = async function () {
 
             if (conflits.length > 0) {
                 afficherPopupConflitIndispo(conflits, planningDate);
-                return; // BLOQUANT — on n'envoie pas
+                return;
             }
         }
     }
@@ -6278,17 +6313,17 @@ window.publierPlanningDepuisReview = async function () {
         btn.style.opacity = '0.85';
     }
 
-    await publierPlanning(planningEnCours);
+    await publierPlanning(planningEnCours, annuleRemplace);
 };
 
-async function publierPlanning(planning) {
+async function publierPlanning(planning, annuleRemplace = false) {
     const date = planning.date || null;
     if (!date) { showNotification('Date manquante', 'error'); return; }
 
     try {
-        // Détecte si le planning existait déjà avant d'écraser
         const existingSnap = await getDoc(doc(db, 'plannings', date));
         const isUpdate = existingSnap.exists();
+        const ancienEmployes = isUpdate ? (existingSnap.data().employes || {}) : {};
 
         const employesData = {};
         for (const [prenom, emp] of Object.entries(planning.employes)) {
@@ -6308,30 +6343,130 @@ async function publierPlanning(planning) {
             };
         }
 
+        // ── MODE DEBUG ──────────────────────────────────────────
+        if (DEBUG_PLANNING) {
+            console.group('🐛 DEBUG PLANNING — ' + date);
+            console.log('📅 Date :', date);
+            console.log('🔄 isUpdate (planning existait déjà) :', isUpdate);
+            console.log('📋 Annule et remplace :', annuleRemplace);
+            console.log('👥 Employés parsés :', JSON.parse(JSON.stringify(employesData)));
+
+            if (annuleRemplace && isUpdate) {
+                const diff = _diffEmployes(planning.employes, ancienEmployes);
+                console.log('🔍 Diff — employés modifiés :', Object.keys(diff).length ? diff : '(aucun changement)');
+            }
+
+            // Simuler les notifs
+            let employesANotifier = planning.employes;
+            if (annuleRemplace && isUpdate) {
+                employesANotifier = _diffEmployes(planning.employes, ancienEmployes);
+            }
+
+            console.group('📣 Notifications ntfy simulées');
+            const [y, m, d] = date.split('-').map(Number);
+            const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            const moisNum = m;
+            const emojiSaison = moisNum >= 3 && moisNum <= 5 ? '🌸' : moisNum >= 6 && moisNum <= 8 ? '☀️' : moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
+            const corps = (isUpdate && annuleRemplace)
+                ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
+                : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
+
+            Object.keys(employesANotifier).forEach(prenom => {
+                console.log(`  → topic : planning-${prenom}`);
+                console.log(`    title : Propre Eco Assistant`);
+                console.log(`    body  : ${corps}`);
+                console.log(`    tag   : ${(isUpdate && annuleRemplace) ? 'repeat' : 'calendar'}`);
+            });
+            console.groupEnd();
+
+            if (Object.keys(employesANotifier).length === 0) {
+                console.warn('⚠️ Aucun employé à notifier — planning identique ?');
+            }
+
+            console.log('💾 Firestore : AUCUNE écriture (mode debug)');
+            console.groupEnd();
+
+            showNotification(`🐛 Debug — ${Object.keys(employesANotifier).length} notif(s) simulée(s). Voir la console.`, 'error');
+
+            planningEnCours = null;
+            document.getElementById('modal-import-planning')?.remove();
+            document.getElementById('modal-review-planning')?.remove();
+            return;
+        }
+        // ────────────────────────────────────────────────────────
+
         await setDoc(doc(db, 'plannings', date), {
             date,
             importedAt: new Date(),
             source: 'dashboard-paste',
-            annuleRemplace: true,
             employes: employesData
         });
 
-        envoyerNotifPlanning(date, Object.keys(planning.employes).length, planning.employes, isUpdate);
+        let employesANotifier = planning.employes;
+        if (annuleRemplace && isUpdate) {
+            employesANotifier = _diffEmployes(planning.employes, ancienEmployes);
+            if (Object.keys(employesANotifier).length === 0) {
+                showNotification('Aucun changement détecté — aucune notification envoyée', 'success');
+                planningEnCours = null;
+                document.getElementById('modal-import-planning')?.remove();
+                document.getElementById('modal-review-planning')?.remove();
+                loadPlanning();
+                return;
+            }
+        }
+
+        envoyerNotifPlanning(date, Object.keys(employesANotifier).length, employesANotifier, isUpdate && annuleRemplace);
 
         planningEnCours = null;
         const pasteZone = document.getElementById('planning-paste-zone');
         if (pasteZone) pasteZone.value = '';
-        document.getElementById('planning-import-feedback')?.style && (document.getElementById('planning-import-feedback').style.display = 'none');
         document.getElementById('modal-import-planning')?.remove();
         document.getElementById('modal-review-planning')?.remove();
 
-        afficherModalPlanningPublie(date, Object.keys(planning.employes).length);
+        afficherModalPlanningPublie(date, Object.keys(employesANotifier).length);
         loadPlanning();
 
     } catch (e) {
         console.error('Erreur publication:', e);
         showNotification('Erreur : ' + e.message, 'error');
     }
+}
+
+// Compare nouveau vs ancien planning — retourne les employés dont quelque chose a changé
+function _diffEmployes(nouveauEmployes, ancienEmployes) {
+    const changes = {};
+
+    for (const [prenom, empNouv] of Object.entries(nouveauEmployes)) {
+        const empAnc = ancienEmployes[prenom];
+
+        // Employé absent de l'ancien planning → toujours notifier
+        if (!empAnc) { changes[prenom] = empNouv; continue; }
+
+        // Absence a changé
+        if ((empNouv.absence || null) !== (empAnc.absence || null)) { changes[prenom] = empNouv; continue; }
+
+        // Nombre de chantiers différent
+        const chantiersNouv = empNouv.chantiers || [];
+        const chantiersAnc = empAnc.chantiers || [];
+        if (chantiersNouv.length !== chantiersAnc.length) { changes[prenom] = empNouv; continue; }
+
+        // Comparer chantier par chantier (nom + heures + annotations)
+        const aChange = chantiersNouv.some((c, i) => {
+            const a = chantiersAnc[i];
+            if (!a) return true;
+            if (c.nom !== a.nom) return true;
+            if (c.heures !== a.heures) return true;
+            // Annotations : comparer le contenu
+            const annNouv = (c.annotations || []).filter(x => x.trim()).join('|');
+            const annAnc = (a.annotations || []).filter(x => x.trim()).join('|');
+            if (annNouv !== annAnc) return true;
+            return false;
+        });
+
+        if (aChange) changes[prenom] = empNouv;
+    }
+
+    return changes;
 }
 function afficherModalPlanningPublie(date, nbEmployes) {
     const [y, m, d] = date.split('-').map(Number);
