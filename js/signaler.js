@@ -521,7 +521,7 @@ form.addEventListener('submit', async (e) => {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
                         headers: {
-                            'Title': `🚨 Signalement - ${employee} - ${copro}`,
+                            'Title': `Signalement - ${employee} - ${copro}`,
                             'Click': 'https://dydy-ashborn.github.io/index.html',
                             'Priority': 'default'
                         },
@@ -554,7 +554,7 @@ form.addEventListener('submit', async (e) => {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
                         headers: {
-                            'Title': `📦 Consommable - ${employee} - ${copro}`,
+                            'Title': `Consommable - ${employee} - ${copro}`,
                             'Click': 'https://dydy-ashborn.github.io/index.html',
                             'Priority': 'default'
                         },

@@ -600,7 +600,7 @@ form.addEventListener('submit', async (e) => {
    await fetch("https://ntfy.sh/signalement-propre-eco", {
     method: "POST",
     headers: {
-        'Title': `📸 Photos chantier - ${agent} - ${chantier}`,
+        'Title': `Photos chantier - ${agent} - ${chantier}`,
         'Click': 'https://dydy-ashborn.github.io/index.html',
         'Priority': 'default'
     },
