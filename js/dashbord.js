@@ -129,6 +129,10 @@ async function setupDashboard() {
     const weekEndInput = document.getElementById('filterWeekEnd');
     if (weekStartInput) weekStartInput.value = weekString;
     if (weekEndInput) weekEndInput.value = weekString;
+    // Auto-navigation via paramètre URL (?tab=signalements etc)
+const urlParams = new URLSearchParams(window.location.search);
+const tabParam = urlParams.get('tab');
+if (tabParam) switchTab(tabParam);
 }
 
 function getWeekNumber(date) {

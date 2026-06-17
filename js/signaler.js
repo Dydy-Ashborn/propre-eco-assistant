@@ -517,12 +517,15 @@ form.addEventListener('submit', async (e) => {
             const message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
 
             if (notif == false) {
-             
-
                 try {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
-                        body: message
+                        headers: {
+                            'Title': `Signalement - ${employee} — ${copro}`,
+                            'Click': 'https://dydy-ashborn.github.io/pages/dashbord.html?tab=signalements',
+                            'Content-Type': 'text/plain; charset=utf-8'
+                        },
+                        body: description
                     });
                 } catch (ntfyError) {
                     console.error("Erreur notification ntfy:", ntfyError);
@@ -546,15 +549,16 @@ form.addEventListener('submit', async (e) => {
                 createdAt: new Date()
             });
 
-const message = `📦 Consommable utilisé par ${employee} sur ${copro}\n${consomType} (x${consomQuantite})`;
-
             if (notif == false) {
-            
-
                 try {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
-                        body: message
+                        headers: {
+                            'Title': `Consommable - ${employee} — ${copro}`,
+                            'Click': 'https://dydy-ashborn.github.io/pages/dashbord.html?tab=consommables',
+                            'Content-Type': 'text/plain; charset=utf-8'
+                        },
+                        body: `${consomType} (x${consomQuantite})`
                     });
                 } catch (ntfyError) {
                     console.error("Erreur notification ntfy:", ntfyError);

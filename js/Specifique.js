@@ -601,6 +601,7 @@ form.addEventListener('submit', async (e) => {
         method: "POST",
         headers: {
             'Title': `Photos chantier - ${agent} — ${chantier}`,
+            'Click': 'https://dydy-ashborn.github.io/pages/dashbord.html?tab=photos_chantiers',
             'Content-Type': 'text/plain; charset=utf-8'
         },
         body: description || ' '
