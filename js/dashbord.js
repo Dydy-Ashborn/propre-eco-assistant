@@ -130,9 +130,9 @@ async function setupDashboard() {
     if (weekStartInput) weekStartInput.value = weekString;
     if (weekEndInput) weekEndInput.value = weekString;
     // Auto-navigation via paramètre URL (?tab=signalements etc)
-const urlParams = new URLSearchParams(window.location.search);
-const tabParam = urlParams.get('tab');
-if (tabParam) switchTab(tabParam);
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) switchTab(tabParam);
 }
 
 function getWeekNumber(date) {
@@ -6633,10 +6633,10 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
             const response = await fetch(`https://ntfy.sh/${topic}`, {
                 method: 'POST',
                 headers: {
-                    'Title': titre,
+                    'Title': 'Propre Eco Assistant',
+                    'Click': 'https://dydy-ashborn.github.io/index.html',
                     'Priority': 'default',
-                    'Tags': isUpdate ? 'repeat' : 'calendar',
-                    'Content-Type': 'text/plain; charset=utf-8'
+                    'Tags': isUpdate ? 'repeat' : 'calendar'
                 },
                 body: corps
             });

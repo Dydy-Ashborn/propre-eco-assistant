@@ -521,9 +521,9 @@ form.addEventListener('submit', async (e) => {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
                         headers: {
-                            'Title': `Signalement - ${employee} — ${copro}`,
-                            'Click': 'https://dydy-ashborn.github.io/pages/dashbord.html?tab=signalements',
-                            'Content-Type': 'text/plain; charset=utf-8'
+                            'Title': `🚨 Signalement - ${employee} - ${copro}`,
+                            'Click': 'https://dydy-ashborn.github.io/index.html',
+                            'Priority': 'default'
                         },
                         body: description
                     });
@@ -554,9 +554,9 @@ form.addEventListener('submit', async (e) => {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
                         headers: {
-                            'Title': `Consommable - ${employee} — ${copro}`,
-                            'Click': 'https://dydy-ashborn.github.io/pages/dashbord.html?tab=consommables',
-                            'Content-Type': 'text/plain; charset=utf-8'
+                            'Title': `📦 Consommable - ${employee} - ${copro}`,
+                            'Click': 'https://dydy-ashborn.github.io/index.html',
+                            'Priority': 'default'
                         },
                         body: `${consomType} (x${consomQuantite})`
                     });

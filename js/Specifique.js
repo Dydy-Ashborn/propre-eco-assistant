@@ -597,15 +597,15 @@ form.addEventListener('submit', async (e) => {
 
         // Envoi notification ntfy
      try {
-    await fetch("https://ntfy.sh/signalement-propre-eco", {
-        method: "POST",
-        headers: {
-            'Title': `Photos chantier - ${agent} — ${chantier}`,
-            'Click': 'https://dydy-ashborn.github.io/pages/dashbord.html?tab=photos_chantiers',
-            'Content-Type': 'text/plain; charset=utf-8'
-        },
-        body: description || ' '
-    });
+   await fetch("https://ntfy.sh/signalement-propre-eco", {
+    method: "POST",
+    headers: {
+        'Title': `📸 Photos chantier - ${agent} - ${chantier}`,
+        'Click': 'https://dydy-ashborn.github.io/index.html',
+        'Priority': 'default'
+    },
+    body: description || 'Nouvelles photos disponibles'
+});
 } catch (ntfyError) {
     console.error("Erreur notification ntfy:", ntfyError);
 }
