@@ -596,26 +596,18 @@ form.addEventListener('submit', async (e) => {
         });
 
         // Envoi notification ntfy
-        let message = `📸 Nouvelles photos de chantier de ${agent}\n🗏️ Chantier: ${chantier}`;
-
-        if (description) {
-            message += `\n📝 ${description}`;
-        }
-
-        message += `\n📊 ${photos.length} photo${photos.length > 1 ? 's' : ''} ajoutée${photos.length > 1 ? 's' : ''}`;
-
-        if (photos.length > 0 && photos[0].url) {
-            message += `\n📸 ${photos[0].url}`;
-        }
-
-        try {
-            await fetch("https://ntfy.sh/signalement-propre-eco", {
-                method: "POST",
-                body: message
-            });
-        } catch (ntfyError) {
-            console.error("Erreur notification ntfy:", ntfyError);
-        }
+     try {
+    await fetch("https://ntfy.sh/signalement-propre-eco", {
+        method: "POST",
+        headers: {
+            'Title': `Photos chantier - ${agent} — ${chantier}`,
+            'Content-Type': 'text/plain; charset=utf-8'
+        },
+        body: description || ' '
+    });
+} catch (ntfyError) {
+    console.error("Erreur notification ntfy:", ntfyError);
+}
 
         console.log('Envoi réussi, masquage loading...');
         hideLoading();
@@ -624,7 +616,7 @@ form.addEventListener('submit', async (e) => {
         setTimeout(() => {
             console.log('Masquage succès et reset formulaire...');
             hideSuccess();
-            
+
             form.reset();
             selectedFiles = [];
             compressedFiles = [];
@@ -635,11 +627,11 @@ form.addEventListener('submit', async (e) => {
             }
         }, 3000);
 
-  } catch (err) {
+    } catch (err) {
         console.error("Erreur:", err);
         hideLoading();
         showError(err.message || 'Erreur lors de l\'envoi');
-        
+
         setTimeout(() => {
             hideError();
         }, 5000);

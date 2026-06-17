@@ -514,12 +514,10 @@ form.addEventListener('submit', async (e) => {
                 createdAt: new Date()
             });
 
-            let message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
+            const message = `🚨 Nouveau signalement de ${employee} sur ${copro}\n${description}`;
 
             if (notif == false) {
-                if (images.length > 0 && images[0].url) {
-                    message += `\n📸 ${images[0].url}`;
-                }
+             
 
                 try {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
@@ -548,12 +546,10 @@ form.addEventListener('submit', async (e) => {
                 createdAt: new Date()
             });
 
-            let message = `📦 Consommable utilisé par ${employee} sur ${copro}\n${consomType} (x${consomQuantite})`;
+const message = `📦 Consommable utilisé par ${employee} sur ${copro}\n${consomType} (x${consomQuantite})`;
 
             if (notif == false) {
-                if (images.length > 0 && images[0].url) {
-                    message += `\n📸 ${images[0].url}`;
-                }
+            
 
                 try {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
