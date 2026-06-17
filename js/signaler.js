@@ -521,11 +521,11 @@ form.addEventListener('submit', async (e) => {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
                         headers: {
-                            'Title': `Signalement - ${employee} - ${copro}`,
+                            'Title': 'Propre Eco Assistant',
                             'Click': 'https://dydy-ashborn.github.io/index.html',
                             'Priority': 'default'
                         },
-                        body: description
+                        body: `🚨 Signalement de ${employee} sur ${copro}\n${description}`
                     });
                 } catch (ntfyError) {
                     console.error("Erreur notification ntfy:", ntfyError);
@@ -554,11 +554,11 @@ form.addEventListener('submit', async (e) => {
                     await fetch("https://ntfy.sh/signalement-propre-eco", {
                         method: "POST",
                         headers: {
-                            'Title': `Consommable - ${employee} - ${copro}`,
+                            'Title': 'Propre Eco Assistant',
                             'Click': 'https://dydy-ashborn.github.io/index.html',
                             'Priority': 'default'
                         },
-                        body: `${consomType} (x${consomQuantite})`
+                        body: `📦 Consommable de ${employee} sur ${copro}\n${consomType} (x${consomQuantite})`
                     });
                 } catch (ntfyError) {
                     console.error("Erreur notification ntfy:", ntfyError);

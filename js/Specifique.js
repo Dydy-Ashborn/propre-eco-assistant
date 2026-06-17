@@ -596,19 +596,19 @@ form.addEventListener('submit', async (e) => {
         });
 
         // Envoi notification ntfy
-     try {
-   await fetch("https://ntfy.sh/signalement-propre-eco", {
-    method: "POST",
-    headers: {
-        'Title': `Photos chantier - ${agent} - ${chantier}`,
-        'Click': 'https://dydy-ashborn.github.io/index.html',
-        'Priority': 'default'
-    },
-    body: description || 'Nouvelles photos disponibles'
-});
-} catch (ntfyError) {
-    console.error("Erreur notification ntfy:", ntfyError);
-}
+        try {
+            await fetch("https://ntfy.sh/signalement-propre-eco", {
+                method: "POST",
+                headers: {
+                    'Title': 'Propre Eco Assistant',
+                    'Click': 'https://dydy-ashborn.github.io/index.html',
+                    'Priority': 'default'
+                },
+                body: description ? `📸 Photos de ${agent} - ${chantier}\n${description}` : `📸 Photos de ${agent} - ${chantier}`
+            });
+        } catch (ntfyError) {
+            console.error("Erreur notification ntfy:", ntfyError);
+        }
 
         console.log('Envoi réussi, masquage loading...');
         hideLoading();
