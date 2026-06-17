@@ -522,7 +522,7 @@ form.addEventListener('submit', async (e) => {
                         method: "POST",
                         headers: {
                             'Title': 'Propre Eco Assistant',
-                            'Click': 'https://dydy-ashborn.github.io/index.html',
+                            'Click': 'https://dydy-ashborn.github.io/propre-eco-assistant/pages/dashbord.html?tab=signalements',
                             'Priority': 'default'
                         },
                         body: `🚨 Signalement de ${employee} sur ${copro}\n${description}`
@@ -555,7 +555,7 @@ form.addEventListener('submit', async (e) => {
                         method: "POST",
                         headers: {
                             'Title': 'Propre Eco Assistant',
-                            'Click': 'https://dydy-ashborn.github.io/index.html',
+                            'Click': 'https://dydy-ashborn.github.io/propre-eco-assistant/pages/dashbord.html?tab=consommables',
                             'Priority': 'default'
                         },
                         body: `📦 Consommable de ${employee} sur ${copro}\n${consomType} (x${consomQuantite})`

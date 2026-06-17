@@ -601,7 +601,7 @@ form.addEventListener('submit', async (e) => {
                 method: "POST",
                 headers: {
                     'Title': 'Propre Eco Assistant',
-                    'Click': 'https://dydy-ashborn.github.io/index.html',
+                    'Click': 'https://dydy-ashborn.github.io/propre-eco-assistant/pages/dashbord.html?tab=photos',
                     'Priority': 'default'
                 },
                 body: description ? `📸 Photos de ${agent} - ${chantier}\n${description}` : `📸 Photos de ${agent} - ${chantier}`

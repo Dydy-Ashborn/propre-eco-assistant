@@ -6634,7 +6634,7 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
                 method: 'POST',
                 headers: {
                     'Title': 'Propre Eco Assistant',
-                    'Click': 'https://dydy-ashborn.github.io/index.html',
+                    'Click': 'https://dydy-ashborn.github.io/propre-eco-assistant/',
                     'Priority': 'default',
                     'Tags': isUpdate ? 'repeat' : 'calendar'
                 },
