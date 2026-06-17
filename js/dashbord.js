@@ -5566,7 +5566,7 @@ function afficherReviewDansModal(planning) {
             ${empHTML}
         </div>
     `;
-footer.innerHTML = `
+    footer.innerHTML = `
         <div style="display:flex;gap:0.75rem;flex-direction:column;">
             <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fef3c7;border:1.5px solid #fcd34d;border-radius:10px;cursor:pointer;user-select:none;">
                 <input type="checkbox" id="chk-annule-remplace"
@@ -6832,8 +6832,9 @@ function renderPlanningList() {
     const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
     const allFiltered = getPlanningFiltered();
     const todayItems = allFiltered.filter(d => d.date === todayStr);
-    const restItems = allFiltered.filter(d => d.date !== todayStr);
-    const filtered = [...todayItems, ...restItems];
+    const futureItems = allFiltered.filter(d => d.date > todayStr).sort((a, b) => a.date.localeCompare(b.date));
+    const pastItems = allFiltered.filter(d => d.date < todayStr).sort((a, b) => b.date.localeCompare(a.date));
+    const filtered = [...todayItems, ...futureItems, ...pastItems];
     const total = filtered.length;
     const totalPages = Math.ceil(total / PLANNING_PER_PAGE);
     const start = (planningPage - 1) * PLANNING_PER_PAGE;
