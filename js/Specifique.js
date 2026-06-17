@@ -28,35 +28,7 @@ const savedAgent = localStorage.getItem('agent-signature');
 
 if (savedAgent) {
     agentInput.value = savedAgent;
-    agentInput.readOnly = true;
-    agentInput.style.backgroundColor = '#f0f8ff';
-
-    const agentGroup = agentInput.parentElement;
-    const changeButton = document.createElement('div');
-    changeButton.className = 'signature-controls';
-    changeButton.innerHTML = `
-        <div class="signature-saved">
-            <i class="fas fa-check-circle"></i>
-            Agent sauvegardé
-        </div>
-        <button type="button" class="change-signature" onclick="changeAgent()">
-            <i class="fas fa-edit"></i> Modifier
-        </button>
-    `;
-    agentGroup.appendChild(changeButton);
 }
-
-window.changeAgent = function () {
-    agentInput.readOnly = false;
-    agentInput.style.backgroundColor = '';
-    agentInput.focus();
-    agentInput.select();
-
-    const controls = document.querySelector('.signature-controls');
-    if (controls) {
-        controls.remove();
-    }
-};
 
 agentInput.addEventListener('blur', function () {
     if (this.value.trim()) {
@@ -648,7 +620,6 @@ form.addEventListener('submit', async (e) => {
         console.log('Envoi réussi, masquage loading...');
         hideLoading();
         console.log('Affichage succès...');
-        showSuccess();
 
         setTimeout(() => {
             console.log('Masquage succès et reset formulaire...');

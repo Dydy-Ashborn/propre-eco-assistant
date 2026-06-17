@@ -28,43 +28,10 @@ const API_KEY = "7f0e4433bcc19c0f1408f57919fbcf14";
 const signatureInput = document.getElementById('signature-input');
 const savedSignature = localStorage.getItem('agent-signature');
 
-// Charger la signature sauvegardée au chargement de la page
 if (savedSignature) {
     signatureInput.value = savedSignature;
-    signatureInput.readOnly = true;
-    signatureInput.style.backgroundColor = '#f0f8ff';
-
-    // Ajouter un bouton pour changer la signature
-    const signatureGroup = signatureInput.parentElement;
-    const changeButton = document.createElement('div');
-    changeButton.className = 'signature-controls';
-    changeButton.innerHTML = `
-        <div class="signature-saved">
-            <i class="fas fa-check-circle"></i>
-            Signature sauvegardée
-        </div>
-        <button type="button" class="change-signature" onclick="changeSignature()">
-            <i class="fas fa-edit"></i> Modifier
-        </button>
-    `;
-    signatureGroup.appendChild(changeButton);
 }
 
-// Fonction pour permettre de changer la signature
-window.changeSignature = function () {
-    signatureInput.readOnly = false;
-    signatureInput.style.backgroundColor = '';
-    signatureInput.focus();
-    signatureInput.select();
-
-    // Supprimer les contrôles
-    const controls = document.querySelector('.signature-controls');
-    if (controls) {
-        controls.remove();
-    }
-};
-
-// Sauvegarder la signature quand l'utilisateur tape
 signatureInput.addEventListener('blur', function () {
     if (this.value.trim()) {
         localStorage.setItem('agent-signature', this.value.trim());
@@ -612,10 +579,8 @@ form.addEventListener('submit', async (e) => {
             selectedFiles = [];
             compressedFiles = [];
             imagePreview.innerHTML = '';
-
-            if (savedSignature) {
-                signatureInput.value = savedSignature;
-            }
+            const currentAgent = localStorage.getItem('agent-signature');
+            if (currentAgent) signatureInput.value = currentAgent;
 
             typeSignalement.value = 'probleme';
             problemeFields.style.display = 'block';
