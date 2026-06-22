@@ -5140,6 +5140,34 @@ function parseDatePlanning(str) {
 // Parser épuré — extrait employés + chantiers, zéro détection d'annotations
 function parserPlanningTexte(texte) {
     const result = { date: null, employes: {} };
+
+    // ── Préprocesseur : détecter format mono-colonne (pas de tabs) ──
+    let lignesBrutes = texte.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+    const hasTabs = lignesBrutes.some(l => l.includes('\t'));
+
+    if (!hasTabs) {
+        console.log('⚠️ Parser planning : aucun tab détecté — mode mono-colonne activé');
+        const paired = [];
+        for (let i = 0; i < lignesBrutes.length; i++) {
+            const current = lignesBrutes[i];
+            const next = (lignesBrutes[i + 1] || '').trim();
+
+            // La ligne suivante est un nombre (heures) ?
+            const nextIsNumber = /^\d+([.,]\d+)?$/.test(next);
+            // La ligne suivante est une date (ex: 27-juin, 3/juil) ?
+            const nextIsDate = /^\d{1,2}[-\/][a-zéûôàèùï]+$/i.test(next);
+
+            if (next && (nextIsNumber || nextIsDate)) {
+                paired.push(current + '\t' + next);
+                i++; // skip la ligne suivante, déjà consommée
+            } else {
+                paired.push(current);
+            }
+        }
+        texte = paired.join('\n');
+    }
+
+    // ── Parser principal (identique — travaille sur texte avec tabs) ──
     const lines = texte.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
 
     let currentSection = null;
@@ -5149,12 +5177,11 @@ function parserPlanningTexte(texte) {
         'planning jour', 'date / nb heures', 'prénom et son binôme',
         'prenom et son binome', 'total général', 'total general'
     ];
+
     const isLigneEmploye = (texte) => {
         if (/en\s+bin[oô]me\s+avec/i.test(texte)) return true;
         const t = normalizeNom(texte);
-        // Correspondance exacte sur l'ID Firestore
         if (PLANNING_EMPLOYEES.some(emp => t === emp || t.startsWith(emp + ' '))) return true;
-        // Correspondance sur le prénom affiché (ex: "Issy" → PRENOM_DISPLAY["issy"] = "Issy")
         return Object.entries(PRENOM_DISPLAY).some(([id, prenom]) => {
             const normPrenom = normalizeNom(prenom);
             return t === normPrenom || t.startsWith(normPrenom + ' ');
@@ -5243,7 +5270,62 @@ window.toggleDebugPlanning = function () {
 };
 // ── État temporaire du planning en cours d'édition ──
 let planningEnCours = null;
+let _ancienPlanningData = null; // Planning Firestore chargé au toggle "annule et remplace"
 
+async function _chargerAncienPlanning(date) {
+    if (!date) return null;
+    try {
+        const snap = await getDoc(doc(db, 'plannings', date));
+        if (!snap.exists()) return null;
+        return snap.data();
+    } catch (e) {
+        console.error('Erreur chargement ancien planning:', e);
+        return null;
+    }
+}
+
+window._onToggleAnnuleRemplace = async function (checkbox) {
+    if (!checkbox.checked) {
+        _ancienPlanningData = null;
+        return;
+    }
+
+    const date = planningEnCours?.date;
+    if (!date) {
+        checkbox.checked = false;
+        showNotification('Date du planning non détectée', 'error');
+        return;
+    }
+
+    // Overlay de chargement sur la modale
+    const card = document.getElementById('import-planning-card') || checkbox.closest('[style*="border-radius"]');
+    let overlay = document.getElementById('annule-remplace-loading');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'annule-remplace-loading';
+        overlay.style.cssText = 'position:absolute;inset:0;background:rgba(255,255,255,0.92);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:20px;';
+        overlay.innerHTML = `
+            <div style="width:48px;height:48px;background:#fef3c7;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-spinner fa-spin" style="color:#f59e0b;font-size:1.2rem;"></i>
+            </div>
+            <div style="font-size:0.95rem;font-weight:700;color:#111827;">Chargement du planning existant…</div>
+            <div style="font-size:0.78rem;color:#6b7280;">Comparaison en préparation</div>`;
+        if (card) { card.style.position = 'relative'; card.appendChild(overlay); }
+    }
+
+    const ancien = await _chargerAncienPlanning(date);
+    overlay.remove();
+
+    if (!ancien) {
+        checkbox.checked = false;
+        _ancienPlanningData = null;
+        showNotification('Aucun planning existant pour cette date — mode "annule et remplace" impossible', 'error');
+        return;
+    }
+
+    _ancienPlanningData = ancien;
+    showNotification(`Planning du ${date.split('-').reverse().join('/')} chargé — prêt pour comparaison`, 'success');
+};
 window.ouvrirModalImportPlanning = function () {
     document.getElementById('modal-import-planning')?.remove();
 
@@ -5573,8 +5655,10 @@ function afficherReviewDansModal(planning) {
     footer.innerHTML = `
         <div style="display:flex;gap:0.75rem;flex-direction:column;">
             <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fef3c7;border:1.5px solid #fcd34d;border-radius:10px;cursor:pointer;user-select:none;">
-                <input type="checkbox" id="chk-annule-remplace"
+               <input type="checkbox" id="chk-annule-remplace"
+                    onchange="window._onToggleAnnuleRemplace(this)"
                     style="accent-color:#f59e0b;width:16px;height:16px;cursor:pointer;">
+                    
                 <div>
                     <span style="font-size:0.85rem;font-weight:700;color:#92400e;">Annule et remplace</span>
                     <span style="font-size:0.75rem;color:#b45309;display:block;margin-top:1px;">
@@ -6309,7 +6393,25 @@ window.publierPlanningDepuisReview = async function () {
         }
     }
 
-    // Animation bouton
+    // ── Mode annule et remplace : afficher la modale de diff ──
+    if (annuleRemplace && _ancienPlanningData) {
+        const ancienEmployes = _ancienPlanningData.employes || {};
+        const diff = _diffEmployes(planningEnCours.employes, ancienEmployes);
+
+        afficherModalDiffPlanning(diff, planningEnCours.date, async (confirmedDiff) => {
+            // Animation bouton
+            const btn = document.getElementById('btn-envoyer-planning');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Envoi en cours…`;
+                btn.style.opacity = '0.85';
+            }
+            await _executerPublication(planningEnCours, true, confirmedDiff.employesANotifier);
+        });
+        return;
+    }
+
+    // ── Mode normal (nouveau planning) ──
     const btn = document.getElementById('btn-envoyer-planning');
     if (btn) {
         btn.disabled = true;
@@ -6317,17 +6419,81 @@ window.publierPlanningDepuisReview = async function () {
         btn.style.opacity = '0.85';
     }
 
-    await publierPlanning(planningEnCours, annuleRemplace);
+    await publierPlanning(planningEnCours, false);
 };
 
-async function publierPlanning(planning, annuleRemplace = false) {
+async function _executerPublication(planning, isAnnuleRemplace, employesANotifier) {
+    const date = planning.date;
+    if (!date) { showNotification('Date manquante', 'error'); return; }
+
+    try {
+        const employesData = {};
+        for (const [prenom, emp] of Object.entries(planning.employes)) {
+            employesData[prenom] = {
+                total: emp.total,
+                absence: emp.absence || null,
+                display: emp.display || null,
+                chantiers: (emp.chantiers || []).map(c => ({
+                    nom: c.nom,
+                    heures: c.heures,
+                    binome: c.binome || null,
+                    binomeDisplay: c.binomeDisplay || null,
+                    absence: c.absence || null,
+                    annotations: (c.annotations || []).filter(a => a && a.trim().length > 0),
+                    controle: c.controle || false
+                }))
+            };
+        }
+
+        if (DEBUG_PLANNING) {
+            console.group('🐛 DEBUG ANNULE-REMPLACE — ' + date);
+            console.log('📋 Employés à notifier :', Object.keys(employesANotifier));
+            console.log('💾 Firestore : AUCUNE écriture (mode debug)');
+            console.groupEnd();
+            showNotification(`🐛 Debug — ${Object.keys(employesANotifier).length} notif(s) simulée(s)`, 'error');
+            planningEnCours = null;
+            _ancienPlanningData = null;
+            document.getElementById('modal-import-planning')?.remove();
+            return;
+        }
+
+        await setDoc(doc(db, 'plannings', date), {
+            date,
+            importedAt: new Date(),
+            source: 'dashboard-paste',
+            employes: employesData
+        });
+
+        const nbNotifs = Object.keys(employesANotifier).length;
+        if (nbNotifs > 0) {
+            envoyerNotifPlanning(date, nbNotifs, employesANotifier, true);
+        }
+
+        planningEnCours = null;
+        _ancienPlanningData = null;
+        document.getElementById('modal-import-planning')?.remove();
+        document.getElementById('modal-review-planning')?.remove();
+
+        if (nbNotifs === 0) {
+            showNotification('Planning mis à jour — aucun changement, aucune notification', 'success');
+        } else {
+            afficherModalPlanningPublie(date, nbNotifs);
+        }
+        loadPlanning();
+
+    } catch (e) {
+        console.error('Erreur publication:', e);
+        showNotification('Erreur : ' + e.message, 'error');
+    }
+}
+async function publierPlanning(planning) {
     const date = planning.date || null;
     if (!date) { showNotification('Date manquante', 'error'); return; }
 
     try {
+        // Détecter si un planning existait déjà (pour le tag ntfy nouveau vs modifié)
         const existingSnap = await getDoc(doc(db, 'plannings', date));
         const isUpdate = existingSnap.exists();
-        const ancienEmployes = isUpdate ? (existingSnap.data().employes || {}) : {};
 
         const employesData = {};
         for (const [prenom, emp] of Object.entries(planning.employes)) {
@@ -6347,58 +6513,36 @@ async function publierPlanning(planning, annuleRemplace = false) {
             };
         }
 
-        // ── MODE DEBUG ──────────────────────────────────────────
+        // ── MODE DEBUG ──
         if (DEBUG_PLANNING) {
-            console.group('🐛 DEBUG PLANNING — ' + date);
-            console.log('📅 Date :', date);
-            console.log('🔄 isUpdate (planning existait déjà) :', isUpdate);
-            console.log('📋 Annule et remplace :', annuleRemplace);
-            console.log('👥 Employés parsés :', JSON.parse(JSON.stringify(employesData)));
-
-            if (annuleRemplace && isUpdate) {
-                const diff = _diffEmployes(planning.employes, ancienEmployes);
-                console.log('🔍 Diff — employés modifiés :', Object.keys(diff).length ? diff : '(aucun changement)');
-            }
-
-            // Simuler les notifs
-            let employesANotifier = planning.employes;
-            if (annuleRemplace && isUpdate) {
-                employesANotifier = _diffEmployes(planning.employes, ancienEmployes);
-            }
-
-            console.group('📣 Notifications ntfy simulées');
             const [y, m, d] = date.split('-').map(Number);
             const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
             const moisNum = m;
             const emojiSaison = moisNum >= 3 && moisNum <= 5 ? '🌸' : moisNum >= 6 && moisNum <= 8 ? '☀️' : moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
-            const corps = (isUpdate && annuleRemplace)
+            const corps = isUpdate
                 ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
                 : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
 
-            Object.keys(employesANotifier).forEach(prenom => {
-                console.log(`  → topic : planning-${prenom}`);
-                console.log(`    title : Propre Eco Assistant`);
-                console.log(`    body  : ${corps}`);
-                console.log(`    tag   : ${(isUpdate && annuleRemplace) ? 'repeat' : 'calendar'}`);
+            console.group('🐛 DEBUG PLANNING — ' + date);
+            console.log('📅 Date :', date);
+            console.log('🔄 isUpdate :', isUpdate);
+            console.log('👥 Employés :', JSON.parse(JSON.stringify(employesData)));
+            console.group('📣 Notifications ntfy simulées');
+            Object.keys(planning.employes).forEach(prenom => {
+                console.log(`  → planning-${prenom} : ${corps}`);
             });
             console.groupEnd();
-
-            if (Object.keys(employesANotifier).length === 0) {
-                console.warn('⚠️ Aucun employé à notifier — planning identique ?');
-            }
-
             console.log('💾 Firestore : AUCUNE écriture (mode debug)');
             console.groupEnd();
 
-            showNotification(`🐛 Debug — ${Object.keys(employesANotifier).length} notif(s) simulée(s). Voir la console.`, 'error');
-
+            showNotification(`🐛 Debug — ${Object.keys(planning.employes).length} notif(s) simulée(s). Voir la console.`, 'error');
             planningEnCours = null;
             document.getElementById('modal-import-planning')?.remove();
             document.getElementById('modal-review-planning')?.remove();
             return;
         }
-        // ────────────────────────────────────────────────────────
 
+        // ── ÉCRITURE FIRESTORE ──
         await setDoc(doc(db, 'plannings', date), {
             date,
             importedAt: new Date(),
@@ -6406,28 +6550,19 @@ async function publierPlanning(planning, annuleRemplace = false) {
             employes: employesData
         });
 
-        let employesANotifier = planning.employes;
-        if (annuleRemplace && isUpdate) {
-            employesANotifier = _diffEmployes(planning.employes, ancienEmployes);
-            if (Object.keys(employesANotifier).length === 0) {
-                showNotification('Aucun changement détecté — aucune notification envoyée', 'success');
-                planningEnCours = null;
-                document.getElementById('modal-import-planning')?.remove();
-                document.getElementById('modal-review-planning')?.remove();
-                loadPlanning();
-                return;
-            }
-        }
+        // ── NOTIFS — tous les employés (mode normal, pas annule-remplace) ──
+        const nbEmployes = Object.keys(planning.employes).length;
+        envoyerNotifPlanning(date, nbEmployes, planning.employes, isUpdate);
 
-        envoyerNotifPlanning(date, Object.keys(employesANotifier).length, employesANotifier, isUpdate && annuleRemplace);
-
+        // ── CLEANUP ──
         planningEnCours = null;
+        _ancienPlanningData = null;
         const pasteZone = document.getElementById('planning-paste-zone');
         if (pasteZone) pasteZone.value = '';
         document.getElementById('modal-import-planning')?.remove();
         document.getElementById('modal-review-planning')?.remove();
 
-        afficherModalPlanningPublie(date, Object.keys(employesANotifier).length);
+        afficherModalPlanningPublie(date, nbEmployes);
         loadPlanning();
 
     } catch (e) {
@@ -6438,39 +6573,264 @@ async function publierPlanning(planning, annuleRemplace = false) {
 
 // Compare nouveau vs ancien planning — retourne les employés dont quelque chose a changé
 function _diffEmployes(nouveauEmployes, ancienEmployes) {
-    const changes = {};
+    const result = {
+        modifies: {},       // { prenom: { nom, changements[] } }
+        ajoutes: [],        // prénoms nouveaux
+        retires: [],        // prénoms retirés
+        sansChangement: [], // prénoms identiques
+        employesANotifier: {} // sous-ensemble à notifier (modifiés + ajoutés)
+    };
+
+    // Employés retirés (dans ancien, pas dans nouveau)
+    for (const prenom of Object.keys(ancienEmployes)) {
+        if (!nouveauEmployes[prenom]) {
+            const nom = ancienEmployes[prenom].display || PRENOM_DISPLAY[prenom] || prenom;
+            result.retires.push(nom);
+        }
+    }
 
     for (const [prenom, empNouv] of Object.entries(nouveauEmployes)) {
         const empAnc = ancienEmployes[prenom];
+        const nom = empNouv.display || PRENOM_DISPLAY[prenom] || prenom.charAt(0).toUpperCase() + prenom.slice(1);
 
-        // Employé absent de l'ancien planning → toujours notifier
-        if (!empAnc) { changes[prenom] = empNouv; continue; }
+        // Nouvel employé
+        if (!empAnc) {
+            result.ajoutes.push(nom);
+            result.employesANotifier[prenom] = empNouv;
+            continue;
+        }
+
+        const changements = [];
 
         // Absence a changé
-        if ((empNouv.absence || null) !== (empAnc.absence || null)) { changes[prenom] = empNouv; continue; }
+        const absNouv = empNouv.absence || null;
+        const absAnc = empAnc.absence || null;
+        if (absNouv !== absAnc) {
+            changements.push({ type: 'absence', icon: 'fa-calendar-xmark', color: '#ef4444',
+                detail: absAnc ? `${absAnc} → ${absNouv || 'Présent'}` : `Présent → ${absNouv}` });
+        }
 
-        // Nombre de chantiers différent
         const chantiersNouv = empNouv.chantiers || [];
         const chantiersAnc = empAnc.chantiers || [];
-        if (chantiersNouv.length !== chantiersAnc.length) { changes[prenom] = empNouv; continue; }
 
-        // Comparer chantier par chantier (nom + heures + annotations)
-        const aChange = chantiersNouv.some((c, i) => {
-            const a = chantiersAnc[i];
-            if (!a) return true;
-            if (c.nom !== a.nom) return true;
-            if (c.heures !== a.heures) return true;
-            // Annotations : comparer le contenu
-            const annNouv = (c.annotations || []).filter(x => x.trim()).join('|');
-            const annAnc = (a.annotations || []).filter(x => x.trim()).join('|');
-            if (annNouv !== annAnc) return true;
-            return false;
+        // Index par nom pour comparaison intelligente
+        const ancParNom = {};
+        chantiersAnc.forEach((c, i) => { ancParNom[c.nom] = { ...c, _idx: i }; });
+
+        const nomsNouv = new Set(chantiersNouv.map(c => c.nom));
+        const nomsAnc = new Set(chantiersAnc.map(c => c.nom));
+
+        // Chantiers ajoutés
+        chantiersNouv.forEach(c => {
+            if (!nomsAnc.has(c.nom)) {
+                changements.push({ type: 'chantier_ajouté', icon: 'fa-plus-circle', color: '#10b981',
+                    detail: c.nom });
+            }
         });
 
-        if (aChange) changes[prenom] = empNouv;
+        // Chantiers supprimés
+        chantiersAnc.forEach(c => {
+            if (!nomsNouv.has(c.nom)) {
+                changements.push({ type: 'chantier_supprimé', icon: 'fa-minus-circle', color: '#ef4444',
+                    detail: c.nom });
+            }
+        });
+
+        // Chantiers communs — comparer champ par champ
+        chantiersNouv.forEach(cNouv => {
+            const cAnc = ancParNom[cNouv.nom];
+            if (!cAnc) return;
+
+            // Heures
+            if (cNouv.heures !== cAnc.heures) {
+                const formatH = h => h ? `${h}h` : '0h';
+                changements.push({ type: 'heures', icon: 'fa-clock', color: '#6366f1',
+                    detail: `${formatH(cAnc.heures)} → ${formatH(cNouv.heures)}`, chantier: cNouv.nom });
+            }
+
+            // Binôme
+            const binNouv = cNouv.binome || null;
+            const binAnc = cAnc.binome || null;
+            if (binNouv !== binAnc) {
+                const labelAnc = binAnc ? (PRENOM_DISPLAY[binAnc] || binAnc) : 'aucun';
+                const labelNouv = binNouv ? (PRENOM_DISPLAY[binNouv] || binNouv) : 'aucun';
+                changements.push({ type: 'binome', icon: 'fa-user-friends', color: '#0ea5e9',
+                    detail: `${labelAnc} → ${labelNouv}`, chantier: cNouv.nom });
+            }
+
+            // Annotations
+            const annNouv = (cNouv.annotations || []).filter(x => x && x.trim()).join('|');
+            const annAnc = (cAnc.annotations || []).filter(x => x && x.trim()).join('|');
+            if (annNouv !== annAnc) {
+                changements.push({ type: 'annotation', icon: 'fa-comment-dots', color: '#f59e0b',
+                    detail: 'Annotations modifiées', chantier: cNouv.nom });
+            }
+
+            // Contrôle
+            const ctrlNouv = cNouv.controle || false;
+            const ctrlAnc = cAnc.controle || false;
+            if (ctrlNouv !== ctrlAnc) {
+                changements.push({ type: 'controle', icon: 'fa-clipboard-check', color: '#d97706',
+                    detail: ctrlNouv ? 'Contrôle ajouté' : 'Contrôle retiré', chantier: cNouv.nom });
+            }
+        });
+
+        if (changements.length > 0) {
+            result.modifies[prenom] = { nom, changements };
+            result.employesANotifier[prenom] = empNouv;
+        } else {
+            result.sansChangement.push(nom);
+        }
     }
 
-    return changes;
+    return result;
+}
+function afficherModalDiffPlanning(diff, planningDate, onConfirm) {
+    document.getElementById('modal-diff-planning')?.remove();
+
+    const nbModifies = Object.keys(diff.modifies).length;
+    const nbAjoutes = diff.ajoutes.length;
+    const nbRetires = diff.retires.length;
+    const nbSans = diff.sansChangement.length;
+    const nbNotifs = Object.keys(diff.employesANotifier).length;
+
+    let bodyHTML = '';
+
+    // Employés modifiés
+    if (nbModifies > 0) {
+        bodyHTML += `<div style="margin-bottom:1rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;">
+                <i class="fas fa-pen"></i> Modifiés (${nbModifies})
+            </div>`;
+        for (const [prenom, { nom, changements }] of Object.entries(diff.modifies)) {
+            bodyHTML += `
+            <div style="background:white;border:1.5px solid #e5e7eb;border-left:3px solid #6366f1;border-radius:10px;padding:0.75rem;margin-bottom:0.5rem;">
+                <div style="font-weight:700;color:#111827;font-size:0.9rem;margin-bottom:0.4rem;">${nom}</div>
+                ${changements.map(c => `
+                    <div style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;font-size:0.8rem;">
+                        <i class="fas ${c.icon}" style="color:${c.color};font-size:0.75rem;margin-top:2px;flex-shrink:0;"></i>
+                        <div style="flex:1;color:#374151;">
+                            ${c.chantier ? `<span style="color:#6b7280;font-size:0.75rem;">${c.chantier} ·</span> ` : ''}
+                            ${c.detail}
+                        </div>
+                    </div>`).join('')}
+            </div>`;
+        }
+        bodyHTML += `</div>`;
+    }
+
+    // Employés ajoutés
+    if (nbAjoutes > 0) {
+        bodyHTML += `<div style="margin-bottom:1rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;">
+                <i class="fas fa-user-plus"></i> Nouveaux (${nbAjoutes})
+            </div>
+            ${diff.ajoutes.map(n => `
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;margin-bottom:4px;">
+                    <i class="fas fa-plus-circle" style="color:#10b981;font-size:0.8rem;"></i>
+                    <span style="font-size:0.85rem;font-weight:600;color:#065f46;">${n}</span>
+                </div>`).join('')}
+        </div>`;
+    }
+
+    // Employés retirés
+    if (nbRetires > 0) {
+        bodyHTML += `<div style="margin-bottom:1rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;">
+                <i class="fas fa-user-minus"></i> Retirés (${nbRetires})
+            </div>
+            ${diff.retires.map(n => `
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:4px;">
+                    <i class="fas fa-minus-circle" style="color:#ef4444;font-size:0.8rem;"></i>
+                    <span style="font-size:0.85rem;font-weight:600;color:#991b1b;">${n}</span>
+                </div>`).join('')}
+        </div>`;
+    }
+
+    // Sans changement
+    if (nbSans > 0) {
+        bodyHTML += `<div style="margin-bottom:0.5rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;">
+                <i class="fas fa-equals"></i> Inchangés (${nbSans}) — pas de notification
+            </div>
+            <div style="font-size:0.8rem;color:#9ca3af;font-style:italic;padding:4px 0;">
+                ${diff.sansChangement.join(', ')}
+            </div>
+        </div>`;
+    }
+
+    // Aucun changement global
+    if (nbNotifs === 0 && nbRetires === 0) {
+        bodyHTML = `
+            <div style="text-align:center;padding:2rem 1rem;">
+                <div style="width:56px;height:56px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                    <i class="fas fa-check" style="color:#10b981;font-size:1.3rem;"></i>
+                </div>
+                <div style="font-size:1rem;font-weight:700;color:#111827;margin-bottom:6px;">Aucun changement détecté</div>
+                <div style="font-size:0.85rem;color:#6b7280;">Le planning est identique — aucune notification ne sera envoyée.</div>
+            </div>`;
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-diff-planning';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10001;display:flex;align-items:center;justify-content:center;padding:0.75rem;';
+
+    modal.innerHTML = `
+        <div style="background:white;border-radius:20px;width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.35);overflow:hidden;">
+            <!-- Header -->
+            <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-bottom:1px solid #c7d2fe;display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+                <div style="background:#6366f1;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-code-compare" style="color:white;font-size:1rem;"></i>
+                </div>
+                <div style="flex:1;">
+                    <div style="font-weight:700;color:#111827;font-size:1rem;">Récapitulatif des changements</div>
+                    <div style="font-size:0.78rem;color:#6366f1;font-weight:600;">
+                        ${planningDate.split('-').reverse().join('/')} — ${nbNotifs} notification${nbNotifs > 1 ? 's' : ''} à envoyer
+                    </div>
+                </div>
+                <button onclick="document.getElementById('modal-diff-planning').remove()"
+                    style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;color:#6b7280;font-size:0.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Stats rapides -->
+            <div style="display:flex;gap:0.5rem;padding:1rem 1.5rem;border-bottom:1px solid #f3f4f6;flex-shrink:0;flex-wrap:wrap;">
+                ${nbModifies > 0 ? `<span style="background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe;border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><i class="fas fa-pen" style="margin-right:4px;"></i>${nbModifies} modifié${nbModifies > 1 ? 's' : ''}</span>` : ''}
+                ${nbAjoutes > 0 ? `<span style="background:#f0fdf4;color:#065f46;border:1px solid #bbf7d0;border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><i class="fas fa-plus" style="margin-right:4px;"></i>${nbAjoutes} nouveau${nbAjoutes > 1 ? 'x' : ''}</span>` : ''}
+                ${nbRetires > 0 ? `<span style="background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><i class="fas fa-minus" style="margin-right:4px;"></i>${nbRetires} retiré${nbRetires > 1 ? 's' : ''}</span>` : ''}
+                ${nbSans > 0 ? `<span style="background:#f9fafb;color:#9ca3af;border:1px solid #e5e7eb;border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;">${nbSans} inchangé${nbSans > 1 ? 's' : ''}</span>` : ''}
+            </div>
+
+            <!-- Body scrollable -->
+            <div style="padding:1.25rem 1.5rem;overflow-y:auto;flex:1;">
+                ${bodyHTML}
+            </div>
+
+            <!-- Footer -->
+            <div style="padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;gap:0.75rem;flex-shrink:0;background:white;">
+                <button onclick="document.getElementById('modal-diff-planning').remove()"
+                    style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.75rem 1.25rem;font-weight:600;font-size:0.85rem;cursor:pointer;">
+                    <i class="fas fa-arrow-left" style="margin-right:5px;"></i>Retour
+                </button>
+                ${nbNotifs > 0 ? `
+                <button id="btn-confirmer-diff" 
+                    style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;padding:0.75rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+                    <i class="fas fa-paper-plane"></i> Confirmer et envoyer (${nbNotifs} notif${nbNotifs > 1 ? 's' : ''})
+                </button>` : `
+                <button id="btn-confirmer-diff"
+                    style="flex:1;background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:0.75rem;font-weight:700;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <i class="fas fa-save"></i> Sauvegarder sans notification
+                </button>`}
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('btn-confirmer-diff').addEventListener('click', () => {
+        modal.remove();
+        onConfirm(diff);
+    });
 }
 function afficherModalPlanningPublie(date, nbEmployes) {
     const [y, m, d] = date.split('-').map(Number);

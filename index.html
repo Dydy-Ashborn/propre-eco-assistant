@@ -585,89 +585,103 @@
       };
 
       const buildChantiersHTML = (emp, allEmployes, employeId) => {
-        if (emp.absence) {
-          const absMap = {
-            CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
-            ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
-            ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
-          };
-          const a = absMap[emp.absence] || absMap.ABSENT;
-          return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
-            <i class="fas ${a.icon}" style="color:${a.color};"></i>
-            <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
-        </div>`;
-        }
+  if (emp.absence) {
+    const absMap = {
+      CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
+      ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
+      ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
+    };
+    const a = absMap[emp.absence] || absMap.ABSENT;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
+      <i class="fas ${a.icon}" style="color:${a.color};"></i>
+      <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
+    </div>`;
+  }
 
-        const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
-        const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
+  const norm = s => s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ').trim()
+    .replace(/[^a-z0-9 ]/g, '');
 
-        const getCollègues = (nomChantier) => {
-          const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-          const collègues = [];
-          for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
-            if (autreId === employeId) continue;
-            if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
-              collègues.push(autreEmp.display || capitalizeFirst(autreId));
-            }
-          }
-          return collègues;
-        };
+  const getCollègues = (nomChantier) => {
+    const nomNorm = norm(nomChantier);
+    const empIdNorm = norm(employeId);
+    const collègues = [];
+    for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
+      if (norm(autreId) === empIdNorm) continue;
+      if (autreEmp.absence) continue;
+      const match = (autreEmp.chantiers || []).some(c => norm(c.nom) === nomNorm);
+      if (match) {
+        collègues.push(autreEmp.display || capitalizeFirst(autreId));
+      }
+    }
+    return collègues;
+  };
 
-        const groupesAuto = {};
-        const chantiersPurementSolo = [];
-        for (const c of chantiersSolo) {
-          const collègues = getCollègues(c.nom);
-          if (collègues.length === 0) {
-            chantiersPurementSolo.push(c);
-          } else {
-            const key = [...collègues].sort().join('|');
-            if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
-            groupesAuto[key].chantiers.push(c);
-          }
-        }
+  const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
+  const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
 
-        const binomeGroups = {};
-        for (const c of chantiersAvecBinome) {
-          if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
-          binomeGroups[c.binome].push(c);
-        }
+  // Chantiers sans binôme déclaré — détection auto des collègues
+  const groupesAuto = {};
+  const chantiersPurementSolo = [];
+  for (const c of chantiersSolo) {
+    const collègues = getCollègues(c.nom);
+    if (collègues.length === 0) {
+      chantiersPurementSolo.push(c);
+    } else {
+      const key = [...collègues].sort().join('|');
+      if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
+      groupesAuto[key].chantiers.push(c);
+    }
+  }
 
-        let html = '';
+  // Chantiers avec binôme déclaré — on enrichit avec les autres collègues détectés
+  const binomeGroups = {};
+  for (const c of chantiersAvecBinome) {
+    const binomeDisplay = c.binomeDisplay || capitalizeFirst(c.binome);
+    const autresCollègues = getCollègues(c.nom).filter(
+      nom => nom.toLowerCase() !== binomeDisplay.toLowerCase()
+    );
+    const tousCollègues = [binomeDisplay, ...autresCollègues];
+    const key = [...tousCollègues].sort().join('|');
+    if (!binomeGroups[key]) binomeGroups[key] = { collègues: tousCollègues, chantiers: [] };
+    binomeGroups[key].chantiers.push(c);
+  }
 
-        if (chantiersPurementSolo.length > 0) {
-          html += chantiersPurementSolo.map(c => renderChantierLigne(c, '#10b981')).join('');
-        }
+  let html = '';
 
-        for (const { collègues, chantiers } of Object.values(groupesAuto)) {
-          const totalGroupe = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-          html += `
-            <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
-                    <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
-                    <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${collègues.join(', ')}</span>
-                    <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalGroupe)}</span>
-                </div>
-                ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
-            </div>`;
-        }
+  if (chantiersPurementSolo.length > 0) {
+    html += chantiersPurementSolo.map(c => renderChantierLigne(c, '#10b981')).join('');
+  }
 
-        for (const [binome, chantiers] of Object.entries(binomeGroups)) {
-          const totalBinome = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-          const binomeDisplay = chantiers[0]?.binomeDisplay || capitalizeFirst(binome);
-          html += `
-            <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
-                    <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
-                    <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${binomeDisplay}</span>
-                    <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalBinome)}</span>
-                </div>
-                ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
-            </div>`;
-        }
+  for (const { collègues, chantiers } of Object.values(groupesAuto)) {
+    const totalGroupe = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+    html += `
+      <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
+          <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
+          <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${collègues.join(', ')}</span>
+          <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalGroupe)}</span>
+        </div>
+        ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
+      </div>`;
+  }
 
-        return html || '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem 0;">Aucun chantier</div>';
-      };
+  for (const { collègues, chantiers } of Object.values(binomeGroups)) {
+    const totalBinome = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+    html += `
+      <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px dashed #d1fae5;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.4rem;">
+          <i class="fas fa-user-friends" style="color:#9ca3af;font-size:0.75rem;"></i>
+          <span style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;">Avec ${collègues.join(', ')}</span>
+          <span style="margin-left:auto;font-size:0.8rem;font-weight:700;color:#9ca3af;">${formatH(totalBinome)}</span>
+        </div>
+        ${chantiers.map(c => renderChantierLigne(c, '#9ca3af')).join('')}
+      </div>`;
+  }
 
+  return html || '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem 0;">Aucun chantier</div>';
+};
       async function chargerPlanningDuJour() {
         const container = document.getElementById('planning-du-jour');
         if (!container) return;
@@ -689,6 +703,8 @@
 
         try {
           const snap = await getDoc(doc(db, 'plannings', todayLocal));
+          console.log('Clés employes Firestore :', Object.keys(snap.data()?.employes || {}));
+console.log('employeId recherché :', employeId);
 
           if (!snap.exists()) {
             container.innerHTML = `
@@ -836,63 +852,77 @@
             ${chantiers.map(c => renderLigne(c, couleurH)).join('')}
         </div>`;
 
-        const getCollègues = (allEmployes, nomChantier) => {
-          const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-          const collègues = [];
-          for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
-            if (autreId === employeId) continue;
-            if ((autreEmp.chantiers || []).some(c => norm(c.nom) === norm(nomChantier))) {
-              collègues.push(autreEmp.display || capFirst(autreId));
-            }
-          }
-          return collègues;
-        };
+const norm = s => s.toLowerCase()
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/\s+/g, ' ').trim()
+  .replace(/[^a-z0-9 ]/g, '');
 
-        const buildBody = (emp, allEmployes) => {
-          if (emp.absence) {
-            const a = absMap[emp.absence] || absMap.ABSENT;
-            return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
-                <i class="fas ${a.icon}" style="color:${a.color};"></i>
-                <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
-            </div>`;
-          }
+const getCollègues = (allEmployes, nomChantier) => {
+  const nomNorm = norm(nomChantier);
+  const empIdNorm = norm(employeId);
+  const collègues = [];
+  for (const [autreId, autreEmp] of Object.entries(allEmployes || {})) {
+    if (norm(autreId) === empIdNorm) continue;
+    if (autreEmp.absence) continue;
+    const match = (autreEmp.chantiers || []).some(c => norm(c.nom) === nomNorm);
+    if (match) {
+      collègues.push(autreEmp.display || capFirst(autreId));
+    }
+  }
+  return collègues;
+};
+const buildBody = (emp, allEmployes) => {
+  if (emp.absence) {
+    const a = absMap[emp.absence] || absMap.ABSENT;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:0.4rem 0;">
+      <i class="fas ${a.icon}" style="color:${a.color};"></i>
+      <span style="color:${a.color};font-weight:600;font-size:0.88rem;">${a.label}</span>
+    </div>`;
+  }
 
-          const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
-          const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
+  const chantiersSolo = (emp.chantiers || []).filter(c => !c.binome);
+  const chantiersAvecBinome = (emp.chantiers || []).filter(c => c.binome);
 
-          const groupesAuto = {};
-          const purementSolo = [];
-          for (const c of chantiersSolo) {
-            const collègues = getCollègues(allEmployes, c.nom);
-            if (collègues.length === 0) {
-              purementSolo.push(c);
-            } else {
-              const key = [...collègues].sort().join('|');
-              if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
-              groupesAuto[key].chantiers.push(c);
-            }
-          }
+  const groupesAuto = {};
+  const purementSolo = [];
+  for (const c of chantiersSolo) {
+    const collègues = getCollègues(allEmployes, c.nom);
+    if (collègues.length === 0) {
+      purementSolo.push(c);
+    } else {
+      const key = [...collègues].sort().join('|');
+      if (!groupesAuto[key]) groupesAuto[key] = { collègues, chantiers: [] };
+      groupesAuto[key].chantiers.push(c);
+    }
+  }
 
-          const binomeGroups = {};
-          for (const c of chantiersAvecBinome) {
-            if (!binomeGroups[c.binome]) binomeGroups[c.binome] = [];
-            binomeGroups[c.binome].push(c);
-          }
+  const binomeGroups = {};
+  for (const c of chantiersAvecBinome) {
+    const binomeDisplay = c.binomeDisplay || capFirst(c.binome);
+    const autresCollègues = getCollègues(allEmployes, c.nom).filter(
+      nom => nom.toLowerCase() !== binomeDisplay.toLowerCase()
+    );
+    const tousCollègues = [binomeDisplay, ...autresCollègues];
+    const key = [...tousCollègues].sort().join('|');
+    if (!binomeGroups[key]) binomeGroups[key] = { collègues: tousCollègues, chantiers: [] };
+    binomeGroups[key].chantiers.push(c);
+  }
 
-          let html = '';
-          html += purementSolo.map(c => renderLigne(c, '#10b981')).join('');
-          for (const { collègues, chantiers } of Object.values(groupesAuto)) {
-            const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-            html += renderGroupe(collègues.join(', '), chantiers, total);
-          }
-          for (const [binome, chantiers] of Object.entries(binomeGroups)) {
-            const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
-            const label = chantiers[0]?.binomeDisplay || capFirst(binome);
-            html += renderGroupe(label, chantiers, total);
-          }
-          return html || '<div style="color:#94a3b8;font-size:0.85rem;padding:0.3rem 0;">Aucun chantier</div>';
-        };
+  let html = '';
+  html += purementSolo.map(c => renderLigne(c, '#10b981')).join('');
 
+  for (const { collègues, chantiers } of Object.values(groupesAuto)) {
+    const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+    html += renderGroupe(collègues.join(', '), chantiers, total);
+  }
+
+  for (const { collègues, chantiers } of Object.values(binomeGroups)) {
+    const total = chantiers.reduce((s, c) => s + (c.heures || 0), 0);
+    html += renderGroupe(collègues.join(', '), chantiers, total);
+  }
+
+  return html || '<div style="color:#94a3b8;font-size:0.85rem;padding:0.3rem 0;">Aucun chantier</div>';
+};
         try {
           const snap = await getDocs(query(
             collection(db, 'plannings'),
