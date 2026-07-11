@@ -42,6 +42,13 @@
 - `showMessage` remplacé par `showNotification` dans le catch de `loadProperties`.
 - `buildChantiersHTML(emp, allEmployes, employeId)` : Rendu chantiers d'un employé. 3 groupes : (1) chantiers purement solo, (2) chantiers sans binôme déclaré mais où d'autres employés ont le même chantier → détectés automatiquement via `getCollègues()`, label "Avec A, B…" (trinôme+), (3) chantiers avec binôme déclaré explicitement. `allEmployes` = `data.employes` du doc Firestore passé en param.
 - `ouvrirProchainsJours()` : Refactorisé — helpers `fmtH`, `capFirst`, `fmtDate`, `renderLigne`, `renderGroupe`, `getCollègues`, `buildBody` déclarés en scope local. `buildBody` applique la même logique trinôme que `buildChantiersHTML`. Modale créée une seule fois, réutilisée si déjà présente.
+- **Card Événement Jumping** (`index.html`) : Card autonome sur l'accueil, indépendante du planning quotidien. Données 100% en dur dans le code (pas de collection Firestore dédiée) :
+  - `JUMPING_PLANNING[]` : tableau des jours (`jour`, `date` ISO, `horaireGeneral`, `lieux[]` avec `id` + `horaire` optionnel par lieu, ex. VIP a des horaires spécifiques certains jours).
+  - `JUMPING_LIEUX_DATA{}` : dictionnaire `id → {label, texteLibre, photos[]}` — un lieu (JURY, VIP, SECRETARIAT...) a un texte et des photos fixes, réutilisés sur tous les jours où il apparaît. Photos en chemin relatif `img/jumping/xxx.JPG` (attention à la casse exacte sur GitHub Pages, sensible contrairement au local).
+  - `initCardJumping()` : Render de la card — thème vert anglais/or (identité concours équestre). Barre de progression (jours écoulés/total), détection auto du jour courant (`date === todayISO`) avec highlight doré + badge "AUJOURD'HUI" + point pulsé animé (`@keyframes jumpingPulse`). Jours passés grisés (`opacity:0.55`). Horaire général affiché directement sous chaque jour dans la liste.
+  - `afficherJourJumping(idx)` : Bottom-sheet listant les lieux du jour sélectionné, cliquables.
+  - `ouvrirLieuJumping(lieuId)` : Modale centrée (pas bottom-sheet) affichant texte + grille photos (1 colonne si 1 seule photo, 2 colonnes sinon) d'un lieu depuis `JUMPING_LIEUX_DATA`. Clic photo → `_ouvrirPhotoFiche`.
+- `window._ouvrirPhotoFiche(urls, startIndex)` : Viewer plein écran mutualisé (fiches classiques + jumping). Accepte un tableau d'URLs + index de départ. Si plusieurs photos : flèches gauche/droite + compteur `X / N`, navigation via `window._photoViewerNav(dir)`. Bouton fermeture positionné avec `env(safe-area-inset-top)` pour respecter l'encoche mobile.
 
 ## Safe area iOS (base.css)
 - `.header` : `padding-top: env(safe-area-inset-top)` — évite l'encoche iPhone.

@@ -7169,7 +7169,16 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
             ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
             : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
 
-        const promises = Object.keys(employes).map(async prenom => {
+        // Exclut les employés absents (repos, CP, arrêt, etc.) — quel que soit le motif,
+        // dès que le champ `absence` est renseigné (truthy), pas de notif planning.
+        const destinataires = Object.keys(employes).filter(prenom => !employes[prenom]?.absence);
+
+        if (destinataires.length === 0) {
+            console.log('ℹ️ Aucun destinataire notif planning (tous absents)');
+            return;
+        }
+
+        const promises = destinataires.map(async prenom => {
             const topic = `planning-${prenom}`;
             const response = await fetch(`https://ntfy.sh/${topic}`, {
                 method: 'POST',

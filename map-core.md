@@ -93,3 +93,4 @@
 - Dashboard : création/édition via `ouvrirModaleFiche(nomChantier)` depuis `afficherInterfaceReview`
 - PWA : lecture + coches via `ouvrirFichePWA(slug, nomChantier)` depuis `renderChantierLigne`
 - Détection chantier éligible : `estChantierFiche(nom)` — exclut mots-clés copro
+- `ouvrirFichePWA(slug, nomChantier)` : bloc photos mis à jour — passe le tableau complet des URLs + index à `_ouvrirPhotoFiche` (au lieu d'une URL seule) pour bénéficier du carrousel navigable.
