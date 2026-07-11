@@ -6524,9 +6524,9 @@ async function _executerPublication(planning, isAnnuleRemplace, employesANotifie
             employes: employesData
         });
 
-        const nbNotifs = Object.keys(employesANotifier).length;
-        if (nbNotifs > 0) {
-            envoyerNotifPlanning(date, nbNotifs, employesANotifier, true);
+     let nbEnvoyees = 0;
+        if (Object.keys(employesANotifier).length > 0) {
+            nbEnvoyees = await envoyerNotifPlanning(date, Object.keys(employesANotifier).length, employesANotifier, true);
         }
 
         planningEnCours = null;
@@ -6534,10 +6534,11 @@ async function _executerPublication(planning, isAnnuleRemplace, employesANotifie
         document.getElementById('modal-import-planning')?.remove();
         document.getElementById('modal-review-planning')?.remove();
 
-        if (nbNotifs === 0) {
+        if (nbEnvoyees === 0) {
             showNotification('Planning mis à jour — aucun changement, aucune notification', 'success');
         } else {
-            afficherModalPlanningPublie(date, nbNotifs);
+            const absences = compterAbsences(planning.employes);
+            afficherModalPlanningPublie(date, nbEnvoyees, absences);
         }
         loadPlanning();
 
@@ -6610,9 +6611,9 @@ async function publierPlanning(planning) {
             employes: employesData
         });
 
-        // ── NOTIFS — tous les employés (mode normal, pas annule-remplace) ──
+     // ── NOTIFS — tous les employés (mode normal, pas annule-remplace) ──
         const nbEmployes = Object.keys(planning.employes).length;
-        envoyerNotifPlanning(date, nbEmployes, planning.employes, isUpdate);
+        const nbEnvoyees = await envoyerNotifPlanning(date, nbEmployes, planning.employes, isUpdate);
 
         // ── CLEANUP ──
         planningEnCours = null;
@@ -6622,7 +6623,8 @@ async function publierPlanning(planning) {
         document.getElementById('modal-import-planning')?.remove();
         document.getElementById('modal-review-planning')?.remove();
 
-        afficherModalPlanningPublie(date, nbEmployes);
+        const absences = compterAbsences(planning.employes);
+        afficherModalPlanningPublie(date, nbEnvoyees, absences);
         loadPlanning();
 
     } catch (e) {
@@ -7013,7 +7015,7 @@ function afficherModalDiffPlanning(diff, planningDate, onConfirm) {
     });
 }
 
-function afficherModalPlanningPublie(date, nbEmployes) {
+function afficherModalPlanningPublie(date, nbEmployes, absences = {}) {
     const [y, m, d] = date.split('-').map(Number);
     const dateLabel = new Date(y, m - 1, d).toLocaleDateString('fr-FR', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -7034,6 +7036,20 @@ function afficherModalPlanningPublie(date, nbEmployes) {
         opacity:0;
         transition:opacity 0.25s ease;
     `;
+
+    const lignesAbsences = Object.entries(absences).map(([label, count]) => `
+        <div style="
+            display:flex;align-items:center;gap:0.6rem;
+            background:#fef2f2;border:1.5px solid #fecaca;
+            border-radius:12px;padding:0.65rem 1rem;
+            margin-bottom:0.5rem;
+        ">
+            <i class="fas fa-user-clock" style="color:#ef4444;font-size:0.9rem;flex-shrink:0;"></i>
+            <span style="font-size:0.85rem;color:#7f1d1d;font-weight:600;">
+                ${count} employé${count > 1 ? 's' : ''} en ${label}
+            </span>
+        </div>
+    `).join('');
 
     modal.innerHTML = `
         <div id="modal-publie-card" style="
@@ -7094,10 +7110,12 @@ function afficherModalPlanningPublie(date, nbEmployes) {
                         <i class="fas fa-users" style="color:white;font-size:1rem;"></i>
                     </div>
                     <div>
-                        <div style="font-size:1.2rem;font-weight:800;color:#065f46;">${nbEmployes} employé${nbEmployes > 1 ? 's' : ''}</div>
-                        <div style="font-size:0.8rem;color:#6b7280;">notification${nbEmployes > 1 ? 's' : ''} envoyée${nbEmployes > 1 ? 's' : ''} via ntfy</div>
+                        <div style="font-size:1.2rem;font-weight:800;color:#065f46;">${nbEmployes} notification${nbEmployes > 1 ? 's' : ''}</div>
+                        <div style="font-size:0.8rem;color:#6b7280;">envoyée${nbEmployes > 1 ? 's' : ''} via ntfy</div>
                     </div>
                 </div>
+
+                ${lignesAbsences ? `<div style="margin-bottom:1.25rem;">${lignesAbsences}</div>` : ''}
 
                 <!-- Info ntfy -->
                 <div style="
@@ -7126,7 +7144,7 @@ function afficherModalPlanningPublie(date, nbEmployes) {
                     display:flex;align-items:center;justify-content:center;gap:8px;
                 " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.5)'"
                    onmouseout="this.style.transform='';this.style.boxShadow='0 4px 15px rgba(16,185,129,0.4)'">
-                    <i class="fas fa-check"></i> Parfait !
+                    <i class="fas fa-check"></i> D'accord !
                 </button>
             </div>
         </div>
@@ -7152,6 +7170,29 @@ function afficherModalPlanningPublie(date, nbEmployes) {
         if (e.target === modal) modal.remove();
     });
 }
+const ABSENCE_LABELS = {
+    'CONGES_PAYES': 'Congés',
+    'ARRET_MALADIE': 'Arrêt maladie',
+    'MALADIE': 'Malade',
+    'REPOS': 'Repos',
+    'VACANCES': 'Vacances'
+};
+
+function _labelAbsence(code) {
+    if (ABSENCE_LABELS[code]) return ABSENCE_LABELS[code];
+    return code.replace(/_/g, ' ').toLowerCase().replace(/^./, c => c.toUpperCase());
+}
+
+function compterAbsences(employes) {
+    const categories = {};
+    Object.values(employes).forEach(emp => {
+        if (emp.absence) {
+            const label = _labelAbsence(emp.absence);
+            categories[label] = (categories[label] || 0) + 1;
+        }
+    });
+    return categories;
+}
 async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false) {
     try {
         const [y, m, d] = date.split('-').map(Number);
@@ -7164,7 +7205,6 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
             moisNum >= 6 && moisNum <= 8 ? '☀️' :
                 moisNum >= 9 && moisNum <= 11 ? '🍂' : '❄️';
 
-        const titre = 'Propre Eco Assistant';
         const corps = isUpdate
             ? `Ton planning du ${dateLabel} a été modifié. Consulte Propre Eco Assistant pour voir les changements. ${emojiSaison}`
             : `Ton planning du ${dateLabel} est disponible. Consulte Propre Eco Assistant pour le voir. ${emojiSaison}`;
@@ -7175,7 +7215,7 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
 
         if (destinataires.length === 0) {
             console.log('ℹ️ Aucun destinataire notif planning (tous absents)');
-            return;
+            return 0;
         }
 
         const promises = destinataires.map(async prenom => {
@@ -7200,8 +7240,10 @@ async function envoyerNotifPlanning(date, nbEmployes, employes, isUpdate = false
 
         await Promise.all(promises);
         console.log('✅ Toutes les notifs ntfy envoyées');
+        return destinataires.length;
     } catch (e) {
         console.error('Erreur notif ntfy:', e);
+        return 0;
     }
 }
 
