@@ -828,6 +828,10 @@
 
         return html || '<div style="color:#9ca3af;font-size:0.85rem;padding:0.5rem 0;">Aucun chantier</div>';
       };
+
+      // Prénoms normalisés (sans accents, minuscules) autorisés à voir le planning des autres employés — phase de test, à compléter manuellement
+      const PLANNING_ADMINS_VIEW = ['dylan', 'chloe', 'laurent','sophie'];
+
       async function chargerPlanningDuJour() {
         const container = document.getElementById('planning-du-jour');
         if (!container) return;
@@ -840,8 +844,13 @@
         const d = new Date();
         const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
+      const peutVoirAutres = PLANNING_ADMINS_VIEW.includes(employeId);
         const btnHTML = `
-        <div style="margin-top:0.6rem;text-align:right;">
+        <div style="margin-top:0.6rem;display:flex;align-items:center;justify-content:${peutVoirAutres ? 'space-between' : 'flex-end'};gap:8px;">
+            ${peutVoirAutres ? `
+            <button onclick="ouvrirPlanningAutres()" style="background:none;border:none;color:#10b981;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;">
+                <i class="fas fa-users"></i> Voir les autres
+            </button>` : ''}
             <button onclick="ouvrirProchainsJours()" style="background:none;border:none;color:#10b981;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;">
                 <i class="fas fa-calendar-days"></i> Voir les prochains jours
             </button>
@@ -905,6 +914,158 @@
         }
       }
 
+      window.ouvrirPlanningAutres = async function () {
+        const d = new Date();
+        const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+        let overlay = document.getElementById('modal-planning-autres');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.id = 'modal-planning-autres';
+          overlay.className = 'pwa-modal-overlay';
+          overlay.innerHTML = `
+      <div class="pwa-modal">
+          <div class="pwa-modal-header">
+              <div class="pwa-modal-logo">
+                  <img src="img/logo.png" alt="Propre Eco" width="48">
+              </div>
+              <div>
+                  <h2>Propre Eco Assistant</h2>
+                  <p><i class="fas fa-users" style="color:#10b981;margin-right:5px;"></i>Planning de l'équipe</p>
+              </div>
+              <button class="pwa-modal-close" onclick="document.getElementById('modal-planning-autres').remove()">
+                  <i class="fas fa-times"></i>
+              </button>
+          </div>
+          <div class="pwa-modal-body">
+              <div id="planning-autres-jours-pills" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:0.5rem;margin-bottom:0.75rem;"></div>
+              <div id="planning-autres-content">
+                  <div style="text-align:center;padding:2rem 0;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+              </div>
+          </div>
+          <div class="pwa-modal-footer">
+              <button class="pwa-btn-dismiss" onclick="document.getElementById('modal-planning-autres').remove()">Fermer</button>
+          </div>
+      </div>`;
+          document.body.appendChild(overlay);
+          overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        }
+
+        const pillsContainer = document.getElementById('planning-autres-jours-pills');
+        const content = document.getElementById('planning-autres-content');
+        content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>';
+
+        const absMap = {
+          CONGES_PAYES: { icon: 'fa-umbrella-beach', label: 'Congés payés', color: '#3b82f6' },
+          ABSENCE_MALADIE: { icon: 'fa-thermometer-half', label: 'Absence maladie', color: '#ef4444' },
+          ABSENT: { icon: 'fa-user-slash', label: 'Absent', color: '#6b7280' }
+        };
+        const fmtH = h => {
+          if (!h || h === 0) return '0';
+          const r = Math.round(h * 100) / 100;
+          if (r % 1 === 0) return String(r);
+          return r.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+        };
+        const capFirst = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+        const fmtDateShort = s => {
+          const [y, m, j] = s.split('-').map(Number);
+          return new Date(y, m - 1, j).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+        };
+        const fmtDateLong = s => {
+          const [y, m, j] = s.split('-').map(Number);
+          return new Date(y, m - 1, j).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+        };
+
+        try {
+          const snap = await getDocs(query(
+            collection(db, 'plannings'),
+            where('date', '>=', todayLocal),
+            orderBy('date', 'asc')
+          ));
+
+          if (snap.empty) {
+            pillsContainer.innerHTML = '';
+            content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#94a3b8;">Aucun planning disponible.</div>';
+            return;
+          }
+
+          const joursData = [];
+          snap.forEach(docSnap => joursData.push(docSnap.data()));
+
+          let pillsHTML = '';
+          joursData.forEach((data, i) => {
+            pillsHTML += `
+        <button onclick="window._selectJourPlanningAutres(${i})" data-jour-index="${i}"
+            style="flex-shrink:0;background:${i === 0 ? '#10b981' : '#f3f4f6'};color:${i === 0 ? 'white' : '#374151'};border:none;border-radius:20px;padding:7px 14px;font-size:0.8rem;font-weight:700;cursor:pointer;text-transform:capitalize;white-space:nowrap;">
+            ${fmtDateShort(data.date)}
+        </button>`;
+          });
+          pillsContainer.innerHTML = pillsHTML;
+
+          window._planningAutresJoursData = joursData;
+          window._planningAutresFmtLong = fmtDateLong;
+          window._planningAutresAbsMap = absMap;
+          window._planningAutresFmtH = fmtH;
+          window._planningAutresCapFirst = capFirst;
+
+          window._selectJourPlanningAutres(0);
+
+        } catch (e) {
+          console.error('Erreur planning équipe :', e);
+          content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#ef4444;">Erreur de chargement.</div>';
+        }
+      };
+
+      window._selectJourPlanningAutres = function (index) {
+        const joursData = window._planningAutresJoursData;
+        if (!joursData || !joursData[index]) return;
+        const data = joursData[index];
+        const content = document.getElementById('planning-autres-content');
+        const fmtDateLong = window._planningAutresFmtLong;
+        const absMap = window._planningAutresAbsMap;
+        const fmtH = window._planningAutresFmtH;
+        const capFirst = window._planningAutresCapFirst;
+
+        document.querySelectorAll('#planning-autres-jours-pills button').forEach((btn, i) => {
+          btn.style.background = i === index ? '#10b981' : '#f3f4f6';
+          btn.style.color = i === index ? 'white' : '#374151';
+        });
+
+        const employesEntries = Object.entries(data.employes || {})
+          .sort((a, b) => (a[1].display || a[0]).localeCompare(b[1].display || b[0], 'fr'));
+
+        let html = `<div style="font-size:0.85rem;color:#6b7280;text-transform:capitalize;margin-bottom:0.75rem;font-weight:600;"><i class="fas fa-calendar-day" style="color:#10b981;margin-right:5px;"></i>${fmtDateLong(data.date)}</div>`;
+
+        employesEntries.forEach(([prenom, emp], idx) => {
+          const nom = emp.display || capFirst(prenom);
+          const accordId = `acc-planning-autres-${index}-${idx}`;
+
+          let resume;
+          if (emp.absence) {
+            const a = absMap[emp.absence] || absMap.ABSENT;
+            resume = `<span style="color:${a.color};font-weight:600;font-size:0.8rem;"><i class="fas ${a.icon}" style="margin-right:4px;"></i>${a.label}</span>`;
+          } else {
+            resume = `<span style="background:#10b981;color:white;padding:2px 10px;border-radius:14px;font-size:0.78rem;font-weight:700;">${fmtH(emp.total)}</span>`;
+          }
+
+          html += `
+      <div style="border:1px solid #e5e7eb;border-radius:10px;margin-bottom:6px;overflow:hidden;">
+          <button onclick="const el=document.getElementById('${accordId}');const open=el.style.display!=='none';el.style.display=open?'none':'block';this.querySelector('.acc-chevron').style.transform=open?'rotate(0deg)':'rotate(180deg)';"
+              style="width:100%;background:#f9fafb;border:none;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;">
+              <span style="font-weight:700;color:#111827;font-size:0.9rem;">${nom}</span>
+              <span style="display:flex;align-items:center;gap:8px;">
+                  ${resume}
+                  <i class="fas fa-chevron-down acc-chevron" style="color:#9ca3af;font-size:0.75rem;transition:transform 0.2s;"></i>
+              </span>
+          </button>
+          <div id="${accordId}" style="display:none;padding:8px 12px;background:white;">
+              ${emp.absence ? '' : buildChantiersHTML(emp, data.employes, prenom)}
+          </div>
+      </div>`;
+        });
+
+        content.innerHTML = html;
+      };
       window.ouvrirProchainsJours = async function () {
         const employeRaw = localStorage.getItem('favoriteEmployee');
         if (!employeRaw) return;
@@ -1117,6 +1278,7 @@
           content.innerHTML = '<div style="text-align:center;padding:2rem 0;color:#ef4444;">Erreur de chargement.</div>';
         }
       };
+
       // ── Rendu de la card Événement Jumping — thème équestre stylé ──
       const JUMPING_EVENT_ACTIVE = false; // 🔒 Repasser à true l'année prochaine pour réactiver la card
 

@@ -42,14 +42,15 @@
 - `showMessage` remplacé par `showNotification` dans le catch de `loadProperties`.
 - `buildChantiersHTML(emp, allEmployes, employeId)` : Rendu chantiers d'un employé. 3 groupes : (1) chantiers purement solo, (2) chantiers sans binôme déclaré mais où d'autres employés ont le même chantier → détectés automatiquement via `getCollègues()`, label "Avec A, B…" (trinôme+), (3) chantiers avec binôme déclaré explicitement. `allEmployes` = `data.employes` du doc Firestore passé en param.
 - `ouvrirProchainsJours()` : Refactorisé — helpers `fmtH`, `capFirst`, `fmtDate`, `renderLigne`, `renderGroupe`, `getCollègues`, `buildBody` déclarés en scope local. `buildBody` applique la même logique trinôme que `buildChantiersHTML`. Modale créée une seule fois, réutilisée si déjà présente.
-- **Card Événement Jumping** (`index.html`) : Card autonome sur l'accueil, indépendante du planning quotidien. Données 100% en dur dans le code (pas de collection Firestore dédiée) :
-  - `JUMPING_PLANNING[]` : tableau des jours (`jour`, `date` ISO, `horaireGeneral`, `lieux[]` avec `id` + `horaire` optionnel par lieu, ex. VIP a des horaires spécifiques certains jours).
-  - `JUMPING_LIEUX_DATA{}` : dictionnaire `id → {label, texteLibre, photos[]}` — un lieu (JURY, VIP, SECRETARIAT...) a un texte et des photos fixes, réutilisés sur tous les jours où il apparaît. Photos en chemin relatif `img/jumping/xxx.JPG` (attention à la casse exacte sur GitHub Pages, sensible contrairement au local).
-  - `initCardJumping()` : Render de la card — thème vert anglais/or (identité concours équestre). Barre de progression (jours écoulés/total), détection auto du jour courant (`date === todayISO`) avec highlight doré + badge "AUJOURD'HUI" + point pulsé animé (`@keyframes jumpingPulse`). Jours passés grisés (`opacity:0.55`). Horaire général affiché directement sous chaque jour dans la liste.
-  - `afficherJourJumping(idx)` : Bottom-sheet listant les lieux du jour sélectionné, cliquables.
-  - `ouvrirLieuJumping(lieuId)` : Modale centrée (pas bottom-sheet) affichant texte + grille photos (1 colonne si 1 seule photo, 2 colonnes sinon) d'un lieu depuis `JUMPING_LIEUX_DATA`. Clic photo → `_ouvrirPhotoFiche`.
-- `window._ouvrirPhotoFiche(urls, startIndex)` : Viewer plein écran mutualisé (fiches classiques + jumping). Accepte un tableau d'URLs + index de départ. Si plusieurs photos : flèches gauche/droite + compteur `X / N`, navigation via `window._photoViewerNav(dir)`. Bouton fermeture positionné avec `env(safe-area-inset-top)` pour respecter l'encoche mobile.
+- `PLANNING_ADMINS_VIEW` : liste de prénoms normalisés autorisés à voir le planning des autres employés (phase de test, whitelist manuelle).
+- `ouvrirPlanningAutres()` : modale "Planning de l'équipe" — pills de jours (aujourd'hui + jours futurs ayant un planning en base) + liste accordéon par employé (nom + total replié, détail chantiers via `buildChantiersHTML` au clic). Bouton "Voir les autres" affiché en bas-gauche de la card planning (symétrique à "Voir les prochains jours"), visible uniquement si `employeId` ∈ `PLANNING_ADMINS_VIEW`.
+- `_selectJourPlanningAutres(index)` : render du contenu accordéon pour le jour sélectionné, appelée au clic sur une pill.
 
+- **Card Événement Jumping** (`index.html`) — DÉSACTIVÉE (événement terminé, réactivation prévue l'an prochain) :
+  - `JUMPING_EVENT_ACTIVE = false` en haut d'`index.js` : flag unique contrôlant l'affichage. `initCardJumping()` fait un early return + `display:none` sur `#card-jumping` si `false`.
+  - Toutes les données et fonctions conservées intactes pour réactivation : `JUMPING_PLANNING[]`, `JUMPING_LIEUX_DATA{}`, `initCardJumping()`, `afficherJourJumping()`, `ouvrirLieuJumping()`.
+  - Réactivation l'an prochain : mettre `JUMPING_EVENT_ACTIVE = true`, mettre à jour les dates dans `JUMPING_PLANNING` et les données/photos dans `JUMPING_LIEUX_DATA`.
+  
 ## Safe area iOS (base.css)
 - `.header` : `padding-top: env(safe-area-inset-top)` — évite l'encoche iPhone.
 - `.bottom-nav` : `padding-bottom: env(safe-area-inset-bottom)` + `height: calc(64px + env(safe-area-inset-bottom))`.
