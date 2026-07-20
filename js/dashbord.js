@@ -5554,12 +5554,6 @@ function afficherReviewDansModal(planning) {
         ? new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
         : 'Date non détectée';
 
-    const formatH = h => {
-        if (!h) return '0h';
-        const hh = Math.floor(h); const mm = Math.round((h - hh) * 60);
-        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2, '0')}`;
-    };
-
     const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
     const absColors = { CONGES_PAYES: '#3b82f6', ABSENCE_MALADIE: '#ef4444', ABSENT: '#9ca3af' };
     const nbChantiers = Object.values(planning.employes).reduce((s, e) => s + (e.chantiers || []).length, 0);
@@ -5598,7 +5592,7 @@ function afficherReviewDansModal(planning) {
                                 <span style="font-size:0.9rem;color:#111827;font-weight:500;">${c.nom}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;">
-                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatHeuresFactu(c.heures)}</span>
                                 ${isFiche ? `
                                 <button onclick="ouvrirModaleFiche('${c.nom.replace(/'/g, "\\'")}')"
                                     style="background:#fff7ed;border:1.5px solid #fed7aa;color:#ea580c;border-radius:7px;padding:5px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap;">
@@ -5627,7 +5621,7 @@ function afficherReviewDansModal(planning) {
             <div style="background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${emp.absence ? '0' : '0.5rem'};">
                     <span style="font-size:1rem;font-weight:700;color:#111827;">${nom}</span>
-                    <span style="font-size:0.9rem;font-weight:700;color:#10b981;">${formatH(emp.total)}</span>
+                    <span style="font-size:0.9rem;font-weight:700;color:#10b981;">${formatHeuresFactu(emp.total)}</span>
                 </div>
                 ${chantiersHTML}
             </div>`;
@@ -6019,12 +6013,6 @@ function afficherInterfaceReview(planning) {
         return new Date(y, m - 1, d).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     })() : 'Date non détectée';
 
-    const formatH = h => {
-        if (!h) return '0h';
-        const hh = Math.floor(h); const mm = Math.round((h - hh) * 60);
-        return mm === 0 ? `${hh}h` : `${hh}h${String(mm).padStart(2, '0')}`;
-    };
-
     const absLabels = { CONGES_PAYES: 'Congés payés', ABSENCE_MALADIE: 'Absence maladie', ABSENT: 'Absent' };
     const absColors = { CONGES_PAYES: '#3b82f6', ABSENCE_MALADIE: '#ef4444', ABSENT: '#9ca3af' };
 
@@ -6049,7 +6037,7 @@ function afficherInterfaceReview(planning) {
                                 <span style="font-size:0.9rem;color:#111827;font-weight:700;">${c.nom}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatH(c.heures)}</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#6b7280;white-space:nowrap;">${formatHeuresFactu(c.heures)}</span>
                                 ${isFiche ? `
                                 <button onclick="ouvrirModaleFiche('${c.nom.replace(/'/g, "\\'")}')"
                                     title="Fiche d'intervention"
@@ -6079,7 +6067,7 @@ function afficherInterfaceReview(planning) {
             <div style="background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${emp.absence ? '0' : '0.5rem'};">
                     <span style="font-size:1rem;font-weight:700;color:#111827;">${nom}</span>
-                    <span style="font-size:0.9rem;font-weight:700;color:#10b981;">${formatH(emp.total)}</span>
+                    <span style="font-size:0.9rem;font-weight:700;color:#10b981;">${formatHeuresFactu(emp.total)}</span>
                 </div>
                 ${chantiersHTML}
             </div>`;
