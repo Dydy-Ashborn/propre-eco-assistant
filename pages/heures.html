@@ -2061,19 +2061,29 @@
         /* ─── INDISPONIBILITÉS WEEK-END ─── */
         let _indispoList = [];
 
-        async function ouvrirModaleIndispo() {
-            document.getElementById('modaleIndispo').style.display = 'flex';
-            // Pré-remplir avec aujourd'hui si samedi/dimanche, sinon prochain samedi
-            const today = new Date();
-            const day = today.getDay();
-            let defaultDate = new Date(today);
-            if (day !== 0 && day !== 6) {
-                const daysUntilSat = (6 - day + 7) % 7 || 7;
-                defaultDate.setDate(today.getDate() + daysUntilSat);
-            }
-            document.getElementById('indispo-date-input').value = defaultDate.toISOString().split('T')[0];
-            await chargerIndispos();
+        function ouvrirModaleIndispo() {
+            afficherModaleFonctionDesactivee();
         }
+
+        function afficherModaleFonctionDesactivee() {
+            const existante = document.getElementById('modaleFonctionDesactivee');
+            if (existante) {
+                existante.style.display = 'flex';
+                return;
+            }
+            const modal = document.createElement('div');
+            modal.id = 'modaleFonctionDesactivee';
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+            modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size:2.5rem;color:#f59e0b;margin-bottom:16px;"></i>
+      <p style="font-size:1rem;color:#1f2937;line-height:1.5;margin:0 0 20px;">Cette fonctionnalitée a été désactivé par le developpeur, pour signaler une indisponibilité merci de voir avec la direction.</p>
+      <button onclick="document.getElementById('modaleFonctionDesactivee').style.display='none'" style="background:#16a34a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-weight:600;font-size:0.95rem;cursor:pointer;">Compris</button>
+    </div>
+  `;
+            document.body.appendChild(modal);
+        }
+        window.ouvrirModaleIndispo = ouvrirModaleIndispo;
 
         function fermerModaleIndispo() {
             document.getElementById('modaleIndispo').style.display = 'none';
@@ -2472,62 +2482,62 @@
         let currentEmployeeId = null, currentEmployeeName = null, currentWeek = null, projectRowCounter = 0;
         const employeeNames = { 'dylan': 'Dylan', 'oceane': 'Océane', 'samuel': 'Samuel', 'jeremie': 'Jérémie', 'carlos': 'Carlos', 'sandra': 'Sandra', 'manon': 'Manon', 'stephane': 'Stéphane', 'isabelle': 'Isabelle', 'caroline': 'Caroline', 'nadjet': 'Nadjet', 'remy': 'Rémy', 'maxime': 'Maxime', 'shana': 'Shana', 'chloe': 'Chloé bibi love', 'jocelyne': 'Jocelyne', 'mina': 'Mina', 'nadia': 'Nadia' };
 
-       document.addEventListener('DOMContentLoaded', async function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    currentEmployeeId = urlParams.get('employee');
-    if (!currentEmployeeId) {
-        showNotification('Employé non identifié', 'error');
-        setTimeout(() => window.location.href = 'pointeuse.html', 2000);
-        return;
-    }
-
-    // Chargement prénom depuis Firestore avec fallback dictionnaire
-    try {
-        const snap = await db.collection('employees').doc(currentEmployeeId).get();
-        currentEmployeeName = (snap.exists && snap.data().prenom) ? snap.data().prenom : (employeeNames[currentEmployeeId] || currentEmployeeId);
-    } catch(e) {
-        currentEmployeeName = employeeNames[currentEmployeeId] || currentEmployeeId;
-    }
-
-    document.getElementById('userName').textContent = currentEmployeeName;
-    const initials = getInitials(currentEmployeeName);
-    const _av = document.getElementById('userAvatar'); if (_av) _av.textContent = initials;
-    const _avc = document.getElementById('userAvatarCard'); if (_avc) _avc.textContent = initials;
-
-    checkAndShowLogoutButton();
-
-    const today = new Date();
-    const weekInput = document.getElementById('weekInput');
-    weekInput.value = getWeekString(today);
-    currentWeek = weekInput.value;
-
-    loadWeekDataAuto();
-    loadProjectsData();
-    checkSamediRappel();
-    chargerCompteurEmploye();
-
-    weekInput.addEventListener('change', function () {
-        currentWeek = this.value;
-        loadWeekDataAuto();
-        loadProjectsData();
-        checkSamediRappel();
-    });
-
-    document.querySelectorAll('#weeklyTable .hours').forEach(input => {
-        input.addEventListener('input', calculateWeeklyTotal);
-        input.addEventListener('blur', function () {
-            const value = parseFloat(this.value);
-            if (!isNaN(value)) {
-                const rounded = Math.round(value * 4) / 4;
-                if (rounded !== value) {
-                    this.value = rounded;
-                    calculateWeeklyTotal();
-                    showNotification(`Valeur arrondie à ${rounded}h (multiples de 0.25 uniquement)`, 'info');
-                }
+        document.addEventListener('DOMContentLoaded', async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentEmployeeId = urlParams.get('employee');
+            if (!currentEmployeeId) {
+                showNotification('Employé non identifié', 'error');
+                setTimeout(() => window.location.href = 'pointeuse.html', 2000);
+                return;
             }
+
+            // Chargement prénom depuis Firestore avec fallback dictionnaire
+            try {
+                const snap = await db.collection('employees').doc(currentEmployeeId).get();
+                currentEmployeeName = (snap.exists && snap.data().prenom) ? snap.data().prenom : (employeeNames[currentEmployeeId] || currentEmployeeId);
+            } catch (e) {
+                currentEmployeeName = employeeNames[currentEmployeeId] || currentEmployeeId;
+            }
+
+            document.getElementById('userName').textContent = currentEmployeeName;
+            const initials = getInitials(currentEmployeeName);
+            const _av = document.getElementById('userAvatar'); if (_av) _av.textContent = initials;
+            const _avc = document.getElementById('userAvatarCard'); if (_avc) _avc.textContent = initials;
+
+            checkAndShowLogoutButton();
+
+            const today = new Date();
+            const weekInput = document.getElementById('weekInput');
+            weekInput.value = getWeekString(today);
+            currentWeek = weekInput.value;
+
+            loadWeekDataAuto();
+            loadProjectsData();
+            checkSamediRappel();
+            chargerCompteurEmploye();
+
+            weekInput.addEventListener('change', function () {
+                currentWeek = this.value;
+                loadWeekDataAuto();
+                loadProjectsData();
+                checkSamediRappel();
+            });
+
+            document.querySelectorAll('#weeklyTable .hours').forEach(input => {
+                input.addEventListener('input', calculateWeeklyTotal);
+                input.addEventListener('blur', function () {
+                    const value = parseFloat(this.value);
+                    if (!isNaN(value)) {
+                        const rounded = Math.round(value * 4) / 4;
+                        if (rounded !== value) {
+                            this.value = rounded;
+                            calculateWeeklyTotal();
+                            showNotification(`Valeur arrondie à ${rounded}h (multiples de 0.25 uniquement)`, 'info');
+                        }
+                    }
+                });
+            });
         });
-    });
-});
         function checkAndShowLogoutButton() {
             const SAVED_SESSION_KEY = "savedEmployeeSession";
             const savedSession = localStorage.getItem(SAVED_SESSION_KEY);
